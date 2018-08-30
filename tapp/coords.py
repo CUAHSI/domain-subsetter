@@ -79,6 +79,7 @@ def get_proj_for_wgs84_bbox(filepath, bbox):
 
     # imin, jmin, imax, jmax
 #    return (col_lower, row_lower, col_upper, row_upper)
+    import pdb; pdb.set_trace()
     y_south = ds.y.values[row_lower]
     y_north = ds.y.values[row_upper]
     x_west = ds.x.values[col_lower]

@@ -32,6 +32,13 @@ library(data.table)
 #                                   INPUTS 
 #*******************************************************************************************************************************************
 
+
+# Test with
+#y south: -149638.1
+#y north: -104927.4
+#x west: 445226.9
+#x east: 496614.1
+
 subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # guid: unique identifier used to name the output 
     # Specify the clip bounding coordinates

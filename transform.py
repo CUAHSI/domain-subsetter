@@ -4,10 +4,15 @@ from pyproj import Proj, transform
 
 
 
-def proj_to_coord(dat, inproj, outcoord):
-    inProj = Proj(init='epsg:3857')
-    outProj = Proj(init='epsg:4326')
-    x1,y1 = -11705274.6374,4826473.6922
-    x2,y2 = transform(inProj,outProj,x1,y1)
-    print x2,y2
+def proj_to_coord(coords, insrs='epsg:3857', outsrs='epsg:4326'):
+    import pdb; pdb.set_trace()
+    inProj = Proj(init=insrs)
+    outProj = Proj(init=outsrs)
+
+    transformed = []
+    for c in coords:
+        x, y = c
+        x2, y2 = transform(inProj, outProj, x1, y1)
+        transformed.append(x2, y2)
+    return transformed
 

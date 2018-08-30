@@ -8,12 +8,23 @@ import json
 #import logging
 import tornado.auth
 import tornado.web
+import uuid
 
+
+import rpy2.robjects as robjects
 import bbox
+import transform
 
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
+
+def load_r(scriptpath, function):
+    print(scriptpath)
+    r_source = robjects.r['source']
+    r_source(scriptpath)
+    r_getname = robjects.globalenv[function]
+    return r_getname
 
 class RequestHandler(tornado.web.RequestHandler):
     errors = []
@@ -75,12 +86,50 @@ class SubsetWithBbox(RequestHandler, tornado.auth.OAuth2Mixin):
             self.write(json.dumps(response))
             return
 
+        geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
+        bbox = (float(llon),
+                float(llat),
+                float(ulon),
+                float(ulat))
+        coords = [(bbox[0], bbox[1]), # lower left
+                  (bbox[2], bbox[3]), # upper left
+                  (bbox[2], bbox[3]), # upper right
+                  (bbox[0], bbox[1])] # lower right
+        transformed = transform.proj_to_coord(coords)
+        xs = [t[0] for t in transformed]
+        ys = [t[1] for t in transformed]
+        ysouth= min(ys)
+        ynorth= max(ys)
+        xwest = min(xs)
+        xeast=  max(xs)
+
+        # check that bbox is valid
+        print('validating bounding box', flush=True)
+        if (ysouth > ynorth) | (xwest > xeast):
+            print('invalid bounding box')
+
+        # create random guid
+        print('creating uuid', flush=True)
+        uid = uuid.uuid4().hex
+        uid = '0' + uid[1:]
+
+        # run R script and save output as random guid
+        # load the R script
+        print('loading r subsetting script', flush=True)
+        subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
+        print('invoking subsetting algorithm', flush=True)
+        subset = subsetBBOX(uid,
+                            ysouth,
+                            ynorth,
+                            xwest,
+                            xeast)
+
+        import pdb; pdb.set_trace()
         
 
-        print('begin subsetting', flush=True)
-        result = bbox.subset_with_bbox(llat, llon, ulat, ulon)
-        print(result)
-        import pdb; pdb.set_trace()
+#        print('begin subsetting', flush=True)
+#        result = bbox.subset_with_bbox(ysouth, ynorth, xwest, xeast)
+#        print(result)
 
         response = dict(message='subset complete')
         self.response = response

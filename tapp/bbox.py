@@ -5,6 +5,7 @@ import os
 import uuid
 #import falcon
 import coords
+import transform
 import rpy2.robjects as robjects
 
 
@@ -62,7 +63,28 @@ def subset_with_bbox(llat, llon, ulat, ulon):
         print('loading r subsetting script', flush=True)
         subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
         print('invoking subsetting algorithm', flush=True)
+        subset = eck that bbox is valid
+        print('validating bounding box', flush=True)
+        if (params['llon'] > params['ulon']) | (params['llat'] > params['ulat']):
+            resp.status = falcon.HTTP_400
+            print('invalid bounding box')
+
+
+        # create random guid
+        print('creating uuid', flush=True)
+        uid = uuid.uuid4().hex
+        uid = '0' + uid[1:]
+
+        # run R script and save output as random guid
+        # load the R script
+        print('loading r subsetting script', flush=True)
+        subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
+        print('invoking subsetting algorithm', flush=True)
         subset = subsetBBOX(uid,
+                            params['llat'],
+                            params['ulat'],
+                            params['llon'],
+                            params['ulon'])ubsetBBOX(uid,
                             params['llat'],
                             params['ulat'],
                             params['llon'],
