@@ -17,6 +17,7 @@ class Application(tornado.web.Application):
         endpoints = [
             (r"/", handlers.IndexHandler),
             (r"/SubsetWithBbox", handlers.SubsetWithBbox),
+            (r"/data/(.*)", tornado.web.StaticFileHandler, {"path": '/tmp'}),
         ]
         settings = {
             "debug":True,
