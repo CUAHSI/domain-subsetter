@@ -42,6 +42,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
         
     # Specify the path to your new subset domain files
     myPath <- paste0("/tmp/", guid)
+    # Specify the path to the FULL DOMAIN files 
     domainPath <- "/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain"
     
     cat("\noutput path: ", myPath)
