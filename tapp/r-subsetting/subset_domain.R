@@ -16,6 +16,7 @@
 # Authors:
   # Arezoo Rafieei Nasab (arezoo@ucar.edu)
   # Aubrey Dugger (adugger@ucar.edu)
+  # edited by Anthony Castronova (acastronova@cuahsi.org) & Danielle Tijerina (dtijerina@cuahsi.org) August 2018
 
 
 # get the current working directory of the script to 
@@ -107,25 +108,13 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # Path to the Soil Properties parameter file
     fullSoilparmFile <- paste0(domainPath, "/soil_veg_properties_ASM.nc")
     
-    # Path to the Lake parameter file
-    fullLakeparmFile <- NULL
-    
-    # Path to the Lake Tyep file
-    fullLakeTypesFile <- NULL
-    
     # Path to the hydro2D file , set this to NULL if you do not have a hydro 2D file
     fullHydro2dFile <- paste0(domainPath, "/HYDRO_TBL_2D.nc")
     
     # Path to the geo spatial file required for the new outputting option
+    # geoSpatialFile <- paste0(domainPath, "/GEOGRID_LDASOUT_Spatial_Metadata.nc")
     geoSpatialFile <- paste0(domainPath, "/WRF_Hydro_NWM_geospatial_data_template_land_GIS.nc")
     
-    # Path to the nudging parameter file
-    fullNudgeParamFile <- NULL
-    
-    # Path to the re expression files, only required if LAKEPARM is not null
-    downstreamReExpFile <- "/PATH/TO/RouteLink.reExpTo.Rdb"
-    upstreamReExpFile   <- "/PATH/TO/RouteLink.reExpFrom.Rdb"
-    reIndFile           <- "/PATH/TO/RouteLink.reInd.Rdb"
     
     #************************************************************************************************************************************************
     #             No need to modify anything from here 
@@ -140,10 +129,10 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     subHydFile <- paste0(myPath, "/Fulldom_hires.nc")
     
     # Geogrid domain file
-    subGeoFile <- paste0(myPath, "/geo_em.d0x.nc")
+    subGeoFile <- paste0(myPath, "/geo_em.d01.nc")
     
-    # Wrfinput  file
-    subWrfFile <- paste0(myPath, "/wrfinput_d0x.nc")
+    # Wrfinput file
+    subWrfFile <- paste0(myPath, "/wrfinput_d01.nc")
     
     # Route link file
     subRtlinkFile <- paste0(myPath, "/Route_Link.nc")
@@ -156,9 +145,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     
     # Soil parameter file
     subSoilparmFile <- paste0(myPath, "/soil_properties.nc")
-    
-    # Lake parameter file
-    subLakeparmFile <- paste0(myPath, "/LAKEPARM.nc")
            
     #Hydro 2d file
     subHydro2dFile <- paste0(myPath, "/hydro2dtbl.nc")
@@ -168,9 +154,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     
     # Coordinate parameter text file
     subCoordParamFile <- paste0(myPath, "/params.txt")
-    
-    # Nudging parameter
-    subNudgeParamFile <- paste0(myPath, "/nudgingParams.nc")
     
     # Forcing clip script file
     subScriptFile <- paste0(myPath, "/script_forcing_subset.txt")
