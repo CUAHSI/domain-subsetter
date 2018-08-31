@@ -40,10 +40,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # For example, the y_south is the y value of the most southern part of the domain you want to subset have
     # in the lambert conformal conic projection used in the National Water Model (in meters)
         
-    # turn off warning messages    
-    oldw <- getOption("warn")
-    options(warn = -1)
-
     # Specify the path to your new subset domain files
     myPath <- paste0("/tmp/", guid)
     domainPath <- "/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain"
@@ -60,12 +56,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # For example, the y_south is the y value of the most southern part of the domain you want to subset have
     # in the lambert conformal conic projection used in the National Water Model (in meters)
     #
-    cat('\ntypeof(y_south) = ', typeof(y_south))
-#    y_south <- -143373.672000
-#    y_north <- -103043.014200
-#    x_west <- 543664.819400 
-#    x_east <- 596869.238000
-    
     cat("y south:", y_south, sep=' ')
     cat("y north:", y_north, sep=' ')
     cat("x west:", x_west, sep=' ')
@@ -199,11 +189,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     geo_min <- min(geoindex$row)
     geo_max <- max(geoindex$row)
     
-    cat("\n-> hyd_w : ", hyd_w)
-    cat("\n-> hyd_e : ", hyd_e)
-    cat("\n-> hyd_s : ", hyd_s)
-    cat("\n-> hyd_n : ", hyd_n)
-    
     # Get relevant real coords for new bounds
     cat("\nGet relevant real coords for new bounds...")
     geo_min_col <- min(geoindex[,"col"])
@@ -231,7 +216,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     
        if  (!file.exists(fullHydFile)) stop(paste0("The fullHydFile : ", fullHydFile, " does not exits"))
        cmd <- paste0("ncks -O -d x,", hyd_w-1, ",", hyd_e-1, " -d y,", hyd_min-1, ",", hyd_max-1, " ", fullHydFile, " ", subHydFile)
-       print(cmd)
+#       print(cmd)
        system(cmd)
     } else {
     cat('skipping')
@@ -483,7 +468,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     cat('\nSCRIPT COMPLETE')
     cat('\n---------------\n\n')
 
-    options(warn = oldw)
     return(myPath)
 }
 
@@ -492,11 +476,11 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 # called using Rscript with arguments.
 if (identical (environment (), globalenv ())) {
     args = commandArgs(trailingOnly=TRUE)
-    args <- as.numeric(args)
+    coords <- as.numeric(args[c(2,3,4,5)])
     
     if (length(args) == 5) {
         # invoke the subsetting function
-        res = subsetBbox( args[1], args[2], args[3], args[4], args[5] ) 
+        res = suppressWarnings(subsetBbox( args[1], coords[1], coords[2], coords[3], coords[4] ))
         print(res)
     } else {
         print('Incorrect number of arguments')
