@@ -19,20 +19,10 @@
 
 
 
-# get the current working directory of the script to 
-# fix import locations
-cwd <- '.'
-tryCatch({
-    script.dir <- dirname(sys.frame(1)$ofile)
-    cwd <- paste(getwd(), script.dir, sep='/')
-    }, error = function(e) {
-        print('error')
-    }
-)
 
 library(rwrfhydro)
 library(ncdf4)
-source(paste(cwd, "Utils_ReachFiles.R", sep='/'))
+source("Utils_ReachFiles.R")
 library(data.table)
 
 # Test with
@@ -69,10 +59,11 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # For example, the y_south is the y value of the most southern part of the domain you want to subset have
     # in the lambert conformal conic projection used in the National Water Model (in meters)
     #
-    #y_south <- -143373.672000
-    #y_north <- -103043.014200
-    #x_west <- 543664.819400 
-    #x_east <- 596869.238000
+    cat('\ntypeof(y_south) = ', typeof(y_south))
+#    y_south <- -143373.672000
+#    y_north <- -103043.014200
+#    x_west <- 543664.819400 
+#    x_east <- 596869.238000
     
     cat("y south:", y_south, sep=' ')
     cat("y north:", y_north, sep=' ')
@@ -188,6 +179,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # Setup coordinates df
     coords <- data.frame(id=c(1,2,3,4), lat=c(y_south, y_north, y_north, y_south),
             lon=c(x_west, x_west, x_east, x_east))
+
 
     # Create temp geogrid tif
     cat("\nCreate temp geogrid tif...", sep='')
@@ -629,12 +621,12 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 
 # this is the "main" function that allows this script to be
 # called using Rscript with arguments.
-#if (is.null(module_name())) {
 if (identical (environment (), globalenv ())) {
-
     args = commandArgs(trailingOnly=TRUE)
+    args <- as.numeric(args)
     
     if (length(args) == 5) {
+        # invoke the subsetting function
         res = subsetBbox( args[1], args[2], args[3], args[4], args[5] ) 
         print(res)
     } else {
