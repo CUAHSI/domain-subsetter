@@ -6,22 +6,14 @@ import json
 import tornado.auth
 import tornado.web
 import uuid
+import subprocess
 
-
-import rpy2.robjects as robjects
 import bbox
 import transform
 
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
-
-def load_r(scriptpath, function):
-    print(scriptpath)
-    r_source = robjects.r['source']
-    r_source(scriptpath)
-    r_getname = robjects.globalenv[function]
-    return r_getname
 
 class RequestHandler(tornado.web.RequestHandler):
     errors = []
@@ -111,15 +103,24 @@ class SubsetWithBbox(RequestHandler, tornado.auth.OAuth2Mixin):
         uid = '0' + uid[1:]
 
         # run R script and save output as random guid
-        # load the R script
-        print('loading r subsetting script', flush=True)
-        subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
         print('invoking subsetting algorithm', flush=True)
-        subset = subsetBBOX(uid,
-                            ysouth,
-                            ynorth,
-                            xwest,
-                            xeast)
+
+        cmd = ['Rscript',
+               'subset_domain.R',
+               uid,
+               str(ysouth),
+               str(ynorth),
+               str(xwest),
+               str(xeast)]
+        print(' '.join(cmd))
+        p = subprocess.Popen(cmd,
+                             cwd=os.path.join(os.getcwd(),'r-subsetting'),
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+
+        for line in iter(p.stdout.readline, b''):
+            print(">>> " + line.decode('utf-8').rstrip())
+
 
         response = dict(message='subset complete')
         self.response = response
