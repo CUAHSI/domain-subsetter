@@ -3,9 +3,6 @@
 
 import os
 import json
-#import socket
-#import shutil
-#import logging
 import tornado.auth
 import tornado.web
 import uuid
@@ -124,61 +121,6 @@ class SubsetWithBbox(RequestHandler, tornado.auth.OAuth2Mixin):
                             xwest,
                             xeast)
 
-        import pdb; pdb.set_trace()
-        
-
-#        print('begin subsetting', flush=True)
-#        result = bbox.subset_with_bbox(ysouth, ynorth, xwest, xeast)
-#        print(result)
-
         response = dict(message='subset complete')
         self.response = response
         self.write(json.dumps(response))
-#
-#        # make all usernames lowercase
-#        username = husername.lower()
-#        if resourcetype != "":
-#            resourcetype = resourcetype.lower()
-#
-#        # build userspace
-#        try:
-#            msg = '%s -> building userspace' % husername
-#            print(msg)
-#            utilities.build_userspace(username)
-#        except Exception as e:
-#            print('ERROR %s: %s' % (msg, e))
-#
-#        print('HERE')
-#        try:
-#            msg = '%s -> writing .env' % husername
-#            print(msg)
-#            utilities.set_hydroshare_args(husername, resourceid, resourcetype)
-#        except Exception as e:
-#            print('ERROR %s: %s' % (msg, e), flush=True)
-#
-#        # generate the redirect url
-#        baseurl = os.environ['JUPYTER_HUB_IP']
-#        port = os.environ['JUPYTER_PORT']
-#        
-#        # build the redirect url 
-#        if port == '443':
-#            proto = 'https'
-#            port = ''
-#        else:
-#            proto = 'http'
-#            port = ':'+port
-#        
-#        if target is not None:
-#            url = "%s://%s%s/user/%s/tree/%s" % (proto, baseurl, port, username, target)
-#        else:
-#            url = "%s://%s%s/user/%s/tree/notebooks/Welcome.ipynb" % (proto, baseurl, port, username)
-#
-#        print("URL:" + url)
-#
-#        # save the next url to ensure that the redirect will work
-#        p = os.path.join(os.environ['HYDROSHARE_REDIRECT_COOKIE_PATH'], '.redirect_%s' % username)        
-#        with open(p, 'w') as f:
-#            f.write(url)
-#
-#        # redirect to the desired page
-#        self.redirect(url, status=303)
