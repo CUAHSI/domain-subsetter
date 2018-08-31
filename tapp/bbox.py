@@ -63,7 +63,8 @@ def subset_with_bbox(llat, llon, ulat, ulon):
         print('loading r subsetting script', flush=True)
         subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
         print('invoking subsetting algorithm', flush=True)
-        subset = eck that bbox is valid
+
+        # check that subset that bbox is valid
         print('validating bounding box', flush=True)
         if (params['llon'] > params['ulon']) | (params['llat'] > params['ulat']):
             resp.status = falcon.HTTP_400
@@ -81,10 +82,6 @@ def subset_with_bbox(llat, llon, ulat, ulon):
         subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
         print('invoking subsetting algorithm', flush=True)
         subset = subsetBBOX(uid,
-                            params['llat'],
-                            params['ulat'],
-                            params['llon'],
-                            params['ulon'])ubsetBBOX(uid,
                             params['llat'],
                             params['ulat'],
                             params['llon'],
