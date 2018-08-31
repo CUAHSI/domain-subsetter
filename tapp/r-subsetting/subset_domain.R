@@ -16,6 +16,7 @@
 # Authors:
   # Arezoo Rafieei Nasab (arezoo@ucar.edu)
   # Aubrey Dugger (adugger@ucar.edu)
+  # edited by Anthony Castronova (acastronova@cuahsi.org) & Danielle Tijerina (dtijerina@cuahsi.org) August 2018
 
 
 
@@ -101,25 +102,13 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # Path to the Soil Properties parameter file
     fullSoilparmFile <- paste0(domainPath, "/soil_veg_properties_ASM.nc")
     
-    # Path to the Lake parameter file
-    fullLakeparmFile <- NULL
-    
-    # Path to the Lake Tyep file
-    fullLakeTypesFile <- NULL
-    
     # Path to the hydro2D file , set this to NULL if you do not have a hydro 2D file
     fullHydro2dFile <- paste0(domainPath, "/HYDRO_TBL_2D.nc")
     
     # Path to the geo spatial file required for the new outputting option
+    # geoSpatialFile <- paste0(domainPath, "/GEOGRID_LDASOUT_Spatial_Metadata.nc")
     geoSpatialFile <- paste0(domainPath, "/WRF_Hydro_NWM_geospatial_data_template_land_GIS.nc")
     
-    # Path to the nudging parameter file
-    fullNudgeParamFile <- NULL
-    
-    # Path to the re expression files, only required if LAKEPARM is not null
-    downstreamReExpFile <- "/PATH/TO/RouteLink.reExpTo.Rdb"
-    upstreamReExpFile   <- "/PATH/TO/RouteLink.reExpFrom.Rdb"
-    reIndFile           <- "/PATH/TO/RouteLink.reInd.Rdb"
     
     #************************************************************************************************************************************************
     #             No need to modify anything from here 
@@ -134,10 +123,10 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     subHydFile <- paste0(myPath, "/Fulldom_hires.nc")
     
     # Geogrid domain file
-    subGeoFile <- paste0(myPath, "/geo_em.d0x.nc")
+    subGeoFile <- paste0(myPath, "/geo_em.d01.nc")
     
-    # Wrfinput  file
-    subWrfFile <- paste0(myPath, "/wrfinput_d0x.nc")
+    # Wrfinput file
+    subWrfFile <- paste0(myPath, "/wrfinput_d01.nc")
     
     # Route link file
     subRtlinkFile <- paste0(myPath, "/Route_Link.nc")
@@ -150,9 +139,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     
     # Soil parameter file
     subSoilparmFile <- paste0(myPath, "/soil_properties.nc")
-    
-    # Lake parameter file
-    subLakeparmFile <- paste0(myPath, "/LAKEPARM.nc")
            
     #Hydro 2d file
     subHydro2dFile <- paste0(myPath, "/hydro2dtbl.nc")
@@ -162,9 +148,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     
     # Coordinate parameter text file
     subCoordParamFile <- paste0(myPath, "/params.txt")
-    
-    # Nudging parameter
-    subNudgeParamFile <- paste0(myPath, "/nudgingParams.nc")
     
     # Forcing clip script file
     subScriptFile <- paste0(myPath, "/script_forcing_subset.txt")
@@ -451,121 +434,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     } else {
     cat('skipping')
     }
-    
-    # LAKE PARAMETER
-    cat('\nSubset Lake parameters...')
-    # Make a copy of the LAKEPARM file, Read the subsetted Routlink file 
-    # and finds out which lakes fall into the domain and keep only those in the LAKEPARM.nc file
-    if (!is.null(fullLakeparmFile)) {
-    
-       if (is.null(fullSpwtFile) | is.null(fullRtlinkFile)) {
-          stop("To subset the fullLakeparmFile, you need fullSpwtFile and fullRtlinkFile")
-       }
-       if (!file.exists(fullLakeparmFile)) stop(paste0("the fullLakeparmFile : ", fullLakeparmFile, " does not exits"))
-       rl <- ReadRouteLink(subRtlinkFile)
-       rll <- subset(rl, rl$NHDWaterbodyComID>0)
-       lk <- GetNcdfFile(fullLakeparmFile, quiet=TRUE)
-       lkl <- subset(lk, lk$lake_id %in% rll$NHDWaterbodyComID)
-    
-       load(downstreamReExpFile)
-       load(upstreamReExpFile)
-       load(reIndFile)
-    
-       # Identify lake outlets for full domain
-       rl.full <- ReadRouteLink(fullRtlinkFile)
-       rl.full$ind <- 1:nrow(rl.full)
-       lakeTypes <- GetNcdfFile(fullLakeTypesFile, quiet=TRUE)
-       names(lakeTypes)[which(names(lakeTypes)=="LINKID")] <- "link"
-       rl.full <- plyr::join(rl.full, lakeTypes, by="link")
-       lakeOutlets <- subset(rl.full, rl.full$NHDWaterbodyComID > 0 & rl.full$TYPEL==1)
-       rm(rl.full)
-    
-       routlinkInfo <- as.data.table(GetNcdfFile(fullRtlinkFile,c('gages','link','order'), q=TRUE))
-       routlinkInfo$ind <- 1:nrow(routlinkInfo)
-       gather <- function(gageIdInd) {
-         upBranches <- rwrfhydro:::GatherStreamInds(from, start = gageIdInd$gageInd, linkLength=reInd$length)
-         indsAll <- c(upBranches$ind, upBranches$startInd)
-         upComIds <- routlinkInfo[ind %in% indsAll, link]
-       }
-    
-       lakeIds <- unique(rll$NHDWaterbodyComID)
-       lakesToRemove <- c()
-       for (lake in lakeIds) {
-          lakecom <- subset(lakeOutlets$link, lakeOutlets$NHDWaterbodyComID == lake)
-          if (length(lakecom)>0) {
-            message(paste0("Processing lake ", lake, " outlet ", lakecom))
-    
-            # Taken from Arezoo's tracing code. Overkill here, but it works!
-            # Extract those ComIds and relvalnt information form the Routlink file to perform the subsetting for them
-            routlinkInfoSub <- routlinkInfo[link == lakecom]
-            # Find all the COMIDs above the specified comIds
-            gageInds <- routlinkInfoSub$ind
-            names(gageInds) <- routlinkInfoSub$link
-            # make this a list of pairs: gageId, gageInd
-            dumList <- 1:length(gageInds)
-            names(dumList) <- trimws(names(gageInds))
-            gageIndsList <- plyr::llply(dumList, function(ii) list(gageId=names(gageInds)[ii],
-                                                           gageInd=gageInds[[ii]]))
-            # Trace up
-            upComIdsAll <- plyr::llply(gageIndsList, gather, .parallel = FALSE)
-            rm(lakecom, routlinkInfoSub, gageInds, dumList, gageIndsList)
-    
-            # Check if all upstream reaches are in route link
-            if (!all(unlist(upComIdsAll) %in% rl$link)) lakesToRemove <- c(lakesToRemove, lake)
-          } else {
-            message(paste0("No outlet found for ", lake, "so skipping"))
-          }
-       }
-    
-       # Adjust lakeparm and routelink
-       lkl <- subset(lkl, !(lkl$lake_id %in% lakesToRemove))
-       rl[rl$NHDWaterbodyComID %in% lakesToRemove, "NHDWaterbodyComID"] <- -9999
-       UpdateLinkFile(subRtlinkFile, rl, subDim=FALSE)
-       if (nrow(lkl) != 0) {
-          file.copy(fullLakeparmFile, subLakeparmFile, overwrite = TRUE)
-          UpdateLakeFile(subLakeparmFile, lkl, subDim=TRUE)
-       }
-    } else {
-    cat('skipping')
-    }
-    
-    
-    # Nudging PARAMETER FILE, not tested yet
-    cat('\nSubset Nudging parameters...')
-    if (!is.null(fullNudgeParamFile)) {
-    
-       if (is.null(fullSpwtFile) | is.null(fullRtlinkFile)) {
-          stop("To subset the fullNudgeParamFile, you need fullSpwtFile and fullRtlinkFile")
-       }
-       if (!file.exists(fullNudgeParamFile)) stop(paste0("The fullNudgeParamFile : ", fullNudgeParamFile, " does not exist"))
-     
-       file.copy(fullNudgeParamFile, subNudgeParamFile, overwrite = TRUE)
-       # read the list of gages from the subsetted Routlink
-       RtGages <- unique(rwrfhydro::ncdump(subRtlinkFile, "gages", quiet = TRUE))
-       # read the list of all gages from the full nudging param file
-       nudgeGages <- rwrfhydro::ncdump(fullNudgeParamFile, "stationId", quiet = TRUE)
-       # Find the indices for which will be used from subsetting
-       subRtlinkInds <- which(nudgeGages %in% RtGages)
-       # read the nudging param file in, and subset them
-       nudgeInfo <- rwrfhydro::GetNcdfFile(fullNudgeParamFile, quiet=TRUE)
-       for (varName in c("stationId", "R", "G", "tau")){ nudgeInfo[[varName]] <- nudgeInfo[[varName]][subRtlinkInds]}
-       nudgeInfo$qThresh <- nudgeInfo$qThresh[, subRtlinkInds]
-       nudgeInfo$expCoeff <- nudgeInfo$expCoeff[,, subRtlinkInds]
-    
-       # reduce the size of the file
-       cmdtxt <- paste0("ncks -O -d stationIdInd,1,",  length(subRtlinkInds), " ", subNudgeParamFile, " ", subNudgeParamFile)
-       system(cmdtxt)
-    
-       # read all the variables with link as their dimension (only dimension) and subset the link dimension
-       ncin <- ncdf4::nc_open(subNudgeParamFile, write=TRUE)
-       for (i in names(nudgeInfo)) {
-    #      print(i)
-           ncdf4::ncvar_put(ncin, i, nudgeInfo[[i]])
-       }
-       ncdf4::nc_close(ncin)
-    } else {
-    cat('skipping')
-    }
+ 
     
     ################# CREATE SCRIPT FILES
     
