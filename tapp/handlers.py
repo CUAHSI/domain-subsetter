@@ -120,8 +120,29 @@ class SubsetWithBbox(RequestHandler, tornado.auth.OAuth2Mixin):
 
         for line in iter(p.stdout.readline, b''):
             print(">>> " + line.decode('utf-8').rstrip())
+        p.stdout.close()
+        return_code = p.wait()
 
+        if not return_code == 0:
+            response = dict(message =
+                'The process call "{}" returned with code {}, an error '
+                'occurred.'.format(list(cmd), return_code),
+                           status='error')
+        else:
+            fpath = os.path.join('/tmp', uid) 
+            outname = '%s.tar.gz' % uid
+            cmd = ['tar', '-czf', outname, fpath] 
+            p = subprocess.Popen(cmd, cwd = '/tmp',
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+            for line in iter(p.stdout.readline, b''):
+                print("$ " + line.decode('utf-8').rstrip())
+            p.stdout.close()
+            return_code = p.wait()
 
-        response = dict(message='subset complete')
+            response = dict(message='file created at: /tmp/%s' % outname,
+                            status='success')
+
+        # return the response
         self.response = response
         self.write(json.dumps(response))
