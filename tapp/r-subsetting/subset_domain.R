@@ -19,20 +19,22 @@
   # edited by Anthony Castronova (acastronova@cuahsi.org) & Danielle Tijerina (dtijerina@cuahsi.org) August 2018
 
 
+
 # get the current working directory of the script to 
 # fix import locations
-script.dir <- dirname(sys.frame(1)$ofile)
-cwd <- paste(getwd(), script.dir, sep='/')
+cwd <- '.'
+tryCatch({
+    script.dir <- dirname(sys.frame(1)$ofile)
+    cwd <- paste(getwd(), script.dir, sep='/')
+    }, error = function(e) {
+        print('error')
+    }
+)
 
 library(rwrfhydro)
 library(ncdf4)
 source(paste(cwd, "Utils_ReachFiles.R", sep='/'))
 library(data.table)
-
-#*******************************************************************************************************************************************
-#                                   INPUTS 
-#*******************************************************************************************************************************************
-
 
 # Test with
 #y south: -149638.1
@@ -41,6 +43,7 @@ library(data.table)
 #x east: 496614.1
 
 subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
+
     # guid: unique identifier used to name the output 
     # Specify the clip bounding coordinates
     # they are the x, y values with respect to the projection specified above.
@@ -605,5 +608,21 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     options(warn = oldw)
     return(myPath)
 }
-#quit("no")
 
+
+# this is the "main" function that allows this script to be
+# called using Rscript with arguments.
+#if (is.null(module_name())) {
+if (identical (environment (), globalenv ())) {
+
+    args = commandArgs(trailingOnly=TRUE)
+    
+    if (length(args) == 5) {
+        res = subsetBbox( args[1], args[2], args[3], args[4], args[5] ) 
+        print(res)
+    } else {
+        print('Incorrect number of arguments')
+    }
+    
+
+}
