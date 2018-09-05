@@ -1,0 +1,19 @@
+<html>
+   <body>
+     <h1>National Water Model (v1.2.2) API Subsetting Tool</h1>
+     This is an experimental CUAHSI data service, use at your own risk.
+     </br>
+     </br>
+
+    {% try %}
+       {% if msg %}
+         </br>
+         </br>
+         <div style="background-color:{{ color }};padding:35px">
+         <p> {{ msg }} </p>
+          </div>
+       {% end %}
+     {% except%}
+     {% end %}
+   </body>
+ </html>
