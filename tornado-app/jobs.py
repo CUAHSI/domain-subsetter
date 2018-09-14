@@ -1,66 +1,59 @@
 #!/usr/bin/env python3
 
 
-import toro
-import tornado.gen
-from tornado.concurrent import Future
 import uuid
+import sqldata
+from multiprocessing import Process, Queue
 
 class BackgroundWorker(object):
 
     def __init__(self):
-        self.queue = toro.Queue()
+        self.numprocesses = 4
+
+        self.queue = Queue()
         self.jobs = {}
 
+        self.sql = sqldata.Connect()
+        self.sql.build()
 
-    @tornado.gen.coroutine
-    def add(self, function,async,*args,**kwargs):
-        print('queuing job')
-        uid = uuid.uuid4().hex
+        self.Processes = []
+
+        print('starting %d workers' % self.numprocesses)
+        for n in range(self.numprocesses):
+            process = Process(target=self.worker)
+            process.start()
+            self.Processes.append(process)
+        print('worker startup complete')
+
+
+    def add(self, uid, function, *args, **kwargs):
         item = dict(function = function,
-                    async = async,
                     args = args,
                     kwargs = kwargs,
                     state = 'queued',
                     uid = uid)
         self.queue.put(item)
-        print(self.queue.qsize())
         self.jobs[uid] = item
+        print('adding to queue:')
+
+        self.sql.save_job(uid, item['state'], '')
 
         return uid       
-#        raise tornado.gen.Return(uid)
 
-    @tornado.gen.coroutine
-    def poll(self, uid):
-        item = self.jobs.get(uid, None)
-        if item is None:
-            result = dict(state='Does not exist')
-            raise tornado.gen.Return(result)
-        if item['state'] == 'finished':
-            # pop this item from the jobs dict
-            item = self.jobs.pop(uid, None)
-            result = dict(result=item['result'],
-                          state=item['state'])
-#            raise tornado.gen.Return(result)
-            return result
-        else:
-#            raise tornado.gen.Return(dict(state=item['state']))
-            return dict(state=item['state'])
     
-    
-    @tornado.gen.coroutine
     def worker(self):
-        print('--> %d' % self.queue.qsize())
         while True:
+            print('waiting for jobs')
             # get queued item 
-            print('waiting for items')
-            item = yield self.queue.get()
-            print('--> %d' % self.queue.qsize())
+            item = self.queue.get()
+            print('received job: %s ' % item['uid'])
+
             try:
-                print('running job')
+                uid = item['uid']
+                print('running job: %s' % uid)
+                self.sql.save_job(uid, 'running', '')
 
                 # update the job state
-                uid = item['uid']
                 item['state'] = 'running'
                 self.jobs[uid] = item
                 
@@ -72,15 +65,16 @@ class BackgroundWorker(object):
                 item['state'] = 'finished'
                 self.jobs[uid] = item
                 
-#                print('done')
-#                yield uid
-
             except Exception as e:
                 print('job failed: %s' % e)
                 item['state'] = 'failed'
                 item['result'] = None
                 self.jobs[uid] = item
+            print('updating state of %s' %uid)
+            self.sql.save_job(uid,
+                              item['state'],
+                              item['result']['filepath'])
     
-    @tornado.gen.coroutine
-    def start(self):
-        yield self.worker()
+#    @tornado.gen.coroutine
+#    def start(self):
+#        yield self.worker()
