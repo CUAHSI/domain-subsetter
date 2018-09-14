@@ -14,12 +14,14 @@ class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", handlers.IndexHandler),
-            (r"/SubsetWithBbox", handlers.SubsetWithBbox),
-            (r"/status", handlers.JobStatus),
+            (r"/subset", handlers.Subset),
+            (r"/jobs", handlers.Jobs),
             (r"/data/(.*)", tornado.web.StaticFileHandler, {"path": '/tmp'}),
         ]
         settings = {
             "debug":True,
+            "static_path":os.path.join(os.path.dirname(__file__), "static"),
+            "template_path":os.path.join(os.path.dirname(__file__), "templates"),
 #            "login_url":os.path.join(os.environ['JUPYTER_REST_IP'], ':%s' % os.environ['JUPYTER_PORT']),
 #        "template_path":Settings.TEMPLATE_PATH,
 #        "static_path":Settings.STATIC_PATH,
