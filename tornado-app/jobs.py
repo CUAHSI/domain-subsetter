@@ -18,12 +18,11 @@ class BackgroundWorker(object):
 
         self.Processes = []
 
-        print('starting %d workers' % self.numprocesses)
+        # starting workers
         for n in range(self.numprocesses):
             process = Process(target=self.worker)
             process.start()
             self.Processes.append(process)
-        print('worker startup complete')
 
 
     def add(self, uid, function, *args, **kwargs):
@@ -34,7 +33,6 @@ class BackgroundWorker(object):
                     uid = uid)
         self.queue.put(item)
         self.jobs[uid] = item
-        print('adding to queue:')
 
         self.sql.save_job(uid, item['state'], '')
 
@@ -43,14 +41,11 @@ class BackgroundWorker(object):
     
     def worker(self):
         while True:
-            print('waiting for jobs')
             # get queued item 
             item = self.queue.get()
-            print('received job: %s ' % item['uid'])
 
             try:
                 uid = item['uid']
-                print('running job: %s' % uid)
                 self.sql.save_job(uid, 'running', '')
 
                 # update the job state
@@ -70,11 +65,7 @@ class BackgroundWorker(object):
                 item['state'] = 'failed'
                 item['result'] = None
                 self.jobs[uid] = item
-            print('updating state of %s' %uid)
+
             self.sql.save_job(uid,
                               item['state'],
                               item['result']['filepath'])
-    
-#    @tornado.gen.coroutine
-#    def start(self):
-#        yield self.worker()
