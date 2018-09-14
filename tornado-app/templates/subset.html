@@ -5,15 +5,19 @@
      </br>
      </br>
 
-    {% try %}
-       {% if msg %}
          </br>
          </br>
-         <div style="background-color:{{ color }};padding:35px">
-         <p> {{ msg }} </p>
-          </div>
-       {% end %}
-     {% except%}
-     {% end %}
+         <div id="message" style="background-color:{{ color }};padding:35px">
+	     <p> Job Submitted: <span id=job_guid>{{ guid }}</span> </p>
+	     <p> Status: <span id=status>{{ status }}</span></p>
+	     <p><span id=result-msg></span></p>
+	     <p><span id=path></span></p>
+         </div>
+    
+    <input type="hidden" id="run_poll" name="runPoll" value="{{ poll }}">
+    <input type="hidden" id="guid" name="guid" value="{{ guid }}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{{ static_url("poll.js") }}" type="text/javascript"></script>
    </body>
  </html>

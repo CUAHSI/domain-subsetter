@@ -27,10 +27,10 @@ source("Utils_ReachFiles.R")
 library(data.table)
 
 # Test with
-#y south: -149638.1
-#y north: -104927.4
-#x west: 445226.9
-#x east: 496614.1
+#y south: 382582.18746
+#y north: 367584.87840
+#x west: 1720355.72762
+#x east: 1734488.45260
 
 subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 
@@ -155,6 +155,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
             lon=c(x_west, x_west, x_east, x_east))
 
 
+
     # Create temp geogrid tif
     cat("\nCreate temp geogrid tif...", sep='')
     tmpfile <- tempfile(fileext=".tif")
@@ -189,6 +190,15 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     hyd_max <- max(geoindex$row)*dxy
     geo_min <- min(geoindex$row)
     geo_max <- max(geoindex$row)
+    
+    cat('\n\nGeo Xwest', geo_w)
+    cat('\nGeo Xeast', geo_e)
+    cat('\nGeo Ynorth', geo_n)
+    cat('\nGeo Ysouth', geo_s)
+    cat('\n\nHyd Xwest', hyd_w)
+    cat('\nHyd Xeast', hyd_e)
+    cat('\nHyd Ynorth', hyd_n)
+    cat('\nHyd Ysouth', hyd_s)
     
     # Get relevant real coords for new bounds
     cat("\nGet relevant real coords for new bounds...")
