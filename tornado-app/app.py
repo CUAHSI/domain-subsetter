@@ -15,28 +15,22 @@ class Application(tornado.web.Application):
         endpoints = [
             (r"/", handlers.IndexHandler),
             (r"/subset", handlers.Subset),
-            (r"/jobs", handlers.Jobs),
-            (r"/data/(.*)", tornado.web.StaticFileHandler, {"path": '/tmp'}),
+            (r"/jobs", handlers.JobStatus),
+            (r"/jobs/([a-f0-9]{32})", handlers.JobStatus),
+#            (r"/jobs/(.*)", handlers.JobStatus),
+            (r"/data/(.*)", tornado.web.StaticFileHandler,
+             {"path": '/tmp/data'}),
         ]
         settings = {
             "debug":True,
             "static_path":os.path.join(os.path.dirname(__file__), "static"),
             "template_path":os.path.join(os.path.dirname(__file__), "templates"),
-#            "login_url":os.path.join(os.environ['JUPYTER_REST_IP'], ':%s' % os.environ['JUPYTER_PORT']),
-#        "template_path":Settings.TEMPLATE_PATH,
-#        "static_path":Settings.STATIC_PATH,
         }
         tornado.web.Application.__init__(self, endpoints, **settings)
 
 def main():
 
     app = Application()
-#    if int(os.environ['SSL_ENABLED']):
-#        http_server = tornado.httpserver.HTTPServer(app, ssl_options={
-#            "certfile": os.environ['SSL_CERT'],
-#            "keyfile": os.environ['SSL_KEY']
-#        })
-#    else:
     http_server = tornado.httpserver.HTTPServer(app)
 
     http_server.listen(8080)

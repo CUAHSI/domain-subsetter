@@ -20,7 +20,6 @@ enable_pretty_logging()
 
 import jobs
 executor = jobs.BackgroundWorker()
-#executor.start()
 
 import sqldata
 sql = sqldata.Connect()
@@ -74,7 +73,7 @@ class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
                         msg='ERROR: Missing required input')
          
         query = 'llat=%s&llon=%s&ulat=%s&ulon=%s' % (llat, llon, ulat, ulon)
-        self.redirect('SubsetWithBbox?%s' % query)
+        self.redirect('subset?%s' % query)
 
 
 class Subset(RequestHandler):
@@ -97,13 +96,35 @@ class Subset(RequestHandler):
 
         uid = executor.add(uid, subset.subset_by_bbox, *args)
                      
-        self.write('spam and eggs')
+        self.redirect('jobs')
 
-class Jobs(RequestHandler):
+class JobStatus(RequestHandler):
     @tornado.web.asynchronous
-    def get(self):
+    def get(self, jobid=None):
+        if jobid is None:
+            self.get_all_jobs()
+        else:
+            self.get_job_by_id(jobid)
+
+    @tornado.web.asynchronous
+    def get_all_jobs(self):
         jobs = sql.get_jobs()
         if jobs is None:
             jobs = []
         self.render('jobs.html', jobs=jobs)
 
+    @tornado.web.asynchronous
+    def get_job_by_id(self, jobid):
+        jobs_list = []
+        jobs = sql.get_jobs()
+        print('hello')
+        for job in jobs:
+            if jobid == job[0]:
+                jobs_list = [job]
+                continue
+        if len(jobs) == 0:
+            jobs_list = [('Error', 'Job Not Found', '')]
+
+        result = json.dumps(jobs_list)
+        self.write({'message':result})
+        self.finish()
