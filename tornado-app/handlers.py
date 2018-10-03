@@ -108,10 +108,17 @@ class JobStatus(RequestHandler):
 
     @tornado.web.asynchronous
     def get_all_jobs(self):
+        response = []
         jobs = sql.get_jobs()
         if jobs is None:
-            jobs = []
-        self.render('jobs.html', jobs=jobs)
+            response = []
+        else:
+            for job in jobs:
+                response.append(dict(id=job[0],
+                                     status=job[1],
+                                     file=job[2]))
+        self.write(json.dumps(response))
+        self.finish()
 
     @tornado.web.asynchronous
     def get_job_by_id(self, jobid):
