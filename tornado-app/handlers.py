@@ -115,16 +115,17 @@ class JobStatus(RequestHandler):
 
     @tornado.web.asynchronous
     def get_job_by_id(self, jobid):
-        jobs_list = []
+        response = None
         jobs = sql.get_jobs()
-        print('hello')
         for job in jobs:
             if jobid == job[0]:
-                jobs_list = [job]
+                response = dict(id=job[0],
+                                status=job[1],
+                                file=job[2])
                 continue
-        if len(jobs) == 0:
-            jobs_list = [('Error', 'Job Not Found', '')]
+        if response is None:
+            response = dict(message='Job Not Found',
+                            status='Error')
 
-        result = json.dumps(jobs_list)
-        self.write({'message':result})
+        self.write(json.dumps(response))
         self.finish()
