@@ -6,18 +6,7 @@
       <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
       <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
       <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
-
-
-      <!-- // Link to specific plugins // -->
-      <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>--> 
-
-<!-- LOCAL LINK -->
-<link rel="stylesheet" type="text/css" href='{{ static_url("leaflet-areaselect.css") }}'/>
-      
-      <script src="{{ static_url("poll.js") }}" type="text/javascript"></script>
-
+	<link rel="stylesheet" type="text/css" href='{{ static_url("leaflet-areaselect.css") }}'/>
       <script type='text/javascript' src='{{ static_url("leaflet-areaselect.js") }}'></script>
    </head>
 
@@ -33,17 +22,21 @@
       
       <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:50px;">
       </div>
-      <div id="result" style="margin:50px; "> 
-         <div class="left">                     
-                     Northeast Corner:
-            <br>
-            <input type="text" class="ne" style="width: 250px;">
-            <br>
-                     Southwest Corner:
-            <br>
-            <input type="text" class="sw" style="width: 250px;">
-            <button id="remove">Submit Coordinates</button> 
-         </div>
+
+
+      <form action="{{ request.path }}" method="post">
+        <div>Lower Latitude: <input type="text" name="llat" id="llat"/></div>
+        </br>
+        <div>Upper Latitude: <input type="text" name="ulat" id="ulat"/></div>
+        </br>
+        <div>Lower Longitude: <input type="text" name="llon" id="llon"/></div>
+        </br>
+        <div>Upper Longitude: <input type="text" name="ulon" id="ulon"/></div>
+        </br>
+        <div><input type="submit" value=Submit></div>
+        {% module xsrf_form_html() %}
+      </form>
+
          <script> 
             var map = L.map('map').setView([38.2, -96], 5);
 
@@ -55,12 +48,22 @@
             //L.geoJSON('https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/7?f=pjson').addTo(map);
 
             var areaSelect = L.areaSelect({width:150, height:150});
+
             areaSelect.on("change",function() {
                var bounds = this.getBounds();
-               $("#result .sw").val(bounds.getSouthWest().lat + ", " +
-                  bounds.getSouthWest().lng);
-               $("#result .ne").val(bounds.getNorthEast().lat + ", " +
-                  bounds.getNorthEast().lng);
+	       
+	       // calculate min and max lat and lon
+	       llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
+	       ulat = Math.max(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
+	       llon = Math.min(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+	       ulon = Math.max(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+
+	       // add bounding box to input boxes
+	       $('#llat').val(llat);
+	       $('#ulat').val(ulat);
+	       $('#llon').val(llon);
+	       $('#ulon').val(ulon);
+		
             })
             areaSelect.addTo(map);
 
