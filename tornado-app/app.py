@@ -18,7 +18,7 @@ class Application(tornado.web.Application):
             (r"/jobs", handlers.JobStatus),
             (r"/jobs/([a-f0-9]{32})", handlers.JobStatus),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
-             {"path": '/tmp/data'}),
+             {"path": '/tmp'}),
         ]
         settings = {
             "debug":True,
