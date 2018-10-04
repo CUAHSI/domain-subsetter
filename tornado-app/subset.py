@@ -60,7 +60,7 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
         fpath = os.path.join('/tmp', uid) 
         outname = '%s.tar.gz' % uid
         cmd = ['tar', '-czf', outname, fpath] 
-        p = subprocess.Popen(cmd, cwd = '/tmp/data',
+        p = subprocess.Popen(cmd, cwd = '/tmp',
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
         for line in iter(p.stdout.readline, b''):

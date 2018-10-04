@@ -8,6 +8,7 @@ import tornado.auth
 import tornado.web
 import uuid
 import subprocess
+from urllib.parse import urljoin
 
 import bbox
 import transform
@@ -96,7 +97,7 @@ class Subset(RequestHandler):
 
         uid = executor.add(uid, subset.subset_by_bbox, *args)
                      
-        self.redirect('jobs')
+        self.redirect('jobs/%s' % uid)
 
 class JobStatus(RequestHandler):
     @tornado.web.asynchronous
@@ -108,15 +109,17 @@ class JobStatus(RequestHandler):
 
     @tornado.web.asynchronous
     def get_all_jobs(self):
+#        import pdb; pdb.set_trace()
         response = []
         jobs = sql.get_jobs()
         if jobs is None:
             response = []
         else:
             for job in jobs:
+                fpath = self.get_file_url(job[2])
                 response.append(dict(id=job[0],
                                      status=job[1],
-                                     file=job[2]))
+                                     file=fpath))
         self.write(json.dumps(response))
         self.finish()
 
@@ -126,9 +129,10 @@ class JobStatus(RequestHandler):
         jobs = sql.get_jobs()
         for job in jobs:
             if jobid == job[0]:
+                fpath = self.get_file_url(job[2])
                 response = dict(id=job[0],
                                 status=job[1],
-                                file=job[2])
+                                file=fpath)
                 continue
         if response is None:
             response = dict(message='Job Not Found',
@@ -136,3 +140,10 @@ class JobStatus(RequestHandler):
 
         self.write(json.dumps(response))
         self.finish()
+
+    def get_file_url(self, relative_file_path):
+        if relative_file_path.strip() != '':
+            host_url = "{protocol}://{host}".format(**vars(self.request))
+            return host_url + relative_file_path
+        return None
+
