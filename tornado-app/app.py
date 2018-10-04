@@ -15,8 +15,9 @@ class Application(tornado.web.Application):
         endpoints = [
             (r"/", handlers.IndexHandler),
             (r"/subset", handlers.Subset),
-            (r"/jobs", handlers.JobStatus),
-            (r"/jobs/([a-f0-9]{32})", handlers.JobStatus),
+            (r"/jobs", handlers.Job),
+            (r"/jobs/([a-f0-9]{32})", handlers.Job),
+            (r"/status", handlers.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": '/tmp'}),
         ]

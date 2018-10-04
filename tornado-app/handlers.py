@@ -14,6 +14,7 @@ import bbox
 import transform
 
 from tornado import gen 
+from tornado.httpclient import AsyncHTTPClient
 
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
@@ -97,9 +98,23 @@ class Subset(RequestHandler):
 
         uid = executor.add(uid, subset.subset_by_bbox, *args)
                      
-        self.redirect('jobs/%s' % uid)
+        self.redirect('status')
 
-class JobStatus(RequestHandler):
+
+class Status(RequestHandler):
+    @gen.coroutine
+    def get(self, jobid=None):
+
+        http_client = AsyncHTTPClient()
+        host_url = "{protocol}://{host}".format(**vars(self.request))
+        url = host_url + '/jobs'
+        response = yield http_client.fetch(url)
+        data = json.loads(response.body)
+
+        self.render('status.html', jobs=data)
+
+
+class Job(RequestHandler):
     @tornado.web.asynchronous
     def get(self, jobid=None):
         if jobid is None:
@@ -109,7 +124,6 @@ class JobStatus(RequestHandler):
 
     @tornado.web.asynchronous
     def get_all_jobs(self):
-#        import pdb; pdb.set_trace()
         response = []
         jobs = sql.get_jobs()
         if jobs is None:

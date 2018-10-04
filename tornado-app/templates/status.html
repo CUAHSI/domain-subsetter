@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="static/style.css">
+  </head>
+   <body>
+     <h1>National Water Model (v1.2.2) API Subsetting Tool</h1>
+     This is an experimental CUAHSI data service, use at your own risk.
+     </br>
+     </br>
+
+     <h2> Status of currently running jobs <h2>
+
+     <table style="width:100%">
+         <tr>
+	     <th> JobID </th>
+	     <th> Job Status </th>
+	     <th> Output Url </th>
+ 	 </tr>
+       {% for job in jobs %}
+         <tr>
+	     <td>{{ job['id'] }}</td>
+	     <td>{{ job['status'] }}</td>
+	     {% if job['file'] != None %}
+    	         <td><a href="{{ job['file'] }}">{{ job['file'] }}</a></td>
+	     {% else %}
+    	         <td> --- </td>
+	     {% end %}
+ 	 </tr>
+       {% end %}
+     </table>
+
+     </body>
+ </html>
