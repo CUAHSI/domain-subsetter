@@ -1,36 +1,69 @@
-<html>
-   <head>
-      <title>{{ title }}</title>
+<!DOCTYPE html>
+
+<html> 
+   <head> 
+      <!-- // Link to Leaflet css stylesheets and javascript // -->
+      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
+      <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+      <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
+
+
+      <!-- // Link to specific plugins // -->
+      <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css"/>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>--> 
+
+<!-- LOCAL LINK -->
+      <link rel="stylesheet" type="text/css" href="./leaflet-areaselect-master/src/leaflet-areaselect.css"/>
+      <script type='text/javascript' src='././leaflet-areaselect-master/src/leaflet-areaselect.js'></script>
    </head>
+
    <body>
-     <h1>National Water Model (v1.2.2) API Subsetting Tool</h1>
-     This is an experimental CUAHSI data service, use at your own risk.
-     </br>
-     </br>
-     {% try %}
-       {% if msg %}
-         <div style="background-color:rgb(245, 137, 113);padding:35px"> 
-         <p> {{ msg }} </p>
-          </div>
-       {% end %}
-     {% except%}
-     {% end %}
-     </br>
-     Specify the Latitudes and Longitudes of the bounding box in the WGS 1984 SRS, see the following <a href=https://epsg.io/map#srs=4326&x=-71.119974&y=42.354428&z=12&layer=streets target="_blank">link</a> for help:
-     </br>
-     </br>
-     <form action="{{ request.path }}" method="post">
-       <div>Lower Latitude: <input type="text" name="llat"/></div>
-       </br>
-       <div>Upper Latitude: <input type="text" name="ulat"/></div>
-       </br>
-       <div>Lower Longitude: <input type="text" name="llon"/></div>
-       </br>
-       <div>Upper Longitude: <input type="text" name="ulon"/></div>
-       </br>
-       <div><input type="submit" value=Submit></div>
-       {% module xsrf_form_html() %}
-     </form>
+   <div id="header" style="margin: 50px;">
+      <h1>CUAHSI Domain Cutter: NWM</h1>
+      
+      <p>Use this map to select a bounding box containing your domain of interest.</p>
+         <p>1. </p>
+         <p>2. </p>
+         <p>3. </p>
+    </div>
+      
+      <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:50px;">
+      </div>
+      <div id="result" style="margin:50px; "> 
+         <div class="left">                     
+                     Northeast Corner:
+            <br>
+            <input type="text" class="ne" style="width: 250px;">
+            <br>
+                     Southwest Corner:
+            <br>
+            <input type="text" class="sw" style="width: 250px;">
+            <button id="remove">Submit Coordinates</button> 
+         </div>
+         <script> 
+            var map = L.map('map').setView([38.2, -96], 5);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            //L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
+    		      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            //L.geoJSON('https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/7?f=pjson').addTo(map);
+
+            var areaSelect = L.areaSelect({width:150, height:150});
+            areaSelect.on("change",function() {
+               var bounds = this.getBounds();
+               $("#result .sw").val(bounds.getSouthWest().lat + ", " +
+                  bounds.getSouthWest().lng);
+               $("#result .ne").val(bounds.getNorthEast().lat + ", " +
+                  bounds.getNorthEast().lng);
+            })
+            areaSelect.addTo(map);
+
+//areaSelect.remove();
+
+ 	</script>
 
    </body>
- </html>
+</html>
