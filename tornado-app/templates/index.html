@@ -14,8 +14,11 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>--> 
 
 <!-- LOCAL LINK -->
-      <link rel="stylesheet" type="text/css" href="./leaflet-areaselect-master/src/leaflet-areaselect.css"/>
-      <script type='text/javascript' src='././leaflet-areaselect-master/src/leaflet-areaselect.js'></script>
+<link rel="stylesheet" type="text/css" href='{{ static_url("leaflet-areaselect.css") }}'/>
+      
+      <script src="{{ static_url("poll.js") }}" type="text/javascript"></script>
+
+      <script type='text/javascript' src='{{ static_url("leaflet-areaselect.js") }}'></script>
    </head>
 
    <body>
