@@ -20,6 +20,7 @@ $(document).ready(function() {
     areaSelect.on("change", function(){
         var bounds = this.getBounds();
 	update_bbox(bounds);
+	check_area(bounds);
     });
 });
 
@@ -45,14 +46,40 @@ function toggle_select_mode(areaSelect){
     elements = $("div[class^='leaflet-areaselect']");
     if (elements[0].style.display == 'none') {
         // enable select mode
-	elements[0].style.display = '';
+        elements[0].style.display = '';
         
-	var bounds = areaSelect.getBounds();
-	update_bbox(bounds);
+        var bounds = areaSelect.getBounds();
+        update_bbox(bounds);
     }
     else {
         // disable select mode
 	elements[0].style.display = 'none';
     }
 }
+
+function check_area(bounds){
+    
+    
+    // calculate min and max lat and lon
+    llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
+    ulat = Math.max(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
+    llon = Math.min(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+    ulon = Math.max(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+
+    var latdiff = Math.abs(ulat - llat);
+    var londiff = Math.abs(ulon - llon);
+
+    if (latdiff > 2 || londiff > 2) {
+	var color = 'red';
+    } else {
+	var color = 'black';
+    }
+
+    var layers=$("div[class^='leaflet-areaselect-shade']");
+    for (i = 0; i < layers.length; i++) {
+        layers[i].style.background=color;
+        layers[i].style.opacity=0.4;
+    }
+}
+
 
