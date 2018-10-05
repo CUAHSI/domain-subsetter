@@ -6,8 +6,12 @@
       <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
       <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
       <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
-	<link rel="stylesheet" type="text/css" href='{{ static_url("leaflet-areaselect.css") }}'/>
+      <link rel="stylesheet" type="text/css" href='{{ static_url("leaflet-areaselect.css") }}'/>
       <script type='text/javascript' src='{{ static_url("leaflet-areaselect.js") }}'></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+      <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script type='text/javascript' src='{{ static_url("map.js") }}'></script>
    </head>
 
    <body>
@@ -23,7 +27,6 @@
       <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:50px;">
       </div>
 
-
       <form action="{{ request.path }}" method="post">
         <div>Lower Latitude: <input type="text" name="llat" id="llat"/></div>
         </br>
@@ -36,40 +39,6 @@
         <div><input type="submit" value=Submit></div>
         {% module xsrf_form_html() %}
       </form>
-
-         <script> 
-            var map = L.map('map').setView([38.2, -96], 5);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            //L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
-    		      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            //L.geoJSON('https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/7?f=pjson').addTo(map);
-
-            var areaSelect = L.areaSelect({width:150, height:150});
-
-            areaSelect.on("change",function() {
-               var bounds = this.getBounds();
-	       
-	       // calculate min and max lat and lon
-	       llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-	       ulat = Math.max(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-	       llon = Math.min(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
-	       ulon = Math.max(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
-
-	       // add bounding box to input boxes
-	       $('#llat').val(llat);
-	       $('#ulat').val(ulat);
-	       $('#llon').val(llon);
-	       $('#ulon').val(ulon);
-		
-            })
-            areaSelect.addTo(map);
-
-//areaSelect.remove();
-
- 	</script>
 
    </body>
 </html>
