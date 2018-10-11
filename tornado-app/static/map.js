@@ -68,8 +68,9 @@ function check_area(bounds){
 
     var latdiff = Math.abs(ulat - llat);
     var londiff = Math.abs(ulon - llon);
+    var degarea = latdiff + londiff;
 
-    if (latdiff > 2 || londiff > 2) {
+    if (degarea > 4) {
 	var color = 'red';
     } else {
 	var color = 'black';
