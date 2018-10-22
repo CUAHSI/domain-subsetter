@@ -20,11 +20,9 @@
    <body>
    <div id="header" style="margin: 50px;">
       <h1>CUAHSI Domain Cutter: NWM</h1>
+
+      {% include description.html %}
       
-      <p>Use this map to select a bounding box containing your domain of interest.</p>
-         <p>1. </p>
-         <p>2. </p>
-         <p>3. </p>
     </div>
       
       <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:50px;">
@@ -45,5 +43,7 @@
       </div>
       </form>
 
+      {% include disclaimer.html %}
+      {% include credits.html %}
    </body>
 </html>
