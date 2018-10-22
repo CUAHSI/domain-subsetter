@@ -18,15 +18,32 @@ $(document).ready(function() {
 
     //WMS LAYER
         //the first section of code is a test to see if WMS is working, second section is the CUAHSI WMS 
-    //var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
-    //   layers: 'nasa:bluemarble'
-    //}).addTo(map);
+//    var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
+//       layers: 'nasa:bluemarble'
+//    }).addTo(map);
     
-    url = 'https://arcgis.cuahsi.org/arcgis/services/NWM/nwm_app_data/MapServer/WmsServer?';
-    var wmsLayer = L.tileLayer.wms(url, {
+//    url = 'https://arcgis.cuahsi.org/arcgis/services/NWM/nwm_app_data/MapServer/WmsServer?';
+    url = 'http://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WmsServer?'
+    var huc2 = L.tileLayer.wms(url, {
+        layers: 2,
+	transparent: 'true',
+	format: 'image/png',
+	minZoom:0,
+	maxZoom:7
+    }).addTo(map);
+    var huc4 = L.tileLayer.wms(url, {
         layers: 1,
 	transparent: 'true',
 	format: 'image/png',
+	minZoom:6,
+	maxZoom:10
+    }).addTo(map);
+    var huc10 = L.tileLayer.wms(url, {
+        layers: 0,
+	transparent: 'true',
+	format: 'image/png',
+	minZoom:9,
+	maxZoom:14
     }).addTo(map);
             
 
