@@ -12,3 +12,7 @@ td, th {
 tr:nth-child(even) {
 	background-color: #dddddd;
 }
+
+div.nice-font {
+	font-family: arial, sans-serif;
+}

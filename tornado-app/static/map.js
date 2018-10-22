@@ -16,12 +16,36 @@ $(document).ready(function() {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    //WMS LAYER
+        //the first section of code is a test to see if WMS is working, second section is the CUAHSI WMS 
+    //var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
+    //   layers: 'nasa:bluemarble'
+    //}).addTo(map);
+    var wmsLayer = L.tileLayer.wms('https://arcgis.cuahsi.org/arcgis/services/NWM/nwm_app_data/MapServer/WmsServer?', {
+        layers: 'reservoirs'
+    }).addTo(map);
+            
 
     areaSelect.on("change", function(){
         var bounds = this.getBounds();
-	update_bbox(bounds);
-	check_area(bounds);
+	    update_bbox(bounds);
+	    check_area(bounds);
     });
+
+                var lyrHUC2 = L.geoJSON.ajax('static/HUC2_Clipped_fewerAtt.geojson'
+               ).addTo(map); //{style:styleHUC2}, onEachFeature:processHUC2
+            lyrHUC2.on('data:loaded',function(){
+               map.fitBounds(lyrHUC2.getBounds());
+            });
+
+            function styleHUC2(json) {
+               var att = json.properties;
+               switch (att.type){
+                  case 'HUC2':
+                     return {color:'peru'};
+                     break;
+               }
+            }
 });
 
 function update_bbox(bounds) {

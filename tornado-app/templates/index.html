@@ -12,6 +12,9 @@
       <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <script type='text/javascript' src='{{ static_url("map.js") }}'></script>
+      <link rel="stylesheet" type="text/css" href='{{ static_url("style.css") }}'/>
+      <script type='text/javascript' src='{{ static_url("leaflet.ajax.min.js") }}'></script>
+
    </head>
 
    <body>
@@ -28,6 +31,7 @@
       </div>
 
       <form action="{{ request.path }}" method="post">
+        <div class=nice-font>
         <div>Lower Latitude: <input type="text" name="llat" id="llat"/></div>
         </br>
         <div>Upper Latitude: <input type="text" name="ulat" id="ulat"/></div>
@@ -38,6 +42,7 @@
         </br>
         <div><input type="submit" value=Submit></div>
         {% module xsrf_form_html() %}
+      </div>
       </form>
 
    </body>
