@@ -25,23 +25,10 @@
       
     </div>
       
+    {% include coordinates.html %}
+      
       <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:50px;">
       </div>
-
-      <form action="{{ request.path }}" method="post">
-        <div class=nice-font>
-        <div>Lower Latitude: <input type="text" name="llat" id="llat"/></div>
-        </br>
-        <div>Upper Latitude: <input type="text" name="ulat" id="ulat"/></div>
-        </br>
-        <div>Lower Longitude: <input type="text" name="llon" id="llon"/></div>
-        </br>
-        <div>Upper Longitude: <input type="text" name="ulon" id="ulon"/></div>
-        </br>
-        <div><input type="submit" value=Submit></div>
-        {% module xsrf_form_html() %}
-      </div>
-      </form>
 
       {% include disclaimer.html %}
       {% include credits.html %}

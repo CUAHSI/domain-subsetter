@@ -1,3 +1,5 @@
+
+/* Styling for Jobs table */
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -5,14 +7,52 @@ table {
 }
 td, th {
     border: 1px solid #dddddd;
-	text-align: left;
-	padding: 8px;
+    text-align: left;
+    padding: 8px;
 }
-
 tr:nth-child(even) {
 	background-color: #dddddd;
 }
 
-div.nice-font {
-	font-family: arial, sans-serif;
+/* Styling for coordinates table */
+table.coords {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 90%;
 }
+table.coords td {
+    border: 0px;
+    text-align: left;
+    padding: 0px;
+}
+table.coords td:first-child {
+    text-align: right;
+    padding: 0px 10px 0px 0px;
+    font-weight: bold;
+}
+
+table.coords tr:nth-child(even) {
+    background-color: #ffffff;
+}
+table.coords th {
+    text-align: center;
+    border: 0px;
+}
+
+table.coords input {
+    width: 99%;
+    font-size: large;
+}
+table.coords input.submit {
+    width: 50%;
+    font-size: large;
+
+}
+
+/* Styling for fonts */
+.textblock {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight:300;
+    margin:10px;
+}
+
