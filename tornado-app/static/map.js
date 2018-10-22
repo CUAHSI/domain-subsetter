@@ -21,8 +21,12 @@ $(document).ready(function() {
     //var wmsLayer = L.tileLayer.wms('https://demo.boundlessgeo.com/geoserver/ows?', {
     //   layers: 'nasa:bluemarble'
     //}).addTo(map);
-    var wmsLayer = L.tileLayer.wms('https://arcgis.cuahsi.org/arcgis/services/NWM/nwm_app_data/MapServer/WmsServer?', {
-        layers: 'reservoirs'
+    
+    url = 'https://arcgis.cuahsi.org/arcgis/services/NWM/nwm_app_data/MapServer/WmsServer?';
+    var wmsLayer = L.tileLayer.wms(url, {
+        layers: 1,
+	transparent: 'true',
+	format: 'image/png',
     }).addTo(map);
             
 
@@ -32,20 +36,20 @@ $(document).ready(function() {
 	    check_area(bounds);
     });
 
-                var lyrHUC2 = L.geoJSON.ajax('static/HUC2_Clipped_fewerAtt.geojson'
-               ).addTo(map); //{style:styleHUC2}, onEachFeature:processHUC2
-            lyrHUC2.on('data:loaded',function(){
-               map.fitBounds(lyrHUC2.getBounds());
-            });
-
-            function styleHUC2(json) {
-               var att = json.properties;
-               switch (att.type){
-                  case 'HUC2':
-                     return {color:'peru'};
-                     break;
-               }
-            }
+//    var lyrHUC2 = L.geoJSON.ajax('static/HUC2_Clipped_fewerAtt.geojson'
+//               ).addTo(map); //{style:styleHUC2}, onEachFeature:processHUC2
+//            lyrHUC2.on('data:loaded',function(){
+//               map.fitBounds(lyrHUC2.getBounds());
+//            });
+//
+//            function styleHUC2(json) {
+//               var att = json.properties;
+//               switch (att.type){
+//                  case 'HUC2':
+//                     return {color:'peru'};
+//                     break;
+//               }
+//            }
 });
 
 function update_bbox(bounds) {
