@@ -1,0 +1,37 @@
+<form action="{{ request.path }}" method="post">
+ <div class=nice-font>
+    <table class=coords>
+        <tr>
+            <th></th>
+            <th>Lower</th>
+            <th>Upper</th>
+        </tr>
+        <tr>
+            <td>Latitude</td>
+            <td>
+                <div><input type="text" name="llat" id="llat"/></div>
+            </td>
+            <td>
+                <div><input type="text" name="ulat" id="ulat"/></div>
+            </td>
+        </tr>
+        <tr>
+            <td>Longitude</td>
+            <td>
+                <div><input type="text" name="llon" id="llon"/></div>
+            </td>
+            <td>
+                <div><input type="text" name="ulon" id="ulon"/></div>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style='text-align:center;padding:10px'>
+    		<div><input class=submit type="submit" value=Submit></div>
+            </td>
+        </tr>
+    </table>
+ {% module xsrf_form_html() %}
+ </div>
+</form>
