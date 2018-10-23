@@ -1,7 +1,14 @@
 .DS_Store
 .DS_Store?
 
+# VI Swap #
+###########
 *.swp
+
+# Sqlite Databases #
+####################
+*.db
+*.sqlite
 
 # Compiled source #
 ###################
