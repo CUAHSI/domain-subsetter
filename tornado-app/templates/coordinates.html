@@ -1,13 +1,15 @@
 <form action="{{ request.path }}" method="post">
- <div class=nice-font>
-    <table class=coords>
+ <div class=nice-font style='padding:10px'>
+     
+     <h4>Bounding Box</h4>
+	<table class="mdl-data-table mdl-js-data-table">
         <tr>
             <th></th>
-            <th>Lower</th>
-            <th>Upper</th>
+            <th>Lower Coordinate</th>
+            <th>Upper Coordinate</th>
         </tr>
         <tr>
-            <td>Latitude</td>
+            <td class="mdl-data-table__cell--non-numeric">Latitude</td>
             <td>
                 <div><input type="text" name="llat" id="llat"/></div>
             </td>
@@ -16,7 +18,7 @@
             </td>
         </tr>
         <tr>
-            <td>Longitude</td>
+            <td class="mdl-data-table__cell--non-numeric">Longitude</td>
             <td>
                 <div><input type="text" name="llon" id="llon"/></div>
             </td>
@@ -27,8 +29,11 @@
         <tr>
             <td></td>
             <td></td>
+
             <td style='text-align:center;padding:10px'>
-    		<div><input class=submit type="submit" value=Submit></div>
+	        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
+    		    Submit
+                </button>
             </td>
         </tr>
     </table>

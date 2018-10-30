@@ -1,5 +1,6 @@
 
 /* Styling for Jobs table */
+/*
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -13,8 +14,10 @@ td, th {
 tr:nth-child(even) {
 	background-color: #dddddd;
 }
+*/
 
 /* Styling for coordinates table */
+/*
 table.coords {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -30,7 +33,6 @@ table.coords td:first-child {
     padding: 0px 10px 0px 0px;
     font-weight: bold;
 }
-
 table.coords tr:nth-child(even) {
     background-color: #ffffff;
 }
@@ -48,6 +50,7 @@ table.coords input.submit {
     font-size: large;
 
 }
+*/
 
 /* Styling for fonts */
 .textblock {
