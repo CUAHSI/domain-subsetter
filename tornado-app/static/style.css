@@ -52,10 +52,19 @@ table.coords input.submit {
 }
 */
 
-/* Styling for fonts */
-.textblock {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    font-weight:300;
-    margin:10px;
-}
 
+
+.mdl-layout__header-row{
+  background: url("./river-networks.jpg") center / cover;
+  color: rgba(0,0,0,87);
+}
+.body-layout .mdl-layout__header,
+.body-layout .mdl-layout__drawer-button {
+      /* This background is dark, so we set text to white. Use 87% black instead if
+       *      your background is light. */
+  color: rgba(0,0,0,87);
+  }
+
+.mdl-layout__header-row .mdl-navigation__link{
+  color: rgba(0,0,0,87);
+}
