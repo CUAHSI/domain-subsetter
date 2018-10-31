@@ -55,16 +55,21 @@ table.coords input.submit {
 
 
 .mdl-layout__header-row{
-  background: url("./river-networks.jpg") center / cover;
-  color: rgba(0,0,0,87);
+  background: url("./blue-smoke.jpg") center / cover;
+  padding: 60px;
 }
 .body-layout .mdl-layout__header,
 .body-layout .mdl-layout__drawer-button {
-      /* This background is dark, so we set text to white. Use 87% black instead if
-       *      your background is light. */
   color: rgba(0,0,0,87);
   }
 
 .mdl-layout__header-row .mdl-navigation__link{
   color: rgba(0,0,0,87);
+}
+
+.map {
+    height: 75vh;
+    border: 1px solid #AAA;
+    position: relative;
+    margin:50px;
 }

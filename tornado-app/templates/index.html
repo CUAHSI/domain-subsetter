@@ -24,31 +24,32 @@
 
    </head>
 
-   <body>
+<div class="body-layout mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header">
+	    <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">CUAHSI Subsetter: NWM</span>
+    </header>
 
-   <!--
-   <div id="header" style="margin: 50px;">
- 
-       <h1>CUAHSI Domain Cutter: NWM</h1>  
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Menu</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Home</a>
+            <a class="mdl-navigation__link" href="">About</a>
+            <a class="mdl-navigation__link" href="">Additional Resources/a>
+            <a class="mdl-navigation__link" href="">Help</a>
+       </nav>
+   </div>
 
-
-           {% include description.html %}
-      
-      
-    </div>
-    
-    -->
-    {% include navigation.html %}
 
     <main class="mdl-layout__content">
-      
-      <div id="map" style="height: 600px; border: 1px solid #AAA; position: relative; margin:100px;">
-      </div>
+        <div class='map' id="map"></div>
 
-    {% include coordinates.html %}
+      {% include coordinates.html %}
       {% include disclaimer.html %}
       {% include credits.html %}
 
-      </main>
-   </body>
+</main>
+
+
+</div>
 </html>
