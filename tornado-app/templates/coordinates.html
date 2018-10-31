@@ -1,42 +1,13 @@
 <form action="{{ request.path }}" method="post">
- <div class=nice-font style='padding:10px'>
      
-     <h4>Bounding Box</h4>
-	<table class="mdl-data-table mdl-js-data-table">
-        <tr>
-            <th></th>
-            <th>Lower Coordinate</th>
-            <th>Upper Coordinate</th>
-        </tr>
-        <tr>
-            <td class="mdl-data-table__cell--non-numeric">Latitude</td>
-            <td>
-                <div><input type="text" name="llat" id="llat"/></div>
-            </td>
-            <td>
-                <div><input type="text" name="ulat" id="ulat"/></div>
-            </td>
-        </tr>
-        <tr>
-            <td class="mdl-data-table__cell--non-numeric">Longitude</td>
-            <td>
-                <div><input type="text" name="llon" id="llon"/></div>
-            </td>
-            <td>
-                <div><input type="text" name="ulon" id="ulon"/></div>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
+ <div><input type="hidden" name="llat" id="llat"/></div>
+ <div><input type="hidden" name="ulat" id="ulat"/></div>
+ <div><input type="hidden" name="llon" id="llon"/></div>
+ <div><input type="hidden" name="ulon" id="ulon"/></div>
 
-            <td style='text-align:center;padding:10px'>
-	        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
-    		    Submit
-                </button>
-            </td>
-        </tr>
-    </table>
+ <div style="float:right">
+ <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">Submit</button>
  {% module xsrf_form_html() %}
  </div>
+
 </form>

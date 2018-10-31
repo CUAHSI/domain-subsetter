@@ -95,11 +95,13 @@ function toggle_select_mode(areaSelect){
         elements[0].style.display = '';
         
         var bounds = areaSelect.getBounds();
+	check_area(bounds);
         update_bbox(bounds);
     }
     else {
         // disable select mode
 	elements[0].style.display = 'none';
+	$('#btn-subset-submit').prop( "disabled", true );
     }
 }
 
@@ -118,8 +120,14 @@ function check_area(bounds){
 
     if (degarea > 4) {
 	var color = 'red';
+	$('#btn-subset-submit').prop( "disabled", true );
     } else {
 	var color = 'black';
+
+    	elements = $("div[class^='leaflet-areaselect']");
+        if (elements[0].style.display != 'none') {
+            $('#btn-subset-submit').prop( "disabled", false);
+	}
     }
 
     var layers=$("div[class^='leaflet-areaselect-shade']");

@@ -71,5 +71,5 @@ table.coords input.submit {
     height: 75vh;
     border: 1px solid #AAA;
     position: relative;
-    margin:50px;
+    margin:50px 50px 5px 50px;
 }
