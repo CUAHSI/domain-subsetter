@@ -1,10 +1,14 @@
+var Map = {}
 $(document).ready(function() {
 
     var map = L.map('map').setView([38.2, -96], 5);
+    Map.map = map;
 
     // add a button to display select mode
     var areaSelect = L.areaSelect({width:150, height:150});
     areaSelect.addTo(map);
+    Map.areaSelect = areaSelect;
+
     toggle_select_mode(areaSelect);
     L.easyButton('fa-map-o', function(btn, lmap){
         toggle_select_mode(areaSelect);
@@ -20,31 +24,48 @@ $(document).ready(function() {
     // WMS LAYER
     url = 'http://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WmsServer?'
 
+    // HUC WMS Naming
+    // --------------
+    // HUC12_US: 0
+    // HUC10_US: 1
+    // HUC_4_US: 2
+    // HUC2_US: 3
+    // --------------
+
+    // HUC 2 Layer
+    var huc2 = L.tileLayer.wms(url, {
+        layers: 3,
+        transparent: 'true',
+        format: 'image/png',
+        minZoom:0,
+        maxZoom:7
+    }).addTo(map);
+    
+    // HUC 4 Layer
+    var huc4 = L.tileLayer.wms(url, {
+        layers: 2,
+        transparent: 'true',
+        format: 'image/png',
+        minZoom:6,
+        maxZoom:10
+    }).addTo(map);
+
     // HUC 10 Layer
     var huc10 = L.tileLayer.wms(url, {
-        layers: 0,
+        layers: 1,
 	    transparent: 'true',
     	format: 'image/png',
     	minZoom:9,
     	maxZoom:14
     }).addTo(map);
-
-    // HUC 4 Layer
-    var huc4 = L.tileLayer.wms(url, {
-        layers: 1,
-    transparent: 'true',
-    format: 'image/png',
-    minZoom:6,
-    maxZoom:10
-    }).addTo(map);
-
-    // HUC 2 Layer
-    var huc2 = L.tileLayer.wms(url, {
-        layers: 2,
-    transparent: 'true',
-    format: 'image/png',
-    minZoom:0,
-    maxZoom:7
+  
+    // HUC 12 Layer
+    var huc12 = L.tileLayer.wms(url, {
+        layers: 0,
+        transparent: 'true',
+        format: 'image/png',
+        minZoom:11,
+        maxZoom:19
     }).addTo(map);
 
     areaSelect.on("change", function(){
@@ -58,6 +79,13 @@ $(document).ready(function() {
 });
 
 function clickHandler(e) {
+
+    // exit early if not zoomed in enough
+    var zoom = e.target.getZoom();
+    if (zoom < 11){
+        return
+    }
+
     var clickBounds = L.latLngBounds(e.latlng, e.latlng);
   
     var defaultParameters = {
@@ -77,7 +105,7 @@ function clickHandler(e) {
             parseWfsXML(response);
         },
         error: function (response) {
-            alert('error');
+            alert('An error was encountered while retrieving shape metadata.');
         }
 
     });
@@ -112,6 +140,30 @@ function parseWfsXML(xml){
         }
     }
 
+    var bounds = Map.areaSelect.getBounds();
+    var bounds =  L.rectangle([  [ulat, ulon], [llat,llon]]);
+    var width = Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).x - 
+                Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).x  +
+                10; // padding  
+    var height = Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).y - 
+                 Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).y + 
+                 10; // padding
+
+    var midx = Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).x + width/2;
+    var midy = Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).y + height/2;
+    point = {};
+    point.x = midx;
+    point.y = midy;
+    var centroid = Map.map.layerPointToLatLng(point);
+    
+
+    dims = {}
+    dims.height = height;
+    dims.width = width;
+    Map.areaSelect.setDimensions(dims);
+    Map.map.panTo(centroid);
+//    update_bbox(b);
+//	check_area(b);
 
 }
 
