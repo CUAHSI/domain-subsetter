@@ -19,13 +19,17 @@ $(document).ready(function() {
 
     // WMS LAYER
     url = 'http://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WmsServer?'
+
+    // HUC 10 Layer
     var huc10 = L.tileLayer.wms(url, {
         layers: 0,
-	transparent: 'true',
-	format: 'image/png',
-	minZoom:9,
-	maxZoom:14
+	    transparent: 'true',
+    	format: 'image/png',
+    	minZoom:9,
+    	maxZoom:14
     }).addTo(map);
+
+    // HUC 4 Layer
     var huc4 = L.tileLayer.wms(url, {
         layers: 1,
     transparent: 'true',
@@ -33,6 +37,8 @@ $(document).ready(function() {
     minZoom:6,
     maxZoom:10
     }).addTo(map);
+
+    // HUC 2 Layer
     var huc2 = L.tileLayer.wms(url, {
         layers: 2,
     transparent: 'true',
@@ -47,7 +53,67 @@ $(document).ready(function() {
 	    check_area(bounds);
     });
 
+    map.on("click", clickHandler);
+
 });
+
+function clickHandler(e) {
+    var clickBounds = L.latLngBounds(e.latlng, e.latlng);
+  
+    var defaultParameters = {
+        service : 'WFS',
+        request : 'GetFeature',
+        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
+        typeName : 'HUC_WBD:HUC12_US',
+        SrsName : 'EPSG:4326'
+    };
+    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    var parameters = L.Util.extend(defaultParameters);
+    var URL = root + L.Util.getParamString(parameters);
+
+    var ajax = $.ajax({
+        url: URL,
+        success: function (response) {
+            parseWfsXML(response);
+        },
+        error: function (response) {
+            alert('error');
+        }
+
+    });
+}
+
+function parseWfsXML(xml){
+    var data = xml.getElementsByTagName('wfs:member')[0].firstElementChild;
+
+    // get geometry
+    var points = data.getElementsByTagName('gml:posList')[0];
+    var ptlist = points.innerHTML.split(' ');
+    var llat = 100000;
+    var ulat = -100000;
+    var llon = 100000;
+    var ulon = -100000;
+    for (var i=1; i<ptlist.length; i+=2) {
+        lat = ptlist[i];
+        if (lat > ulat){
+            ulat = lat;
+        }
+        else if (lat < llat) {
+            llat =  lat;
+        }
+    }
+    for (var i=0; i<ptlist.length; i+=2) {
+        lon = ptlist[i];
+        if (lon > ulon){
+            ulon = lon;
+        }
+        else if (lon < llon) {
+            llon =  lon;
+        }
+    }
+
+
+}
 
 function update_bbox(bounds) {
     elements = $("div[class^='leaflet-areaselect']");
