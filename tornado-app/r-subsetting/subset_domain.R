@@ -476,8 +476,8 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
 
     # copy in README
-    readmeFile <- "./README.md"
-    file.copy(readmeFile, myPath, overwrite = TRUE)
+
+    file.copy(from = paste0(getwd(), "/README.md"), to = paste0(myPath, "/README.md"), overwrite = TRUE)
     
     cat('\n---------------')
     cat('\nSCRIPT COMPLETE')
