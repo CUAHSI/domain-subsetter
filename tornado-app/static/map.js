@@ -3,6 +3,9 @@ $(document).ready(function() {
                             
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
+    Map.hucbounds = null;
+    Map.buffer = 20;
+    Map.hucselected = false;
 
     // add a button to display select mode
     var areaSelect = L.areaSelect({width:150, height:150});
@@ -74,17 +77,30 @@ $(document).ready(function() {
 	    check_area(bounds);
     });
 
-    map.on("click", clickHandler);
+    map.on("click", function(e){
+        clickHandler(e);
+    });
+
+    map.on("moveend", function(e) {
+        drawBox(e);
+    });
 
 });
+
+function adjustMapZoom(e) {
+}
 
 function clickHandler(e) {
 
     // exit early if not zoomed in enough
     var zoom = e.target.getZoom();
     if (zoom < 11){
+        Map.hucbounds = null;
         return
     }
+
+    // mark the huc as selected. This will allow the bbox to be drawn
+    Map.hucselected = true;
 
     var clickBounds = L.latLngBounds(e.latlng, e.latlng);
   
@@ -102,7 +118,9 @@ function clickHandler(e) {
     var ajax = $.ajax({
         url: URL,
         success: function (response) {
-            parseWfsXML(response);
+            bounds = parseWfsXML(response);
+            Map.hucbounds = bounds;
+            fit_bounds(bounds);
         },
         error: function (response) {
             alert('An error was encountered while retrieving shape metadata.');
@@ -139,34 +157,72 @@ function parseWfsXML(xml){
             llon =  lon;
         }
     }
-
-    var bounds = Map.areaSelect.getBounds();
     var bounds =  L.rectangle([  [ulat, ulon], [llat,llon]]);
-    var width = Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).x - 
-                Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).x  +
-                10; // padding  
-    var height = Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).y - 
-                 Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).y + 
-                 10; // padding
-
-    var midx = Map.map.latLngToLayerPoint(bounds.getBounds().getSouthWest()).x + width/2;
-    var midy = Map.map.latLngToLayerPoint(bounds.getBounds().getNorthEast()).y + height/2;
-    point = {};
-    point.x = midx;
-    point.y = midy;
-    var centroid = Map.map.layerPointToLatLng(point);
+    return bounds
     
-
-    dims = {}
-    dims.height = height;
-    dims.width = width;
-    Map.areaSelect.setDimensions(dims);
-    Map.map.panTo(centroid);
-//    update_bbox(b);
-//	check_area(b);
-
 }
 
+
+async function drawBox(e){
+
+    // exit early if not zoomed in enough or HUC12 hasn't been selected
+    var zoom = e.target.getZoom();
+    if (zoom < 11){
+        return;
+    }
+    if (Map.hucbounds == null){
+        return;
+    }
+    if (Map.hucselected == false) {
+        return;
+    }
+    Map.hucselected = false;
+
+
+    // determine the box size
+    var b = Map.buffer;
+    var bounds = Map.map.getBounds();
+    var current_width = Map.map.latLngToLayerPoint(bounds.getNorthEast()).x - 
+                Map.map.latLngToLayerPoint(bounds.getSouthWest()).x  +
+                b; // padding  
+    var current_height = Map.map.latLngToLayerPoint(bounds.getSouthWest()).y - 
+                Map.map.latLngToLayerPoint(bounds.getNorthEast()).y + 
+                b; // padding
+
+    var bounds = Map.hucbounds.getBounds();
+    var width = Map.map.latLngToLayerPoint(bounds.getNorthEast()).x - 
+                Map.map.latLngToLayerPoint(bounds.getSouthWest()).x  +
+                b; // padding  
+    var height = Map.map.latLngToLayerPoint(bounds.getSouthWest()).y - 
+                Map.map.latLngToLayerPoint(bounds.getNorthEast()).y + 
+                b; // padding
+
+    // if the box won't fit on the map, force a zoom out. 
+    // this will in turn trigger this function again
+    if ((current_width < width) || (current_height < height)){
+        Map.map.zoomOut();
+    }
+    else {
+        // draw the box if it'll fit on the map
+        var midx = Map.map.latLngToLayerPoint(bounds.getSouthWest()).x - b/2  + width/2;
+        var midy = Map.map.latLngToLayerPoint(bounds.getNorthEast()).y -b/2 + height/2;
+        point = {};
+        point.x = midx;
+        point.y = midy;
+        var centroid = Map.map.layerPointToLatLng(point);
+        
+    
+        dims = {}
+        dims.height = height;
+        dims.width = width;
+        Map.areaSelect.setDimensions(dims);
+        Map.map.panTo(centroid);
+    }
+}
+
+function fit_bounds(bounds) {
+    Map.map.fitBounds(bounds.getBounds());
+}
 function update_bbox(bounds) {
     elements = $("div[class^='leaflet-areaselect']");
     if (elements[0].style.display != 'none') {
