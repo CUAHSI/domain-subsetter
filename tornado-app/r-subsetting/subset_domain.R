@@ -474,6 +474,10 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # copy this script to the myPath dir, so the user haev from what files this cutout has been generated, and what are the options.
     
     file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
+
+    # copy in README
+
+    file.copy(from = paste0(getwd(), "/README.md"), to = paste0(myPath, "/README.md"), overwrite = TRUE)
     
     cat('\n---------------')
     cat('\nSCRIPT COMPLETE')
