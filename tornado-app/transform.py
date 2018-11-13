@@ -5,8 +5,18 @@ import argparse
 from pyproj import Proj, transform
 
 
+# WRF SRS as defined by the Full Dom NCFile
+wrf_srs = '+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40.0000076293945 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs'
+# OpenStreet map uses WGS 1984 coordinate system
+wgs_1984 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs '
+# Leaflet uses 3857, but this isn't working for us. Possibly overridden by
+# OpenStreet map.
+epsg_3857 = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs'
 
-def proj_to_coord(coords, insrs='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ', outsrs='+proj=lcc +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs'):
+
+def proj_to_coord(coords,
+                  insrs=wgs_1984,
+                  outsrs=wrf_srs):
     inProj = Proj(insrs)
     outProj = Proj(outsrs)
 

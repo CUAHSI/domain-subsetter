@@ -1,6 +1,6 @@
 var Map = {}
 $(document).ready(function() {
-
+                            
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
 
