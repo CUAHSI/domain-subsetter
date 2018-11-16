@@ -7,6 +7,7 @@ $(document).ready(function() {
     Map.hucbounds = null;
     Map.buffer = 20;
     Map.hucselected = false;
+    Map.huclayers = [];
 
     // add a button to display select mode
     var areaSelect = L.areaSelect({width:150, height:150});
@@ -128,12 +129,49 @@ function clickHandler(e) {
     });
 }
 
+function togglePolygon(hucID, ptlist){
+
+    if (hucID in Map.huclayers) {
+        // remove the polygon overlay 
+        Map.huclayers[hucID].clearLayers();
+        delete Map.huclayers[hucID];
+    }
+    else {
+        // create polygon overlay
+        var coords = [];
+        for (i=0; i<=ptlist.length-1; i+=2){
+            coords.push([parseFloat(ptlist[i]),
+                         parseFloat(ptlist[i+1])
+                         ]);
+        }
+        var coordinates = [coords];
+        var polygon = [{
+            "type": "Polygon",
+            "coordinates": coordinates
+        }];
+        var json_polygon = L.geoJSON(polygon, {style: {fillColor: 'blue'}});
+    
+        // save the layer
+        Map.huclayers[hucID] = json_polygon;
+    
+        json_polygon.addTo(Map.map);
+    }
+
+}
+
 function parseWfsXML(xml){
     var data = xml.getElementsByTagName('wfs:member')[0].firstElementChild;
 
     // get geometry
     var points = data.getElementsByTagName('gml:posList')[0];
+    var hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
     var ptlist = points.innerHTML.split(' ');
+
+    // select the layer
+    togglePolygon(hucID, ptlist);
+
+
+    // calculate bounding box
     var llat = 100000;
     var ulat = -100000;
     var llon = 100000;
