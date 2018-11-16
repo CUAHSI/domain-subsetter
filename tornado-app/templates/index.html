@@ -22,6 +22,11 @@
       <!-- custom styling -->
             <link rel="stylesheet" type="text/css" href='{{ static_url("style.css") }}'/> 
 
+            <!-- proj4leaflet libraries -->
+            <script src='{{ static_url("proj4.js") }}'></script>
+            <script src='{{ static_url("proj4leaflet.js") }}'></script>
+
+
    </head>
 
 <div class="body-layout mdl-layout mdl-js-layout">
@@ -42,7 +47,8 @@
 
 
     <main class="mdl-layout__content">
-   
+
+    <!-- 
     <div class='mdl-grid'>
         <div class='mdl-cell mdl-cell--1-offset mdl-cell--6-col'>
         <form action="{{ request.path }}" method="post">
@@ -61,6 +67,7 @@
         </form>
 	</div>
     </div>
+    -->
 
 
         <div class='map' id="map"></div>

@@ -8,6 +8,14 @@ import transform
 
 def subset_by_bbox(uid, llat, llon, ulat, ulon):
 
+    # list object to store stdout info for debugging
+    stdout = []
+    stdout.append('UID: %s\n'
+                  'llat (WGS84): %s\n'
+                  'llon (WGS84): %s\n'
+                  'ulat (WGS84): %s\n'
+                  'ulon (WGS84): %s\n\n' %(uid, str(llat), str(llon), str(ulat), str(ulon)))
+
     geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
     bbox = (float(llon),
             float(llat),
@@ -24,6 +32,11 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
     ynorth= max(ys)
     xwest = min(xs)
     xeast=  max(xs)
+    stdout.append('Transformed (WGS -> Lambert Conformal Conic Variant)\n'
+                  'llat (LCC, m): %s\n'
+                  'llon (LCC, m): %s\n'
+                  'ulat (LCC, m): %s\n'
+                  'ulon (LCC, m): %s\n\n' %(str(ysouth), str(xwest), str(ynorth), str(xeast)))
 
     # check that bbox is valid
     print('validating bounding box')
@@ -47,7 +60,10 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
                          stderr=subprocess.STDOUT)
 
     for line in iter(p.stdout.readline, b''):
-        print(">>> " + line.decode('utf-8').rstrip())
+        l = line.decode('utf-8').rstrip()
+        if 'std' in l:
+            l = l.replace('std:', '\n')
+            stdout.append(l)
     p.stdout.close()
     return_code = p.wait()
 
@@ -58,8 +74,16 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
                        status='error')
     else:
         fpath = os.path.join('/tmp', uid) 
+
+        # save the stdout from the subsetting 
+        with open(os.path.join(fpath, 'stdout.txt'), 'w') as f:
+            for line in stdout:
+                f.write(line)
+                
         outname = '%s.tar.gz' % uid
         cmd = ['tar', '-czf', outname, fpath] 
+
+        # TODO: This is blocking, move to multiprocessing
         p = subprocess.Popen(cmd, cwd = '/tmp',
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
