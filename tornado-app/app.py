@@ -16,7 +16,8 @@ class Application(tornado.web.Application):
         endpoints = [
             (r"/", handlers.IndexHandler),
             (r"/subset", handlers.Subset),
-            (r"/nwm/v1_2_2/subset", handlers.Subset),
+            (r"/nwm/v1_2_2/subset", handlers.SubsetNWM122),
+            (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
             (r"/jobs", handlers.Job),
             (r"/jobs/([a-f0-9]{32})", handlers.Job),
             (r"/status", handlers.Status),

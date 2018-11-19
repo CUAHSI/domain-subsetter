@@ -58,12 +58,12 @@ class RequestHandler(tornado.web.RequestHandler):
         if len(self.errors) > 0:
             response = dict(message="invalid arguments", status="fail")
         return response
-            
+
 
 class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
         self.render("index.html", title="CUAHSI Subsetter v0.1")
-    
+
     def post(self):
         ulat = self.get_argument('ulat')
         llat = self.get_argument('llat')
@@ -73,9 +73,27 @@ class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
             self.render("index.html",
                         title="CUAHSI Subsetter v0.1",
                         msg='ERROR: Missing required input')
-         
+
         query = 'llat=%s&llon=%s&ulat=%s&ulon=%s' % (llat, llon, ulat, ulon)
         self.redirect('subset?%s' % query)
+
+
+class LccBBoxFromHUC(RequestHandler):
+    """
+    Get BBOX in Lambert Conformal Conic for given a HUC ID.
+    """
+
+    def get(self):
+        huc = self.get_arg_value('hucID', True)
+        huclevel = len(huc)
+        box = bbox.get_bbox_from_hucs(huclevel, [huc])
+
+        response = dict(hucID=huc,
+                        hucLevel=huclevel,
+                        bbox=box)
+
+        self.write(json.dumps(response))
+
 
 
 class SubsetHUC(RequestHandler):
