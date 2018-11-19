@@ -10,11 +10,13 @@ from tornado.log import enable_pretty_logging
 
 import handlers
 
+
 class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", handlers.IndexHandler),
             (r"/subset", handlers.Subset),
+            (r"/nwm/v1_2_2/subset", handlers.Subset),
             (r"/jobs", handlers.Job),
             (r"/jobs/([a-f0-9]{32})", handlers.Job),
             (r"/status", handlers.Status),
@@ -27,6 +29,7 @@ class Application(tornado.web.Application):
             "template_path":os.path.join(os.path.dirname(__file__), "templates"),
         }
         tornado.web.Application.__init__(self, endpoints, **settings)
+
 
 def main():
 

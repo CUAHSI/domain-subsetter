@@ -78,6 +78,57 @@ class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
         self.redirect('subset?%s' % query)
 
 
+class SubsetHUC(RequestHandler):
+
+    @tornado.gen.coroutine
+    def get(self):
+        global executor
+
+        # collect rest arguments
+        hucarg = self.get_arg_value('hucs', True)
+        uid = uuid.uuid4().hex
+        hucs = hucarg.split(',')
+        
+        # calculate bounding box
+
+        args = (uid,
+                llat,
+                llon,
+                ulat,
+                ulon)
+
+        uid = executor.add(uid, subset.subset_by_bbox, *args)
+
+        self.redirect('status')
+
+
+class SubsetNWM122(RequestHandler):
+    """
+    Subsetting endpoint for NWM v1.2.2
+    """
+
+    @tornado.gen.coroutine
+    def get(self):
+        global executor
+
+        # collect rest arguments
+        llat = self.get_arg_value('llat', True)
+        llon = self.get_arg_value('llon', True)
+        ulat = self.get_arg_value('ulat', True)
+        ulon = self.get_arg_value('ulon', True)
+        uid = uuid.uuid4().hex
+        args = (uid,
+                llat,
+                llon,
+                ulat,
+                ulon)
+
+        uid = executor.add(uid, subset.subset_nwm_122, *args)
+
+        # redirect to status page for this job
+        self.redirect('status/%s' % uid)
+
+
 class Subset(RequestHandler):
 
     @tornado.gen.coroutine

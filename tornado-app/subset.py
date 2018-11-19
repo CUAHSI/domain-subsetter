@@ -6,6 +6,86 @@ import subprocess
 import transform
 
 
+def subset_nwm_122(uid, xmin, ymin, xmax, ymax):
+
+    # list object to store stdout info for debugging
+    stdout = []
+    stdout.append('UID: %s\n'
+                  'xmin: %s\n'
+                  'ymin : %s\n'
+                  'xmax : %s\n'
+                  'ymax : %s\n\n' % (uid, str(xmin), str(ymin),
+                                     str(xmax), str(ymax)))
+
+    geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
+    bbox = (float(xmin),
+            float(ymin),
+            float(xmax),
+            float(ymax))
+
+    # check that bbox is valid
+    print('validating bounding box')
+    if (ymin > ymax) | (xmin > xmax):
+        print('invalid bounding box')
+
+    # TODO: check bbox size
+
+    # run R script and save output as random guid
+    print('invoking subsetting algorithm')
+
+    cmd = ['Rscript',
+           'subset_domain.R',
+           uid,
+           str(ymin),
+           str(ymax),
+           str(xmin),
+           str(xmax)]
+    print(' '.join(cmd))
+    p = subprocess.Popen(cmd,
+                         cwd=os.path.join(os.getcwd(), 'r-subsetting'),
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+
+    for line in iter(p.stdout.readline, b''):
+        l = line.decode('utf-8').rstrip()
+        if 'std' in l:
+            l = l.replace('std:', '\n')
+            stdout.append(l)
+    p.stdout.close()
+    return_code = p.wait()
+
+    if not return_code == 0:
+        response = dict(message=
+            'The process call "{}" returned with code {}, an error '
+            'occurred.'.format(list(cmd), return_code),
+                       status='error')
+    else:
+        fpath = os.path.join('/tmp', uid)
+
+        # save the stdout from the subsetting
+        with open(os.path.join(fpath, 'stdout.txt'), 'w') as f:
+            for line in stdout:
+                f.write(line)
+
+        outname = '%s.tar.gz' % uid
+        cmd = ['tar', '-czf', outname, fpath]
+
+        # TODO: This is blocking, move to multiprocessing
+        p = subprocess.Popen(cmd, cwd='/tmp',
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+        for line in iter(p.stdout.readline, b''):
+            print("$ " + line.decode('utf-8').rstrip())
+        p.stdout.close()
+        return_code = p.wait()
+
+        response = dict(message='file created at: /tmp/data/%s' % outname,
+                        filepath='/data/%s' % outname,
+                        status='success')
+    return response
+
+
+
 def subset_by_bbox(uid, llat, llon, ulat, ulon):
 
     # list object to store stdout info for debugging
