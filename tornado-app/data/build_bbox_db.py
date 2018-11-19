@@ -41,7 +41,7 @@ class HucData(object):
 if __name__ == '__main__':
 
 #    path = 'spatial_data/huc12-wgs84/HUC12_US.shp'
-    path = 'spatial_data/huc12-lcc/HUC12_NWMproject.shp'
+    path = 'spatial_data/huc12-lcc/huc12.shp'
     huc_field_name = 'HUC12'
     dbname = 'huc12_bbox.db'
 
@@ -65,7 +65,6 @@ if __name__ == '__main__':
     data = []
     i = 0
     for feat in sf.iterShapeRecords():
-        import pdb; pdb.set_trace()
         hucid = feat.record[idx]
         huclevel = len(hucid)
         llon, llat, ulon, ulat = feat.shape.bbox
