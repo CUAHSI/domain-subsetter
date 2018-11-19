@@ -84,12 +84,12 @@ class LccBBoxFromHUC(RequestHandler):
     """
 
     def get(self):
-        huc = self.get_arg_value('hucID', True)
-        huclevel = len(huc)
-        box = bbox.get_bbox_from_hucs(huclevel, [huc])
-
-        response = dict(hucID=huc,
-                        hucLevel=huclevel,
+        hucs = self.get_arg_value('hucID', True).split(',')
+        huclevels = [len(huc) for huc in hucs]
+        box = bbox.get_bbox_from_hucs(huclevels, hucs)
+    
+        response = dict(hucID=hucs,
+                        hucLevel=huclevels,
                         bbox=box)
 
         self.write(json.dumps(response))
