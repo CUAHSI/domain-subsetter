@@ -4,10 +4,11 @@ $(document).ready(function() {
 
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
-    Map.hucbounds = null;
+    Map.hucbounds = [];
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
+    Map.bbox = [];
 
     // add a button to display select mode
     var areaSelect = L.areaSelect({width:150, height:150});
@@ -91,7 +92,6 @@ function clickHandler(e) {
     // exit early if not zoomed in enough
     var zoom = e.target.getZoom();
     if (zoom < 11){
-        Map.hucbounds = null;
         return
     }
 
@@ -114,8 +114,20 @@ function clickHandler(e) {
     var ajax = $.ajax({
         url: URL,
         success: function (response) {
-            bounds = parseWfsXML(response);
-            Map.hucbounds = bounds;
+            res = parseWfsXML(response);
+
+            // toggle bounding box
+            if (res.hucid in Map.hucbounds)
+            {
+                // remove huc from list if it's already selected
+                delete Map.hucbounds[res.hucid];
+            }
+            else{
+                // add huc to list of it's not selected
+                Map.hucbounds[res.hucid] = res.bbox;
+            }
+            // update the boundaries of the global bbox
+            updateMapBBox();
         },
         error: function (response) {
             alert('An error was encountered while retrieving shape metadata.');
@@ -123,6 +135,67 @@ function clickHandler(e) {
 
     });
 }
+
+function updateMapBBox() {
+
+    // calculate global boundary
+    xmin = 999999;
+    ymin = 999999;
+    xmax = -999999;
+    ymax = -999999;
+    for (var key in Map.hucbounds) {
+        bounds = Map.hucbounds[key].getBounds();
+        if (bounds.getWest() < xmin) {
+            xmin = bounds.getWest();
+        }
+        if (bounds.getSouth() < ymin) {
+            ymin = bounds.getSouth();
+        }
+        if (bounds.getEast() > xmax) {
+            xmax = bounds.getEast();
+        }
+        if (bounds.getNorth() > ymax) {
+            ymax = bounds.getNorth();
+        }
+    }
+
+    // save the map bbox
+    Map.bbox = [xmin, ymin, xmax, ymax];
+        
+    // remove the bbox layer if it exists
+    if ('BBOX' in Map.huclayers) {
+        // remove the polygon overlay 
+        Map.huclayers['BBOX'].clearLayers();
+        delete Map.huclayers['BBOX'];
+    }
+
+    // redraw the bbox layer with new coordinates
+    var coords = [[[xmin, ymin],
+                   [xmin, ymax],
+                   [xmax, ymax],
+                   [xmax, ymin],
+                   [xmin, ymin]]];
+    var polygon = [{
+        "type": "Polygon",
+        "coordinates": coords
+    }];
+
+    bbox_style = {
+        fillColor: 'black',
+        weight: 2,
+        opacity: 1,
+        color: 'green',
+        fillOpacity: 0.01,
+        lineJoin: 'round'
+    };
+    var json_polygon = L.geoJSON(polygon, {style: bbox_style });
+    
+    // save the layer
+    Map.huclayers['BBOX'] = json_polygon;
+    
+    json_polygon.addTo(Map.map);
+}
+
 
 function togglePolygon(hucID, ptlist){
 
@@ -190,7 +263,10 @@ function parseWfsXML(xml){
         }
     }
     var bounds =  L.rectangle([  [ulat, ulon], [llat,llon]]);
-    return bounds
+    var r = [];
+    r['hucid'] = hucID;
+    r['bbox'] = bounds;
+    return r
     
 }
 
