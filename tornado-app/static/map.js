@@ -82,10 +82,40 @@ $(document).ready(function() {
 
     map.on("click", function(e){
         clickHandler(e);
+        
+        
     });
 
 });
 
+function getLccBounds(hucids) {
+
+    hucs = [];
+    for (key in Map.hucbounds){
+        hucs.push(key);
+    }
+    console.log(JSON.stringify(hucs));
+    var ajax = $.ajax({
+        url: 'http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc',
+        type: 'GET',
+        contentType: "text/plain; charset=UTF-8",
+        data: {'hucID' : hucs.join(",")},
+        success: function (response) {
+            // save the calculated bbox in LCC coordinates
+            lcc_bbox = JSON.parse(response).bbox;
+    
+            // add bounding box to input boxes
+            $('#llon').val(lcc_bbox[0]);
+            $('#llat').val(lcc_bbox[1]);
+            $('#ulon').val(lcc_bbox[2]);
+            $('#ulat').val(lcc_bbox[3]);
+        },
+        error: function(error) {
+            console.log('error querying bounding box');
+        }
+    });
+
+}
 
 function clickHandler(e) {
 
@@ -128,6 +158,10 @@ function clickHandler(e) {
             }
             // update the boundaries of the global bbox
             updateMapBBox();
+
+            // retrieve the LCC coordinate for this bounding box
+            getLccBounds();
+
         },
         error: function (response) {
             alert('An error was encountered while retrieving shape metadata.');
@@ -161,6 +195,7 @@ function updateMapBBox() {
 
     // save the map bbox
     Map.bbox = [xmin, ymin, xmax, ymax];
+    
         
     // remove the bbox layer if it exists
     if ('BBOX' in Map.huclayers) {
@@ -270,16 +305,34 @@ function parseWfsXML(xml){
     
 }
 
+//function set_bbox_fields() {
+//
+//    var xmin = Map.bbox[0];
+//    var ymin = Map.bbox[1];
+//    var xmax = Map.bbox[2];
+//    var ymax = Map.bbox[3];
+//
+//    // add bounding box to input boxes
+//    $('#llat').val(ymin);
+//    $('#ulat').val(ymax);
+//    $('#llon').val(xmin);
+//    $('#ulon').val(xmax);
+//
+//}
 
 function update_bbox(bounds) {
     elements = $("div[class^='leaflet-areaselect']");
     if (elements[0].style.display != 'none') {
 
         // calculate min and max lat and lon
-        llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-        ulat = Math.max(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-        llon = Math.min(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
-        ulon = Math.max(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+        llat = Math.min(bounds.getSouthWest().lat,
+                        bounds.getNorthEast().lat);
+        ulat = Math.max(bounds.getSouthWest().lat,
+                        bounds.getNorthEast().lat);
+        llon = Math.min(bounds.getSouthWest().lng,
+                        bounds.getNorthEast().lng);
+        ulon = Math.max(bounds.getSouthWest().lng,
+                        bounds.getNorthEast().lng);
     
         // add bounding box to input boxes
         $('#llat').val(llat);
@@ -307,7 +360,8 @@ function toggle_select_mode(areaSelect){
 }
 
 function check_area(bounds){
-    
+
+    // todo: turn the bounding box red and deactivate the submit button.
     
     // calculate min and max lat and lon
     llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
