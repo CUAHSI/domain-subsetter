@@ -6,7 +6,7 @@ import subprocess
 import transform
 
 
-def subset_nwm_122(uid, xmin, ymin, xmax, ymax):
+def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
 
     # list object to store stdout info for debugging
     stdout = []
@@ -51,6 +51,7 @@ def subset_nwm_122(uid, xmin, ymin, xmax, ymax):
         if 'std' in l:
             l = l.replace('std:', '\n')
             stdout.append(l)
+        print(l, flush=True)
     p.stdout.close()
     return_code = p.wait()
 

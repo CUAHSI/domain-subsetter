@@ -63,9 +63,21 @@ class BackgroundWorker(object):
             except Exception as e:
                 print('job failed: %s' % e)
                 item['state'] = 'failed'
-                item['result'] = None
+                item['result'] = dict(filepath='')
                 self.jobs[uid] = item
 
-            self.sql.save_job(uid,
+            try:
+                self.sql.save_job(uid,
                               item['state'],
                               item['result']['filepath'])
+            except:
+                self.sql.save_job(uid,
+                              item['state'],
+                              '')
+
+
+
+
+
+
+

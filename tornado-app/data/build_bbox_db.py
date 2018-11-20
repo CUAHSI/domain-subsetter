@@ -41,7 +41,7 @@ class HucData(object):
 if __name__ == '__main__':
 
 #    path = 'spatial_data/huc12-wgs84/HUC12_US.shp'
-    path = 'spatial_data/huc12-lcc/huc12.shp'
+    path = 'spatial_data/huc12-slcc/HUC12_NWM_SLCC_new.shp'
     huc_field_name = 'HUC12'
     dbname = 'huc12_bbox.db'
 
