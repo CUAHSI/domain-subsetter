@@ -8,17 +8,28 @@ $(document).ready(function() {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
-    Map.bbox = [];
+    Map.bbox = [9999999,
+                9999999,
+                -9999999,
+                -9999999];
 
-    // add a button to display select mode
-    var areaSelect = L.areaSelect({width:150, height:150});
-    areaSelect.addTo(map);
-    Map.areaSelect = areaSelect;
 
-    toggle_select_mode(areaSelect);
-    L.easyButton('fa-map-o', function(btn, lmap){
-        toggle_select_mode(areaSelect);
-    }).addTo( map );
+    update_lcc_bounds(["99999999",
+                       "99999999",
+                       "-99999999",
+                       "-99999999"]);
+    toggle_submit_button();
+    
+
+//    // add a button to display select mode
+//    var areaSelect = L.areaSelect({width:150, height:150});
+//    areaSelect.addTo(map);
+//    Map.areaSelect = areaSelect;
+
+//    toggle_select_mode(areaSelect);
+//    L.easyButton('fa-map-o', function(btn, lmap){
+//        toggle_select_mode(areaSelect);
+//    }).addTo( map );
 
     // Initial OSM tile layer
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
@@ -74,11 +85,11 @@ $(document).ready(function() {
         maxZoom:19
     }).addTo(map);
 
-    areaSelect.on("change", function(){
-        var bounds = this.getBounds();
-	    update_bbox(bounds);
-	    check_area(bounds);
-    });
+//    areaSelect.on("change", function(){
+//        var bounds = this.getBounds();
+//	    update_bbox(bounds);
+//	    check_area(bounds);
+//    });
 
     map.on("click", function(e){
         clickHandler(e);
@@ -103,12 +114,12 @@ function getLccBounds(hucids) {
         success: function (response) {
             // save the calculated bbox in LCC coordinates
             lcc_bbox = JSON.parse(response).bbox;
-    
-            // add bounding box to input boxes
-            $('#llon').val(lcc_bbox[0]);
-            $('#llat').val(lcc_bbox[1]);
-            $('#ulon').val(lcc_bbox[2]);
-            $('#ulat').val(lcc_bbox[3]);
+            
+            update_lcc_bounds(lcc_bbox);
+
+            // update the status of the submit button based on 
+            // the bbox response
+            toggle_submit_button();
         },
         error: function(error) {
             console.log('error querying bounding box');
@@ -173,10 +184,10 @@ function clickHandler(e) {
 function updateMapBBox() {
 
     // calculate global boundary
-    xmin = 999999;
-    ymin = 999999;
-    xmax = -999999;
-    ymax = -999999;
+    xmin = 9999999;
+    ymin = 9999999;
+    xmax = -9999999;
+    ymax = -9999999;
     for (var key in Map.hucbounds) {
         bounds = Map.hucbounds[key].getBounds();
         if (bounds.getWest() < xmin) {
@@ -305,59 +316,74 @@ function parseWfsXML(xml){
     
 }
 
-//function set_bbox_fields() {
+
+//function update_bbox(bounds) {
+//    elements = $("div[class^='leaflet-areaselect']");
+//    if (elements[0].style.display != 'none') {
 //
-//    var xmin = Map.bbox[0];
-//    var ymin = Map.bbox[1];
-//    var xmax = Map.bbox[2];
-//    var ymax = Map.bbox[3];
-//
-//    // add bounding box to input boxes
-//    $('#llat').val(ymin);
-//    $('#ulat').val(ymax);
-//    $('#llon').val(xmin);
-//    $('#ulon').val(xmax);
-//
+//        // calculate min and max lat and lon
+//        llat = Math.min(bounds.getSouthWest().lat,
+//                        bounds.getNorthEast().lat);
+//        ulat = Math.max(bounds.getSouthWest().lat,
+//                        bounds.getNorthEast().lat);
+//        llon = Math.min(bounds.getSouthWest().lng,
+//                        bounds.getNorthEast().lng);
+//        ulon = Math.max(bounds.getSouthWest().lng,
+//                        bounds.getNorthEast().lng);
+//    
+//        // add bounding box to input boxes
+//        $('#llat').val(llat);
+//        $('#ulat').val(ulat);
+//        $('#llon').val(llon);
+//        $('#ulon').val(ulon);
+//    }
 //}
 
-function update_bbox(bounds) {
-    elements = $("div[class^='leaflet-areaselect']");
-    if (elements[0].style.display != 'none') {
+function update_lcc_bounds(lcc_bbox) {
 
-        // calculate min and max lat and lon
-        llat = Math.min(bounds.getSouthWest().lat,
-                        bounds.getNorthEast().lat);
-        ulat = Math.max(bounds.getSouthWest().lat,
-                        bounds.getNorthEast().lat);
-        llon = Math.min(bounds.getSouthWest().lng,
-                        bounds.getNorthEast().lng);
-        ulon = Math.max(bounds.getSouthWest().lng,
-                        bounds.getNorthEast().lng);
-    
-        // add bounding box to input boxes
-        $('#llat').val(llat);
-        $('#ulat').val(ulat);
-        $('#llon').val(llon);
-        $('#ulon').val(ulon);
+     // add bounding box to input boxes
+     $('#llon').val(lcc_bbox[0]);
+     $('#llat').val(lcc_bbox[1]);
+     $('#ulon').val(lcc_bbox[2]);
+     $('#ulat').val(lcc_bbox[3]);
+}
+
+function get_lcc_bounds() {
+    bnds = [$('#llon').val(),
+            $('#llat').val(),
+            $('#ulon').val(),
+            $('#ulat').val()];
+    return bnds;
+}
+
+function toggle_submit_button(){
+
+    bnds = get_lcc_bounds();
+    if ((bnds.includes("99999999") || bnds.includes("-99999999"))) { 
+        // disable submit button bc nothing is selected
+	    $('#btn-subset-submit').prop( "disabled", true );
+    } else {
+        // enable submit button 
+	    $('#btn-subset-submit').prop( "disabled", false );
     }
 }
 
-function toggle_select_mode(areaSelect){
-    elements = $("div[class^='leaflet-areaselect']");
-    if (elements[0].style.display == 'none') {
-        // enable select mode
-        elements[0].style.display = '';
-        
-        var bounds = areaSelect.getBounds();
-	check_area(bounds);
-        update_bbox(bounds);
-    }
-    else {
-        // disable select mode
-	elements[0].style.display = 'none';
-	$('#btn-subset-submit').prop( "disabled", true );
-    }
-}
+//function toggle_select_mode(areaSelect){
+//    elements = $("div[class^='leaflet-areaselect']");
+//    if (elements[0].style.display == 'none') {
+//        // enable select mode
+//        elements[0].style.display = '';
+//        
+//        var bounds = areaSelect.getBounds();
+//	check_area(bounds);
+//        update_bbox(bounds);
+//    }
+//    else {
+//        // disable select mode
+//	elements[0].style.display = 'none';
+//	$('#btn-subset-submit').prop( "disabled", true );
+//    }
+//}
 
 function check_area(bounds){
 
