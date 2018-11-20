@@ -22,9 +22,6 @@
       <!-- custom styling -->
             <link rel="stylesheet" type="text/css" href='{{ static_url("style.css") }}'/> 
 
-            <!-- proj4leaflet libraries -->
-            <script src='{{ static_url("proj4.js") }}'></script>
-            <script src='{{ static_url("proj4leaflet.js") }}'></script>
 
 
    </head>
@@ -47,28 +44,6 @@
 
 
     <main class="mdl-layout__content">
-
-    <!-- 
-    <div class='mdl-grid'>
-        <div class='mdl-cell mdl-cell--1-offset mdl-cell--6-col'>
-        <form action="{{ request.path }}" method="post">
-           <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-           <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
-	        <span class="mdl-radio__label">HUC-12</span>
-	    </label>
-           <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
-	       <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">
-	        <span class="mdl-radio__label">Bounding Box</span>
-	    </label>
-            <input type="text" name="hucsearch" id="hucsearch" style="min-width:200px;margin-left:10px;margin-right:10px"/>
-
-            <button id='btn-search' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">Search</button>
-         {% module xsrf_form_html() %}
-        </form>
-	</div>
-    </div>
-    -->
-
 
         <div class='map' id="map"></div>
 

@@ -75,7 +75,7 @@ class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
                         msg='ERROR: Missing required input')
 
         query = 'llat=%s&llon=%s&ulat=%s&ulon=%s' % (llat, llon, ulat, ulon)
-        self.redirect('subset?%s' % query)
+        self.redirect('nwm/v1_2_2/subset?%s' % query)
 
 
 class LccBBoxFromHUC(RequestHandler):
@@ -145,7 +145,7 @@ class SubsetNWM122(RequestHandler):
         uid = executor.add(uid, subset.subset_nwm_122, *args)
 
         # redirect to status page for this job
-        self.redirect('status/%s' % uid)
+        self.redirect('/jobs/%s' % uid)
 
 
 class Subset(RequestHandler):
