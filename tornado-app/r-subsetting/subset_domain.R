@@ -388,8 +388,6 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
        keepIdsLink <- unique(keepIdsLink$link)
     
        keepIds <- unique(c(keepIdsPoly, keepIdsLink))
-       cat('keepIds: ', keepIds)
-       cat('\n')
     
        # SPATIAL WEIGHT
        cat('\n-> process spatial weights...')
