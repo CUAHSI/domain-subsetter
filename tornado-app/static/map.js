@@ -99,12 +99,14 @@ $(document).ready(function() {
 
 });
 
-function getLccBounds(hucids) {
 
-    hucs = [];
-    for (key in Map.hucbounds){
-        hucs.push(key);
-    }
+/**
+* Queries the global bounding box for a list of hucs ids
+* @param {array} hucids - HUC ids to query the bounding box for
+* @returns {array} - bounding box for all hucID in the Spherical Lambert Confromal Conic SRS
+*/
+function getLccBounds(hucs) {
+
     console.log(JSON.stringify(hucs));
     var ajax = $.ajax({
         url: 'http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc',
@@ -112,9 +114,11 @@ function getLccBounds(hucids) {
         contentType: "text/plain; charset=UTF-8",
         data: {'hucID' : hucs.join(",")},
         success: function (response) {
+
             // save the calculated bbox in LCC coordinates
             lcc_bbox = JSON.parse(response).bbox;
-            
+
+            // update the global lcc bbox that will be used to submit the subsetting job
             update_lcc_bounds(lcc_bbox);
 
             // update the status of the submit button based on 
@@ -171,7 +175,11 @@ function clickHandler(e) {
             updateMapBBox();
 
             // retrieve the LCC coordinate for this bounding box
-            getLccBounds();
+            hucs = [];
+            for (key in Map.hucbounds){
+                hucs.push(key);
+            }
+            getLccBounds(hucs);
 
         },
         error: function (response) {
@@ -181,6 +189,9 @@ function clickHandler(e) {
     });
 }
 
+/**
+* Calculates and draws the bounding box on the map.
+*/
 function updateMapBBox() {
 
     // calculate global boundary
@@ -226,6 +237,10 @@ function updateMapBBox() {
         "coordinates": coords
     }];
 
+    // todo: add function to validate bbox and return back styling
+    // todo: create bbox validation function
+    // todo: add bbox check to toggle submit function
+    //
     bbox_style = {
         fillColor: 'black',
         weight: 2,
@@ -243,6 +258,11 @@ function updateMapBBox() {
 }
 
 
+/**
+* Toggles HUC boundaries on the map, on/off.
+* @param {string} hucID - ID of the huc to toggle
+* @param {array} ptlist - vertices of the HUC polygon
+*/
 function togglePolygon(hucID, ptlist){
 
     if (hucID in Map.huclayers) {
@@ -273,6 +293,12 @@ function togglePolygon(hucID, ptlist){
 
 }
 
+
+/**
+* Parses XML returned from a web feature service
+* @param {object} xml - xml response from WFS service.
+* @returns {object} - ID and bounding box rectangle of the HUC polygon
+*/
 function parseWfsXML(xml){
     var data = xml.getElementsByTagName('wfs:member')[0].firstElementChild;
 
@@ -317,28 +343,6 @@ function parseWfsXML(xml){
 }
 
 
-//function update_bbox(bounds) {
-//    elements = $("div[class^='leaflet-areaselect']");
-//    if (elements[0].style.display != 'none') {
-//
-//        // calculate min and max lat and lon
-//        llat = Math.min(bounds.getSouthWest().lat,
-//                        bounds.getNorthEast().lat);
-//        ulat = Math.max(bounds.getSouthWest().lat,
-//                        bounds.getNorthEast().lat);
-//        llon = Math.min(bounds.getSouthWest().lng,
-//                        bounds.getNorthEast().lng);
-//        ulon = Math.max(bounds.getSouthWest().lng,
-//                        bounds.getNorthEast().lng);
-//    
-//        // add bounding box to input boxes
-//        $('#llat').val(llat);
-//        $('#ulat').val(ulat);
-//        $('#llon').val(llon);
-//        $('#ulon').val(ulon);
-//    }
-//}
-
 function update_lcc_bounds(lcc_bbox) {
 
      // add bounding box to input boxes
@@ -368,22 +372,6 @@ function toggle_submit_button(){
     }
 }
 
-//function toggle_select_mode(areaSelect){
-//    elements = $("div[class^='leaflet-areaselect']");
-//    if (elements[0].style.display == 'none') {
-//        // enable select mode
-//        elements[0].style.display = '';
-//        
-//        var bounds = areaSelect.getBounds();
-//	check_area(bounds);
-//        update_bbox(bounds);
-//    }
-//    else {
-//        // disable select mode
-//	elements[0].style.display = 'none';
-//	$('#btn-subset-submit').prop( "disabled", true );
-//    }
-//}
 
 function check_area(bounds){
 
