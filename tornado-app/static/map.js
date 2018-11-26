@@ -8,17 +8,19 @@ $(document).ready(function() {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
-    Map.bbox = [9999999,
-                9999999,
-                -9999999,
-                -9999999];
+    Map.bbox = [99999999,
+                99999999,
+                -99999999,
+                -99999999];
 
 
     update_lcc_bounds(["99999999",
                        "99999999",
                        "-99999999",
                        "-99999999"]);
-    toggle_submit_button();
+
+    box = validate_bbox_size()
+    toggle_submit_button(box.is_valid);
     
 
 //    // add a button to display select mode
@@ -121,9 +123,6 @@ function getLccBounds(hucs) {
             // update the global lcc bbox that will be used to submit the subsetting job
             update_lcc_bounds(lcc_bbox);
 
-            // update the status of the submit button based on 
-            // the bbox response
-            toggle_submit_button();
         },
         error: function(error) {
             console.log('error querying bounding box');
@@ -238,23 +237,20 @@ function updateMapBBox() {
     }];
 
     // todo: add function to validate bbox and return back styling
+    // check bbox area bounds
+    bbox = validate_bbox_size();
+
     // todo: create bbox validation function
-    // todo: add bbox check to toggle submit function
-    //
-    bbox_style = {
-        fillColor: 'black',
-        weight: 2,
-        opacity: 1,
-        color: 'green',
-        fillOpacity: 0.01,
-        lineJoin: 'round'
-    };
-    var json_polygon = L.geoJSON(polygon, {style: bbox_style });
+    toggle_submit_button(bbox.is_valid)
+
+    var json_polygon = L.geoJSON(polygon, {style: bbox.style });
     
     // save the layer
     Map.huclayers['BBOX'] = json_polygon;
     
     json_polygon.addTo(Map.map);
+
+    return bbox.is_valid
 }
 
 
@@ -360,50 +356,62 @@ function get_lcc_bounds() {
     return bnds;
 }
 
-function toggle_submit_button(){
+function toggle_submit_button(is_valid){
 
-    bnds = get_lcc_bounds();
-    if ((bnds.includes("99999999") || bnds.includes("-99999999"))) { 
+    if (is_valid) { 
         // disable submit button bc nothing is selected
-	    $('#btn-subset-submit').prop( "disabled", true );
+	    $('#btn-subset-submit').prop( "disabled", false);
     } else {
         // enable submit button 
-	    $('#btn-subset-submit').prop( "disabled", false );
+	    $('#btn-subset-submit').prop( "disabled", true );
     }
 }
 
 
-function check_area(bounds){
+/**
+* Validates that size constraints for the subset bounding box
+* @returns {object} - bounding box style and is_valid flag
+*/
+function validate_bbox_size(){
 
     // todo: turn the bounding box red and deactivate the submit button.
-    
-    // calculate min and max lat and lon
-    llat = Math.min(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-    ulat = Math.max(bounds.getSouthWest().lat, bounds.getNorthEast().lat);
-    llon = Math.min(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
-    ulon = Math.max(bounds.getSouthWest().lng, bounds.getNorthEast().lng);
+    bbox = Map.bbox;
+   
+    londiff = Math.abs(bbox[2] - bbox[0]);
+    latdiff = Math.abs(bbox[3] - bbox[1]);
 
-    var latdiff = Math.abs(ulat - llat);
-    var londiff = Math.abs(ulon - llon);
-    var degarea = latdiff + londiff;
+    sqr_deg = londiff * latdiff;
 
-    if (degarea > 4) {
-	var color = 'red';
-	$('#btn-subset-submit').prop( "disabled", true );
+    console.log(sqr_deg);
+
+    valid = true; 
+    if ((bbox.includes(99999999) || bbox.includes(-99999999))) { 
+        valid = false;
+    }
+
+    if (sqr_deg < 4 && valid) {
+        style = {
+                 fillColor: 'black',
+                 weight: 2,
+                 opacity: 1,
+                 color: 'green',
+                 fillOpacity: 0.01,
+                 lineJoin: 'round'
+        };
+
     } else {
-	var color = 'black';
 
-    	elements = $("div[class^='leaflet-areaselect']");
-        if (elements[0].style.display != 'none') {
-            $('#btn-subset-submit').prop( "disabled", false);
-	}
+        style = {
+                 fillColor: 'black',
+                 weight: 2,
+                 opacity: 1,
+                 color: 'red',
+                 fillOpacity: 0.01,
+                 lineJoin: 'round'
+        };
+        valid = false;
     }
-
-    var layers=$("div[class^='leaflet-areaselect-shade']");
-    for (i = 0; i < layers.length; i++) {
-        layers[i].style.background=color;
-        layers[i].style.opacity=0.4;
-    }
+    return {style:style, is_valid:valid}
 }
 
 
