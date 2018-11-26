@@ -145,7 +145,7 @@ class SubsetNWM122(RequestHandler):
         uid = executor.add(uid, subset.subset_nwm_122, *args)
 
         # redirect to status page for this job
-        self.redirect('/jobs/%s' % uid)
+        self.redirect('/status/%s' % uid)
 
 
 class Subset(RequestHandler):
@@ -168,21 +168,21 @@ class Subset(RequestHandler):
 
         uid = executor.add(uid, subset.subset_by_bbox, *args)
                      
-        self.redirect('status')
+        self.redirect('status/%s' % uid)
 
 
 class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
 
-        http_client = AsyncHTTPClient()
-        host_url = "{protocol}://{host}".format(**vars(self.request))
-        url = host_url + '/jobs/%s' % jobid
-        response = yield http_client.fetch(url)
-        data = json.loads(response.body)
-        print(data)
+#        http_client = AsyncHTTPClient()
+#        host_url = "{protocol}://{host}".format(**vars(self.request))
+#        url = host_url + '/jobs/%s' % jobid
+#        response = yield http_client.fetch(url)
+#        data = json.loads(response.body)
+#        print(data)
 
-        self.render('status.html', job=data)
+        self.render('status.html')
 
 
 class Job(RequestHandler):
@@ -211,6 +211,9 @@ class Job(RequestHandler):
     @tornado.web.asynchronous
     def get_job_by_id(self, jobid):
         response = None
+
+        # todo: remove this loop and replace with a sql query
+        # using a specific GUID.
         jobs = sql.get_jobs()
         for job in jobs:
             if jobid == job[0]:
@@ -221,7 +224,7 @@ class Job(RequestHandler):
                 continue
         if response is None:
             response = dict(message='Job Not Found',
-                            status='Error')
+                            status='error')
 
         self.write(json.dumps(response))
         self.finish()
