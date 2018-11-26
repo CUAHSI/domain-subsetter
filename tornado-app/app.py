@@ -20,7 +20,8 @@ class Application(tornado.web.Application):
             (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
             (r"/jobs", handlers.Job),
             (r"/jobs/([a-f0-9]{32})", handlers.Job),
-            (r"/status", handlers.Status),
+            (r"/admin/status", handlers.Status),
+            (r"/status/([a-f0-9]{32})", handlers.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": '/tmp'}),
         ]

@@ -67,6 +67,15 @@ table.coords input.submit {
   color: rgba(0,0,0,87);
 }
 
+.mdl-layout-title {
+    padding-bottom: 10pt;
+}
+
+.suez-font {
+    font-family: 'Suez One', serif;
+    font-size: 24pt;
+}
+
 .map {
     height: 75vh;
     border: 1px solid #AAA;
@@ -85,3 +94,16 @@ table.coords input.submit {
   width: 75px; 
 }
 
+div.progress {
+
+  background: url("./earth-loading.gif") center / cover;
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+}

@@ -177,11 +177,12 @@ class Status(RequestHandler):
 
         http_client = AsyncHTTPClient()
         host_url = "{protocol}://{host}".format(**vars(self.request))
-        url = host_url + '/jobs'
+        url = host_url + '/jobs/%s' % jobid
         response = yield http_client.fetch(url)
         data = json.loads(response.body)
+        print(data)
 
-        self.render('status.html', jobs=data)
+        self.render('status.html', job=data)
 
 
 class Job(RequestHandler):
