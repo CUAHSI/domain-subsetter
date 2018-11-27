@@ -14,22 +14,10 @@
     </div>
 
 
-    
-     {#
-     <table style="width:100%">
-         <tr>
-	     <th> JobID </th>
-	     <th> Job Status </th>
-	     <th> Output Url </th>
-         <tr>
-	     <td>{{ job['id'] }}</td>
-	     <td>{{ job['status'] }}</td>
-	     {% if job['file'] != None %}
-    	         <td><a href="{{ job['file'] }}">{{ job['file'] }}</a></td>
-	     {% else %}
-    	         <td> --- </td>
-       {% end %}
-     </table>
-     #}
+
+    <div id=results style="display:none;">
+        <h3>Your data can be downloaded using the following URL: </h3>
+	 <a id=file href=''></p>
+ </div>
      </body>
  </html>
