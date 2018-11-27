@@ -174,15 +174,18 @@ class Subset(RequestHandler):
 class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
-
-#        http_client = AsyncHTTPClient()
-#        host_url = "{protocol}://{host}".format(**vars(self.request))
-#        url = host_url + '/jobs/%s' % jobid
-#        response = yield http_client.fetch(url)
-#        data = json.loads(response.body)
-#        print(data)
+        if jobid is None:
+            http_client = AsyncHTTPClient()
+            host_url = "{protocol}://{host}".format(**vars(self.request))
+            url = host_url + '/jobs'
+            response = yield http_client.fetch(url)
+            data = json.loads(response.body)
+            self.render('admin_status.html', jobs=data) 
 
         self.render('status.html')
+
+#class AdminStatus(RequestHandler):
+#    @gen.coroutine
 
 
 class Job(RequestHandler):
