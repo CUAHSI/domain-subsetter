@@ -26,17 +26,10 @@
 
 /* Title Style */
 .mdl-layout-title {
-<<<<<<< HEAD
-    padding-bottom: 10pt;
-    text-align: center;
-}
-
-=======
     padding: 0px 0px 15px 20px;
 }
 
 /* Page Fonts */
->>>>>>> 9c975a6463830b3442bd1d27ad634c28578d8790
 .roboto-font {
     font-family: 'Roboto', sans-serif;
     font-size: 24pt;
