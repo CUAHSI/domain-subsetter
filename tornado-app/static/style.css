@@ -69,11 +69,13 @@ table.coords input.submit {
 
 .mdl-layout-title {
     padding-bottom: 10pt;
+    text-align: center;
 }
 
-.suez-font {
-    font-family: 'Suez One', serif;
+.roboto-font {
+    font-family: 'Roboto', sans-serif;
     font-size: 24pt;
+    font-weight: bold;
 }
 
 .map {
