@@ -79,8 +79,9 @@ table.coords input.submit {
   color: rgba(0,0,0,87);
 }
 
+/* Title Style */
 .mdl-layout-title {
-    padding-bottom: 10pt;
+    padding: 0px 0px 15px 20px;
 }
 
 .suez-font {
