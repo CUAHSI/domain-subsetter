@@ -76,6 +76,12 @@ table.coords input.submit {
     font-size: 24pt;
 }
 
+.roboto-font {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24pt;
+    font-weight: bold;
+}
+
 .map {
     height: 75vh;
     border: 1px solid #AAA;
