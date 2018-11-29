@@ -462,22 +462,10 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     		"done"),
     		fileConn)
     close(fileConn)
-    
-    ncksCmd <- paste0("ncks -d ncl0,", geo_s-1, ",", geo_n-1, " -d ncl1,", geo_w-1, ",", geo_e-1, " -d ncl2,", geo_s-1, ",", geo_n-1, " -d ncl3,", geo_w-1, ",", geo_e-1, " -d ncl4,", geo_s-1, ",", geo_n-1, " -d ncl5,", geo_w-1, ",", geo_e-1, " -d ncl6,", geo_s-1, ",", geo_n-1, " -d ncl7,", geo_w-1, ",", geo_e-1, " -d ncl8,", geo_s-1, ",", geo_n-1, " -d ncl9,", geo_w-1, ",", geo_e-1, " -d ncl10,", geo_s-1, ",", geo_n-1, " -d ncl11,", geo_w-1, ",", geo_e-1, " -d ncl12,", geo_s-1, ",", geo_n-1, " -d ncl13,", geo_w-1, ",", geo_e-1, " -d ncl14,", geo_s-1, ",", geo_n-1, " -d ncl15,", geo_w-1, ",", geo_e-1, " ${i} ${NEWFORCPATH}/${i##*/}")
-    fileConn <- file(paste0(subScriptFile, "_NWM_REALTIME"))
-    writeLines(c("#!/bin/bash",
-                    "OLDFORCPATH='PATH_TO_OLD_FORCING_DATA_FOLDER'",
-                    "NEWFORCPATH='PATH_TO_NEW_FORCING_DATA_FOLDER'",
-                    "for i in `ls $OLDFORCPATH`; do",
-                    "echo ${i##*/}",
-                    ncksCmd,
-                    "done"),
-                    fileConn)
-    close(fileConn)
-    
+        
     # copy this script to the myPath dir, so the user haev from what files this cutout has been generated, and what are the options.
     
-    file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
+    # file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
 
     # copy in README
 
