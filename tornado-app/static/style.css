@@ -1,59 +1,4 @@
-
-/* Styling for Jobs table */
-/*
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-	width: 100%;
-}
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-tr:nth-child(even) {
-	background-color: #dddddd;
-}
-*/
-
-/* Styling for coordinates table */
-/*
-table.coords {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 90%;
-}
-table.coords td {
-    border: 0px;
-    text-align: left;
-    padding: 0px;
-}
-table.coords td:first-child {
-    text-align: right;
-    padding: 0px 10px 0px 0px;
-    font-weight: bold;
-}
-table.coords tr:nth-child(even) {
-    background-color: #ffffff;
-}
-table.coords th {
-    text-align: center;
-    border: 0px;
-}
-
-table.coords input {
-    width: 99%;
-    font-size: large;
-}
-table.coords input.submit {
-    width: 50%;
-    font-size: large;
-
-}
-*/
-
-
-
+/* Header Styling */
 .mdl-layout__header-row{
   background: url("./blue-smoke.jpg") center / cover;
   padding: 60px;
@@ -69,11 +14,11 @@ table.coords input.submit {
   height: 60px;
   width: 60px;
   }
+
 .mdl-layout__drawer-button .material-icons {
   font-size: 40px;
   padding: 24px 24px 0px 0px;
 }
-
 
 .mdl-layout__header-row .mdl-navigation__link{
   color: rgba(0,0,0,87);
@@ -84,17 +29,14 @@ table.coords input.submit {
     padding: 0px 0px 15px 20px;
 }
 
-.suez-font {
-    font-family: 'Suez One', serif;
-    font-size: 24pt;
-}
-
+/* Page Fonts */
 .roboto-font {
     font-family: 'Roboto', sans-serif;
     font-size: 24pt;
     font-weight: bold;
 }
 
+/* Map */
 .map {
     height: 75vh;
     border: 1px solid #AAA;
@@ -102,7 +44,7 @@ table.coords input.submit {
     margin:50px 50px 5px 50px;
 }
 
-
+/* Beta Logo */
 #beta-tag {
   background: url("./beta_tag.png") center / cover;
   position: absolute; 
@@ -113,6 +55,7 @@ table.coords input.submit {
   width: 75px; 
 }
 
+/* Status Logo */
 div.progress {
 
   background: url("./earth-loading.gif") center / cover;
