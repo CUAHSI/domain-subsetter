@@ -53,7 +53,7 @@ $(document).ready(function() {
 
     // HUC 2 Layer
     var huc2 = L.tileLayer.wms(url, {
-        layers: 3,
+        layers: 4,
         transparent: 'true',
         format: 'image/png',
         minZoom:0,
@@ -62,30 +62,40 @@ $(document).ready(function() {
     
     // HUC 4 Layer
     var huc4 = L.tileLayer.wms(url, {
-        layers: 2,
+        layers: 3,
         transparent: 'true',
         format: 'image/png',
         minZoom:6,
         maxZoom:10
+    }).addTo(map);
+    
+//    // HUC 8 Layer
+//    var huc8 = L.tileLayer.wms(url, {
+//        layers: 2,
+//        transparent: 'true',
+//        format: 'image/png',
+//        minZoom:6,
+//        maxZoom:10
+//    }).addTo(map);
+
+    // HUC 12 Layer
+    var huc12 = L.tileLayer.wms(url, {
+        layers: 0,
+        transparent: 'true',
+        format: 'image/png',
+        minZoom:10,
+        maxZoom:19
     }).addTo(map);
 
     // HUC 10 Layer
     var huc10 = L.tileLayer.wms(url, {
         layers: 1,
 	    transparent: 'true',
-    	format: 'image/png',
+   	format: 'image/png',
     	minZoom:9,
     	maxZoom:14
     }).addTo(map);
   
-    // HUC 12 Layer
-    var huc12 = L.tileLayer.wms(url, {
-        layers: 0,
-        transparent: 'true',
-        format: 'image/png',
-        minZoom:11,
-        maxZoom:19
-    }).addTo(map);
 
 //    areaSelect.on("change", function(){
 //        var bounds = this.getBounds();
