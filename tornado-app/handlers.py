@@ -174,8 +174,8 @@ class Subset(RequestHandler):
 class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
-        if jobid is None:
-            http_client = AsyncHTTPClient()
+        if jobid is none:
+            http_client = asynchttpclient()
             host_url = "{protocol}://{host}".format(**vars(self.request))
             url = host_url + '/jobs'
             response = yield http_client.fetch(url)
@@ -238,3 +238,16 @@ class Job(RequestHandler):
             return host_url + relative_file_path
         return None
 
+
+class About(RequestHandler):
+    @gen.coroutine
+    def get(self, jobid=None):
+        self.write('ABOUT')
+        #self.render('about.html')
+
+
+class Help(RequestHandler):
+    @gen.coroutine
+    def get(self, jobid=None):
+        self.write('HELP')
+        #self.render('help.html')
