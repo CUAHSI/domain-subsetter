@@ -58,10 +58,22 @@ table.coords input.submit {
   background: url("./blue-smoke.jpg") center / cover;
   padding: 60px;
 }
-.body-layout .mdl-layout__header,
-.body-layout .mdl-layout__drawer-button {
+
+.body-layout .mdl-layout__header {
   color: rgba(0,0,0,87);
   }
+
+ /* Menu Button Styling */
+.mdl-layout__drawer-button {
+  color: rgba(0,0,0,87);
+  height: 60px;
+  width: 60px;
+  }
+.mdl-layout__drawer-button .material-icons {
+  font-size: 40px;
+  padding: 24px 24px 0px 0px;
+}
+
 
 .mdl-layout__header-row .mdl-navigation__link{
   color: rgba(0,0,0,87);
