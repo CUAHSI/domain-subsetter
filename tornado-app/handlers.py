@@ -255,3 +255,8 @@ class Api(RequestHandler):
     @gen.coroutine
     def get(self):
         self.render('api.html')
+
+class GettingStarted(RequestHandler):
+    @gen.coroutine
+    def get(self):
+        self.render('getting-started.html')
