@@ -30,8 +30,11 @@
 }
 
 /* Page Fonts */
-.roboto-font {
+body {
     font-family: 'Roboto', sans-serif;
+}
+
+.title-font {
     font-size: 24pt;
     font-weight: bold;
 }
