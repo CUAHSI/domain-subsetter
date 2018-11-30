@@ -1,15 +1,8 @@
-<p>#Help Page</p>
-<p>##Additional Resources Office of Water Prediction (OWP), National Water Model<br />
-<a href="http://water.noaa.gov" class="uri">http://water.noaa.gov</a></p>
-<p>OWP National Water Model Mapping Interface <em>(this is particularly useful to check COMIDs)</em><br />
-<a href="http://water.noaa.gov/map" class="uri">http://water.noaa.gov/map</a></p>
-<p>WRF-Hydro Modeling System<br />
-<a href="https://ral.ucar.edu/projects/wrf_hydro/overview" class="uri">https://ral.ucar.edu/projects/wrf_hydro/overview</a></p>
-<p>NLDAS-2<br />
-The North American Land Data Assimilation System is a quality-controlled, spatially and temporally consistent meteorological dataset with many uses. It is one product that can be used to force a subsetted NWM domain.<br />
-<a href="http://ldas.gsfc.nasa.gov/nldas/" class="uri">http://ldas.gsfc.nasa.gov/nldas/</a></p>
-<p>Meteorological Forcing Regridding scripts for regridding forcing to the WRF-Hydro geogrid <a href="https://ral.ucar.edu/projects/wrf_hydro/regridding-scripts" class="uri">https://ral.ucar.edu/projects/wrf_hydro/regridding-scripts</a></p>
-<p>Forcing Subsetter<br />
-www.drewsforcing.com …</p>
-<p>##Contact and Inquiries For information specific to the CUAHSI Subsetting Tool, you may contact Tony Castronova <a href="mailto:acastronova@cuahsi.org" class="email">acastronova@cuahsi.org</a> or Danielle Tijerina <a href="mailto:dtijerina@cuahsi.org" class="email">dtijerina@cuahsi.org</a>.</p>
-<p>For information specific to WRF-Hydro please go to the [WRF-Hydro Support Page] (https://ral.ucar.edu/projects/wrf_hydro/contact) and contact <a href="mailto:Someone@something.com" class="email">Someone@something.com</a> for questions specifically about the National Water Model.</p>
+
+
+{% extends base.html  %}
+
+<!-- Content Block -->
+{% block content  %}
+    {% include help-gen.html %}
+{% end %}

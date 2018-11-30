@@ -241,13 +241,17 @@ class Job(RequestHandler):
 
 class About(RequestHandler):
     @gen.coroutine
-    def get(self, jobid=None):
-        self.write('ABOUT')
-        #self.render('about.html')
+    def get(self):
+        self.render('about.html')
 
 
 class Help(RequestHandler):
     @gen.coroutine
-    def get(self, jobid=None):
-        self.write('HELP')
-        #self.render('help.html')
+    def get(self):
+        self.render('help.html')
+
+
+class Api(RequestHandler):
+    @gen.coroutine
+    def get(self):
+        self.render('api.html')

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html> 
+   <head> 
+      <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+
+      <!-- Material Design Libraries -->
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+      <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+      <!-- custom styling -->
+            <link rel="stylesheet" type="text/css" href='{{ static_url("style.css") }}'/> 
+
+            <!-- Fonts -->
+            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+
+   </head>
+
+
+<div class="body-layout mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title roboto-font">
+                National Water Model Subsetter
+            </span>
+            <div class="mdl-layout-spacer"></div>
+            <div id="beta-tag"> </div>
+    </header>
+
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Menu</span>
+        <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Map</a>
+            <a class="mdl-navigation__link" href="/about">About</a>
+            <a class="mdl-navigation__link" href="/help">Help</a>
+            <a class="mdl-navigation__link" href="/api">API</a>
+       </nav>
+   </div>
+
+
+    <main class="mdl-layout__content">
+    {% block content %}
+    <!--  This is where page content goes -->
+    {% end %}
+    </main>
+
+
+</div>
+</html>

@@ -26,6 +26,7 @@ class Application(tornado.web.Application):
              {"path": '/tmp'}),
             (r"/about", handlers.About),
             (r"/help", handlers.Help),
+            (r"/api", handlers.Api),
         ]
         settings = {
             "debug":True,
