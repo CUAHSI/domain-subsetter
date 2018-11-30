@@ -174,8 +174,8 @@ class Subset(RequestHandler):
 class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
-        if jobid is none:
-            http_client = asynchttpclient()
+        if jobid is None:
+            http_client = AsyncHttpClient()
             host_url = "{protocol}://{host}".format(**vars(self.request))
             url = host_url + '/jobs'
             response = yield http_client.fetch(url)
