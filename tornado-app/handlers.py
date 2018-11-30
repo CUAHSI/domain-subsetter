@@ -175,7 +175,7 @@ class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
         if jobid is None:
-            http_client = AsyncHttpClient()
+            http_client = AsyncHTTPClient()
             host_url = "{protocol}://{host}".format(**vars(self.request))
             url = host_url + '/jobs'
             response = yield http_client.fetch(url)
@@ -183,9 +183,6 @@ class Status(RequestHandler):
             self.render('admin_status.html', jobs=data) 
 
         self.render('status.html')
-
-#class AdminStatus(RequestHandler):
-#    @gen.coroutine
 
 
 class Job(RequestHandler):
