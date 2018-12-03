@@ -37,7 +37,6 @@ _Gochis, D.J., M. Barlage, A. Dugger, K. FitzGerald, L. Karsten, M. McAllister, 
 3. #####Set the required environmental variables for your machine/environment… this may require some Googling 
 
 
-
 4. #####Configure 
 
 5. #####Compile with nudging turned off  
