@@ -45,7 +45,7 @@ body {
 
 /* Map */
 .map {
-    height: 75vh;
+    height: 67vh;
     border: 1px solid #AAA;
     position: relative;
     margin:50px 50px 5px 50px;
@@ -84,3 +84,12 @@ div.progress {
     background-color: white;
 }
 
+/* footer */
+.mdl-mini-footer {
+    background-color: white;
+    padding: 15px 16px;
+}
+.mdl-mini-footer .mdl-logo img {
+    height: 30px;
+    width: auto;
+}
