@@ -7,8 +7,8 @@ For additional [user support] (https://ral.ucar.edu/projects/wrf_hydro/contact),
 - WRF-Hydro V5 Technical Description:  
 <https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDescription_0.pdf>
 
-- WRF-Hydro Source Code:  
-<https://ral.ucar.edu/projects/wrf_hydro/model-code>>
+- WRF-Hydro Source Code (as of 12/3/2018, use v1.2):  
+<https://github.com/NCAR/wrf_hydro_nwm_public/tags>
 
 - WRF-Hydro Citation and User Guides:  
 <https://ral.ucar.edu/projects/wrf_hydro/technical-description-user-guide>

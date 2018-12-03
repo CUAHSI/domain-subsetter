@@ -10,6 +10,9 @@ OWP National Water Model Mapping Interface _(this is particularly useful to chec
 WRF-Hydro Modeling System  
 <https://ral.ucar.edu/projects/wrf_hydro/overview>
 
+WRF-Hydro and NWM Source Code (as of 12/3/2018, use v1.2)
+<https://github.com/NCAR/wrf_hydro_nwm_public/tags>
+
 NLDAS-2  
 The North American Land Data Assimilation System is a quality-controlled, spatially and temporally consistent meteorological dataset with many uses. It is one product that can be used to force a subsetted NWM domain.  
 <http://ldas.gsfc.nasa.gov/nldas/>
