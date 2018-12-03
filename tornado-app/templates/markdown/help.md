@@ -1,6 +1,6 @@
-###Help Page
+### Help Page
   
-####Additional Resources
+#### Additional Resources
 Office of Water Prediction (OWP), National Water Model  
 <http://water.noaa.gov>
 
@@ -23,7 +23,7 @@ Meteorological Forcing Regridding scripts for regridding forcing to the WRF-Hydr
 Forcing Subsetter  
 www.drewsforcing.com …
 
-####Contact and Inquiries 
+#### Contact and Inquiries 
 For information specific to the CUAHSI Subsetting Tool, you may contact Tony Castronova <acastronova@cuahsi.org> or Danielle Tijerina <dtijerina@cuahsi.org>.
 
 For information specific to WRF-Hydro please go to the [WRF-Hydro Support Page](https://ral.ucar.edu/projects/wrf_hydro/contact) and contact <Someone@something.com> for questions specifically about the National Water Model.

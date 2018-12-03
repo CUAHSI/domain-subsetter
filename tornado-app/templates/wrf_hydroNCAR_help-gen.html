@@ -1,33 +1,29 @@
-<p>##WRF-Hydro and NCAR Resources ####This page provides references and brief tips for building WRF-Hydro V5 compatible with the CUAHSI Domain Subsetting Tool: NWM v1.2.</p>
-<p>It should be noted that we do not fully outline how to set up a WRF-Hydro model here and this page intended to give only general advice on the build process in reference to using WRF-Hydro with the CUAHSI NWM subsetting tool. WRF-Hydro is extensively documented by the development team at NCAR and you should refer to the [WRF-Hydro Modeling System website] (https://ral.ucar.edu/projects/wrf_hydro/overview) and the links below for general WRF-Hydro information.<br />
-For additional [user support] (https://ral.ucar.edu/projects/wrf_hydro/contact), please contact <a href="mailto:wrfhydro@ucar.edu" class="email">wrfhydro@ucar.edu</a>.</p>
+<h2 id="wrf-hydro-and-ncar-resources">WRF-Hydro and NCAR Resources</h2>
+<h4 id="this-page-provides-references-and-brief-tips-for-building-wrf-hydro-v5-compatible-with-the-cuahsi-domain-subsetting-tool-nwm-v1.2.">This page provides references and brief tips for building WRF-Hydro V5 compatible with the CUAHSI Domain Subsetting Tool: NWM v1.2.</h4>
+<p>It should be noted that we do not fully outline how to set up a WRF-Hydro model here and this page intended to give only general advice on the build process in reference to using WRF-Hydro with the CUAHSI NWM subsetting tool. WRF-Hydro is extensively documented by the development team at NCAR and you should refer to the [WRF-Hydro Modeling System website] (https://ral.ucar.edu/projects/wrf_hydro/overview) and the links below for general WRF-Hydro information.<br />For additional [user support] (https://ral.ucar.edu/projects/wrf_hydro/contact), please contact <script type="text/javascript">
+<!--
+h='&#x75;&#x63;&#x61;&#114;&#46;&#x65;&#100;&#x75;';a='&#64;';n='&#x77;&#114;&#102;&#104;&#x79;&#100;&#114;&#x6f;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x77;&#114;&#102;&#104;&#x79;&#100;&#114;&#x6f;&#32;&#x61;&#116;&#32;&#x75;&#x63;&#x61;&#114;&#32;&#100;&#x6f;&#116;&#32;&#x65;&#100;&#x75;</noscript>.</p>
 <ul>
-<li><p>WRF-Hydro V5 Technical Description:<br />
-<a href="https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDescription_0.pdf" class="uri">https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDescription_0.pdf</a></p></li>
-<li><p>WRF-Hydro Source Code:<br />
-<a href="https://ral.ucar.edu/projects/wrf_hydro/model-code" class="uri">https://ral.ucar.edu/projects/wrf_hydro/model-code</a>&gt;</p></li>
-<li><p>WRF-Hydro Citation and User Guides:<br />
-<a href="https://ral.ucar.edu/projects/wrf_hydro/technical-description-user-guide" class="uri">https://ral.ucar.edu/projects/wrf_hydro/technical-description-user-guide</a></p></li>
-<li><p>Training Materials:<br />
-<a href="https://ral.ucar.edu/projects/wrf_hydro/training-materials" class="uri">https://ral.ucar.edu/projects/wrf_hydro/training-materials</a></p></li>
-<li><p>The Croton, NY testcase is a good reference for how to compile and run WRF-Hydro:<br />
-<a href="https://ral.ucar.edu/projects/wrf_hydro/testcases" class="uri">https://ral.ucar.edu/projects/wrf_hydro/testcases</a></p></li>
+<li><p>WRF-Hydro V5 Technical Description:<br /><a href="https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDescription_0.pdf">https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDescription_0.pdf</a></p></li>
+<li><p>WRF-Hydro Source Code (as of 12/3/2018, use v1.2):<br /><a href="https://github.com/NCAR/wrf_hydro_nwm_public/tags">https://github.com/NCAR/wrf_hydro_nwm_public/tags</a></p></li>
+<li><p>WRF-Hydro Citation and User Guides:<br /><a href="https://ral.ucar.edu/projects/wrf_hydro/technical-description-user-guide">https://ral.ucar.edu/projects/wrf_hydro/technical-description-user-guide</a></p></li>
+<li><p>Training Materials:<br /><a href="https://ral.ucar.edu/projects/wrf_hydro/training-materials">https://ral.ucar.edu/projects/wrf_hydro/training-materials</a></p></li>
+<li><p>The Croton, NY testcase is a good reference for how to compile and run WRF-Hydro:<br /><a href="https://ral.ucar.edu/projects/wrf_hydro/testcases">https://ral.ucar.edu/projects/wrf_hydro/testcases</a></p></li>
 </ul>
-<p>######WRF-Hydro Citation:<br />
-Until further notice please cite the WRF-Hydro Modeling System V5 as follows:<br />
-<em>Gochis, D.J., M. Barlage, A. Dugger, K. FitzGerald, L. Karsten, M. McAllister, J. McCreight, J. Mills, A. RafieeiNasab, L. Read, K. Sampson, D. Yates, W. Yu, (2018). The WRF-Hydro modeling system technical description, (Version 5.0). NCAR Technical Note. 107 pages. Available online at https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDesc…. Source Code DOI:10.5065/D6J38RBJ</em></p>
-<p>###Basic Model Set-Up:</p>
-<ol type="1">
+<h6 id="wrf-hydro-citation">WRF-Hydro Citation:</h6>
+<p>Until further notice please cite the WRF-Hydro Modeling System V5 as follows:<br /><em>Gochis, D.J., M. Barlage, A. Dugger, K. FitzGerald, L. Karsten, M. McAllister, J. McCreight, J. Mills, A. RafieeiNasab, L. Read, K. Sampson, D. Yates, W. Yu, (2018). The WRF-Hydro modeling system technical description, (Version 5.0). NCAR Technical Note. 107 pages. Available online at https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDesc.... Source Code DOI:10.5065/D6J38RBJ</em></p>
+<h3 id="basic-model-set-up">Basic Model Set-Up:</h3>
+<ol style="list-style-type: decimal">
 <li>#####Reference the following documents:
 <ul>
-<li>“How to Build and Run WRF-Hydro V5 in Standalone Mode”:<br />
-<a href="https://ral.ucar.edu/sites/default/files/public/HowToBuildandRunWRF-HydroV5inStandaloneMode_0.pdf" class="uri">https://ral.ucar.edu/sites/default/files/public/HowToBuildandRunWRF-HydroV5inStandaloneMode_0.pdf</a></li>
-<li>“WRF-Hydro V5 Test Case User Guide”:<br />
-<a href="https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TestCaseUserGuide_4.pdf" class="uri">https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TestCaseUserGuide_4.pdf</a></li>
+<li>“How to Build and Run WRF-Hydro V5 in Standalone Mode”:<br /><a href="https://ral.ucar.edu/sites/default/files/public/HowToBuildandRunWRF-HydroV5inStandaloneMode_0.pdf">https://ral.ucar.edu/sites/default/files/public/HowToBuildandRunWRF-HydroV5inStandaloneMode_0.pdf</a></li>
+<li>“WRF-Hydro V5 Test Case User Guide”:<br /><a href="https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TestCaseUserGuide_4.pdf">https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TestCaseUserGuide_4.pdf</a></li>
 </ul></li>
 <li><p>#####Obtain source code for the latest WRF-Hydro release</p></li>
 <li><p>#####Set the required environmental variables for your machine/environment… this may require some Googling</p></li>
 <li><p>#####Configure</p></li>
-<li><p>#####Compile with nudging turned off<br />
-The CUAHSI Domain Subsetting Tool: NWM v1.2 does not currently support subsetting Nudging files. As such, the model must be compiled using the NoahMP land surface model (LSM) with NUDGING TURNED OFF in the <code>setEnvar.sh</code> script (<code>export WRF_HYDRO_NUDGING=0</code>).</p></li>
+<li><p>#####Compile with nudging turned off<br />The CUAHSI Domain Subsetting Tool: NWM v1.2 does not currently support subsetting Nudging files. As such, the model must be compiled using the NoahMP land surface model (LSM) with NUDGING TURNED OFF in the <code>setEnvar.sh</code> script (<code>export WRF_HYDRO_NUDGING=0</code>).</p></li>
 </ol>
