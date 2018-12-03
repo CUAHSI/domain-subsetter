@@ -27,6 +27,13 @@ class Connect(object):
             results.append(i)
         conn.close()
         return results
+
+    def get_job_by_guid(self, guid):
+        conn, cursor = self.connect()
+        cursor.execute("select * from jobs where guid  = ?", (guid,))
+        res = cursor.fetchall()
+        conn.close()
+        return res
     
     def save_job(self, guid, status, text):
         conn, cursor = self.connect()

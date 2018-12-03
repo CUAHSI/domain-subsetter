@@ -8,6 +8,7 @@ import tornado.auth
 import tornado.web
 import uuid
 import subprocess
+import hashlib
 from urllib.parse import urljoin
 
 import bbox
@@ -135,14 +136,26 @@ class SubsetNWM122(RequestHandler):
         llon = self.get_arg_value('llon', True)
         ulat = self.get_arg_value('ulat', True)
         ulon = self.get_arg_value('ulon', True)
-        uid = uuid.uuid4().hex
-        args = (uid,
-                llat,
-                llon,
-                ulat,
-                ulon)
+       
+        # calculate unique hash based on bbox
+        hasher = hashlib.sha1()
+        hasher.update(str([llon, llat, ulon, ulat]).encode('utf-8'))
+        uid = hasher.hexdigest()
+        
+        # check if this job has been executed previously
+        res = sql.get_job_by_guid(uid)
 
-        uid = executor.add(uid, subset.subset_nwm_122, *args)
+        # submit the job
+        if len(res) == 0:
+
+    #        uid = uuid.uuid4().hex
+            args = (uid,
+                    llat,
+                    llon,
+                    ulat,
+                    ulon)
+    
+            uid = executor.add(uid, subset.subset_nwm_122, *args)
 
         # redirect to status page for this job
         self.redirect('/status/%s' % uid)
@@ -212,8 +225,7 @@ class Job(RequestHandler):
     def get_job_by_id(self, jobid):
         response = None
 
-        # todo: remove this loop and replace with a sql query
-        # using a specific GUID.
+        # todo: remove this loop and replace with a sqldata.get_job_by_guid.
         jobs = sql.get_jobs()
         for job in jobs:
             if jobid == job[0]:
