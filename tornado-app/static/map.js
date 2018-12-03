@@ -119,7 +119,6 @@ $(document).ready(function() {
 */
 function getLccBounds(hucs) {
 
-    console.log(JSON.stringify(hucs));
     var ajax = $.ajax({
         url: 'http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc',
         type: 'GET',
@@ -392,7 +391,6 @@ function validate_bbox_size(){
 
     sqr_deg = londiff * latdiff;
 
-    console.log(sqr_deg);
 
     valid = true; 
     if ((bbox.includes(99999999) || bbox.includes(-99999999))) { 
