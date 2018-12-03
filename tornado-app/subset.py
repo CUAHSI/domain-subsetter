@@ -4,6 +4,8 @@ import os
 import json
 import subprocess
 import transform
+import tarfile
+import shutil
 
 
 def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
@@ -67,18 +69,13 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
         with open(os.path.join(fpath, 'stdout.txt'), 'w') as f:
             for line in stdout:
                 f.write(line)
-
+        
+        # compress the results
         outname = '%s.tar.gz' % uid
-        cmd = ['tar', '-czf', outname, fpath]
-
-        # TODO: This is blocking, move to multiprocessing
-        p = subprocess.Popen(cmd, cwd='/tmp',
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT)
-        for line in iter(p.stdout.readline, b''):
-            print("$ " + line.decode('utf-8').rstrip())
-        p.stdout.close()
-        return_code = p.wait()
+        with tarfile.open('/tmp/'+outname,  "w:gz") as tar:
+            tar.add(fpath, arcname=os.path.basename(fpath))
+        print('removing dir')
+        shutil.rmtree(fpath)
 
         response = dict(message='file created at: /tmp/data/%s' % outname,
                         filepath='/data/%s' % outname,
@@ -160,18 +157,15 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
         with open(os.path.join(fpath, 'stdout.txt'), 'w') as f:
             for line in stdout:
                 f.write(line)
-                
+               
         outname = '%s.tar.gz' % uid
-        cmd = ['tar', '-czf', outname, fpath] 
 
-        # TODO: This is blocking, move to multiprocessing
-        p = subprocess.Popen(cmd, cwd = '/tmp',
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
-        for line in iter(p.stdout.readline, b''):
-            print("$ " + line.decode('utf-8').rstrip())
-        p.stdout.close()
-        return_code = p.wait()
+        # compress the results
+        outname = '%s.tar.gz' % uid
+        with tarfile.open('/tmp/'+outname,  "w:gz") as tar:
+            tar.add(fpath, arcname=os.path.basename(fpath))
+        print('removing dir')
+        shutil.rmtree(fpath)
 
         response = dict(message='file created at: /tmp/data/%s' % outname,
                         filepath='/data/%s' % outname,
