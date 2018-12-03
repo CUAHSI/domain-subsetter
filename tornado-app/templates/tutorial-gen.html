@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<p>###How to use the CUAHSI Subsetter Tool: National Water Model v1.2</p>
+<p>#Tutorial ##How to use the CUAHSI Subsetter Tool: National Water Model v1.2</p>
 <ol type="1">
 <li>Open the <em>Map</em> tab</li>
 <li>Zoom to your area of interest on the map until you can see the catchments outlined in Green (these are HUC12)</li>
@@ -9,8 +8,6 @@
 <li>Download your tar.gz file containing the domain files necessary to run the NWM at the area you selected</li>
 </ol>
 <p>######Considerations - Try to select a headwaters catchment, as the tool does not currently support upstream tracing - Some other things to consider…</p>
-<p>###Other helpful tools #####Reading Domain files and Outputs National Water Model NetCDF domain files and outputs can be easily accessed using the R package <em>rwrfhydro</em> (<a href="https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro" class="uri">https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro</a>) developed at NCAR.</p>
-=======
-<h2 id="todo">TODO</h2>
-<p>This will be some content</p>
->>>>>>> ed4a5eac78317f1379eff93b8f0692d4a92600f6
+<p>##Other helpful tools ####Reading Domain files and Outputs National Water Model NetCDF domain files and outputs can be easily accessed using the R package rwrfhydro (<a href="https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro" class="uri">https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro</a>) developed at NCAR.<br />
+######Some helpful R rwrfhydro tools that can be used with the CUAHSI subsetter… - Read the <code>RouteLink.nc</code> file - this is helpful to find the COMID that is associated with your USGS site number<br />
+<code>myRouteLinkFile &lt;- ReadRouteLink("/mypath/Route_Link.nc")</code></p>

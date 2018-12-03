@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ###How to use the CUAHSI Subsetter Tool: National Water Model v1.2
 
 1. Open the _Map_ tab
@@ -14,3 +15,8 @@
 ###Other helpful tools
 #####Reading Domain files and Outputs
 National Water Model NetCDF domain files and outputs can be easily accessed using the R package _rwrfhydro_ (<https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro>) developed at NCAR. 
+=======
+## TODO
+
+This will be some content
+>>>>>>> ed4a5eac78317f1379eff93b8f0692d4a92600f6
