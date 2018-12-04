@@ -75,6 +75,6 @@ The CUAHSI Domain Subsetting Tool: NWM v1.2 does not currently support subsettin
 
 For information specific to the CUAHSI Subsetting Tool, contact Tony Castronova <acastronova@cuahsi.org> or Danielle Tijerina <dtijerina@cuahsi.org>.
 
-For information specific to WRF-Hydro please go to the [WRF-Hydro Support Page](https://ral.ucar.edu/projects/wrf_hydro/contact) and contact <Someone@something.com> for questions specifically about the National Water Model.
+For information specific to WRF-Hydro please go to the [WRF-Hydro Support Page](https://ral.ucar.edu/projects/wrf_hydro/contact) and contact <nws.nwc.ops@noaa.gov> for questions specifically about the National Water Model.
 
 
