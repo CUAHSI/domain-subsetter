@@ -51,4 +51,3 @@ There are three REST endpoints in version 0.1 of the subsetting tool: subset, jo
 - Returns: the location of the file for {id}
 - Parameters: 
     - id: the unique identifier for the job
-

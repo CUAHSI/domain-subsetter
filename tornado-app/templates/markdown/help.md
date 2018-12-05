@@ -1,4 +1,4 @@
-### HELP  
+#### **HELP**  
 
 #### ADDITIONAL RESOURCES
 
@@ -13,8 +13,8 @@ The North American Land Data Assimilation System is a quality-controlled, spatia
 <http://ldas.gsfc.nasa.gov/nldas/>
 
 
-- Forcing Subsetter  
-www.drewsforcing.com …
+- HydroShare National Water Model Viewer for data collection  
+<https://hs-apps.hydroshare.org/apps/nwm-forecasts/>
 
 
 
@@ -41,7 +41,8 @@ For additional [user support](<https://ral.ucar.edu/projects/wrf_hydro/contact>)
 <https://ral.ucar.edu/projects/wrf_hydro/testcases>  
 
 - _rwrfhydro_, an R toolbox for managing, analyzing, and visualizing WRF-Hydro data:  
-<https://github.com/NCAR/rwrfhydro>
+<https://github.com/NCAR/rwrfhydro>  
+National Water Model NetCDF domain files and outputs can be easily accessed using the  _rwrfhydro_ package developed at NCAR. 
 
 - Meteorological Forcing Regridding scripts for regridding forcing to the WRF-Hydro geogrid:  
 <https://ral.ucar.edu/projects/wrf_hydro/regridding-scripts>

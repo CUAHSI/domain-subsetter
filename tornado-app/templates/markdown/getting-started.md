@@ -1,7 +1,7 @@
-### GETTING STARTED  
+#### **GETTING STARTED**  
 
 
-### How to use the CUAHSI Subsetter Tool: National Water Model v1.2
+##### How to use the CUAHSI Subsetter Tool: National Water Model v1.2
 
 
 1. Open the _Map_ tab
@@ -11,12 +11,9 @@
 5. Your catchment is being subsetted! Wait for the tool to process...
 6. Download your tar.gz file containing the domain files necessary to run the NWM at the area you selected
 
-###### Considerations
+##### Considerations
 - Try to select a headwaters catchment, as the tool does not currently support upstream tracing
 - Some other things to consider...
 
 
-### Other helpful tools
 
-##### Reading Domain files and Outputs
-National Water Model NetCDF domain files and outputs can be easily accessed using the R package _rwrfhydro_ (<https://ral.ucar.edu/projects/wrf_hydro/rwrfhydro>) developed at NCAR. 
