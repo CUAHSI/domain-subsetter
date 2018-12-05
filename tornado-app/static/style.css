@@ -93,3 +93,23 @@ div.progress {
     height: 30px;
     width: auto;
 }
+
+/* collapable elements */
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+.active, .accordion:hover {
+    background-color: #ccc;
+}
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
