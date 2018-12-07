@@ -74,7 +74,10 @@ div.progress {
   left: 0;
   right: 0;
   margin: auto;
-
+  text-align: center;
+}
+.progress h3 {
+    padding-top: 10%;
 }
 
 /* text-body formatting */
@@ -88,6 +91,9 @@ div.progress {
 .mdl-mini-footer {
     background-color: white;
     padding: 15px 16px;
+    border-style: solid;
+    border-width: 2px 0px 0px 0px;
+    border-color: darkgrey;
 }
 .mdl-mini-footer .mdl-logo img {
     height: 30px;
@@ -112,4 +118,9 @@ div.progress {
     background-color: white;
     display: none;
     overflow: hidden;
+}
+
+/* submit button */
+#btn-subset-submit {
+    width: 80%;
 }
