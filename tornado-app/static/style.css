@@ -17,7 +17,7 @@
 
 .mdl-layout__drawer-button .material-icons {
   font-size: 40px;
-  padding: 24px 24px 0px 0px;
+  padding: 28px 24px 0px 10px;
   color: whitesmoke;
 }
 
@@ -31,7 +31,7 @@
 
 /* Title Style */
 .mdl-layout-title {
-    padding: 0px 0px 15px 20px;
+    padding: 0px 0px 8px 25px;
 }
 
 /* Page Fonts */
