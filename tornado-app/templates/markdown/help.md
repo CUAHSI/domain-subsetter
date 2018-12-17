@@ -9,7 +9,7 @@
 <http://water.noaa.gov/map>
 
 - NLDAS-2  
-The North American Land Data Assimilation System is a quality-controlled, spatially and temporally consistent meteorological dataset with many uses. It is one product that can be used to force a subsetted NWM domain.  
+The North American Land Data Assimilation System is a quality-controlled, spatially and temporally consistent meteorological dataset with many uses. It is one product that can be used to force a subsetted NWM domain, after it has been regridded using regridding tools on the WRF-Hydro website.  
 <http://ldas.gsfc.nasa.gov/nldas/>
 
 
@@ -52,7 +52,7 @@ Until further notice please cite the WRF-Hydro Modeling System V5 as follows:
 _Gochis, D.J., M. Barlage, A. Dugger, K. FitzGerald, L. Karsten, M. McAllister, J. McCreight, J. Mills, A. RafieeiNasab, L. Read, K. Sampson, D. Yates, W. Yu, (2018).  The WRF-Hydro modeling system technical description, (Version 5.0).  NCAR Technical Note. 107 pages. Available online at https://ral.ucar.edu/sites/default/files/public/WRF-HydroV5TechnicalDesc.... Source Code DOI:10.5065/D6J38RBJ_
 
 
-##### Basic Model Set-Up:
+##### Basic WRF-Hydro Model Set-Up (using your subsetted domain):
 
 1. Reference the following documents:  
 	- “How to Build and Run WRF-Hydro V5 in Standalone Mode”:  
