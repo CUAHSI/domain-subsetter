@@ -8,6 +8,7 @@ $(document).ready(function() {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
+    Map.selectable_zoom = 10;
     Map.bbox = [99999999,
                 99999999,
                 -99999999,
@@ -83,7 +84,7 @@ $(document).ready(function() {
         layers: 0,
         transparent: 'true',
         format: 'image/png',
-        minZoom:10,
+        minZoom:Map.selectable_zoom,
         maxZoom:19
     }).addTo(map);
 
@@ -144,7 +145,7 @@ function clickHandler(e) {
 
     // exit early if not zoomed in enough
     var zoom = e.target.getZoom();
-    if (zoom < 11){
+    if (zoom < Map.selectable_zoom){
         return
     }
 
