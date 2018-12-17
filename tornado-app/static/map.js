@@ -8,7 +8,17 @@ $(document).ready(function() {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
-    Map.selectable_zoom = 10;
+    Map.huc2_min = 0;
+    Map.huc2_max = 7;
+    Map.huc4_min = 6;
+    Map.huc4_max = 10;
+    Map.huc6_min = 6;
+    Map.huc6_max = 10;
+    Map.huc10_min = 9;
+    Map.huc10_max = 14;
+    Map.huc12_min = 10;
+    Map.huc12_max = 18;
+
     Map.bbox = [99999999,
                 99999999,
                 -99999999,
@@ -24,16 +34,7 @@ $(document).ready(function() {
     toggle_submit_button(box.is_valid);
     
 
-//    // add a button to display select mode
-//    var areaSelect = L.areaSelect({width:150, height:150});
-//    areaSelect.addTo(map);
-//    Map.areaSelect = areaSelect;
-
-//    toggle_select_mode(areaSelect);
-//    L.easyButton('fa-map-o', function(btn, lmap){
-//        toggle_select_mode(areaSelect);
-//    }).addTo( map );
-
+    
     // Initial OSM tile layer
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
@@ -57,8 +58,8 @@ $(document).ready(function() {
         layers: 4,
         transparent: 'true',
         format: 'image/png',
-        minZoom:0,
-        maxZoom:7
+        minZoom:Map.huc2_min,
+        maxZoom:Map.huc2_max
     }).addTo(map);
     
     // HUC 4 Layer
@@ -66,8 +67,8 @@ $(document).ready(function() {
         layers: 3,
         transparent: 'true',
         format: 'image/png',
-        minZoom:6,
-        maxZoom:10
+        minZoom:Map.huc4_min,
+        maxZoom:Map.huc4_max
     }).addTo(map);
     
 //    // HUC 8 Layer
@@ -75,8 +76,8 @@ $(document).ready(function() {
 //        layers: 2,
 //        transparent: 'true',
 //        format: 'image/png',
-//        minZoom:6,
-//        maxZoom:10
+//        minZoom:Map.huc8_min,
+//        maxZoom:Map.huc8_max
 //    }).addTo(map);
 
     // HUC 12 Layer
@@ -84,8 +85,8 @@ $(document).ready(function() {
         layers: 0,
         transparent: 'true',
         format: 'image/png',
-        minZoom:Map.selectable_zoom,
-        maxZoom:19
+        minZoom:Map.huc12_min,
+        maxZoom:Map.huc12_max
     }).addTo(map);
 
     // HUC 10 Layer
@@ -93,16 +94,20 @@ $(document).ready(function() {
         layers: 1,
 	    transparent: 'true',
    	format: 'image/png',
-    	minZoom:9,
-    	maxZoom:14
+    	minZoom:Map.huc10_min,
+    	maxZoom:Map.huc10_max
     }).addTo(map);
   
+    // layer toggling
+    var mixed = {
+      "HUC 2": huc2,
+      "HUC 4": huc4,
+      "HUC 10": huc10,
+      "HUC 12": huc12
+   };
+   // Add Layer-Controller
+   L.control.layers(null, mixed).addTo(map);
 
-//    areaSelect.on("change", function(){
-//        var bounds = this.getBounds();
-//	    update_bbox(bounds);
-//	    check_area(bounds);
-//    });
 
     map.on("click", function(e){
         clickHandler(e);
