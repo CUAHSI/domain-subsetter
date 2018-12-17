@@ -45,6 +45,12 @@ body {
     color:whitesmoke;
 }
 
+.progress-font {
+    font-size: 24pt;
+    font-weight: bold;
+    color:grey;
+}
+
 /* Map */
 .map {
     height: 67vh;
