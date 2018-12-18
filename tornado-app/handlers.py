@@ -247,9 +247,23 @@ class Job(RequestHandler):
         for job in jobs:
             if jobid == job[0]:
                 fpath = self.get_file_url(job[2])
+
+                # format dates nicely
+                st = job[3]
+                et = job[4]
+                if st is not None:
+                    st = datetime.strptime(st, '%Y-%m-%d %H:%M:%S.%f') \
+                                 .strftime('%m-%d-%Y %H:%M:%S')
+                if et is not None:
+                    et = datetime.strptime(et, '%Y-%m-%d %H:%M:%S.%f') \
+                                 .strftime('%m-%d-%Y %H:%M:%S')
+
+                # build response object
                 response = dict(id=job[0],
                                 status=job[1],
-                                file=fpath)
+                                file=fpath,
+                                start=st,
+                                end=et)
                 continue
         if response is None:
             response = dict(message='Job Not Found',
