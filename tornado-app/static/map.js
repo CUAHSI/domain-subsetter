@@ -108,15 +108,37 @@ $(document).ready(function() {
    // Add Layer-Controller
    L.control.layers(null, mixed).addTo(map);
 
+    L.easyButton('fa-eraser',
+                 function (){clearSelection();},
+                 'clear selected features').addTo(map);
 
     map.on("click", function(e){
-        clickHandler(e);
-        
-        
+        clickHandler(e);        
     });
+
 
 });
 
+
+/** 
+ * Clears the selected features on the map
+*/
+function clearSelection() {
+    
+    for (var key in Map.hucbounds) {
+
+        // clear the huc boundary list
+        delete Map.hucbounds[key];
+        
+        // clear the olygon overlays
+        Map.huclayers[key].clearLayers();
+        delete Map.huclayers[key];
+    }
+    // update the map
+    updateMapBBox();
+    getLccBounds([]);
+
+}
 
 /**
 * Queries the global bounding box for a list of hucs ids
