@@ -132,3 +132,15 @@ div.progress {
     width: 80%;
 }
 
+/* table styling */
+.admin-table td {
+    text-align:center;
+}
+.admin-table th {
+    text-align:center;
+}
+
+.admin-table {
+    width: 80%;
+    margin: 10px auto 10px auto;
+}
