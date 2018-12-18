@@ -10,7 +10,7 @@ import uuid
 import subprocess
 import hashlib
 from urllib.parse import urljoin
-
+from datetime import datetime
 import bbox
 import transform
 
@@ -194,9 +194,10 @@ class Status(RequestHandler):
             url = host_url + '/jobs'
             response = yield http_client.fetch(url)
             data = json.loads(response.body)
+            print(data)
             self.render('admin_status.html', jobs=data) 
-
-        self.render('status.html')
+        else:
+            self.render('status.html')
 
 
 class Job(RequestHandler):
@@ -216,9 +217,24 @@ class Job(RequestHandler):
         else:
             for job in jobs:
                 fpath = self.get_file_url(job[2])
+              
+                # format dates nicely
+                st = job[3]
+                et = job[4]
+                if st is not None:
+                    st = datetime.strptime(st, '%Y-%m-%d %H:%M:%S.%f') \
+                                 .strftime('%m-%d-%Y %H:%M:%S')
+                if et is not None:
+                    et = datetime.strptime(et, '%Y-%m-%d %H:%M:%S.%f') \
+                                 .strftime('%m-%d-%Y %H:%M:%S')
+
+                # build response object
                 response.append(dict(id=job[0],
                                      status=job[1],
-                                     file=fpath))
+                                     file=fpath,
+                                     start=st,
+                                     end=et))
+        # return serialized data
         self.write(json.dumps(response))
         self.finish()
 

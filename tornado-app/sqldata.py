@@ -2,9 +2,6 @@
 import sqlite3
 
 class Connect(object):
-#    def __init__(self):
-#        self.conn = sqlite3.connect('data/jobs.db')
-#        self.c = self.conn.cursor()
 
     def connect(self):
         conn = sqlite3.connect('data/jobs.db', timeout=10)
@@ -14,7 +11,9 @@ class Connect(object):
     def build(self):
         conn, cursor = self.connect()
         try:
-            cursor.execute('''CREATE TABLE jobs (guid text, status text, url text)''')
+            cursor.execute('''CREATE TABLE jobs (guid text,
+                              status text, url text, dt_start datetime,
+                              dt_end datetime)''')
         except sqlite3.OperationalError:
             pass
     
@@ -35,17 +34,18 @@ class Connect(object):
         conn.close()
         return res
     
-    def save_job(self, guid, status, text):
+    def save_job(self, guid, status, text, start=None, end=None):
         conn, cursor = self.connect()
         cursor.execute("select * from jobs where guid = ?", (guid,))
         res = cursor.fetchall()
         if len(res) == 0:
-            cursor.execute("insert into jobs (guid, status, url) "
-                           "values (?, ?, ?)", (guid, status, text))
+            cursor.execute("insert into jobs (guid, status, url, dt_start, "
+                           "dt_end) values (?, ?, ?, ?, ?)",
+                           (guid, status, text, start, end))
         else:
             cursor.execute("update jobs "
-                           "set status = ?, url = ? "
-                           "where guid = ?", (status, text, guid))
+                           "set status = ?, url = ?, dt_start = ?, dt_end = ? "
+                           "where guid = ?", (status, text, start, end, guid))
         
         conn.commit()
         conn.close()

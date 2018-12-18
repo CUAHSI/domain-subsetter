@@ -3,6 +3,7 @@
 
 import uuid
 import sqldata
+from datetime import datetime
 from multiprocessing import Process, Queue
 
 class BackgroundWorker(object):
@@ -46,7 +47,11 @@ class BackgroundWorker(object):
 
             try:
                 uid = item['uid']
-                self.sql.save_job(uid, 'running', '')
+                start = datetime.now()
+                self.sql.save_job(uid,
+                                  'running',
+                                  '',
+                                  start)
 
                 # update the job state
                 item['state'] = 'running'
@@ -56,6 +61,8 @@ class BackgroundWorker(object):
                 res = item['function'](*item['args'],**item['kwargs'])
                 
                 # save output and yield result
+                item['dt_end'] = datetime.now()
+                item['dt_start'] = start
                 item['result'] = res
                 item['state'] = 'finished'
                 self.jobs[uid] = item
@@ -69,11 +76,15 @@ class BackgroundWorker(object):
             try:
                 self.sql.save_job(uid,
                               item['state'],
-                              item['result']['filepath'])
+                              item['result']['filepath'],
+                              item['dt_start'],
+                              item['dt_end'])
             except:
                 self.sql.save_job(uid,
                               item['state'],
-                              '')
+                              '',
+                              item['dt_start'],
+                              item['dt_end'])
 
 
 
