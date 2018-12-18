@@ -17,6 +17,7 @@ import transform
 from tornado import gen 
 from tornado.httpclient import AsyncHTTPClient
 
+from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 

@@ -2,11 +2,12 @@
 
 
 import os
+import sys
+import logging
 import tornado.web
 from tornado import httpserver
 from tornado.ioloop import IOLoop
-from tornado.log import enable_pretty_logging
-
+from tornado.log import app_log, gen_log, access_log, LogFormatter
 
 import handlers
 
@@ -41,6 +42,30 @@ def main():
 
     app = Application()
     http_server = tornado.httpserver.HTTPServer(app)
+
+    # prepare logs for tornado general
+    format = 'GENERAL: %(asctime)-15s %(message)s'
+    formatter = LogFormatter(fmt=format, color=True)
+    general_logger = logging.getLogger('tornado.general')
+    general_handler = logging.StreamHandler(sys.stdout)
+    general_handler.setFormatter(formatter)
+    general_logger.addHandler(general_handler)
+
+    # prepare logs for tornado access
+    format = 'ACCESS: %(asctime)-15s %(message)s'
+    access_formatter = LogFormatter(fmt=format, color=True)
+    access_logger = logging.getLogger('tornado.access')
+    access_handler = logging.StreamHandler(sys.stdout)
+    access_handler.setFormatter(access_formatter)
+    access_logger.addHandler(access_handler)
+
+    # prepare logs for tornado application
+    format = 'APPLICATION: %(asctime)-15s %(message)s'
+    application_formatter = LogFormatter(fmt=format, color=True)
+    application_logger = logging.getLogger('tornado.application')
+    application_handler = logging.StreamHandler(sys.stdout)
+    application_handler.setFormatter(application_formatter)
+    application_logger.addHandler(application_handler)
 
     http_server.listen(8080)
     print('\n'+'-'*60)
