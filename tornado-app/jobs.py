@@ -5,6 +5,7 @@ import uuid
 import sqldata
 from datetime import datetime
 from multiprocessing import Process, Queue
+from tornado.log import app_log, gen_log, access_log
 
 class BackgroundWorker(object):
 
@@ -35,6 +36,7 @@ class BackgroundWorker(object):
         self.queue.put(item)
         self.jobs[uid] = item
 
+        app_log.info('job queued: %s' % uid) 
         self.sql.save_job(uid, item['state'], '')
 
         return uid       
@@ -44,6 +46,8 @@ class BackgroundWorker(object):
         while True:
             # get queued item 
             item = self.queue.get()
+            
+            app_log.info('begin job: %s' % item['uid']) 
 
             try:
                 uid = item['uid']
@@ -59,6 +63,8 @@ class BackgroundWorker(object):
                 
                 # run the job
                 res = item['function'](*item['args'],**item['kwargs'])
+            
+                app_log.info('completed job: %s' % item['uid']) 
                 
                 # save output and yield result
                 item['dt_end'] = datetime.now()
@@ -72,6 +78,7 @@ class BackgroundWorker(object):
                 item['state'] = 'failed'
                 item['result'] = dict(filepath='')
                 self.jobs[uid] = item
+                app_log.error('%s: %s' % (item['uid'], e))
 
             try:
                 self.sql.save_job(uid,
@@ -79,7 +86,9 @@ class BackgroundWorker(object):
                               item['result']['filepath'],
                               item['dt_start'],
                               item['dt_end'])
+                app_log.info('saved job results to db: %s' % item['uid'])
             except:
+                app_log.error('%s: could not find output file' % item['uid'])
                 self.sql.save_job(uid,
                               item['state'],
                               '',

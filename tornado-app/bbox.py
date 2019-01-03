@@ -19,7 +19,6 @@ def get_bbox_from_hucs(huclevel, huclist):
 
     query = "select * from bboxes where hucid in (%s)" % \
              (','.join(['"{0}"'.format(h) for h in huclist]))
-    print(query)
     cursor.execute(query)
     res = cursor.fetchall()
     
