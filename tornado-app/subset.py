@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import json
 import subprocess
 import transform
@@ -48,13 +49,13 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 
-    for line in iter(p.stdout.readline, b''):
-        l = line.decode('utf-8').rstrip()
-        if 'std' in l:
-            l = l.replace('std:', '\n')
-            stdout.append(l)
-        print(l, flush=True)
-    p.stdout.close()
+#    for line in iter(p.stdout.readline, b''):
+#        l = line.decode('utf-8').rstrip()
+#        if 'std' in l:
+#            l = l.replace('std:', '\n')
+#            stdout.append(l)
+#        print(l, flush=True)
+#    p.stdout.close()
     return_code = p.wait()
 
     if not return_code == 0:
@@ -172,3 +173,7 @@ def subset_by_bbox(uid, llat, llon, ulat, ulon):
                         status='success')
 
     return response
+
+
+def mute():
+    sys.stdout = open(os.devnull, 'w') 
