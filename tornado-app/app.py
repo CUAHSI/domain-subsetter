@@ -10,6 +10,7 @@ from tornado.ioloop import IOLoop
 
 import handlers
 import logs
+import environment as env
 
 
 class Application(tornado.web.Application):
@@ -31,9 +32,9 @@ class Application(tornado.web.Application):
             (r"/getting-started", handlers.GettingStarted),
         ]
         settings = {
-            "debug":True,
-            "static_path":os.path.join(os.path.dirname(__file__), "static"),
-            "template_path":os.path.join(os.path.dirname(__file__), "templates"),
+            "debug": env.debug,
+            "static_path": env.static_path,
+            "template_path": env.template_path,
         }
         tornado.web.Application.__init__(self, endpoints, **settings)
 
@@ -46,9 +47,9 @@ def main():
     # initialize logs
     applogs = logs.Logs()
 
-    http_server.listen(8080)
+    http_server.listen(env.port, address=env.address)
     print('\n'+'-'*60)
-    print('server listening on 0.0.0.0:8080')
+    print('server listening on %s:%s' % (env.address, env.port))
     print('-'*60+'\n')
     IOLoop.instance().start()
 
