@@ -2,6 +2,7 @@
 
 import sys
 import logging
+import environment as env
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 
 
@@ -13,6 +14,7 @@ class Logs(object):
     format = 'GENERAL: %(asctime)-15s %(message)s'
     formatter = LogFormatter(fmt=format, color=True)
     general_logger = logging.getLogger('tornado.general')
+    general_logger.setLevel(env.general_level)
     general_handler = logging.StreamHandler(sys.stdout)
     general_handler.setFormatter(formatter)
     general_logger.addHandler(general_handler)
@@ -21,6 +23,7 @@ class Logs(object):
     format = 'ACCESS: %(asctime)-15s %(message)s'
     access_formatter = LogFormatter(fmt=format, color=True)
     access_logger = logging.getLogger('tornado.access')
+    access_logger.setLevel(env.access_level)
     access_handler = logging.StreamHandler(sys.stdout)
     access_handler.setFormatter(access_formatter)
     access_logger.addHandler(access_handler)
@@ -29,6 +32,7 @@ class Logs(object):
     format = 'APPLICATION: %(asctime)-15s %(message)s'
     application_formatter = LogFormatter(fmt=format, color=True)
     application_logger = logging.getLogger('tornado.application')
+    application_logger.setLevel(env.application_level)
     application_handler = logging.StreamHandler(sys.stdout)
     application_handler.setFormatter(application_formatter)
     application_logger.addHandler(application_handler)
