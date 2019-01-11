@@ -168,6 +168,33 @@ function getLccBounds(hucs) {
 
 }
 
+function update_huc_textbox(text) {
+
+    var codestr = $('#huccode')[0].value;
+    var codes = [];
+    if (codestr != '') {
+        codes = codestr.split(',');
+
+        // remove leading and trailing whitespaces from each element
+        codes = codes.map(s => s.trim());
+    }
+    if (!codes.includes(text)) {
+        // add the huc code
+        codes.push(text);
+    }
+    else {
+        // remove the huc code
+        codes = codes.filter(function(e) { return e !== text })
+    }
+
+    if (codes.length == 1) {
+        $('#huccode').trigger("change");
+    }
+   
+    document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
+
+}
+
 function clickHandler(e) {
 
     // exit early if not zoomed in enough
@@ -196,6 +223,9 @@ function clickHandler(e) {
         url: URL,
         success: function (response) {
             res = parseWfsXML(response);
+
+            // update huc text box
+            update_huc_textbox(res.hucid);
 
             // toggle bounding box
             if (res.hucid in Map.hucbounds)
