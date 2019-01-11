@@ -20,3 +20,6 @@ log_count = 10
 access_level = 'INFO'
 application_level = 'INFO'
 general_level = 'INFO'
+
+# WRF-HYDRO settings
+geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'

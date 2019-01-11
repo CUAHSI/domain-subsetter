@@ -8,6 +8,9 @@ import transform
 import tarfile
 import shutil
 
+import environment as env
+from tornado.log import app_log, gen_log, access_log, LogFormatter
+
 
 def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
 
@@ -20,21 +23,22 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
                   'ymax : %s\n\n' % (uid, str(xmin), str(ymin),
                                      str(xmax), str(ymax)))
 
-    geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
+    geofile = env.geofile
     bbox = (float(xmin),
             float(ymin),
             float(xmax),
             float(ymax))
 
-    # check that bbox is valid
-    print('validating bounding box')
-    if (ymin > ymax) | (xmin > xmax):
-        print('invalid bounding box')
+#    # check that bbox is valid
+#    app_log.info('validating bounding box')
+#    if (ymin > ymax) | (xmin > xmax):
+#        app_log.error('invalid bounding box')
+#        return
 
     # TODO: check bbox size
 
     # run R script and save output as random guid
-    print('invoking subsetting algorithm')
+    app_log.info('begin subsetting algorithm: %s' % uid )
 
     cmd = ['Rscript',
            'subset_domain.R',
@@ -57,28 +61,27 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax):
 #        print(l, flush=True)
 #    p.stdout.close()
     return_code = p.wait()
+    
 
     if not return_code == 0:
-        response = dict(message=
-            'The process call "{}" returned with code {}, an error '
-            'occurred.'.format(list(cmd), return_code),
-                       status='error')
-    else:
-        fpath = os.path.join('/tmp', uid)
+        msg= 'The process call "{}" returned with code {}, an error ' \
+             'occurred.'.format(list(cmd), return_code)
+        app_log.error('subsetting failed %s: %s' % (uid, msg) )
+        response = dict(message=msg, status='error')
+        return response
 
-        # save the stdout from the subsetting
-        with open(os.path.join(fpath, 'stdout.txt'), 'w') as f:
-            for line in stdout:
-                f.write(line)
-        
-        # compress the results
-        outname = '%s.tar.gz' % uid
-        with tarfile.open('/tmp/'+outname,  "w:gz") as tar:
-            tar.add(fpath, arcname=os.path.basename(fpath))
-        print('removing dir')
-        shutil.rmtree(fpath)
+    app_log.info('subsetting succeeded %s' % uid )
 
-        response = dict(message='file created at: /tmp/data/%s' % outname,
+    app_log.info('begin compressing results %s' % uid) 
+    # compress the results
+    fpath = os.path.join('/tmp', uid)
+    outname = '%s.tar.gz' % uid
+    with tarfile.open('/tmp/'+outname,  "w:gz") as tar:
+        tar.add(fpath, arcname=os.path.basename(fpath))
+    shutil.rmtree(fpath)
+    app_log.info('finished compressing results %s' % uid) 
+
+    response = dict(message='file created at: /tmp/data/%s' % outname,
                         filepath='/data/%s' % outname,
                         status='success')
     return response
