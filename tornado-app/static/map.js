@@ -138,6 +138,9 @@ function clearSelection() {
     updateMapBBox();
     getLccBounds([]);
 
+    // clear and update the HUC textbox
+    document.querySelector('.mdl-textfield').MaterialTextfield.change('');
+
 }
 
 /**
@@ -187,10 +190,6 @@ function update_huc_textbox(text) {
         codes = codes.filter(function(e) { return e !== text })
     }
 
-    if (codes.length == 1) {
-        $('#huccode').trigger("change");
-    }
-   
     document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
 
 }
