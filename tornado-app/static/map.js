@@ -116,6 +116,10 @@ $(document).ready(function() {
         clickHandler(e);        
     });
 
+    document.getElementById('huccode').addEventListener('keypress', function(e) {
+        huc_text_entered(e);
+    });
+
 
 });
 
@@ -171,6 +175,23 @@ function getLccBounds(hucs) {
 
 }
 
+function huc_text_entered(e) {
+
+    var codestr = $('#huccode')[0].value + e.key;
+    codes = codestr.split(',');
+    l = codes.length;
+    if (codes[l-1].length == 12){
+        // get feature
+        var res = getFeatureByHUC(codes[l-1])
+        
+//       // getLccBounds(codes);
+ //       Map.hucbounds[codes[l-1]] = res.bbox;
+  //      // update the boundaries of the global bbox
+   //     updateMapBBox();
+//        console.log(codestr);
+    }
+
+}
 function update_huc_textbox(text) {
 
     var codestr = $('#huccode')[0].value;
@@ -192,6 +213,36 @@ function update_huc_textbox(text) {
 
     document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
 
+}
+
+/**
+* Queries the HUC feature by HUC id using WFS:GetFeature
+* @param {string} hucid - a single HUC ids to query
+* @returns {array} - [hucid, boundingbox] for the HUC object
+*/
+function getFeatureByHUC(hucid) {
+
+
+    var defaultParameters = {
+        service : 'WFS',
+        request : 'GetFeature',
+        typeName : 'HUC_WBD:HUC12_US',
+        SrsName : 'EPSG:4326',
+        Filter : "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+    };
+    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    var parameters = L.Util.extend(defaultParameters);
+    var URL = root + L.Util.getParamString(parameters);
+    console.log(URL);
+
+    var ajax = $.ajax({
+        url: URL,
+        success: function (response) {
+            res = parseWfsXML(response);
+            // todo: rcall toggle huc function
+            return res;
+        }
+    });
 }
 
 function clickHandler(e) {
@@ -217,6 +268,7 @@ function clickHandler(e) {
     var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
+//    console.log(URL);
 
     var ajax = $.ajax({
         url: URL,
