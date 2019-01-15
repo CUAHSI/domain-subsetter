@@ -3,7 +3,7 @@ import os
 # Server settings
 
 address="0.0.0.0"
-port="8080"
+port="8012"
 
 debug=True
 static_path = os.path.join(os.path.dirname(__file__), "static")
