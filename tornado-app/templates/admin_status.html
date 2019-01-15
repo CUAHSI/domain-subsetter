@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+{% extends base.html %}
+
+    {% block extra-head %}
+    <link rel="stylesheet" href="static/style.css">
+    {% end %}
+
+
+    {% block content %}
+
+     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp admin-table">
+         <tr>
+	        <th> Job ID </th>
+    	     <th> Job Status </th>
+	         <th> Start Time </th>
+	         <th> End Time </th>
+    	     <th> Output Url </th>
+ 	     </tr>
+       
+         {% for job in jobs %}
+            <tr>
+        	     <td>{{ job['id'] }}</td>
+	             <td>{{ job['status'] }}</td>
+
+        	     {% if job['start'] != None %}
+	                <td>{{ job['start'] }}</td>
+        	     {% else %}
+    	             <td> --- </td>
+        	     {% end %}
+
+	             {% if job['end'] != None %}
+        	        <td>{{ job['end'] }}</td>
+	             {% else %}
+    	             <td> --- </td>
+        	     {% end %}
+
+	             {% if job['file'] != None %}
+    	             <td><a href="{{ job['file'] }}">{{ job['file'] }}</a></td>
+        	     {% else %} 
+    	             <td> --- </td>
+        	     {% end %}
+         	 </tr>
+        {% end %}
+     </table>
+
+    {% end %}
+
