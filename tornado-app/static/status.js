@@ -36,13 +36,13 @@ function get_job_status(guid) {
             $('#file')[0].innerHTML = res.file;
             $('#file')[0].setAttribute('href', res.file);
 
-        } else if (res.status == 'error') {
+        } else if (res.status == 'failed') {
             
             // hide the progress image
-            $('div.progress')[0].style.visibility = 'hidden';
+            $('div.progress').toggleClass('processing');
 
             // display error message
-            $('#status')[0].innerHTML = 'The specified file could not be found :(';
+            $('#status')[0].innerHTML = 'An error occurred while processing the request<br>:(';
 
             clearInterval(pollInterval);
         }

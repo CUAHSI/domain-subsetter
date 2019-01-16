@@ -72,7 +72,6 @@ body {
 /* Status Logo */
 div.progress {
 
-  background: url("./earth-loading.gif") center / cover;
   width: 80%;
   height: 80%;
   position: absolute;
@@ -83,8 +82,13 @@ div.progress {
   margin: auto;
   text-align: center;
 }
+
 .progress h3 {
     padding-top: 10%;
+}
+
+div.processing {
+  background: url("./earth-loading.gif") center / cover;
 }
 
 /* text-body formatting */
