@@ -155,7 +155,7 @@ function clearSelection() {
 function getLccBounds(hucs) {
 
     var ajax = $.ajax({
-        url: 'http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc',
+        url: document.URL + 'wbd/gethucbbox/lcc',
         type: 'GET',
         contentType: "text/plain; charset=UTF-8",
         data: {'hucID' : hucs.join(",")},
@@ -186,8 +186,8 @@ function huc_text_entered(e) {
         
 //       // getLccBounds(codes);
  //       Map.hucbounds[codes[l-1]] = res.bbox;
-  //      // update the boundaries of the global bbox
-   //     updateMapBBox();
+        // update the boundaries of the global bbox
+        updateMapBBox();
 //        console.log(codestr);
     }
 
