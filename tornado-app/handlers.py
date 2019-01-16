@@ -132,22 +132,29 @@ class SubsetNWM122(RequestHandler):
     def get(self):
         global executor
 
+        app_log.debug('SubsetNWM122 function')
+
         # collect rest arguments
         llat = self.get_arg_value('llat', True)
         llon = self.get_arg_value('llon', True)
         ulat = self.get_arg_value('ulat', True)
         ulon = self.get_arg_value('ulon', True)
+        app_log.debug('submitted bbox: (%s, %s, %s, %s) ' %
+                      (llat, llon, ulat, ulon))
        
         # calculate unique hash based on bbox
         hasher = hashlib.sha1()
         hasher.update(str([llon, llat, ulon, ulat]).encode('utf-8'))
         uid = hasher.hexdigest()
-        
+       
+        app_log.debug('Checking if job exists')
         # check if this job has been executed previously
         res = sql.get_job_by_guid(uid)
+        app_log.debug(res)
 
         # submit the job
         if len(res) == 0:
+            app_log.debug('Job doesn\'t exist, preparing to submit job.')
 
     #        uid = uuid.uuid4().hex
             args = (uid,
@@ -157,8 +164,10 @@ class SubsetNWM122(RequestHandler):
                     ulon)
     
             uid = executor.add(uid, subset.subset_nwm_122, *args)
+            app_log.debug('Job submitted')
 
         # redirect to status page for this job
+        app_log.debug('redirecting to status page')
         self.redirect('/status/%s' % uid)
 
 
@@ -167,7 +176,7 @@ class Subset(RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         global executor
-
+        
         # collect rest arguments
         llat = self.get_arg_value('llat', True)
         llon = self.get_arg_value('llon', True)
@@ -194,7 +203,6 @@ class Status(RequestHandler):
             url = host_url + '/jobs'
             response = yield http_client.fetch(url)
             data = json.loads(response.body)
-            print(data)
             self.render('admin_status.html', jobs=data) 
         else:
             self.render('status.html')
