@@ -40,7 +40,7 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
     # TODO: check bbox size
 
     # run R script and save output as random guid
-    logger.info('begin subsetting %s' % (uid) )
+    logger.info('begin NWM v1.2.2 subsetting %s' % (uid) )
 
     cmd = ['Rscript',
            'subset_domain.R',
