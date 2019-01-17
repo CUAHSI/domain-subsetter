@@ -14,8 +14,10 @@ class Logs(object):
     if not os.path.exists(env.log_dir):
         os.makedirs(env.log_dir)
 
+    format = '%(asctime)-15s %(levelname)s <%(module)s.py - %(funcName)s> '\
+             '%(processName)s %(message)s'
+
     # prepare logs for tornado general
-    format = 'GENERAL: %(asctime)-15s %(message)s'
     formatter = LogFormatter(fmt=format, color=True)
     general_logger = logging.getLogger('tornado.general')
     general_logger.setLevel(env.general_level)
@@ -30,7 +32,6 @@ class Logs(object):
     general_logger.addHandler(general_handler)
 
     # prepare logs for tornado access
-    format = 'ACCESS: %(asctime)-15s %(message)s'
     access_formatter = LogFormatter(fmt=format, color=True)
     access_logger = logging.getLogger('tornado.access')
     access_logger.setLevel(env.access_level)
@@ -45,7 +46,6 @@ class Logs(object):
     access_logger.addHandler(access_handler)
 
     # prepare logs for tornado application
-    format = 'APPLICATION: %(asctime)-15s %(message)s'
     application_formatter = LogFormatter(fmt=format, color=True)
     application_logger = logging.getLogger('tornado.application')
     application_logger.setLevel(env.application_level)
