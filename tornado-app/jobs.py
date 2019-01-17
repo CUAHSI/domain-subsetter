@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
-
 import uuid
 import sqldata
+import  multiprocessing as mp
 from datetime import datetime
-from multiprocessing import Process, Queue
-from tornado.log import app_log, gen_log, access_log
+from tornado.log import app_log
+from multiprocessing_logging import install_mp_handler
+
 
 class BackgroundWorker(object):
 
     def __init__(self):
         self.numprocesses = 4
 
-        self.queue = Queue()
+        self.queue = mp.Queue()
         self.jobs = {}
 
         self.sql = sqldata.Connect()
@@ -20,9 +21,12 @@ class BackgroundWorker(object):
 
         self.Processes = []
 
+        # initialize the multiprocessing logger
+        install_mp_handler(logger=app_log)
+
         # starting workers
         for n in range(self.numprocesses):
-            process = Process(target=self.worker)
+            process = mp.Process(target=self.worker, args=(app_log,))
             process.start()
             self.Processes.append(process)
 
@@ -37,21 +41,26 @@ class BackgroundWorker(object):
         self.jobs[uid] = item
 
         app_log.info('job queued: %s' % uid) 
+
         self.sql.save_job(uid, item['state'], '')
 
         return uid       
 
     
-    def worker(self):
+    def worker(self, logger):
         while True:
+            logger.info('ready and waiting for job') 
+
             # get queued item 
             item = self.queue.get()
             
-            app_log.info('begin job: %s' % item['uid']) 
-
             try:
                 uid = item['uid']
+                
+                # save the start time for reporting
                 start = datetime.now()
+                item['dt_start'] = start
+
                 self.sql.save_job(uid,
                                   'running',
                                   '',
@@ -62,42 +71,39 @@ class BackgroundWorker(object):
                 self.jobs[uid] = item
                 
                 # run the job
-                res = item['function'](*item['args'],**item['kwargs'])
+                res = item['function'](*item['args'],**item['kwargs'],
+                                       logger=logger)
             
-                app_log.info('completed job: %s' % item['uid']) 
+                logger.info('job completed %s' % (item['uid']))
                 
                 # save output and yield result
                 item['dt_end'] = datetime.now()
-                item['dt_start'] = start
                 item['result'] = res
                 item['state'] = 'finished'
                 self.jobs[uid] = item
                 
+                
             except Exception as e:
-                print('job failed: %s' % e)
+                logger.error('job failed %s: %s' % (item['uid'], e))
                 item['state'] = 'failed'
                 item['result'] = dict(filepath='')
+                item['dt_end'] = datetime.now()
                 self.jobs[uid] = item
-                app_log.error('%s: %s' % (item['uid'], e))
+                
 
             try:
+                logger.info(item)
                 self.sql.save_job(uid,
                               item['state'],
                               item['result']['filepath'],
                               item['dt_start'],
                               item['dt_end'])
-                app_log.info('saved job results to db: %s' % item['uid'])
+                logger.info('results saved to db %s' % (item['uid']))
             except:
-                app_log.error('%s: could not find output file' % item['uid'])
+                logger.error('could not find output file %s' % 
+                             (item['uid']))
                 self.sql.save_job(uid,
                               item['state'],
                               '',
                               item['dt_start'],
                               item['dt_end'])
-
-
-
-
-
-
-
