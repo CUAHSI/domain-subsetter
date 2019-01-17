@@ -8,8 +8,11 @@ import tornado.web
 from tornado import httpserver
 from tornado.ioloop import IOLoop
 
-import handlers
+# import 'logs' before other modules
+# to ensure logs are configured properly
 import logs
+
+import handlers
 import environment as env
 
 
