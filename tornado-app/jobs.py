@@ -2,6 +2,7 @@
 
 import uuid
 import sqldata
+import environment as env
 import  multiprocessing as mp
 from datetime import datetime
 from tornado.log import app_log
@@ -11,7 +12,7 @@ from multiprocessing_logging import install_mp_handler
 class BackgroundWorker(object):
 
     def __init__(self):
-        self.numprocesses = 4
+        self.numprocesses = env.worker_count
 
         self.queue = mp.Queue()
         self.jobs = {}

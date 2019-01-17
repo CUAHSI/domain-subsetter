@@ -9,9 +9,10 @@ debug=True
 static_path = os.path.join(os.path.dirname(__file__), "static")
 template_path = os.path.join(os.path.dirname(__file__), "templates")
 
+# multiprocessing settings
+worker_count = 4
 
 # logging settings
-
 log_dir = os.path.join(os.getcwd(), 'logs')
 log_file_size = 1024 * 20 * 1000
 log_count = 10
