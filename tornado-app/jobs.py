@@ -91,9 +91,7 @@ class BackgroundWorker(object):
                 item['dt_end'] = datetime.now()
                 self.jobs[uid] = item
                 
-
             try:
-                logger.info(item)
                 self.sql.save_job(uid,
                               item['state'],
                               item['result']['filepath'],
