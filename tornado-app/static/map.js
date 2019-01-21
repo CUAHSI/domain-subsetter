@@ -293,9 +293,10 @@ function addHucRow(huc_value) {
  * Removes a row from the HUC table
  */
 function rmHucRow(row_id) {
-
-  var table = document.getElementById("huc-table");
-  table.deleteRow(row_id);
+  if (row_id >= 0) {
+    var table = document.getElementById("huc-table");
+    table.deleteRow(row_id);
+  }
 
 }
 
