@@ -220,18 +220,6 @@ $(window).bind("load", function() {
     	// clear and hide the dialog
     	document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
-//    /**
-//    * Removes the selected HUC from the table
-//    */
-//    document.getElementById("rm-huc").onclick = function() {
-//    
-//    	var rows = $(".mdl-data-dynamictable tbody").find('tr.is-selected');
-//    	if (rows.length == 0) {
-//    		console.log('notify that rows need to be selected');
-//    	} else {
-//    		console.log('remove selected rows');
-//    	}
-//    }
     
    /**
     * Selects and deselects all rows when the header box is checked
@@ -245,10 +233,23 @@ $(window).bind("load", function() {
     		$(".mdl-data-dynamictable").find('tr td label').removeClass("is-checked");
     	}
     });
+
     
     
     
 });
+
+/** 
+ * Removes all rows from the HUC table
+ */
+function clearHucTable() {
+
+    var table = document.getElementById("huc-table");
+    var rows  = $('#huc-table tbody tr');
+    for (var i=rows.length-1; i>=0; i--) {
+        table.deleteRow(i);
+    }
+}
 
 /** 
  * Adds new rows to the HUC table
@@ -339,6 +340,10 @@ function clearSelection() {
         Map.huclayers[key].clearLayers();
         delete Map.huclayers[key];
     }
+
+    // clear the HUC table
+    clearHucTable();
+
     // update the map
     updateMapBBox();
     getLccBounds([]);
