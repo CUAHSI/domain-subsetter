@@ -135,13 +135,16 @@ $(window).bind("load", function() {
     
 		// get the content value
     huc = document.getElementById('content').value;
-    
-    if (huc.length == 12) {
+   
+    // check for 12-digit string match (i.e. HUC 12)
+    var re = /\d{12}/;
+    var match = huc.match(re);
+    if (match) {
       // add huc to table
       addHucRow(huc);
 	} else {
         // display error notification
-        var message = 'Error adding HUC, must contain only 12 numeric characters';
+        var message = 'Error: HUCs must contain exactly 12 numeric characters';
         notify(message);
     }
     
