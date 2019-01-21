@@ -71,14 +71,6 @@ $(document).ready(function() {
         maxZoom:Map.huc4_max
     }).addTo(map);
     
-//    // HUC 8 Layer
-//    var huc8 = L.tileLayer.wms(url, {
-//        layers: 2,
-//        transparent: 'true',
-//        format: 'image/png',
-//        minZoom:Map.huc8_min,
-//        maxZoom:Map.huc8_max
-//    }).addTo(map);
 
     // HUC 12 Layer
     var huc12 = L.tileLayer.wms(url, {
@@ -105,6 +97,7 @@ $(document).ready(function() {
       "HUC 10": huc10,
       "HUC 12": huc12
    };
+
    // Add Layer-Controller
    L.control.layers(null, mixed).addTo(map);
 
@@ -116,6 +109,109 @@ $(document).ready(function() {
         clickHandler(e);        
     });
 
+});
+
+
+$(window).bind("load", function() {
+
+  /**
+  * Open dialog for adding HUC to table
+  */
+  document.getElementById("add-huc").onclick = function() {
+    console.log('add huc');
+
+    // show the dialog
+    document.getElementById('addContentDialogTemplate').style.display = "";
+  };
+    
+  /**
+  * Cancels the add HUC dialog
+  */
+  document.getElementById("add-huc-submit").onclick = function() {
+  	console.log('huc submit')
+    
+		// get the content value
+    huc = document.getElementById('content').value;
+    
+		//    if (huc.length == 12) {
+    // add huc to table
+    addNewRow(huc);
+    
+	  //}
+    
+    // hide the dialog
+    document.getElementById('content').value = '';
+    document.getElementById('addContentDialogTemplate').style.display = "none";
+  }
+    
+   /**
+    * Submits the add HUC dialog and applies the result to the table
+    */
+    document.getElementById("add-huc-cancel").onclick = function() {
+    	console.log('huc cancel')
+    
+    	// clear and hide the dialog
+    	document.getElementById('content').value = '';
+    	document.getElementById('addContentDialogTemplate').style.display = "none";
+    }
+    
+    /**
+    * Removes the selected HUC from the table
+    */
+    document.getElementById("rm-huc").onclick = function() {
+    
+    	var rows = $(".mdl-data-dynamictable tbody").find('tr.is-selected');
+    	if (rows.length == 0) {
+    		console.log('notify that rows need to be selected');
+    	} else {
+    		console.log('remove selected rows');
+    	}
+    }
+    
+   /**
+    * Selects and deselects all rows when the header box is checked
+    */
+    $(document).on("click", "#checkbox-all", function() {
+    	_isChecked = $(this).parent("label").hasClass("is-checked");
+    	if (_isChecked === false) {
+    		$(".mdl-data-dynamictable").find('tr').addClass("is-selected");
+    		$(".mdl-data-dynamictable").find('tr td label').addClass("is-checked");
+    	} else {
+    		$(".mdl-data-dynamictable").find('tr td label').removeClass("is-checked");
+    	}
+    });
+    
+    
+    function addNewRow(huc_value) {
+    
+    	var table = document.getElementById('huc-table');
+    	var row = table.insertRow(table.rows.length);
+    
+    	var cell1 = row.insertCell(0);
+    
+    	var lbl = document.createElement('label');
+    	lbl.className = 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select mdl-js-ripple-effect--ignore-events is-upgraded';
+    	lbl.setAttribute('for', 'checkbox');
+    
+    	var chk = document.createElement('input');
+    	chk.type = 'checkbox';
+    	chk.id = 'checkbox';
+    	chk.className = 'mdl-checkbox__input';
+    	lbl.appendChild(chk);
+    
+    	cell1.appendChild(lbl);
+    
+    	var cell1 = row.insertCell(1);
+    	cell1.className = 'mdl-data-table__cell--non-numeric';
+    	cell1.innerHTML = huc_value;
+    
+    	var cell2 = row.insertCell(2);
+    	cell2.innerHTML =  'Loading';
+    
+    
+    	componentHandler.upgradeAllRegistered();
+    	}
+    
 });
 
 
