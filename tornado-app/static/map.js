@@ -118,6 +118,7 @@ $(document).ready(function() {
 $(window).bind("load", function() {
 
   /**
+  * ADD - HUC TABLE - OPEN
   * Open dialog for adding HUC to table
   */
   document.getElementById("add-huc").onclick = function() {
@@ -128,6 +129,7 @@ $(window).bind("load", function() {
   };
     
   /**
+  * ADD - HUC TABLE - CANCEL
   * Cancels the add HUC dialog
   */
   document.getElementById("add-huc-submit").onclick = function() {
@@ -140,9 +142,11 @@ $(window).bind("load", function() {
     var re = /\d{12}/;
     var match = huc.match(re);
     if (match) {
+
       // add huc to table
       addHucRow(huc);
 	} else {
+
         // display error notification
         var message = 'Error: HUCs must contain exactly 12 numeric characters';
         notify(message);
@@ -154,6 +158,7 @@ $(window).bind("load", function() {
   }
     
    /**
+    * ADD - HUC TABLE - SUBMIT
     * Submits the add HUC dialog and applies the result to the table
     */
     document.getElementById("add-huc-cancel").onclick = function() {
@@ -165,17 +170,64 @@ $(window).bind("load", function() {
     }
     
     /**
-    * Removes the selected HUC from the table
+    * REMOVE - HUC TABLE - OPEN
+    * Opens dialog for removing HUC from to table
     */
     document.getElementById("rm-huc").onclick = function() {
+
+      // check if items are selected
+
+      // show the dialog
+      document.getElementById('rmContentDialogTemplate').style.display = "";
+    };
+
+    /**
+    * REMOVE - HUC TABLE - CANCEL
+    * Cancels the rm HUC dialog
+    */
+    document.getElementById("rm-huc-cancel").onclick = function() {
+    	console.log('huc cancel')
     
-    	var rows = $(".mdl-data-dynamictable tbody").find('tr.is-selected');
-    	if (rows.length == 0) {
-    		console.log('notify that rows need to be selected');
-    	} else {
-    		console.log('remove selected rows');
-    	}
+    	// clear and hide the dialog
+    	document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
+
+    /**
+    * REMOVE - HUC TABLE - SUBMIT
+    * submits selected HUCs within the table for removal
+    */
+    document.getElementById("rm-huc-submit").onclick = function() {
+        
+        var hucs_to_remove = [];
+        // remove items from table
+        var table = document.getElementById("huc-table");
+        var labels = $('#huc-table tbody tr label');
+        for (var i=labels.length-1; i>=0; i--) {
+            if (labels[i].classList.contains('is-checked')) {
+                hucs_to_remove.push($('#huc-table tbody tr td')[i*3 +1].innerHTML);
+                table.deleteRow(i);
+            }
+        } 
+
+        debugger; 
+        // deselect item from map (loop through hucs_to_remove)
+        
+        
+    	// clear and hide the dialog
+    	document.getElementById('rmContentDialogTemplate').style.display = "none";
+    }
+//    /**
+//    * Removes the selected HUC from the table
+//    */
+//    document.getElementById("rm-huc").onclick = function() {
+//    
+//    	var rows = $(".mdl-data-dynamictable tbody").find('tr.is-selected');
+//    	if (rows.length == 0) {
+//    		console.log('notify that rows need to be selected');
+//    	} else {
+//    		console.log('remove selected rows');
+//    	}
+//    }
     
    /**
     * Selects and deselects all rows when the header box is checked
@@ -348,8 +400,6 @@ function getFeatureByHUC(hucid) {
 	    // todo: remove togglePolygon from parseWfsXML function
             res = parseWfsXML(response);
 	    
-            console.log('hello');
-
         }
     });
 }
