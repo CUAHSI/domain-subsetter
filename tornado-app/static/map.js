@@ -129,7 +129,7 @@ $(window).bind("load", function() {
   };
     
   /**
-  * ADD - HUC TABLE - CANCEL
+  * ADD - HUC TABLE -SUBMIT
   * Cancels the add HUC dialog
   */
   document.getElementById("add-huc-submit").onclick = function() {
@@ -145,6 +145,10 @@ $(window).bind("load", function() {
 
       // add huc to table
       addHucRow(huc);
+
+      // add this feature to the map
+      addFeatureByHUC(huc)
+
 	} else {
 
         // display error notification
@@ -158,7 +162,7 @@ $(window).bind("load", function() {
   }
     
    /**
-    * ADD - HUC TABLE - SUBMIT
+    * ADD - HUC TABLE - CANCEL
     * Submits the add HUC dialog and applies the result to the table
     */
     document.getElementById("add-huc-cancel").onclick = function() {
@@ -213,29 +217,15 @@ $(window).bind("load", function() {
             }
         } 
 
-        debugger; 
         // deselect item from map (loop through hucs_to_remove)
+        for (var i=0; i<=hucs_to_remove.length; i++) {
+            togglePolygon(hucs_to_remove[i], []);
+        }
         
         
     	// clear and hide the dialog
     	document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
-    
-   /**
-    * Selects and deselects all rows when the header box is checked
-    */
-    $(document).on("click", "#checkbox-all", function() {
-    	_isChecked = $(this).parent("label").hasClass("is-checked");
-    	if (_isChecked === false) {
-    		$(".mdl-data-dynamictable").find('tr').addClass("is-selected");
-    		$(".mdl-data-dynamictable").find('tr td label').addClass("is-checked");
-    	} else {
-    		$(".mdl-data-dynamictable").find('tr td label').removeClass("is-checked");
-    	}
-    });
-
-    
-    
     
 });
 
@@ -319,12 +309,20 @@ function getRowIdByName(huc_value) {
   }
 }
 
-/**
- * Get the rows that are selected via checkbox
+/** 
+ * Gets the row object for a given huc value
+ * Returns: the row object or -999 if it doesn't exist
  */
-function getSelectedRowsByChk() {
+function getRowByName(huc_value) {
 
+  var row = $("#huc-table > tbody > tr:contains('"+huc_value+"')");
+  if (row.length == 0) {
+    return -999;
+  } else {
+    return row[0];
+  }
 }
+
 
 /** 
  * Clears the selected features on the map
@@ -381,13 +379,43 @@ function getLccBounds(hucs) {
 
 }
 
+function addFeatureToMap(feature) {
+
+    // toggle bounding box
+    if (feature.hucid in Map.hucbounds)
+    {
+        // remove huc from list if it's already selected
+        delete Map.hucbounds[feature.hucid];
+
+        // add huc ID to the table
+        var row_id = getRowIdByName(feature.hucid)
+        rmHucRow(row_id);
+
+    }
+    else{
+        // add huc to list of it's not selected
+        Map.hucbounds[feature.hucid] = feature.bbox;
+
+        // remove huc ID from the table
+        addHucRow(feature.hucid);
+    }
+    // update the boundaries of the global bbox
+    updateMapBBox();
+
+    // retrieve the LCC coordinate for this bounding box
+    hucs = [];
+    for (key in Map.hucbounds){
+        hucs.push(key);
+    }
+    getLccBounds(hucs);
+}
 
 /**
-* Queries the HUC feature by HUC id using WFS:GetFeature
+* adds features to the map by HUC id using WFS:GetFeature
 * @param {string} hucid - a single HUC ids to query
 * @returns - null
 */
-function getFeatureByHUC(hucid) {
+function addFeatureByHUC(hucid) {
 
 
     var defaultParameters = {
@@ -406,10 +434,33 @@ function getFeatureByHUC(hucid) {
         url: URL,
         success: function (response) {
 
-	    // this also calls togglePolygon.
-	    // todo: remove togglePolygon from parseWfsXML function
-            res = parseWfsXML(response);
-	    
+            // this also calls togglePolygon.
+    	    // todo: remove togglePolygon from parseWfsXML function
+    	    try {
+                res = parseWfsXML(response);
+            
+                // add the feature to the map
+                addFeatureToMap(res);
+    	     
+                var row = getRowByName(res.hucid);
+                var elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Loaded Successfully';
+                elem.style.color = 'green';
+    
+            } catch(err) {
+                var row = getRowByName(hucid);
+                var elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Error retrieving shape';
+                elem.style.color = 'red';
+            }
+
+        
+        },
+        error: function (response) {
+            var row = getRowByName(res.hucid);
+            var elem = row.getElementsByTagName('td')[2]
+            elem.innerText = 'Error retrieving shape';
+            elem.style.color = 'red';
         }
     });
 }
@@ -443,40 +494,59 @@ function clickHandler(e) {
         url: URL,
         success: function (response) {
 
-            // convert the XML response into something more useable 
-            res = parseWfsXML(response);
+    	    try {
+                // convert the XML response into something more useable 
+                res = parseWfsXML(response);
 
-            // toggle bounding box
-            if (res.hucid in Map.hucbounds)
-            {
-                // remove huc from list if it's already selected
-                delete Map.hucbounds[res.hucid];
-		
-                // add huc ID to the table
-                var row_id = getRowIdByName(res.hucid)
-                rmHucRow(row_id);
+                // toggle bounding box
+                if (res.hucid in Map.hucbounds)
+                {
+                    // remove huc from list if it's already selected
+                    delete Map.hucbounds[res.hucid];
+    		
+                    // add huc ID to the table
+                    var row_id = getRowIdByName(res.hucid)
+                    rmHucRow(row_id);
+    
+                }
+                else{
+                    // add huc to list of it's not selected
+                    Map.hucbounds[res.hucid] = res.bbox;
+    	    
+                    // remove huc ID from the table
+                    addHucRow(res.hucid);
+                }
 
+                // update the boundaries of the global bbox
+                updateMapBBox();
+    
+                // retrieve the LCC coordinate for this bounding box
+                hucs = [];
+                for (key in Map.hucbounds){
+                    hucs.push(key);
+                }
+                getLccBounds(hucs);
+    	       
+                // update the status message in the table
+                var row = getRowByName(res.hucid);
+                var elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Loaded Successfully';
+                elem.style.color = 'green';
+    
+            } catch(err) {
+                var row = getRowByName(hucid);
+                var elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Error retrieving shape';
+                elem.style.color = 'red';
             }
-            else{
-                // add huc to list of it's not selected
-                Map.hucbounds[res.hucid] = res.bbox;
-	    
-                // remove huc ID from the table
-                addHucRow(res.hucid);
-            }
-            // update the boundaries of the global bbox
-            updateMapBBox();
 
-            // retrieve the LCC coordinate for this bounding box
-            hucs = [];
-            for (key in Map.hucbounds){
-                hucs.push(key);
-            }
-            getLccBounds(hucs);
 
         },
         error: function (response) {
-            alert('An error was encountered while retrieving shape metadata.');
+            var row = getRowByName(hucid);
+            var elem = row.getElementsByTagName('td')[2]
+            elem.innerText = 'Error retrieving shape';
+            elem.style.color = 'red';
         }
 
     });
