@@ -194,17 +194,19 @@ $(window).bind("load", function() {
 function addHucRow(huc_value) {
 
   var table = document.getElementById('huc-table');
-  var row = table.insertRow(table.rows.length);
+  var rid = table.rows.length;
+  var chkid = 'chkbx' + rid;
+  var row = table.insertRow(rid);
 
   var cell1 = row.insertCell(0);
 
   var lbl = document.createElement('label');
   lbl.className = 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select mdl-js-ripple-effect--ignore-events is-upgraded';
-  lbl.setAttribute('for', 'checkbox');
+  lbl.setAttribute('for', chkid);
 
   var chk = document.createElement('input');
   chk.type = 'checkbox';
-  chk.id = 'checkbox';
+  chk.id = chkid;
   chk.className = 'mdl-checkbox__input';
   lbl.appendChild(chk);
 
@@ -272,48 +274,48 @@ function getLccBounds(hucs) {
 
 }
 
-function huc_text_entered(e) {
+////function huc_text_entered(e) {
+////
+////    var codestr = $('#huccode')[0].value + e.key;
+////    codes = codestr.split(',');
+////    l = codes.length;
+////    last_code = codes[l-1].trim();
+////    if (last_code.length == 12){
+////        // get feature
+////        getFeatureByHUC(last_code)
+////        
+//////       // getLccBounds(codes);
+//// //       Map.hucbounds[codes[l-1]] = res.bbox;
+////        // update the boundaries of the global bbox
+////        updateMapBBox();
+//////        console.log(codestr);
+////    }
+////
+////}
 
-    var codestr = $('#huccode')[0].value + e.key;
-    codes = codestr.split(',');
-    l = codes.length;
-    last_code = codes[l-1].trim();
-    if (last_code.length == 12){
-        // get feature
-        getFeatureByHUC(last_code)
-        
-//       // getLccBounds(codes);
- //       Map.hucbounds[codes[l-1]] = res.bbox;
-        // update the boundaries of the global bbox
-        updateMapBBox();
-//        console.log(codestr);
-    }
 
-}
-
-
-function update_huc_textbox(text) {
-
-    var codestr = $('#huccode')[0].value;
-    var codes = [];
-    if (codestr != '') {
-        codes = codestr.split(',');
-
-        // remove leading and trailing whitespaces from each element
-        codes = codes.map(s => s.trim());
-    }
-    if (!codes.includes(text)) {
-        // add the huc code
-        codes.push(text);
-    }
-    else {
-        // remove the huc code
-        codes = codes.filter(function(e) { return e !== text })
-    }
-
-    document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
-
-}
+////function update_huc_textbox(text) {
+////
+////    var codestr = $('#huccode')[0].value;
+////    var codes = [];
+////    if (codestr != '') {
+////        codes = codestr.split(',');
+////
+////        // remove leading and trailing whitespaces from each element
+////        codes = codes.map(s => s.trim());
+////    }
+////    if (!codes.includes(text)) {
+////        // add the huc code
+////        codes.push(text);
+////    }
+////    else {
+////        // remove the huc code
+////        codes = codes.filter(function(e) { return e !== text })
+////    }
+////
+////    document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
+////
+////}
 
 /**
 * Queries the HUC feature by HUC id using WFS:GetFeature
@@ -379,8 +381,11 @@ function clickHandler(e) {
         success: function (response) {
             res = parseWfsXML(response);
 
-            // update huc text box
-            update_huc_textbox(res.hucid);
+////            // update huc text box
+////            update_huc_textbox(res.hucid);
+	   
+	    // add huc ID to the table
+	    addHucRow(res.hucid);
 
             // toggle bounding box
             if (res.hucid in Map.hucbounds)
