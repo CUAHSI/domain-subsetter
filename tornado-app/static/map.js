@@ -112,6 +112,9 @@ $(document).ready(function() {
 });
 
 
+/**
+ * Functions that will load after the page is fully rendered
+ */
 $(window).bind("load", function() {
 
   /**
@@ -135,7 +138,7 @@ $(window).bind("load", function() {
     
 		//    if (huc.length == 12) {
     // add huc to table
-    addNewRow(huc);
+    addHucRow(huc);
     
 	  //}
     
@@ -182,38 +185,41 @@ $(window).bind("load", function() {
     });
     
     
-    function addNewRow(huc_value) {
-    
-    	var table = document.getElementById('huc-table');
-    	var row = table.insertRow(table.rows.length);
-    
-    	var cell1 = row.insertCell(0);
-    
-    	var lbl = document.createElement('label');
-    	lbl.className = 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select mdl-js-ripple-effect--ignore-events is-upgraded';
-    	lbl.setAttribute('for', 'checkbox');
-    
-    	var chk = document.createElement('input');
-    	chk.type = 'checkbox';
-    	chk.id = 'checkbox';
-    	chk.className = 'mdl-checkbox__input';
-    	lbl.appendChild(chk);
-    
-    	cell1.appendChild(lbl);
-    
-    	var cell1 = row.insertCell(1);
-    	cell1.className = 'mdl-data-table__cell--non-numeric';
-    	cell1.innerHTML = huc_value;
-    
-    	var cell2 = row.insertCell(2);
-    	cell2.innerHTML =  'Loading';
-    
-    
-    	componentHandler.upgradeAllRegistered();
-    	}
     
 });
 
+/** 
+ * Adds new rows to the HUC table
+ */
+function addHucRow(huc_value) {
+
+  var table = document.getElementById('huc-table');
+  var row = table.insertRow(table.rows.length);
+
+  var cell1 = row.insertCell(0);
+
+  var lbl = document.createElement('label');
+  lbl.className = 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select mdl-js-ripple-effect--ignore-events is-upgraded';
+  lbl.setAttribute('for', 'checkbox');
+
+  var chk = document.createElement('input');
+  chk.type = 'checkbox';
+  chk.id = 'checkbox';
+  chk.className = 'mdl-checkbox__input';
+  lbl.appendChild(chk);
+
+  cell1.appendChild(lbl);
+
+  var cell1 = row.insertCell(1);
+  cell1.className = 'mdl-data-table__cell--non-numeric';
+  cell1.innerHTML = huc_value;
+
+  var cell2 = row.insertCell(2);
+  cell2.innerHTML =  'Loading';
+
+
+  componentHandler.upgradeAllRegistered();
+}
 
 /** 
  * Clears the selected features on the map
