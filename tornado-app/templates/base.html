@@ -5,9 +5,9 @@
       <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
 
       <!-- Material Design Libraries -->
+      <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
       <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-      <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
       <!-- custom styling -->
       <link rel="stylesheet" type="text/css" href='{{ static_url("style.css") }}'/> 
@@ -69,6 +69,12 @@
             <div class="mdl-logo"><img src='{{ static_url("logo.png") }}'></div>
         </div>
     </footer>
+
+<div id="notification" class="mdl-js-snackbar mdl-snackbar">
+  <div class="mdl-snackbar__text"></div>
+  <button class="mdl-snackbar__action" type="button"></button>
+</div>
+
 </div>
 
     {% block extra-js %}

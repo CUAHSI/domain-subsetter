@@ -136,11 +136,14 @@ $(window).bind("load", function() {
 		// get the content value
     huc = document.getElementById('content').value;
     
-		//    if (huc.length == 12) {
-    // add huc to table
-    addHucRow(huc);
-    
-	  //}
+    if (huc.length == 12) {
+      // add huc to table
+      addHucRow(huc);
+	} else {
+        // display error notification
+        var message = 'Error adding HUC, must contain only 12 numeric characters';
+        notify(message);
+    }
     
     // hide the dialog
     document.getElementById('content').value = '';
@@ -643,3 +646,13 @@ function validate_bbox_size(){
 }
 
 
+/**
+ * Displays a notification message at the bottom of the screen 
+ * using this #notification element in base.html
+ */
+function notify(message) {
+    var notify = document.querySelector('#notification');
+    var data = {message: message}
+    notify.MaterialSnackbar.showSnackbar(data);
+
+}
