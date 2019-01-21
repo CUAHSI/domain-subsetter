@@ -193,6 +193,14 @@ $(window).bind("load", function() {
  */
 function addHucRow(huc_value) {
 
+  // check if the id already exists in the table.
+  // if it does, don't add it again
+  existing_row_id = getRowIdByName(huc_value);
+  if (existing_row_id != -999)
+  { 
+     return;
+  }
+
   var table = document.getElementById('huc-table');
   var rid = table.rows.length;
   var chkid = 'chkbx' + rid;
@@ -221,6 +229,37 @@ function addHucRow(huc_value) {
 
 
   componentHandler.upgradeAllRegistered();
+}
+
+/**
+ * Removes a row from the HUC table
+ */
+function rmHucRow(row_id) {
+
+  var table = document.getElementById("huc-table");
+  table.deleteRow(row_id);
+
+}
+
+/** 
+ * Gets the row id for a given huc value
+ * Returns: index of the matching row, -999 if it doesn't exist in the table
+ */
+function getRowIdByName(huc_value) {
+
+  var row = $("#huc-table > tbody > tr:contains('"+huc_value+"')");
+  if (row.length == 0) {
+    return -999;
+  } else {
+    return row[0].rowIndex;
+  }
+}
+
+/**
+ * Get the rows that are selected via checkbox
+ */
+function getSelectedRowsByChk() {
+
 }
 
 /** 
@@ -274,48 +313,6 @@ function getLccBounds(hucs) {
 
 }
 
-////function huc_text_entered(e) {
-////
-////    var codestr = $('#huccode')[0].value + e.key;
-////    codes = codestr.split(',');
-////    l = codes.length;
-////    last_code = codes[l-1].trim();
-////    if (last_code.length == 12){
-////        // get feature
-////        getFeatureByHUC(last_code)
-////        
-//////       // getLccBounds(codes);
-//// //       Map.hucbounds[codes[l-1]] = res.bbox;
-////        // update the boundaries of the global bbox
-////        updateMapBBox();
-//////        console.log(codestr);
-////    }
-////
-////}
-
-
-////function update_huc_textbox(text) {
-////
-////    var codestr = $('#huccode')[0].value;
-////    var codes = [];
-////    if (codestr != '') {
-////        codes = codestr.split(',');
-////
-////        // remove leading and trailing whitespaces from each element
-////        codes = codes.map(s => s.trim());
-////    }
-////    if (!codes.includes(text)) {
-////        // add the huc code
-////        codes.push(text);
-////    }
-////    else {
-////        // remove the huc code
-////        codes = codes.filter(function(e) { return e !== text })
-////    }
-////
-////    document.querySelector('.mdl-textfield').MaterialTextfield.change(codes.join(','));
-////
-////}
 
 /**
 * Queries the HUC feature by HUC id using WFS:GetFeature
@@ -379,23 +376,27 @@ function clickHandler(e) {
     var ajax = $.ajax({
         url: URL,
         success: function (response) {
-            res = parseWfsXML(response);
 
-////            // update huc text box
-////            update_huc_textbox(res.hucid);
-	   
-	    // add huc ID to the table
-	    addHucRow(res.hucid);
+            // convert the XML response into something more useable 
+            res = parseWfsXML(response);
 
             // toggle bounding box
             if (res.hucid in Map.hucbounds)
             {
                 // remove huc from list if it's already selected
                 delete Map.hucbounds[res.hucid];
+		
+                // add huc ID to the table
+                var row_id = getRowIdByName(res.hucid)
+                rmHucRow(row_id);
+
             }
             else{
                 // add huc to list of it's not selected
                 Map.hucbounds[res.hucid] = res.bbox;
+	    
+                // remove huc ID from the table
+                addHucRow(res.hucid);
             }
             // update the boundaries of the global bbox
             updateMapBBox();
