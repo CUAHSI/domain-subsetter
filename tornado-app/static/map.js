@@ -212,16 +212,26 @@ $(window).bind("load", function() {
         var labels = $('#huc-table tbody tr label');
         for (var i=labels.length-1; i>=0; i--) {
             if (labels[i].classList.contains('is-checked')) {
-                hucs_to_remove.push($('#huc-table tbody tr td')[i*3 +1].innerHTML);
+                var hucid =$('#huc-table tbody tr td')[i*3 +1].innerHTML;
+                
+                // remove the huc from the table
                 table.deleteRow(i);
+                
+                // toggle the polygon off                
+                togglePolygon(hucid, []);
+
+                // remove huc from internal list of features
+                delete Map.hucbounds[hucid];
             }
         } 
 
-        // deselect item from map (loop through hucs_to_remove)
-        for (var i=0; i<=hucs_to_remove.length; i++) {
-            togglePolygon(hucs_to_remove[i], []);
+    	// update the boundaries of the global bbox
+	    updateMapBBox();
+    	hucs = [];
+       	for (key in Map.hucbounds){
+            hucs.push(key);
         }
-        
+        getLccBounds(hucs);
         
     	// clear and hide the dialog
     	document.getElementById('rmContentDialogTemplate').style.display = "none";
