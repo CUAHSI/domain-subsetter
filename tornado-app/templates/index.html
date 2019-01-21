@@ -9,8 +9,10 @@
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
       <script type='text/javascript' src='{{ static_url("map.js") }}'></script>
       <link rel="shortcut icon" href="favicon.ico">
-{% end %}
 
+	{% block more-head %}
+	{% end %}
+{% end %}
 
 
 {% block content %}
@@ -23,19 +25,22 @@
             <input type="hidden" name="llon" id="llon"/>
             <input type="hidden" name="ulon" id="ulon"/>
             <div class='mdl-grid'>
-                <div class='mdl-cell mdl-cell--1-offset mdl-cell--9-col'>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" style='width:600px' type="text" id="huccode">
-                        <label class="mdl-textfield__label" style='width:600px' for="huccode">Search by HUC 12 Code</label>
-                    </div>
-                </div> 
 
-                <div class='mdl-cell mdl-cell--2-col'>
-                <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
-                    Submit
-                </button>
-            </div>
+		<!-- TABLE -->
+
+                <div class='mdl-cell mdl-cell--6-col mdl-cell--1-offset'>
+		    {% include huc-table.html %}
+		</div>
+
+
+		<!-- SUBMIT BUTTON -->		
+                <div class='mdl-cell mdl-cell--2-col mdl-cell--2-offset' id="submit-button">
+                    <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
+                        Submit
+                    </button>
+		</div>
          </div>
+
          {% module xsrf_form_html() %}
         </form>
 

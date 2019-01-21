@@ -148,3 +148,7 @@ div.processing {
     width: 80%;
     margin: 10px auto 10px auto;
 }
+#submit-button {
+    padding-top: 15px;
+    padding-bottom: 10px;
+}

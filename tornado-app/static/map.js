@@ -116,11 +116,6 @@ $(document).ready(function() {
         clickHandler(e);        
     });
 
-    document.getElementById('huccode').addEventListener('keypress', function(e) {
-        huc_text_entered(e);
-    });
-
-
 });
 
 
@@ -180,9 +175,10 @@ function huc_text_entered(e) {
     var codestr = $('#huccode')[0].value + e.key;
     codes = codestr.split(',');
     l = codes.length;
-    if (codes[l-1].length == 12){
+    last_code = codes[l-1].trim();
+    if (last_code.length == 12){
         // get feature
-        var res = getFeatureByHUC(codes[l-1])
+        getFeatureByHUC(last_code)
         
 //       // getLccBounds(codes);
  //       Map.hucbounds[codes[l-1]] = res.bbox;
@@ -192,6 +188,8 @@ function huc_text_entered(e) {
     }
 
 }
+
+
 function update_huc_textbox(text) {
 
     var codestr = $('#huccode')[0].value;
@@ -218,7 +216,7 @@ function update_huc_textbox(text) {
 /**
 * Queries the HUC feature by HUC id using WFS:GetFeature
 * @param {string} hucid - a single HUC ids to query
-* @returns {array} - [hucid, boundingbox] for the HUC object
+* @returns - null
 */
 function getFeatureByHUC(hucid) {
 
@@ -238,9 +236,13 @@ function getFeatureByHUC(hucid) {
     var ajax = $.ajax({
         url: URL,
         success: function (response) {
+
+	    // this also calls togglePolygon.
+	    // todo: remove togglePolygon from parseWfsXML function
             res = parseWfsXML(response);
-            // todo: rcall toggle huc function
-            return res;
+	    
+            console.log('hello');
+
         }
     });
 }
@@ -422,6 +424,7 @@ function parseWfsXML(xml){
     var ptlist = points.innerHTML.split(' ');
 
     // select the layer
+    // todo: remove togglePolygon from parseWfsXML function
     togglePolygon(hucID, ptlist);
 
 
