@@ -176,9 +176,13 @@ $(window).bind("load", function() {
     document.getElementById("rm-huc").onclick = function() {
 
       // check if items are selected
-
-      // show the dialog
-      document.getElementById('rmContentDialogTemplate').style.display = "";
+      if ($('#huc-table').find('label').hasClass('is-checked')) {
+        // show the dialog
+        document.getElementById('rmContentDialogTemplate').style.display = "";
+      } else { 
+        var message = 'No rows have been selected for removal';
+        notify(message);
+      }
     };
 
     /**
