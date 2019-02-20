@@ -152,3 +152,16 @@ div.processing {
     padding-top: 15px;
     padding-bottom: 10px;
 }
+.map-accordion {
+    min-width: 100%; 
+    min-height: 100%; 
+}
+.mdlext-accordion__panel.huc-table-panel.is-expanded {
+    width: 525px !important;
+}
+.mdlext-accordion__panel.huc-table-panel > header {
+    height: 150px;
+}
+.mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
+    border: None;
+}

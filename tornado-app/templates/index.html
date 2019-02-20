@@ -17,7 +17,33 @@
 
 {% block content %}
 
-        <div class='map' id="map"></div>
+
+    <div class='mdl-grid'>	
+        <div class='mdl-cell mdl-cell--12-col'>
+
+        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
+
+            <li class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+                <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
+                    <span class="mdlext-accordion__tab__caption">Map</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section class="mdlext-accordion__tabpanel" aria-hidden='false'>
+                    <div class='map' id="map"></div>
+                </section>
+            </li>
+
+            <li class="mdlext-accordion__panel huc-table-panel">
+                <header class="mdlext-accordion__tab">
+                    <span class="mdlext-accordion__tab__caption">HUC List</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section class="mdlext-accordion__tabpanel">
+		            {% include huc-table.html %}
+                </section>
+            </li>
+        </ul>
+    </div>
 
         <form action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
