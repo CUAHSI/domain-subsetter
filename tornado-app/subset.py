@@ -24,8 +24,6 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
                   'xmax : %s\n'
                   'ymax : %s\n\n' % (uid, str(xmin), str(ymin),
                                      str(xmax), str(ymax)))
-
-    geofile = env.geofile
     bbox = (float(xmin),
             float(ymin),
             float(xmax),
@@ -48,20 +46,21 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
            str(ymin),
            str(ymax),
            str(xmin),
-           str(xmax)]
+           str(xmax),
+           env.wrfdata]
     print(' '.join(cmd))
     p = subprocess.Popen(cmd,
                          cwd=os.path.join(os.getcwd(), 'r-subsetting'),
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 
-#    for line in iter(p.stdout.readline, b''):
-#        l = line.decode('utf-8').rstrip()
+    for line in iter(p.stdout.readline, b''):
+        l = line.decode('utf-8').rstrip()
 #        if 'std' in l:
 #            l = l.replace('std:', '\n')
 #            stdout.append(l)
-#        print(l, flush=True)
-#    p.stdout.close()
+        print(l, flush=True)
+    p.stdout.close()
     return_code = p.wait()
     
 

@@ -23,4 +23,13 @@ application_level = 'INFO'
 general_level = 'INFO'
 
 # WRF-HYDRO settings
-geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
+#geofile = '/share/nwm.v1.2.2/geo_em.d01_1km.nc'
+wrfdata = '/share/nwm.v1.2.2'
+
+# Output subset directory
+output_dir = '/share/appdata/output'
+
+# Location of jobs database
+sqldb = '/share/appdata/jobs.db'
+
+

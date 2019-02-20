@@ -3,7 +3,16 @@
 This project is an experimental web service for subsetting National Water Model domain files.
 
 
+## Installing libraries
+1. Install Anaconda or Miniconda
+2. conda config --append channels conda-forge
+3. conda create -n subset --file requirements.txt -y
+4. source subset
 
+## make data directories
+1. mkdir /share/[data-version]
+2. mkdir /share/appdata
+3. mkdir /share/appdata/output 
 
 # Setup
 

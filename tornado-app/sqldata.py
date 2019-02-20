@@ -3,8 +3,11 @@ import sqlite3
 
 class Connect(object):
 
+    def __init__(self, db):
+        self.db = db
+
     def connect(self):
-        conn = sqlite3.connect('data/jobs.db', timeout=10)
+        conn = sqlite3.connect(self.db, timeout=10)
         cursor = conn.cursor()
         return conn, cursor
 

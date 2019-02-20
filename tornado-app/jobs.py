@@ -17,7 +17,7 @@ class BackgroundWorker(object):
         self.queue = mp.Queue()
         self.jobs = {}
 
-        self.sql = sqldata.Connect()
+        self.sql = sqldata.Connect(env.sqldb)
         self.sql.build()
 
         self.Processes = []
