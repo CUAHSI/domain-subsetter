@@ -55,7 +55,7 @@ body {
     height: 67vh;
     border: 1px solid #AAA;
     position: relative;
-    margin:50px 50px 5px 50px;
+    margin:50px 10px 5px 50px;
 }
 
 /* Beta Logo */
@@ -161,7 +161,32 @@ div.processing {
 }
 .mdlext-accordion__panel.huc-table-panel > header {
     height: 150px;
+    border-radius:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 50px;
+    margin-right: 10px;
 }
 .mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
     border: None;
 }
+#huc-table-div {
+    margin-top:50px;
+}
+#huc-table {
+    table-layout:fixed;
+    width: 290px;
+}
+#huc-table td:nth-child(1) {
+    width: 10px;
+    padding: 10px;
+}
+#huc-table td:nth-child(2) {
+    padding-left: 40px;
+    width: 110px;
+}
+#huc-table td:nth-child(3) {
+    padding:: 0px;
+    text-align: center;
+}
+*:focus {outline:none !important}

@@ -454,13 +454,13 @@ function addFeatureByHUC(hucid) {
     	     
                 var row = getRowByName(res.hucid);
                 var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Loaded Successfully';
+                elem.innerText = 'Loaded';
                 elem.style.color = 'green';
     
             } catch(err) {
                 var row = getRowByName(hucid);
                 var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Error retrieving shape';
+                elem.innerText = 'Error';
                 elem.style.color = 'red';
             }
 
@@ -469,7 +469,7 @@ function addFeatureByHUC(hucid) {
         error: function (response) {
             var row = getRowByName(res.hucid);
             var elem = row.getElementsByTagName('td')[2]
-            elem.innerText = 'Error retrieving shape';
+            elem.innerText = 'Error';
             elem.style.color = 'red';
         }
     });
@@ -540,13 +540,13 @@ function clickHandler(e) {
                 // update the status message in the table
                 var row = getRowByName(res.hucid);
                 var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Loaded Successfully';
+                elem.innerText = 'Loaded';
                 elem.style.color = 'green';
     
             } catch(err) {
                 var row = getRowByName(hucid);
                 var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Error retrieving shape';
+                elem.innerText = 'Error';
                 elem.style.color = 'red';
             }
 
@@ -555,7 +555,7 @@ function clickHandler(e) {
         error: function (response) {
             var row = getRowByName(hucid);
             var elem = row.getElementsByTagName('td')[2]
-            elem.innerText = 'Error retrieving shape';
+            elem.innerText = 'Error';
             elem.style.color = 'red';
         }
 
