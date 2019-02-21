@@ -131,10 +131,6 @@ div.processing {
     overflow: hidden;
 }
 
-/* submit button */
-#btn-subset-submit {
-    width: 80%;
-}
 
 /* table styling */
 .admin-table td {
@@ -149,8 +145,14 @@ div.processing {
     margin: 10px auto 10px auto;
 }
 #submit-button {
-    padding-top: 15px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#submit-button-div {
+    padding: 0px;
+}
+#map-div {
+    padding: 0px;
 }
 .map-accordion {
     min-width: 100%; 

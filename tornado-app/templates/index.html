@@ -18,7 +18,7 @@
 {% block content %}
 
 
-    <div class='mdl-grid'>	
+    <div id='map-div' class='mdl-grid'>	
         <div class='mdl-cell mdl-cell--12-col'>
 
         <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
@@ -43,32 +43,24 @@
                 </section>
             </li>
         </ul>
-    </div>
+        </div>
 
+        <div class='mdl-cell mdl-cell--1-col mdl-cell--10-offset' id="submit-button">
         <form action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
             <input type="hidden" name="ulat" id="ulat"/>
             <input type="hidden" name="llon" id="llon"/>
             <input type="hidden" name="ulon" id="ulon"/>
-            <div class='mdl-grid'>
-
-		<!-- TABLE -->
-
-                <div class='mdl-cell mdl-cell--6-col mdl-cell--1-offset'>
-		    {% include huc-table.html %}
-		</div>
 
 
 		<!-- SUBMIT BUTTON -->		
-                <div class='mdl-cell mdl-cell--2-col mdl-cell--2-offset' id="submit-button">
                     <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
                         Submit
                     </button>
-		</div>
-         </div>
 
          {% module xsrf_form_html() %}
         </form>
+	</div>
 
 {% end %}
 
