@@ -139,22 +139,22 @@ $(window).bind("load", function() {
     huc = document.getElementById('content').value;
    
     // check for 12-digit string match (i.e. HUC 12)
-    var re = /\d{12}/;
-    var match = huc.match(re);
-    if (match) {
+//    var re = /\d{12}/;
+//    var match = huc.match(re);
+//    if (match) {
 
       // add huc to table
-      addHucRow(huc);
+//      addHucRow(huc);
 
       // add this feature to the map
       addFeatureByHUC(huc)
 
-	} else {
-
-        // display error notification
-        var message = 'Error: HUCs must contain exactly 12 numeric characters';
-        notify(message);
-    }
+//	} else {
+//
+//        // display error notification
+//        var message = 'Error: HUCs must contain exactly 12 numeric characters';
+//        notify(message);
+//    }
     
     // hide the dialog
     document.getElementById('content').value = '';
@@ -427,13 +427,25 @@ function addFeatureToMap(feature) {
 */
 function addFeatureByHUC(hucid) {
 
+    if (hucid.length < 12) {
+        hucid += '*';
+    	console.log(hucid);
+        filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
+
+    }
+    else if(hucid.length == 12) {
+        filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+    }
+    else {
+        return;
+    }
 
     var defaultParameters = {
         service : 'WFS',
         request : 'GetFeature',
         typeName : 'HUC_WBD:HUC12_US',
         SrsName : 'EPSG:4326',
-        Filter : "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+        Filter : filter
     };
     var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
     var parameters = L.Util.extend(defaultParameters);
@@ -446,23 +458,27 @@ function addFeatureByHUC(hucid) {
 
             // this also calls togglePolygon.
     	    // todo: remove togglePolygon from parseWfsXML function
-    	    try {
-                res = parseWfsXML(response);
+    	    var hucs = parseWfsXML(response);
+                
+ 	    for (i = 0; i < hucs.length; i ++) {
+    	        try {
+                    var res = hucs[i];
             
-                // add the feature to the map
-                addFeatureToMap(res);
+                    // add the feature to the map
+                    addFeatureToMap(res);
     	     
-                var row = getRowByName(res.hucid);
-                var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Loaded';
-                elem.style.color = 'green';
+                    var row = getRowByName(res.hucid);
+                    var elem = row.getElementsByTagName('td')[2]
+                    elem.innerText = 'Loaded';
+                    elem.style.color = 'green';
     
-            } catch(err) {
-                var row = getRowByName(hucid);
-                var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Error';
-                elem.style.color = 'red';
-            }
+                } catch(err) {
+                    var row = getRowByName(hucid);
+                    var elem = row.getElementsByTagName('td')[2]
+                    elem.innerText = 'Error';
+                    elem.style.color = 'red';
+                }
+	   }
 
         
         },
@@ -506,7 +522,8 @@ function clickHandler(e) {
 
     	    try {
                 // convert the XML response into something more useable 
-                res = parseWfsXML(response);
+                hucs = parseWfsXML(response);
+		var res = hucs[0];
 
                 // toggle bounding box
                 if (res.hucid in Map.hucbounds)
@@ -670,47 +687,52 @@ function togglePolygon(hucID, ptlist){
 * @returns {object} - ID and bounding box rectangle of the HUC polygon
 */
 function parseWfsXML(xml){
-    var data = xml.getElementsByTagName('wfs:member')[0].firstElementChild;
-
-    // get geometry
-    var points = data.getElementsByTagName('gml:posList')[0];
-    var hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
-    var ptlist = points.innerHTML.split(' ');
-
-    // select the layer
-    // todo: remove togglePolygon from parseWfsXML function
-    togglePolygon(hucID, ptlist);
-
-
-    // calculate bounding box
+    var response = [];
+    var hucs = xml.getElementsByTagName('wfs:member');
     var llat = 100000;
     var ulat = -100000;
     var llon = 100000;
     var ulon = -100000;
-    for (var i=1; i<ptlist.length; i+=2) {
-        lat = ptlist[i];
-        if (lat > ulat){
-            ulat = lat;
-        }
-        else if (lat < llat) {
-            llat =  lat;
-        }
-    }
-    for (var i=0; i<ptlist.length; i+=2) {
-        lon = ptlist[i];
-        if (lon > ulon){
-            ulon = lon;
-        }
-        else if (lon < llon) {
-            llon =  lon;
-        }
-    }
-    var bounds =  L.rectangle([  [ulat, ulon], [llat,llon]]);
-    var r = [];
-    r['hucid'] = hucID;
-    r['bbox'] = bounds;
-    return r
+    for (hid = 0; hid < hucs.length; hid ++) {
+
+        var data = hucs[hid];
     
+        // get geometry
+        var points = data.getElementsByTagName('gml:posList')[0];
+        var hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
+        var ptlist = points.innerHTML.split(' ');
+    
+        // select the layer
+        // todo: remove togglePolygon from parseWfsXML function
+        togglePolygon(hucID, ptlist);
+    
+    
+        // calculate bounding box
+        for (var i=1; i<ptlist.length; i+=2) {
+            lat = ptlist[i];
+            if (lat > ulat){
+                ulat = lat;
+            }
+            else if (lat < llat) {
+                llat =  lat;
+            }
+        }
+        for (var i=0; i<ptlist.length; i+=2) {
+            lon = ptlist[i];
+            if (lon > ulon){
+                ulon = lon;
+            }
+            else if (lon < llon) {
+                llon =  lon;
+            }
+        }
+        var bounds =  L.rectangle([  [ulat, ulon], [llat,llon]]);
+        var r = [];
+        r['hucid'] = hucID;
+        r['bbox'] = bounds;
+        response.push(r);
+    }
+    return response;
 }
 
 
