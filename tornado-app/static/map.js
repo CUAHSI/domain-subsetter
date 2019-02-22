@@ -427,11 +427,18 @@ function addFeatureToMap(feature) {
 */
 function addFeatureByHUC(hucid) {
 
+    var remove = null;
     if (hucid.length < 12) {
         hucid += '*';
         console.log(hucid);
         filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
-
+        
+        // add the huc row b/c this could take a while
+        // and we want the user to know that the HUCs are
+        // being queried. 
+        // this huc will need to be removed since it's not 12 digits.
+        addHucRow(hucid);
+        remove = hucid;
     }
     else if(hucid.length == 12) {
         filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
@@ -453,11 +460,11 @@ function addFeatureByHUC(hucid) {
     console.log(URL);
 
     // load the map and table elements async
-    toggleHucsAsync(URL);
+    toggleHucsAsync(URL, remove);
 
 }
 
-function toggleHucsAsync(url) {
+function toggleHucsAsync(url, remove) {
 
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
     var ajax = $.ajax({
@@ -490,17 +497,7 @@ function toggleHucsAsync(url) {
                         Map.hucbounds[res.hucid] = res.bbox;
                         addHucRow(res.hucid);
                     }
-    
-                    // update the boundaries of the global bbox.
-                    // this is all that we really care about when the
-                    // subset job is submitted.
-                    // retrieve the LCC coordinate for this bounding box
-                    hucs = [];
-                    updateMapBBox();
-                    for (key in Map.hucbounds){
-                        hucs.push(key);
-                    }
-                    getLccBounds(hucs);
+   
                    
                     // add a 'success' message for this table entry
                     var row = getRowByName(res.hucid);
@@ -515,6 +512,25 @@ function toggleHucsAsync(url) {
                     var elem = row.getElementsByTagName('td')[2]
                     elem.innerText = 'Error';
                     elem.style.color = 'red';
+                }
+            }
+
+            // update the boundaries of the global bbox.
+            // this is all that we really care about when the
+            // subset job is submitted.
+            // retrieve the LCC coordinate for this bounding box
+            hucs = [];
+            updateMapBBox();
+            for (key in Map.hucbounds){
+                hucs.push(key);
+            }
+            getLccBounds(hucs);
+
+            // remove the specified id
+            if (remove != null) {
+                var rid = getRowIdByName(remove);
+                if (rid != -999) {
+                    rmHucRow(rid);
                 }
             }
         },
