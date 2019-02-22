@@ -489,12 +489,6 @@ function toggleHucsAsync(url) {
                     else{
                         Map.hucbounds[res.hucid] = res.bbox;
                         addHucRow(res.hucid);
-                    
-                        // add a progress message for this table entry
-                        var row = getRowByName(res.hucid);
-                        var elem = row.getElementsByTagName('td')[2]
-                        elem.innerText = 'Loading...';
-                        elem.style.color = 'grey';
                     }
     
                     // update the boundaries of the global bbox.
