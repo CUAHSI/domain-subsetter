@@ -135,26 +135,23 @@ $(window).bind("load", function() {
   document.getElementById("add-huc-submit").onclick = function() {
     console.log('huc submit')
     
-        // get the content value
+    // get the content value
     huc = document.getElementById('content').value;
    
     // check for 12-digit string match (i.e. HUC 12)
-//    var re = /\d{12}/;
-//    var match = huc.match(re);
-//    if (match) {
-
-      // add huc to table
-//      addHucRow(huc);
+    var re = /\d{8,12}/;
+    var match = huc.match(re);
+    if (match) {
 
       // add this feature to the map
       addFeatureByHUC(huc)
 
-//  } else {
-//
-//        // display error notification
-//        var message = 'Error: HUCs must contain exactly 12 numeric characters';
-//        notify(message);
-//    }
+  } else {
+
+        // display error notification
+        var message = 'Error: HUCs must contain only 8-12 numeric characters';
+        notify(message);
+    }
     
     // hide the dialog
     document.getElementById('content').value = '';
@@ -460,11 +457,11 @@ function addFeatureByHUC(hucid) {
     console.log(URL);
 
     // load the map and table elements async
-    toggleHucsAsync(URL, remove);
+    toggleHucsAsync(URL, false, remove);
 
 }
 
-function toggleHucsAsync(url, remove) {
+function toggleHucsAsync(url, remove_if_selected, remove) {
 
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
     var ajax = $.ajax({
@@ -479,23 +476,29 @@ function toggleHucsAsync(url, remove) {
             for (i = 0; i < selected_hucs.length; i ++) {
                 try {
                     var res = selected_hucs[i];
-                    console.log(res);
 
                     // toggle bounding box using the following rules:
                     // 1. if the object is already selected, remove it from the 
                     //    map and the table.
                     // 2. if the object is not selected, add it to the map and
                     //    add it to the table.
+
                     if (res.hucid in Map.hucbounds)
                     {
-                        delete Map.hucbounds[res.hucid];
-                        var row_id = getRowIdByName(res.hucid)
-                        rmHucRow(row_id);
-        
+                        // remove only if explicitly specified to.
+                        // this is because the "ADD" dialog should never
+                        // remove features, unlike the map click event.
+                        if (remove_if_selected) {
+                            delete Map.hucbounds[res.hucid];
+                            var row_id = getRowIdByName(res.hucid)
+                            rmHucRow(row_id);
+                            togglePolygon(res.hucid, res.geom);
+                        }
                     }
                     else{
                         Map.hucbounds[res.hucid] = res.bbox;
                         addHucRow(res.hucid);
+                        togglePolygon(res.hucid, res.geom);
                     }
    
                    
@@ -578,7 +581,7 @@ function mapClick(e) {
     var URL = root + L.Util.getParamString(parameters);
 
     // load the map and table elements async
-    toggleHucsAsync(URL);
+    toggleHucsAsync(URL, true, null);
 }
 
 /**
@@ -662,9 +665,9 @@ function togglePolygon(hucID, ptlist){
     else {
         // create polygon overlay
         var coords = [];
-        for (i=0; i<=ptlist.length-1; i+=2){
-            coords.push([parseFloat(ptlist[i]),
-                         parseFloat(ptlist[i+1])
+        for (c=0; c<=ptlist.length-1; c+=2){
+            coords.push([parseFloat(ptlist[c]),
+                         parseFloat(ptlist[c+1])
                          ]);
         }
         var coordinates = [coords];
@@ -704,9 +707,9 @@ function parseWfsXML(xml){
         var hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
         var ptlist = points.innerHTML.split(' ');
     
-        // select the layer
-        // todo: remove togglePolygon from parseWfsXML function
-        togglePolygon(hucID, ptlist);
+//        // select the layer
+//        // todo: remove togglePolygon from parseWfsXML function
+//        togglePolygon(hucID, ptlist);
     
     
         // calculate bounding box
@@ -732,6 +735,7 @@ function parseWfsXML(xml){
         var r = [];
         r['hucid'] = hucID;
         r['bbox'] = bounds;
+        r['geom'] = ptlist;
         response.push(r);
     }
     return response;
