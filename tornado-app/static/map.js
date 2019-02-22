@@ -516,6 +516,9 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
                     elem.innerText = 'Error';
                     elem.style.color = 'red';
                 }
+                // refresh page
+                $('#huc-table-div').hide().show(0);
+                $('#map').hide().show(0);
             }
 
             // update the boundaries of the global bbox.
@@ -706,11 +709,6 @@ function parseWfsXML(xml){
         var points = data.getElementsByTagName('gml:posList')[0];
         var hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
         var ptlist = points.innerHTML.split(' ');
-    
-//        // select the layer
-//        // todo: remove togglePolygon from parseWfsXML function
-//        togglePolygon(hucID, ptlist);
-    
     
         // calculate bounding box
         for (var i=1; i<ptlist.length; i+=2) {
