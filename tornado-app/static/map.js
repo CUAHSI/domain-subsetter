@@ -452,45 +452,88 @@ function addFeatureByHUC(hucid) {
     var URL = root + L.Util.getParamString(parameters);
     console.log(URL);
 
+    // load the map and table elements async
+    toggleHucsAsync(URL);
+
+}
+
+function toggleHucsAsync(url) {
+
+    // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
     var ajax = $.ajax({
-        url: URL,
+        url: url,
         success: function (response) {
 
-            // this also calls togglePolygon.
-            // todo: remove togglePolygon from parseWfsXML function
-            var hucs = parseWfsXML(response);
+            // extract the HUC ID and Boundary from the WFS XML response.
+            // only process the first element of the response since the user can only
+            // select a single map element at a time.
+            selected_hucs = parseWfsXML(response);
                 
-        for (i = 0; i < hucs.length; i ++) {
+            for (i = 0; i < selected_hucs.length; i ++) {
                 try {
-                    var res = hucs[i];
-            
-                    // add the feature to the map
-                    addFeatureToMap(res);
-             
+                    var res = selected_hucs[i];
+                    console.log(res);
+
+                    // toggle bounding box using the following rules:
+                    // 1. if the object is already selected, remove it from the 
+                    //    map and the table.
+                    // 2. if the object is not selected, add it to the map and
+                    //    add it to the table.
+                    if (res.hucid in Map.hucbounds)
+                    {
+                        delete Map.hucbounds[res.hucid];
+                        var row_id = getRowIdByName(res.hucid)
+                        rmHucRow(row_id);
+        
+                    }
+                    else{
+                        Map.hucbounds[res.hucid] = res.bbox;
+                        addHucRow(res.hucid);
+                    
+                        // add a progress message for this table entry
+                        var row = getRowByName(res.hucid);
+                        var elem = row.getElementsByTagName('td')[2]
+                        elem.innerText = 'Loading...';
+                        elem.style.color = 'grey';
+                    }
+    
+                    // update the boundaries of the global bbox.
+                    // this is all that we really care about when the
+                    // subset job is submitted.
+                    // retrieve the LCC coordinate for this bounding box
+                    hucs = [];
+                    updateMapBBox();
+                    for (key in Map.hucbounds){
+                        hucs.push(key);
+                    }
+                    getLccBounds(hucs);
+                   
+                    // add a 'success' message for this table entry
                     var row = getRowByName(res.hucid);
                     var elem = row.getElementsByTagName('td')[2]
                     elem.innerText = 'Loaded';
                     elem.style.color = 'green';
-    
+        
                 } catch(err) {
+                    // if there was an error adding the HUC,
+                    // add an error message in the table
                     var row = getRowByName(hucid);
                     var elem = row.getElementsByTagName('td')[2]
                     elem.innerText = 'Error';
                     elem.style.color = 'red';
                 }
-       }
-
-        
+            }
         },
         error: function (response) {
-            var row = getRowByName(res.hucid);
+            // if there was an error calling the ArcGIS WFS,
+            // add an error message in the table
+            var row = getRowByName(hucid);
             var elem = row.getElementsByTagName('td')[2]
-            elem.innerText = 'Error';
+            elem.innerText = 'Server Error';
             elem.style.color = 'red';
         }
     });
 }
-
 
 /**
 * The event handler for map click events
@@ -524,80 +567,8 @@ function mapClick(e) {
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
 
-    // call the ArcGIS asyncronously so that the webpage doesn't freeze.
-    var ajax = $.ajax({
-        url: URL,
-        success: function (response) {
-
-            try {
-                // extract the HUC ID and Boundary from the WFS XML response.
-                // only process the first element of the response since the user can only
-                // select a single map element at a time.
-                hucs = parseWfsXML(response);
-                var res = hucs[0];
-                
-
-                // toggle bounding box using the following rules:
-                // 1. if the object is already selected, remove it from the 
-                //    map and the table.
-                // 2. if the object is not selected, add it to the map and
-                //    add it to the table.
-                if (res.hucid in Map.hucbounds)
-                {
-                    delete Map.hucbounds[res.hucid];
-                    var row_id = getRowIdByName(res.hucid)
-                    rmHucRow(row_id);
-    
-                }
-                else{
-                    Map.hucbounds[res.hucid] = res.bbox;
-                    addHucRow(res.hucid);
-                
-                    // add a progress message for this table entry
-                    var row = getRowByName(res.hucid);
-                    var elem = row.getElementsByTagName('td')[2]
-                    elem.innerText = 'Loading...';
-                    elem.style.color = 'grey';
-                }
-
-                // update the boundaries of the global bbox.
-                // this is all that we really care about when the
-                // subset job is submitted.
-                // retrieve the LCC coordinate for this bounding box
-                hucs = [];
-                updateMapBBox();
-                for (key in Map.hucbounds){
-                    hucs.push(key);
-                }
-                getLccBounds(hucs);
-               
-                // add a 'success' message for this table entry
-                var row = getRowByName(res.hucid);
-                var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Loaded';
-                elem.style.color = 'green';
-    
-            } catch(err) {
-                // if there was an error adding the HUC,
-                // add an error message in the table
-                var row = getRowByName(hucid);
-                var elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Error';
-                elem.style.color = 'red';
-            }
-
-
-        },
-        error: function (response) {
-            // if there was an error calling the ArcGIS WFS,
-            // add an error message in the table
-            var row = getRowByName(hucid);
-            var elem = row.getElementsByTagName('td')[2]
-            elem.innerText = 'Server Error';
-            elem.style.color = 'red';
-        }
-
-    });
+    // load the map and table elements async
+    toggleHucsAsync(URL);
 }
 
 /**
