@@ -84,10 +84,10 @@ $(document).ready(function() {
     // HUC 10 Layer
     var huc10 = L.tileLayer.wms(url, {
         layers: 1,
-	    transparent: 'true',
-   	format: 'image/png',
-    	minZoom:Map.huc10_min,
-    	maxZoom:Map.huc10_max
+        transparent: 'true',
+    format: 'image/png',
+        minZoom:Map.huc10_min,
+        maxZoom:Map.huc10_max
     }).addTo(map);
   
     // layer toggling
@@ -106,7 +106,7 @@ $(document).ready(function() {
                  'clear selected features').addTo(map);
 
     map.on("click", function(e){
-        clickHandler(e);        
+        mapClick(e);        
     });
 
 });
@@ -133,9 +133,9 @@ $(window).bind("load", function() {
   * Cancels the add HUC dialog
   */
   document.getElementById("add-huc-submit").onclick = function() {
-  	console.log('huc submit')
+    console.log('huc submit')
     
-		// get the content value
+        // get the content value
     huc = document.getElementById('content').value;
    
     // check for 12-digit string match (i.e. HUC 12)
@@ -149,7 +149,7 @@ $(window).bind("load", function() {
       // add this feature to the map
       addFeatureByHUC(huc)
 
-//	} else {
+//  } else {
 //
 //        // display error notification
 //        var message = 'Error: HUCs must contain exactly 12 numeric characters';
@@ -166,11 +166,11 @@ $(window).bind("load", function() {
     * Submits the add HUC dialog and applies the result to the table
     */
     document.getElementById("add-huc-cancel").onclick = function() {
-    	console.log('huc cancel')
+        console.log('huc cancel')
     
-    	// clear and hide the dialog
-    	document.getElementById('content').value = '';
-    	document.getElementById('addContentDialogTemplate').style.display = "none";
+        // clear and hide the dialog
+        document.getElementById('content').value = '';
+        document.getElementById('addContentDialogTemplate').style.display = "none";
     }
     
     /**
@@ -194,10 +194,10 @@ $(window).bind("load", function() {
     * Cancels the rm HUC dialog
     */
     document.getElementById("rm-huc-cancel").onclick = function() {
-    	console.log('huc cancel')
+        console.log('huc cancel')
     
-    	// clear and hide the dialog
-    	document.getElementById('rmContentDialogTemplate').style.display = "none";
+        // clear and hide the dialog
+        document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
 
     /**
@@ -225,16 +225,16 @@ $(window).bind("load", function() {
             }
         } 
 
-    	// update the boundaries of the global bbox
-	    updateMapBBox();
-    	hucs = [];
-       	for (key in Map.hucbounds){
+        // update the boundaries of the global bbox
+        updateMapBBox();
+        hucs = [];
+        for (key in Map.hucbounds){
             hucs.push(key);
         }
         getLccBounds(hucs);
         
-    	// clear and hide the dialog
-    	document.getElementById('rmContentDialogTemplate').style.display = "none";
+        // clear and hide the dialog
+        document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
     
 });
@@ -429,7 +429,7 @@ function addFeatureByHUC(hucid) {
 
     if (hucid.length < 12) {
         hucid += '*';
-    	console.log(hucid);
+        console.log(hucid);
         filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
 
     }
@@ -457,16 +457,16 @@ function addFeatureByHUC(hucid) {
         success: function (response) {
 
             // this also calls togglePolygon.
-    	    // todo: remove togglePolygon from parseWfsXML function
-    	    var hucs = parseWfsXML(response);
+            // todo: remove togglePolygon from parseWfsXML function
+            var hucs = parseWfsXML(response);
                 
- 	    for (i = 0; i < hucs.length; i ++) {
-    	        try {
+        for (i = 0; i < hucs.length; i ++) {
+                try {
                     var res = hucs[i];
             
                     // add the feature to the map
                     addFeatureToMap(res);
-    	     
+             
                     var row = getRowByName(res.hucid);
                     var elem = row.getElementsByTagName('td')[2]
                     elem.innerText = 'Loaded';
@@ -478,7 +478,7 @@ function addFeatureByHUC(hucid) {
                     elem.innerText = 'Error';
                     elem.style.color = 'red';
                 }
-	   }
+       }
 
         
         },
@@ -491,19 +491,28 @@ function addFeatureByHUC(hucid) {
     });
 }
 
-function clickHandler(e) {
 
-    // exit early if not zoomed in enough
+/**
+* The event handler for map click events
+* @param {event} e - a map mouse click event
+* @returns - null
+*/
+function mapClick(e) {
+
+    // exit early if not zoomed in enough.
+    // this ensures that objects are not clicked until zoomed in
     var zoom = e.target.getZoom();
     if (zoom < Map.selectable_zoom){
         return
     }
 
-    // mark the huc as selected. This will allow the bbox to be drawn
+    // mark the huc as selected.
+    // this will allow the bbox to be drawn.
     Map.hucselected = true;
 
+    // get the latitude and longitude of the click event.
+    // use this data to query ArcGIS WFS for the selected HUC object.
     var clickBounds = L.latLngBounds(e.latlng, e.latlng);
-  
     var defaultParameters = {
         service : 'WFS',
         request : 'GetFeature',
@@ -514,53 +523,63 @@ function clickHandler(e) {
     var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
-//    console.log(URL);
 
+    // call the ArcGIS asyncronously so that the webpage doesn't freeze.
     var ajax = $.ajax({
         url: URL,
         success: function (response) {
 
-    	    try {
-                // convert the XML response into something more useable 
+            try {
+                // extract the HUC ID and Boundary from the WFS XML response.
+                // only process the first element of the response since the user can only
+                // select a single map element at a time.
                 hucs = parseWfsXML(response);
-		var res = hucs[0];
+                var res = hucs[0];
+                
 
-                // toggle bounding box
+                // toggle bounding box using the following rules:
+                // 1. if the object is already selected, remove it from the 
+                //    map and the table.
+                // 2. if the object is not selected, add it to the map and
+                //    add it to the table.
                 if (res.hucid in Map.hucbounds)
                 {
-                    // remove huc from list if it's already selected
                     delete Map.hucbounds[res.hucid];
-    		
-                    // add huc ID to the table
                     var row_id = getRowIdByName(res.hucid)
                     rmHucRow(row_id);
     
                 }
                 else{
-                    // add huc to list of it's not selected
                     Map.hucbounds[res.hucid] = res.bbox;
-    	    
-                    // remove huc ID from the table
                     addHucRow(res.hucid);
+                
+                    // add a progress message for this table entry
+                    var row = getRowByName(res.hucid);
+                    var elem = row.getElementsByTagName('td')[2]
+                    elem.innerText = 'Loading...';
+                    elem.style.color = 'grey';
                 }
 
-                // update the boundaries of the global bbox
-                updateMapBBox();
-    
+                // update the boundaries of the global bbox.
+                // this is all that we really care about when the
+                // subset job is submitted.
                 // retrieve the LCC coordinate for this bounding box
                 hucs = [];
+                updateMapBBox();
                 for (key in Map.hucbounds){
                     hucs.push(key);
                 }
                 getLccBounds(hucs);
-    	       
-                // update the status message in the table
+               
+                // add a 'success' message for this table entry
                 var row = getRowByName(res.hucid);
                 var elem = row.getElementsByTagName('td')[2]
                 elem.innerText = 'Loaded';
                 elem.style.color = 'green';
     
             } catch(err) {
+                // if there was an error adding the HUC,
+                // add an error message in the table
                 var row = getRowByName(hucid);
                 var elem = row.getElementsByTagName('td')[2]
                 elem.innerText = 'Error';
@@ -570,9 +589,11 @@ function clickHandler(e) {
 
         },
         error: function (response) {
+            // if there was an error calling the ArcGIS WFS,
+            // add an error message in the table
             var row = getRowByName(hucid);
             var elem = row.getElementsByTagName('td')[2]
-            elem.innerText = 'Error';
+            elem.innerText = 'Server Error';
             elem.style.color = 'red';
         }
 
@@ -757,10 +778,10 @@ function toggle_submit_button(is_valid){
 
     if (is_valid) { 
         // disable submit button bc nothing is selected
-	    $('#btn-subset-submit').prop( "disabled", false);
+        $('#btn-subset-submit').prop( "disabled", false);
     } else {
         // enable submit button 
-	    $('#btn-subset-submit').prop( "disabled", true );
+        $('#btn-subset-submit').prop( "disabled", true );
     }
 }
 
