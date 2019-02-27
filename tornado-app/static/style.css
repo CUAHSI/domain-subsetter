@@ -172,6 +172,10 @@ div.processing {
     margin-top: 50px;
     margin-right: 10px;
 }
+#map-panel.mdlext-accordion__tabpanel {
+    transition: none !important;
+    animation: none !important;
+}
 .mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
     border: None;
 }
