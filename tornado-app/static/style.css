@@ -180,7 +180,10 @@ div.processing {
 }
 #huc-table {
     table-layout:fixed;
-    width: 290px;
+    width: 100%;
+}
+.mdl-data-tabledynamic__content {
+    max-height: 200px;
 }
 #huc-table td:nth-child(1) {
     width: 10px;
