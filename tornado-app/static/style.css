@@ -144,9 +144,12 @@ div.processing {
     width: 80%;
     margin: 10px auto 10px auto;
 }
-#submit-button {
-    padding-top: 5px;
-    padding-bottom: 5px;
+#btn-subset-submit {
+    font-size: 20px;
+    height: 40px;
+    width: 100px;
+    border-radius: 10px;
+    text-transform:none;
 }
 #submit-button-div {
     padding: 0px;
