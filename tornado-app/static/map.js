@@ -98,6 +98,7 @@ $(document).ready(function() {
       "HUC 12": huc12
    };
 
+
    // Add Layer-Controller
    L.control.layers(null, mixed).addTo(map);
 
@@ -109,6 +110,9 @@ $(document).ready(function() {
         mapClick(e);        
     });
 
+    L.control.mousePosition({
+        prefix:"Lat Long: ",
+        separator:", "}).addTo(map);
 });
 
 
