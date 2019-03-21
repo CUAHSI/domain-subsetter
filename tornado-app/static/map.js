@@ -587,14 +587,6 @@ function mapClick(e) {
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
     
-    var ajax = $.ajax({
-        url: URL,
-        success: function (response) {
-            res = parseWfsXML(response);
-
-            // update huc text box
-            //update_huc_textbox(res.hucid);
-
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
 }
