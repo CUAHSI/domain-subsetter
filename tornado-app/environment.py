@@ -23,7 +23,6 @@ application_level = 'INFO'
 general_level = 'INFO'
 
 # WRF-HYDRO settings
-#geofile = '/share/nwm.v1.2.2/geo_em.d01_1km.nc'
 wrfdata = '/share/nwm.v1.2.2'
 
 # Output subset directory

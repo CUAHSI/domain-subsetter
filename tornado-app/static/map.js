@@ -150,7 +150,7 @@ $(window).bind("load", function() {
       // add this feature to the map
       addFeatureByHUC(huc)
 
-  } else {
+    } else {
 
         // display error notification
         var message = 'Error: HUCs must contain only 8-12 numeric characters';
@@ -586,6 +586,14 @@ function mapClick(e) {
     var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
+    
+    var ajax = $.ajax({
+        url: URL,
+        success: function (response) {
+            res = parseWfsXML(response);
+
+            // update huc text box
+            //update_huc_textbox(res.hucid);
 
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
