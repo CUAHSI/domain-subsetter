@@ -116,9 +116,9 @@ $(document).ready(function() {
         clickHandler(e);        
     });
 
-    document.getElementById('huccode').addEventListener('keypress', function(e) {
-        huc_text_entered(e);
-    });
+//    document.getElementById('huccode').addEventListener('keypress', function(e) {
+//        huc_text_entered(e);
+//    });
 
 
 });
@@ -276,7 +276,7 @@ function clickHandler(e) {
             res = parseWfsXML(response);
 
             // update huc text box
-            update_huc_textbox(res.hucid);
+            //update_huc_textbox(res.hucid);
 
             // toggle bounding box
             if (res.hucid in Map.hucbounds)
