@@ -7,39 +7,60 @@
       <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-      <script type='text/javascript' src='{{ static_url("map.js") }}'></script>
+      <script type='text/javascript' src='{{ static_url("map.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
       <link rel="shortcut icon" href="favicon.ico">
-{% end %}
 
+	{% block more-head %}
+	{% end %}
+{% end %}
 
 
 {% block content %}
 
-        <div class='map' id="map"></div>
 
+    <div id='map-div' class='mdl-grid'>	
+        <div class='mdl-cell mdl-cell--12-col'>
+
+        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
+
+            <li class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+                <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
+                    <span class="mdlext-accordion__tab__caption">Map</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section id=map-panel class="mdlext-accordion__tabpanel" aria-hidden='false'>
+                    <div class='map' id="map"></div>
+                </section>
+            </li>
+
+            <li class="mdlext-accordion__panel huc-table-panel">
+                <header class="mdlext-accordion__tab mdl-color--indigo mdl-color-text--white mdl-js-button mdl-button--raised mdl-button--accent">
+                    <span class="mdlext-accordion__tab__caption">Selected HUCs</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section class="mdlext-accordion__tabpanel">
+		            {% include huc-table.html %}
+                </section>
+            </li>
+        </ul>
+        </div>
+
+        <div class='mdl-cell mdl-cell--1-col mdl-cell--10-offset' id="submit-button">
         <form action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
             <input type="hidden" name="ulat" id="ulat"/>
             <input type="hidden" name="llon" id="llon"/>
             <input type="hidden" name="ulon" id="ulon"/>
-            <div class='mdl-grid'>
-                <div class='mdl-cell mdl-cell--1-offset mdl-cell--9-col'>
-{#                    
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" style='width:600px' type="text" id="huccode">
-                        <label class="mdl-textfield__label" style='width:600px' for="huccode">Search by HUC 12 Code</label>
-                    </div>
-#}
-                </div> 
 
-                <div class='mdl-cell mdl-cell--2-col'>
-                <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
-                    Submit
-                </button>
-            </div>
-         </div>
+		<!-- SUBMIT BUTTON -->		
+                    <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
+                        Submit
+                    </button>
+
          {% module xsrf_form_html() %}
         </form>
+	</div>
 
 {% end %}
 

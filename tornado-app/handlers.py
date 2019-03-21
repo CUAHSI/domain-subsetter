@@ -13,6 +13,7 @@ from urllib.parse import urljoin
 from datetime import datetime
 import bbox
 import transform
+import environment as env
 
 from tornado import gen 
 from tornado.httpclient import AsyncHTTPClient
@@ -26,7 +27,7 @@ import jobs
 executor = jobs.BackgroundWorker()
 
 import sqldata
-sql = sqldata.Connect()
+sql = sqldata.Connect(env.sqldb)
 sql.build()
 
 import subset

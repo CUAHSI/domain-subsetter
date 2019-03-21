@@ -55,7 +55,17 @@ body {
     height: 67vh;
     border: 1px solid #AAA;
     position: relative;
-    margin:50px 50px 5px 50px;
+    margin:50px 10px 5px 50px;
+}
+
+/* Mouse Coordinates*/ 
+.leaflet-container .leaflet-control-mouseposition {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 5px #bbb;
+  padding: 0 5px;
+  margin:0;
+  color: #333;
+  font: 14px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 /* Beta Logo */
@@ -131,10 +141,6 @@ div.processing {
     overflow: hidden;
 }
 
-/* submit button */
-#btn-subset-submit {
-    width: 80%;
-}
 
 /* table styling */
 .admin-table td {
@@ -148,3 +154,61 @@ div.processing {
     width: 80%;
     margin: 10px auto 10px auto;
 }
+#btn-subset-submit {
+    font-size: 20px;
+    height: 40px;
+    width: 100px;
+    border-radius: 10px;
+    text-transform:none;
+}
+#submit-button-div {
+    padding: 0px;
+}
+#map-div {
+    padding: 0px;
+}
+.map-accordion {
+    min-width: 100%; 
+    min-height: 100%; 
+}
+.mdlext-accordion__panel.huc-table-panel.is-expanded {
+    width: 525px !important;
+}
+.mdlext-accordion__panel.huc-table-panel > header {
+    height: 215px;
+    border-radius:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 50px;
+    margin-right: 10px;
+}
+#map-panel.mdlext-accordion__tabpanel {
+    transition: none !important;
+    animation: none !important;
+}
+.mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
+    border: None;
+}
+#huc-table-div {
+    margin-top:50px;
+}
+#huc-table {
+    table-layout:fixed;
+    width: 100%;
+}
+.mdl-data-tabledynamic__content {
+    max-height: 200px;
+}
+#huc-table td:nth-child(1) {
+    width: 10px;
+    padding: 10px;
+}
+#huc-table td:nth-child(2) {
+    padding-left: 40px;
+    width: 110px;
+}
+#huc-table td:nth-child(3) {
+    padding:: 0px;
+    text-align: center;
+}
+*:focus {outline:none !important}
