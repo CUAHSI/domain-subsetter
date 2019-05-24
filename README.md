@@ -38,6 +38,29 @@ wget -r -np -nH -R "index.html*" --cut-dirs=5 https://www.nco.ncep.noaa.gov/pmb/
 mv domain $VERSION
 ```
 
+6. Install R 
+```
+yum install epel-release
+yum install R
+```
+
+Search for CRAN repositories in the USA
+```
+R -e 'getCRANmirrors()' | grep USA
+```
+
+Choose a mirror ID and set it using the following command
+```
+ID=156
+R -e 'chooseCRANmirror($ID)'
+```
+
+7. Install R libraries for WRF-Hydro subsetting
+```
+Rscript -e "install.packages('devtools')"
+install.packages("devtools")
+devtools::install_github("NCAR/rwrfhydro")
+```
 
 # Setup
 
