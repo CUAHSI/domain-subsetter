@@ -1,12 +1,32 @@
-# nwm_subsetting
+# CONUS Subsetting
 
-This project is an experimental web service for subsetting National Water Model domain files.
+This project is an experimental web service for subsetting model domain files at CONUS scales.
 
+## Installation
 
-## Installing libraries
-1. Install Anaconda or Miniconda
-2. conda config --append channels conda-forge
-3. conda create -n subset --file requirements.txt -y
+This instructions are for a completely fresh install on a CentOS 7 Linux box.
+
+1. Update Centos7 packages, and install git, vim, screen
+```
+yum update
+yum install -y vim screen
+```
+
+2. Install Anaconda or Miniconda
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+rm Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+conda config --set auto_activate_base false
+conda config --append channels conda-forge
+```
+
+4. create the environment for running the subsetter
+```
+conda create -n subset --file requirements.txt -y
+```
+
 4. source subset
 
 ## make data directories
