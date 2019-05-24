@@ -24,7 +24,7 @@ conda config --append channels conda-forge
 
 4. create the environment for running the subsetter
 ```
-conda create -n subset --file requirements.txt -y
+conda env create -f environment.yml
 ```
 
 4. source subset
