@@ -9,7 +9,8 @@ This instructions are for a completely fresh install on a CentOS 7 Linux box.
 1. Update Centos7 packages, and install git, vim, screen
 ```
 yum update
-yum install -y vim screen
+yum install -y vim screen libcurl
+yum groupinstall 'Development Tools'
 ```
 
 2. Install Anaconda or Miniconda
@@ -52,13 +53,13 @@ R -e 'getCRANmirrors()' | grep USA
 Choose a mirror ID and set it using the following command
 ```
 ID=156
-R -e 'chooseCRANmirror($ID)'
+R
+chooseCRANmirror(graphics=FALSE, ind=156)
 ```
 
 7. Install R libraries for WRF-Hydro subsetting
 ```
-Rscript -e "install.packages('devtools')"
-install.packages("devtools")
+install.packages('devtools')
 devtools::install_github("NCAR/rwrfhydro")
 ```
 
