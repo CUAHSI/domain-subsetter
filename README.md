@@ -27,12 +27,17 @@ conda config --append channels conda-forge
 conda env create -f environment.yml
 ```
 
-4. source subset
+5. Prepare data directories
+```
+VERSION=nwm.v1.2.4
+mkdir /share/appdata
+mkdir /share/appdata/output 
 
-## make data directories
-1. mkdir /share/[data-version]
-2. mkdir /share/appdata
-3. mkdir /share/appdata/output 
+cd /share
+wget -r -np -nH -R "index.html*" --cut-dirs=5 https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/$VERSION/parm/domain/
+mv domain $VERSION
+```
+
 
 # Setup
 
