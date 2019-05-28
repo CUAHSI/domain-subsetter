@@ -9,7 +9,7 @@ This instructions are for a completely fresh install on a CentOS 7 Linux box.
 1. Update Centos7 packages, and install git, vim, screen
 ```
 yum update
-yum install -y vim screen libcurl-devel openssl-devel libjpeg*devel* netcdf*devel* hdf-devel
+yum install -y vim screen libcurl-devel openssl-devel libjpeg*devel* netcdf*devel* hdf-devel gdal gdal-devel proj proj-devl udunits2-devel
 yum groupinstall 'Development Tools'
 ```
 
@@ -60,6 +60,7 @@ echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
 ```
 R
 > install.packages('devtools')
+> install.packages(c('rgdal', 'netcdf4', 'RNetCDF', ))
 > devtools::install_github("NCAR/rwrfhydro")
 ```
 
