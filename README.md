@@ -50,7 +50,7 @@ Search for CRAN repositories in the USA
 https://cran.r-project.org/mirrors.html
 ```
 
-Choose a mirror ID and set it using the following command
+Choose a mirror and set it to the defualt using the following command
 ```
 URL=https://mirrors.nics.utk.edu/cran/
 echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
@@ -59,8 +59,7 @@ echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
 7. Install R libraries for WRF-Hydro subsetting
 ```
 R
-> install.packages('devtools')
-> install.packages(c('rgdal', 'netcdf4', 'RNetCDF', ))
+> install.packages(c('devtools', 'rgdal', 'RNetCDF', 'ggmap', 'dataRetrieval', 'data.table'), dependencies=TRUE)
 > devtools::install_github("NCAR/rwrfhydro")
 ```
 
