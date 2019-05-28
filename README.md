@@ -64,6 +64,10 @@ R
 > devtools::install_github("NCAR/rwrfhydro")
 ```
 
+# Configure Environment Settings
+
+
+
 # Setup
 
 1. Install R 3.3
