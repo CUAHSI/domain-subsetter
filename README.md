@@ -106,6 +106,16 @@ sqldb = '/share/appdata/jobs.db'
 
 todo
 
+# Start the Server
+
+There are many ways to run the server, one simple method is shown below.
+```
+screen -S server
+cd nwm_subsetting/tornado-app/
+conda activate subset
+./app.py
+```
+
 # Setup
 
 1. Install R 3.3
