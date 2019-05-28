@@ -9,7 +9,7 @@ This instructions are for a completely fresh install on a CentOS 7 Linux box.
 1. Update Centos7 packages, and install git, vim, screen
 ```
 yum update
-yum install -y vim screen libcurl-devel
+yum install -y vim screen libcurl-devel openssl-devel libjpeg*devel* netcdf*devel*
 yum groupinstall 'Development Tools'
 ```
 
@@ -47,20 +47,20 @@ yum install R
 
 Search for CRAN repositories in the USA
 ```
-R -e 'getCRANmirrors()' | grep USA
+https://cran.r-project.org/mirrors.html
 ```
 
 Choose a mirror ID and set it using the following command
 ```
-ID=156
-R
-chooseCRANmirror(graphics=FALSE, ind=156)
+URL=https://mirrors.nics.utk.edu/cran/
+echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
 ```
 
 7. Install R libraries for WRF-Hydro subsetting
 ```
-install.packages('devtools')
-devtools::install_github("NCAR/rwrfhydro")
+R
+> install.packages('devtools')
+> devtools::install_github("NCAR/rwrfhydro")
 ```
 
 # Setup
