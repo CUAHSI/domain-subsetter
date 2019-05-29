@@ -28,7 +28,7 @@ class Application(tornado.web.Application):
             (r"/admin/status", handlers.Status),
             (r"/status/([a-f0-9]{40})", handlers.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
-             {"path": '/tmp'}),
+             {"path": env.output_dir}),
             (r"/about", handlers.About),
             (r"/help", handlers.Help),
             (r"/api", handlers.Api),
