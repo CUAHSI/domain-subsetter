@@ -3,7 +3,7 @@ import os
 # Server settings
 
 address="0.0.0.0"
-port="8080"
+port="80"
 
 debug=True
 static_path = os.path.join(os.path.dirname(__file__), "static")
@@ -23,7 +23,7 @@ application_level = 'INFO'
 general_level = 'INFO'
 
 # WRF-HYDRO settings
-wrfdata = '/share/nwm.v1.2.2'
+wrfdata = '/share/nwm.v1.2.4'
 
 # Output subset directory
 output_dir = '/share/appdata/output'
