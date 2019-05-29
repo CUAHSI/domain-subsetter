@@ -41,7 +41,8 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
            str(ymax),
            str(xmin),
            str(xmax),
-           env.wrfdata]
+           env.wrfdata,
+           env.output_dir]
     print(' '.join(cmd))
     p = subprocess.Popen(cmd,
                          cwd=os.path.join(os.getcwd(), 'r-subsetting'),

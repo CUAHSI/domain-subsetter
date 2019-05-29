@@ -32,7 +32,7 @@ library(data.table)
 #x west: 1720355.72762
 #x east: 1734488.45260
 
-subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path) {
+subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_path) {
 
     # guid: unique identifier used to name the output 
     # Specify the clip bounding coordinates
@@ -42,7 +42,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path) {
 
 
     # Specify the path to your new subset domain files
-    myPath <- paste0("/tmp/", guid)
+    myPath <- paste0(out_path,"/", guid)
     # Specify the path to the FULL DOMAIN files 
 #    domainPath <- "/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain"
     domainPath <- domain_path
@@ -450,7 +450,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path) {
     write.table(coordsExport, file=subCoordParamFile, row.names=FALSE, sep="\t")
     
     # Save the forcing subset script file
-#    cat('\nSave the forcing subset script file...')
+    cat('\nSave the forcing subset script file...')
     #ncksCmd <- paste0("ncks -d west_east,", geo_w-1, ",", geo_e-1, " -d south_north,", geo_s-1, ",", geo_n-1, " ${OLDFORCPATH}/${i} ${NEWFORCPATH}/${i}")
     ncksCmd <- paste0("ncks -d west_east,", geo_w-1, ",", geo_e-1, " -d south_north,", geo_s-1, ",", geo_n-1, " ${i} ${NEWFORCPATH}/${i##*/}")
     fileConn <- file(subScriptFile)
@@ -496,9 +496,9 @@ if (identical (environment (), globalenv ())) {
 #                                      1703533));
 
     
-    if (length(args) == 6) {
+    if (length(args) == 7) {
         # invoke the subsetting function
-        res = suppressWarnings(subsetBbox( args[1], coords[1], coords[2], coords[3], coords[4], args[6] ))
+        res = suppressWarnings(subsetBbox( args[1], coords[1], coords[2], coords[3], coords[4], args[6], args[7]))
         print(res)
     } else {
         print('Incorrect number of arguments')
