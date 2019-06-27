@@ -13,6 +13,9 @@ from urllib.parse import urljoin
 from datetime import datetime
 import bbox
 import transform
+import polygon
+import urllib.parse
+import xml.etree.ElementTree as ET
 import environment as env
 
 from tornado import gen 
@@ -286,6 +289,43 @@ class Job(RequestHandler):
             host_url = "{protocol}://{host}".format(**vars(self.request))
             return host_url + relative_file_path
         return None
+
+
+class LccPolygonFromHUC(RequestHandler):
+    @gen.coroutine
+    def get(self):
+        hucs = self.get_arg_value('hucs', True).split(',')
+        watershed = polygon.WatershedBoundary()
+        http_client = AsyncHTTPClient()
+
+        for huc in hucs:
+            try:
+                host_url = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer?'
+                huc_filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+huc+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+                defaultParameters = {'service' : 'WFS',
+                                     'request' : 'GetFeature',
+                                     'typeName' : 'HUC_WBD:HUC12_US',
+                                     'SrsName' : 'EPSG:4326',
+                                     'Filter' : huc_filter}
+                params = urllib.parse.urlencode(defaultParameters)
+                request_url = host_url + params
+    
+                response = yield http_client.fetch(request_url, validate_cert=False)
+                xmlbody = response.body.decode('utf-8')
+                tree = ET.ElementTree(ET.fromstring(xmlbody))
+                root = tree.getroot()
+                namespaces = {'gml':'http://www.opengis.net/gml/3.2'}
+                if watershed.srs is None:
+                    watershed.set_srs_from_gml_polygon(root.findall('.//gml:Polygon', namespaces)[0])
+                polygons_gml = root.findall('.//gml:Polygon//gml:posList', namespaces)
+    
+                watershed.add_boundary_from_gml(polygons_gml, huc)
+            except Exception as e:
+                self.write("Error: " + str(e))
+        http_client.close()
+
+        self.write(watershed.get_polygon_wkt())
+ 
 
 
 class About(RequestHandler):

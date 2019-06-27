@@ -23,6 +23,7 @@ class Application(tornado.web.Application):
             (r"/subset", handlers.Subset),
             (r"/nwm/v1_2_2/subset", handlers.SubsetNWM122),
             (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
+            (r"/wbd/gethucpolygon/lcc", handlers.LccPolygonFromHUC),
             (r"/jobs", handlers.Job),
             (r"/jobs/([a-f0-9]{40})", handlers.Job),
             (r"/admin/status", handlers.Status),

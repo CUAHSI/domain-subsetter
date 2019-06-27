@@ -21,7 +21,7 @@ sh Miniconda3-latest-Linux-x86_64.sh
 rm Miniconda3-latest-Linux-x86_64.sh
 source ~/.bashrc
 conda config --set auto_activate_base false
-conda config --append channels conda-forge
+conda config --add channels conda-forge
 ```
 
 4. create the environment for running the subsetter
