@@ -503,15 +503,13 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
                         Map.hucbounds[res.hucid] = res.bbox;
                         addHucRow(res.hucid);
                         togglePolygon(res.hucid, res.geom);
+                    
+			// add a 'success' message for this table entry
+                        var row = getRowByName(res.hucid);
+                        var elem = row.getElementsByTagName('td')[2]
+                        elem.innerText = 'Loaded';
+                        elem.style.color = 'green';
                     }
-   
-                   
-                    // add a 'success' message for this table entry
-                    var row = getRowByName(res.hucid);
-                    var elem = row.getElementsByTagName('td')[2]
-                    elem.innerText = 'Loaded';
-                    elem.style.color = 'green';
-        
                 } catch(err) {
                     // if there was an error adding the HUC,
                     // add an error message in the table
