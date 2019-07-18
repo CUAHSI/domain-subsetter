@@ -1,4 +1,7 @@
 #!/bin/bash
 
+# run using:  $sudo ./run.sh
 
-sudo /usr/local/miniconda3/envs/subset/bin/python3 app.py
+export GDAL_DATA="/home/acastronova/.conda/envs/subsetting-server/share/gdal"
+export PROJ_LIB="/home/acastronova/.conda/envs/subsetting-server/share/proj"
+/home/acastronova/.conda/envs/subsetting-server/bin/python app.py
