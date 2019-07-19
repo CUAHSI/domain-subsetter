@@ -7,10 +7,11 @@ import subprocess
 import transform
 import tarfile
 import shutil
+import polygon
 import environment as env
 
 
-def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
+def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     
     if logger is None:
         from tornado.log import app_log
@@ -30,6 +31,7 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
             float(ymax))
 
     # TODO: check bbox size
+
 
     # run R script and save output as random guid
     logger.info('begin NWM v1.2.2 subsetting %s' % (uid) )
@@ -64,6 +66,11 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, logger=None):
         return response
 
     logger.info('subsetting complete %s' % (uid) )
+
+    # run watershed shapefile creation
+    logger.debug('Submitting create_shapefile')
+    outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
+    outfile = polygon.create_shapefile(uid, hucs, outpath)
 
     # compress the results
     fpath = os.path.join(env.output_dir, uid)

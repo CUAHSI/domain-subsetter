@@ -4,6 +4,7 @@ import time
 
 import os
 import json
+import time
 import tornado.auth
 import tornado.web
 import uuid
@@ -17,6 +18,8 @@ import polygon
 import urllib.parse
 import xml.etree.ElementTree as ET
 import environment as env
+
+import multiprocessing
 
 from tornado import gen 
 from tornado.httpclient import AsyncHTTPClient
@@ -75,12 +78,15 @@ class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
         llat = self.get_argument('llat')
         ulon = self.get_argument('ulon')
         llon = self.get_argument('llon')
+        hucs = self.get_argument('hucs')
+
         if '' in [ulat, ulon, llat, llon]:
             self.render("index.html",
                         title="CUAHSI Subsetter v0.1",
                         msg='ERROR: Missing required input')
 
-        query = 'llat=%s&llon=%s&ulat=%s&ulon=%s' % (llat, llon, ulat, ulon)
+        # build GET url for subsetting
+        query = f'llat={llat}&llon={llon}&ulat={ulat}&ulon={ulon}&hucs={hucs}'
         self.redirect('nwm/v1_2_2/subset?%s' % query)
 
 
@@ -143,6 +149,8 @@ class SubsetNWM122(RequestHandler):
         llon = self.get_arg_value('llon', True)
         ulat = self.get_arg_value('ulat', True)
         ulon = self.get_arg_value('ulon', True)
+        hucs = self.get_arg_value('hucs', True).split(',')
+
         app_log.debug('submitted bbox: (%s, %s, %s, %s) ' %
                       (llat, llon, ulat, ulon))
        
@@ -151,24 +159,16 @@ class SubsetNWM122(RequestHandler):
         hasher.update(str([llon, llat, ulon, ulat]).encode('utf-8'))
         uid = hasher.hexdigest()
        
-        app_log.debug('Checking if job exists')
         # check if this job has been executed previously
+        app_log.debug('Checking if job exists')
         res = sql.get_job_by_guid(uid)
         app_log.debug(res)
 
         # submit the job
         if len(res) == 0:
-            app_log.debug('Job doesn\'t exist, preparing to submit job.')
-
-    #        uid = uuid.uuid4().hex
-            args = (uid,
-                    llat,
-                    llon,
-                    ulat,
-                    ulon)
-    
+            # submit the subsetting job
+            args = (uid, llat, llon, ulat, ulon, hucs)
             uid = executor.add(uid, subset.subset_nwm_122, *args)
-            app_log.debug('Job submitted')
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')
@@ -289,43 +289,6 @@ class Job(RequestHandler):
             host_url = "{protocol}://{host}".format(**vars(self.request))
             return host_url + relative_file_path
         return None
-
-
-class LccPolygonFromHUC(RequestHandler):
-    @gen.coroutine
-    def get(self):
-        hucs = self.get_arg_value('hucs', True).split(',')
-        watershed = polygon.WatershedBoundary()
-        http_client = AsyncHTTPClient()
-
-        for huc in hucs:
-            try:
-                host_url = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer?'
-                huc_filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+huc+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
-                defaultParameters = {'service' : 'WFS',
-                                     'request' : 'GetFeature',
-                                     'typeName' : 'HUC_WBD:HUC12_US',
-                                     'SrsName' : 'EPSG:4326',
-                                     'Filter' : huc_filter}
-                params = urllib.parse.urlencode(defaultParameters)
-                request_url = host_url + params
-    
-                response = yield http_client.fetch(request_url, validate_cert=False)
-                xmlbody = response.body.decode('utf-8')
-                tree = ET.ElementTree(ET.fromstring(xmlbody))
-                root = tree.getroot()
-                namespaces = {'gml':'http://www.opengis.net/gml/3.2'}
-                if watershed.srs is None:
-                    watershed.set_srs_from_gml_polygon(root.findall('.//gml:Polygon', namespaces)[0])
-                polygons_gml = root.findall('.//gml:Polygon//gml:posList', namespaces)
-    
-                watershed.add_boundary_from_gml(polygons_gml, huc)
-            except Exception as e:
-                self.write("Error: " + str(e))
-        http_client.close()
-
-        self.write(watershed.get_polygon_wkt())
- 
 
 
 class About(RequestHandler):

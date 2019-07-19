@@ -3,9 +3,11 @@
 import ogr
 import osr
 import itertools
+import urllib.parse
 from shapely import geometry
 import xml.etree.ElementTree as ET
-
+from tornado.httpclient import AsyncHTTPClient
+import requests
 
 class WatershedBoundary(object):
     def __init__(self, srs=None):
@@ -27,23 +29,10 @@ class WatershedBoundary(object):
 
     def get_polygon_wkt(self):
         wkt = []
-#        import pdb; pdb.set_trace()
         for hucid, poly_shape in self.polygons.items():
             wkt.append(poly_shape.wkt)
         return wkt
 
-#        if len(self.polygons) == 1:
-#            return list(self.polygons.values())[0][0].wkt
-#        elif len(self.polygons) > 1:
-#   
-#            # create multipolygon
-#            polys = list(itertools.chain.from_iterable(self.polygons.values()))
-#            mp = geometry.MultiPolygon(polys)
-#            return mp.wkt
-#        else:
-#            return None
-        
-    
     def add_boundary_from_gml(self, gml, hucname):
         """
         Creates Shapely polygon objects from GML returned via ArcServer
@@ -101,3 +90,46 @@ class WatershedBoundary(object):
         ds = layer = feat = geom = None
 
 
+def create_shapefile(uid, hucs, outpath, logger=None):
+    if logger is None:
+        from tornado.log import app_log
+        logger = app_log
+
+    watershed = WatershedBoundary()
+#    http_client = AsyncHTTPClient()
+
+    for huc in hucs:
+        try:
+            logger.info(f'Querying geometry of HUC:{huc}')
+
+            host_url = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer?'
+            huc_filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+huc+"</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+            defaultParameters = {'service' : 'WFS',
+                                 'request' : 'GetFeature',
+                                  'typeName' : 'HUC_WBD:HUC12_US',
+                                  'SrsName' : 'EPSG:4326',
+                                  'Filter' : huc_filter}
+            params = urllib.parse.urlencode(defaultParameters)
+            request_url = host_url + params
+            logger.info(request_url)
+    
+#            response = yield http_client.fetch(request_url, validate_cert=False)
+            response = requests.get(request_url, verify=False)
+#            xmlbody = response.body.decode('utf-8')
+            xmlbody = response.text
+            tree = ET.ElementTree(ET.fromstring(xmlbody))
+            root = tree.getroot()
+            namespaces = {'gml':'http://www.opengis.net/gml/3.2'}
+            if watershed.srs is None:
+                 watershed.set_srs_from_gml_polygon(root.findall('.//gml:Polygon', namespaces)[0])
+            polygons_gml = root.findall('.//gml:Polygon//gml:posList', namespaces)
+            logger.info('Adding boundary from gml') 
+            watershed.add_boundary_from_gml(polygons_gml, huc)
+            logger.info(watershed.get_polygon_wkt())
+        except Exception as e:
+             logger.error("Error: " + str(e))
+#    http_client.close()
+   
+    logger.info('watershed.write_shapefile(outpath)')
+    watershed.write_shapefile(outpath)
+    return outpath
