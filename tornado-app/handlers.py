@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import time
-
 import os
 import json
 import time
@@ -108,31 +106,6 @@ class LccBBoxFromHUC(RequestHandler):
         self.write(json.dumps(response))
 
 
-
-class SubsetHUC(RequestHandler):
-
-    @tornado.gen.coroutine
-    def get(self):
-        global executor
-
-        # collect rest arguments
-        hucarg = self.get_arg_value('hucs', True)
-        uid = uuid.uuid4().hex
-        hucs = hucarg.split(',')
-        
-        # calculate bounding box
-
-        args = (uid,
-                llat,
-                llon,
-                ulat,
-                ulon)
-
-        uid = executor.add(uid, subset.subset_by_bbox, *args)
-
-        self.redirect('status')
-
-
 class SubsetNWM122(RequestHandler):
     """
     Subsetting endpoint for NWM v1.2.2
@@ -166,6 +139,7 @@ class SubsetNWM122(RequestHandler):
 
         # submit the job
         if len(res) == 0:
+
             # submit the subsetting job
             args = (uid, llat, llon, ulat, ulon, hucs)
             uid = executor.add(uid, subset.subset_nwm_122, *args)
@@ -173,29 +147,6 @@ class SubsetNWM122(RequestHandler):
         # redirect to status page for this job
         app_log.debug('redirecting to status page')
         self.redirect('/status/%s' % uid)
-
-
-class Subset(RequestHandler):
-
-    @tornado.gen.coroutine
-    def get(self):
-        global executor
-        
-        # collect rest arguments
-        llat = self.get_arg_value('llat', True)
-        llon = self.get_arg_value('llon', True)
-        ulat = self.get_arg_value('ulat', True)
-        ulon = self.get_arg_value('ulon', True)
-        uid = uuid.uuid4().hex
-        args = (uid,
-                llat,
-                llon,
-                ulat,
-                ulon)
-
-        uid = executor.add(uid, subset.subset_by_bbox, *args)
-                     
-        self.redirect('status/%s' % uid)
 
 
 class Status(RequestHandler):
