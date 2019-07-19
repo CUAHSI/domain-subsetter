@@ -29,6 +29,14 @@ conda config --add channels conda-forge
 conda env create -f environment.yml
 ```
 
+5. Move proj dat into conda directory
+```
+# define the conda directory, this will be specific to your installation
+CONDA_ENV_DIR=/home/acastronova/.conda/envs/subsetting-server/share/proj
+
+cp /usr/share/proj/proj_def.dat $CONDA_ENV_DIR
+```
+
 5. Prepare data directories
 ```
 VERSION=nwm.v1.2.4
