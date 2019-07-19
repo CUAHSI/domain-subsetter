@@ -2,39 +2,56 @@
 
 
 import os
+import sys
+import logging
 import tornado.web
 from tornado import httpserver
 from tornado.ioloop import IOLoop
-from tornado.log import enable_pretty_logging
 
+# import 'logs' before other modules
+# to ensure logs are configured properly
+import logs
 
 import handlers
+import environment as env
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", handlers.IndexHandler),
-            (r"/subset", handlers.Subset),
-            (r"/jobs", handlers.JobStatus),
-            (r"/jobs/([a-f0-9]{32})", handlers.JobStatus),
+            (r"/nwm/v1_2_2/subset", handlers.SubsetNWM122),
+            (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
+            (r"/jobs", handlers.Job),
+            (r"/jobs/([a-f0-9]{40})", handlers.Job),
+            (r"/admin/status", handlers.Status),
+            (r"/status/([a-f0-9]{40})", handlers.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
-             {"path": '/tmp'}),
+             {"path": env.output_dir}),
+            (r"/about", handlers.About),
+            (r"/help", handlers.Help),
+            (r"/api", handlers.Api),
+            (r"/getting-started", handlers.GettingStarted),
         ]
         settings = {
-            "debug":True,
-            "static_path":os.path.join(os.path.dirname(__file__), "static"),
-            "template_path":os.path.join(os.path.dirname(__file__), "templates"),
+            "debug": env.debug,
+            "static_path": env.static_path,
+            "template_path": env.template_path,
         }
         tornado.web.Application.__init__(self, endpoints, **settings)
+
 
 def main():
 
     app = Application()
     http_server = tornado.httpserver.HTTPServer(app)
 
-    http_server.listen(8080)
+    # initialize logs
+    applogs = logs.Logs()
+
+    http_server.listen(env.port, address=env.address)
     print('\n'+'-'*60)
-    print('server listening on 0.0.0.0:8080')
+    print('server listening on %s:%s' % (env.address, env.port))
     print('-'*60+'\n')
     IOLoop.instance().start()
 

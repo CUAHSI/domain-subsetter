@@ -1,0 +1,23 @@
+name: subsetting-server
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - gdal>=2.2.3
+  - bzip2
+  - matplotlib
+  - netcdf4
+  - numpy
+  - pandas
+  - pillow
+  - pyproj
+  - scipy
+  - pyshp
+  - tornado>=4.2.0,<6.0.0
+  - xarray
+  - yaml
+  - pip
+  - requests
+  - pip:
+    - multiprocessing-logging
+    - shapely

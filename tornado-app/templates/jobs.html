@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="static/style.css">
+  </head>
+   <body>
+     <h1>National Water Model (v1.2.2) API Subsetting Tool</h1>
+     This is an experimental CUAHSI data service, use at your own risk.
+     </br>
+     </br>
+
+     <h2> List of Jobs <h2>
+
+     <table style="width:100%">
+         <tr>
+	     <th> JobID </th>
+	     <th> Job Status </th>
+	     <th> Output Url </th>
+ 	 </tr>
+       {% for uuid, status, output in jobs %}
+         <tr>
+	     <td>{{ uuid }}</td>
+	     <td>{{ status }}</td>
+	     <td><a href="{{ output }}">{{ output }}</a></td>
+ 	 </tr>
+       {% end %}
+     </table>
+
+     </body>
+ </html>

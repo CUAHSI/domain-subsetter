@@ -1,108 +1,50 @@
 #!/usr/bin/env python3
 
-
-import os
-import uuid
-#import falcon
-import coords
-import transform
-import rpy2.robjects as robjects
+import sqlite3
 
 
-def load_r(scriptpath, function):
-    print(scriptpath)
-    r_source = robjects.r['source']
-    r_source(scriptpath)
-    r_getname = robjects.globalenv[function]
-    return r_getname
+# TODO: This should be defined globally somewhere instead of hardcoded
+huc_dbpath = 'data/huc12_bbox.db'
+
+def get_bbox_from_hucs(huclevel, huclist):
+    """
+    Calculates the bounding box for the intersection of the input huclist
+    """
+    
+    # connect to the database path
+    conn = sqlite3.connect(huc_dbpath, timeout=10)
+    cursor = conn.cursor()
+    
+    hucids = tuple(huclist)
+
+    query = "select * from bboxes where hucid in (%s)" % \
+             (','.join(['"{0}"'.format(h) for h in huclist]))
+    cursor.execute(query)
+    res = cursor.fetchall()
+    
+    bbox = [99999999,
+            99999999,
+            -99999999,
+            -99999999]
+    for r in res:
+        xmin, ymin, xmax, ymax = r[2:]
+        bbox[0] = xmin if xmin < bbox[0] else bbox[0]
+        bbox[1] = ymin if ymin < bbox[1] else bbox[1]
+        bbox[2] = xmax if xmax > bbox[2] else bbox[2]
+        bbox[3] = ymax if ymax > bbox[3] else bbox[3]
+
+    # TODO: calculate global bbox
+
+    # return global bounding box
+    return bbox
 
 
-def subset_with_bbox(llat, llon, ulat, ulon):
-        """Subsets the NWM domain files for a given bounding box
-        Args:
-          - llat: lower latitude in WGS 1984, e.g. 38.433
-          - llon: lower longitude in WGS 1984, e.g. -90.5734
-          - ulat: upper latitude in WGS 1984, e.g. 38.828
-          - ulon: upper longitude  in WGS 1984, e.g. -89.911
-        Returns:
-          - subsetted NWM domain files compressed as tar.gz
-        """
-
-        # get input parameters
-        params = dict(llat=llat, llon=llon, ulat=ulat, ulon=ulon)
-#        req.get_param('llat', required=True, store=params)
-#        req.get_param('llon', required=True, store=params)
-#        req.get_param('ulat', required=True, store=params)
-#        req.get_param('ulon', required=True, store=params)
-
-
-       
-        # check that types are valid
-        try:
-            for k,v in params.items():
-                params[k] = float(v)
-        except Exception as e:
-            resp.status = falcon.HTTP_400
-            print('bounding box parameters must be of type:float')
-            return
-
-        # check that bbox is valid
-        print('validating bounding box', flush=True)
-        if (params['llon'] > params['ulon']) | (params['llat'] > params['ulat']):
-            resp.status = falcon.HTTP_400
-            print('invalid bounding box')
-
-
-        # create random guid
-        print('creating uuid', flush=True)
-        uid = uuid.uuid4().hex
-        uid = '0' + uid[1:]
-
-        # run R script and save output as random guid
-        # load the R script
-        print('loading r subsetting script', flush=True)
-        subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
-        print('invoking subsetting algorithm', flush=True)
-
-        # check that subset that bbox is valid
-        print('validating bounding box', flush=True)
-        if (params['llon'] > params['ulon']) | (params['llat'] > params['ulat']):
-            resp.status = falcon.HTTP_400
-            print('invalid bounding box')
-
-
-        # create random guid
-        print('creating uuid', flush=True)
-        uid = uuid.uuid4().hex
-        uid = '0' + uid[1:]
-
-        # run R script and save output as random guid
-        # load the R script
-        print('loading r subsetting script', flush=True)
-        subsetBBOX = load_r('r-subsetting/subset_domain.R', 'subsetBbox')
-        print('invoking subsetting algorithm', flush=True)
-        subset = subsetBBOX(uid,
-                            params['llat'],
-                            params['ulat'],
-                            params['llon'],
-                            params['ulon'])
-
-        print('Done', flush=True)
-
-#    #    placeholder ###################
-#        f1 = '/tmp/file1.txt'
-#        f2 = '/tmp/file2.txt'
-#        ofile = '/tmp/%s.tar.gz' % uid
-#        os.system('echo this is some text > %s' % f1)
-#        os.system('echo this is some text > %s' % f2)
-#        os.system('tar -czf %s %s %s' % (ofile, f1, f2))
-#    #    placeholder ###################
-#
-#
-#        # return data
-#        # todo: this should be done with NGINX
-#        resp.downloadable_as = 'data.zip'
-#        resp.content_type = 'application/zip'
-#        with open(ofile, 'rb') as f:
-#            resp.body = f.read()
-#
+if __name__ == '__main__':
+    # quick sanity check
+    get_bbox_from_hucs(12, ['120701010901',
+                            '120701010902',
+                            '120701010903',
+                            '120701010904',
+                            '120701010905',
+                            '120701010906',
+                            ])

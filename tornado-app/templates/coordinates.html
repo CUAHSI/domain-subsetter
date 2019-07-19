@@ -1,0 +1,13 @@
+<form action="{{ request.path }}" method="post">
+     
+ <div><input type="hidden" name="llat" id="llat"/></div>
+ <div><input type="hidden" name="ulat" id="ulat"/></div>
+ <div><input type="hidden" name="llon" id="llon"/></div>
+ <div><input type="hidden" name="ulon" id="ulon"/></div>
+
+ <div style="float:right">
+ <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">Submit</button>
+ {% module xsrf_form_html() %}
+ </div>
+
+</form>

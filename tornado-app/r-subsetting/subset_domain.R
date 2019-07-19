@@ -32,21 +32,23 @@ library(data.table)
 #x west: 1720355.72762
 #x east: 1734488.45260
 
-subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
+subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_path) {
 
     # guid: unique identifier used to name the output 
     # Specify the clip bounding coordinates
     # they are the x, y values with respect to the projection specified above.
     # For example, the y_south is the y value of the most southern part of the domain you want to subset have
     # in the lambert conformal conic projection used in the National Water Model (in meters)
-        
+
+
     # Specify the path to your new subset domain files
-    myPath <- paste0("/tmp/", guid)
+    myPath <- paste0(out_path,"/", guid)
     # Specify the path to the FULL DOMAIN files 
-    domainPath <- "/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain"
+#    domainPath <- "/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain"
+    domainPath <- domain_path
     
-    cat("\noutput path: ", myPath)
-    cat("\ndomain path: ", domainPath)
+    cat("std:output path: ", myPath)
+    cat("std:domain path: ", domainPath)
 
     # Projection for bounding coordinates. This needs to be a PROJ4 string 
     # (e.g., "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs").
@@ -57,18 +59,18 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # For example, the y_south is the y value of the most southern part of the domain you want to subset have
     # in the lambert conformal conic projection used in the National Water Model (in meters)
     #
-    cat("y south:", y_south, sep=' ')
-    cat("y north:", y_north, sep=' ')
-    cat("x west:", x_west, sep=' ')
-    cat("x east:", x_east, sep=' ')
-    
+    cat("std:R Inputs")
+    cat("std:y south (IN):", y_south, sep=' ')
+    cat("std:y north (IN):", y_north, sep=' ')
+    cat("std:x west: (IN)", x_west, sep=' ')
+    cat("std:x east: (IN)", x_east, sep=' ')
     
     # Multiplier between routing grid and LSM grid
     # (e.g., 1-km LSM and 250-m routing means a value of 4)
     dxy <- 4
     
     # Number of cells to buffer
-    cellBuff <- 2
+    cellBuff <- 4
     
     #******  Specify the path to the ORIGINAL (full extent) domain files: *****************
     
@@ -157,14 +159,14 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 
 
     # Create temp geogrid tif
-    cat("\nCreate temp geogrid tif...", sep='')
+#    cat("\nCreate temp geogrid tif...", sep='')
     tmpfile <- tempfile(fileext=".tif")
     ExportGeogrid(fullGeoFile, "HGT_M", tmpfile)
     geohgt <- raster::raster(tmpfile)
     file.remove(tmpfile)
 
     # Generate spatial coords
-    cat("\nGenerate spatial coords...")
+#    cat("\nGenerate spatial coords...")
     sp <- sp::SpatialPoints(data.frame(x=coords[,"lon"], y=coords[,"lat"]))
     raster::crs(sp) <- coordProj
     sp_proj <- sp::spTransform(sp, crs(geohgt))
@@ -172,12 +174,12 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     geoindex$we <- geoindex$col
     
     # Change row count from N->S to S->N
-    cat("\nChange row count from N->S to S->N")
+#    cat("\nChange row count from N->S to S->N")
     geoindex$sn <- dim(geohgt)[1] - geoindex$row + 1
     geoindex$id <- coords[,"id"]
     
     # Get subsetting dimensions
-    cat("\nGet subsetting dimensions...")
+#    cat("\nGet subsetting dimensions...")
     geo_w <- min(geoindex[,"we"])
     geo_e <- max(geoindex[,"we"])
     geo_s <- min(geoindex[,"sn"])
@@ -191,14 +193,15 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     geo_min <- min(geoindex$row)
     geo_max <- max(geoindex$row)
     
-    cat('\n\nGeo Xwest', geo_w)
-    cat('\nGeo Xeast', geo_e)
-    cat('\nGeo Ynorth', geo_n)
-    cat('\nGeo Ysouth', geo_s)
-    cat('\n\nHyd Xwest', hyd_w)
-    cat('\nHyd Xeast', hyd_e)
-    cat('\nHyd Ynorth', hyd_n)
-    cat('\nHyd Ysouth', hyd_s)
+    cat('std:\nR Dimensions')
+    cat('std:Geo Xwest', geo_w)
+    cat('std:Geo Xeast', geo_e)
+    cat('std:Geo Ynorth', geo_n)
+    cat('std:Geo Ysouth', geo_s)
+    cat('std:\nHyd Xwest', hyd_w)
+    cat('std:Hyd Xeast', hyd_e)
+    cat('std:Hyd Ynorth', hyd_n)
+    cat('std:Hyd Ysouth', hyd_s)
     
     # Get relevant real coords for new bounds
     cat("\nGet relevant real coords for new bounds...")
@@ -230,7 +233,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 #       print(cmd)
        system(cmd)
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
     
     # Geo Spatial File 
@@ -241,7 +244,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     #   print(cmd)
        system(cmd)
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
     
     
@@ -259,7 +262,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     # with the WPS standards
     
     # Read the 2D corner coordinates
-    cat('\nRead the 2D corner lat coordinates...')
+#    cat('\nRead the 2D corner lat coordinates...')
     corner_lats <- c()
     for (ncVarName in c('XLAT_M', 'XLAT_U', 'XLAT_V', 'XLAT_C')) {
             if (ncVarName %in% names(rwrfhydro::ncdump(subGeoFile, quiet = TRUE)$var)) {
@@ -331,7 +334,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     #   print(cmd)
        system(cmd)
     } else {
-    cat('skipping')
+ #   cat('skipping')
     }
     
     # WRFINPUT GRID
@@ -349,11 +352,12 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
       cmd <- paste0("ncatted -h -a SOUTH-NORTH_GRID_DIMENSION,global,o,l,", geo_n-geo_s+2, " ", subWrfFile)
       system(cmd)
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
     
     ################# SUBSET PARAMS
     cat('\nSubset Route Link and Spatial Weights...')
+#    browser()
     if (!is.null(fullSpwtFile) & !is.null(fullRtlinkFile)) {
     
       if (!file.exists(fullSpwtFile)) stop(paste0("The fullSpwtFile : ", fullSpwtFile, " does not exits"))
@@ -364,15 +368,17 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
        fullWts <- ReadWtFile(fullSpwtFile)
        keepIdsPoly <- subset(fullWts[[1]], fullWts[[1]]$i_index >= hyd_w & fullWts[[1]]$i_index <= hyd_e &
            			fullWts[[1]]$j_index >= hyd_s & fullWts[[1]]$j_index <= hyd_n)
+
     #   keepIdsPoly <- unique(keepIdsPoly$IDmask)  !!! this was commented out since I have added the below check to make sure all the basin falls in the cutout domain
-       cat('done')
+#       cat('done')
     
        # keep only those basins that are fully within the cutout doamin
        cat('\n-> keep basins within the cutout domain...')
        FullBasins <- as.data.table(keepIdsPoly)
        FullBasins <- FullBasins[, .(sumBas = sum(weight)), by = IDmask] # find How much of the basins are in the cutout domain
+
        keepIdsPoly <- FullBasins[sumBas > .999]$IDmask
-    
+       
     # ----->
     
        fullRtlink <- ReadLinkFile(fullRtlinkFile)
@@ -400,7 +406,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
        UpdateLinkFile(subRtlinkFile, subRtlink, subDim=TRUE)
     
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
     
     # GWBUCK PARAMETER
@@ -417,7 +423,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
        file.copy(fullGwbuckFile, subGwbuckFile, overwrite = TRUE)
        UpdateGwbuckFile(subGwbuckFile, subGwbuck, subDim=TRUE)
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
     
     # SOIL PARAMETER
@@ -428,10 +434,9 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
         cmd <- paste0("ncks -O -d west_east,", geo_w-1, ",", geo_e-1, " -d south_north,", geo_s-1, ",", geo_n-1, " ", fullSoilparmFile, " ", subSoilparmFile)
         system(cmd)
     } else {
-    cat('skipping')
+#    cat('skipping')
     }
  
-    
     ################# CREATE SCRIPT FILES
     
     # Save the coordinate parameter file
@@ -458,26 +463,18 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
     		"done"),
     		fileConn)
     close(fileConn)
-    
-    ncksCmd <- paste0("ncks -d ncl0,", geo_s-1, ",", geo_n-1, " -d ncl1,", geo_w-1, ",", geo_e-1, " -d ncl2,", geo_s-1, ",", geo_n-1, " -d ncl3,", geo_w-1, ",", geo_e-1, " -d ncl4,", geo_s-1, ",", geo_n-1, " -d ncl5,", geo_w-1, ",", geo_e-1, " -d ncl6,", geo_s-1, ",", geo_n-1, " -d ncl7,", geo_w-1, ",", geo_e-1, " -d ncl8,", geo_s-1, ",", geo_n-1, " -d ncl9,", geo_w-1, ",", geo_e-1, " -d ncl10,", geo_s-1, ",", geo_n-1, " -d ncl11,", geo_w-1, ",", geo_e-1, " -d ncl12,", geo_s-1, ",", geo_n-1, " -d ncl13,", geo_w-1, ",", geo_e-1, " -d ncl14,", geo_s-1, ",", geo_n-1, " -d ncl15,", geo_w-1, ",", geo_e-1, " ${i} ${NEWFORCPATH}/${i##*/}")
-    fileConn <- file(paste0(subScriptFile, "_NWM_REALTIME"))
-    writeLines(c("#!/bin/bash",
-                    "OLDFORCPATH='PATH_TO_OLD_FORCING_DATA_FOLDER'",
-                    "NEWFORCPATH='PATH_TO_NEW_FORCING_DATA_FOLDER'",
-                    "for i in `ls $OLDFORCPATH`; do",
-                    "echo ${i##*/}",
-                    ncksCmd,
-                    "done"),
-                    fileConn)
-    close(fileConn)
-    
+        
     # copy this script to the myPath dir, so the user haev from what files this cutout has been generated, and what are the options.
     
-    file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
+    # file.copy(from = paste0(getwd(), "/subset_domain.R"), to = paste0(myPath, "/subset_domain.R"), overwrite = TRUE)
+
+    # copy in README
+
+    file.copy(from = paste0(getwd(), "/README.md"), to = paste0(myPath, "/README.md"), overwrite = TRUE)
     
-    cat('\n---------------')
-    cat('\nSCRIPT COMPLETE')
-    cat('\n---------------\n\n')
+#    cat('\n---------------')
+#    cat('\nSCRIPT COMPLETE')
+#    cat('\n---------------\n\n')
 
     return(myPath)
 }
@@ -488,10 +485,20 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east) {
 if (identical (environment (), globalenv ())) {
     args = commandArgs(trailingOnly=TRUE)
     coords <- as.numeric(args[c(2,3,4,5)])
+
+
+#    # REMOVE ME!!! This is only for testing.
+#    #(guid, y_south, y_north, x_west, x_east) 
+#    res = suppressWarnings(subsetBbox( 'asdfdgf',
+#                                      469282,
+#                                      499010,
+#                                      1671021,
+#                                      1703533));
+
     
-    if (length(args) == 5) {
+    if (length(args) == 7) {
         # invoke the subsetting function
-        res = suppressWarnings(subsetBbox( args[1], coords[1], coords[2], coords[3], coords[4] ))
+        res = suppressWarnings(subsetBbox( args[1], coords[1], coords[2], coords[3], coords[4], args[6], args[7]))
         print(res)
     } else {
         print('Incorrect number of arguments')

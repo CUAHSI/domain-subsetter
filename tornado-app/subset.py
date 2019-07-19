@@ -1,75 +1,87 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import json
 import subprocess
 import transform
+import tarfile
+import shutil
+import watershed
+import environment as env
 
 
-def subset_by_bbox(uid, llat, llon, ulat, ulon):
+def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
+    
+    if logger is None:
+        from tornado.log import app_log
+        logger = app_log
 
-    geofile = '/home/acastronova/www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v1.2.2/parm/domain/geo_em.d01_1km.nc'
-    bbox = (float(llon),
-            float(llat),
-            float(ulon),
-            float(ulat))
-    coords = [(bbox[0], bbox[1]), # lower left
-              (bbox[2], bbox[3]), # upper left
-              (bbox[2], bbox[3]), # upper right
-              (bbox[0], bbox[1])] # lower right
-    transformed = transform.proj_to_coord(coords)
-    xs = [t[0] for t in transformed]
-    ys = [t[1] for t in transformed]
-    ysouth= min(ys)
-    ynorth= max(ys)
-    xwest = min(xs)
-    xeast=  max(xs)
+    # list object to store stdout info for debugging
+    stdout = []
+    stdout.append('UID: %s\n'
+                  'xmin: %s\n'
+                  'ymin : %s\n'
+                  'xmax : %s\n'
+                  'ymax : %s\n\n' % (uid, str(xmin), str(ymin),
+                                     str(xmax), str(ymax)))
+    bbox = (float(xmin),
+            float(ymin),
+            float(xmax),
+            float(ymax))
 
-    # check that bbox is valid
-    print('validating bounding box')
-    if (ysouth > ynorth) | (xwest > xeast):
-        print('invalid bounding box')
+    # TODO: check bbox size
+
 
     # run R script and save output as random guid
-    print('invoking subsetting algorithm')
+    logger.info('begin NWM v1.2.2 subsetting %s' % (uid) )
 
     cmd = ['Rscript',
            'subset_domain.R',
            uid,
-           str(ysouth),
-           str(ynorth),
-           str(xwest),
-           str(xeast)]
+           str(ymin),
+           str(ymax),
+           str(xmin),
+           str(xmax),
+           env.wrfdata,
+           env.output_dir]
     print(' '.join(cmd))
     p = subprocess.Popen(cmd,
-                         cwd=os.path.join(os.getcwd(),'r-subsetting'),
+                         cwd=os.path.join(os.getcwd(), 'r-subsetting'),
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 
     for line in iter(p.stdout.readline, b''):
-        print(">>> " + line.decode('utf-8').rstrip())
+        l = line.decode('utf-8').rstrip()
+        print(l, flush=True)
     p.stdout.close()
     return_code = p.wait()
+    
 
     if not return_code == 0:
-        response = dict(message =
-            'The process call "{}" returned with code {}, an error '
-            'occurred.'.format(list(cmd), return_code),
-                       status='error')
-    else:
-        fpath = os.path.join('/tmp', uid) 
-        outname = '%s.tar.gz' % uid
-        cmd = ['tar', '-czf', outname, fpath] 
-        p = subprocess.Popen(cmd, cwd = '/tmp',
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
-        for line in iter(p.stdout.readline, b''):
-            print("$ " + line.decode('utf-8').rstrip())
-        p.stdout.close()
-        return_code = p.wait()
+        msg= 'The process call "{}" returned with code {}, an error ' \
+             'occurred.'.format(list(cmd), return_code)
+        logger.error('subsetting failed %s: %s' % (uid, msg) )
+        response = dict(message=msg, status='error')
+        return response
 
-        response = dict(message='file created at: /tmp/data/%s' % outname,
-                        filepath='/data/%s' % outname,
-                        status='success')
+    logger.info('subsetting complete %s' % (uid) )
 
+    # run watershed shapefile creation
+    logger.debug('Submitting create_shapefile')
+    outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
+    outfile = watershed.create_shapefile(uid, hucs, outpath)
+
+    # compress the results
+    fpath = os.path.join(env.output_dir, uid)
+    outname = '%s.tar.gz' % uid
+    outpath = os.path.join(env.output_dir, outname)
+    with tarfile.open(outpath,  "w:gz") as tar:
+        tar.add(fpath, arcname=os.path.basename(fpath))
+    shutil.rmtree(fpath)
+    logger.info('finished compressing results %s' % (uid)) 
+
+    response = dict(message='file created at: %s' % outpath,
+                    filepath='/data/%s' % outname,
+                    status='success')
     return response

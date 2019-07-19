@@ -1,0 +1,24 @@
+<html>
+  <head>
+  <link rel="stylesheet" href='{{ static_url("style.css") }}'>
+   <link href="https://fonts.googleapis.com/css?family=Suez+One" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+   <script type='text/javascript' src='{{ static_url("status.js") }}'></script>
+  </head>
+   <body>
+
+
+     <div class="progress processing">
+        <h3 id=status class='progress-font'>Your request is being processed...</h3>
+     </div>
+
+
+
+    <div id=results style="display:none;">
+        <h3>Your data can be downloaded using the following URL: </h3>
+	 <a id=file href=''></p>
+ </div>
+     </body>
+ </html>

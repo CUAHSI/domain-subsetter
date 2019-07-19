@@ -1,36 +1,67 @@
-<html>
-   <head>
-      <title>{{ title }}</title>
-   </head>
-   <body>
-     <h1>National Water Model (v1.2.2) API Subsetting Tool</h1>
-     This is an experimental CUAHSI data service, use at your own risk.
-     </br>
-     </br>
-     {% try %}
-       {% if msg %}
-         <div style="background-color:rgb(245, 137, 113);padding:35px"> 
-         <p> {{ msg }} </p>
-          </div>
-       {% end %}
-     {% except%}
-     {% end %}
-     </br>
-     Specify the Latitudes and Longitudes of the bounding box in the WGS 1984 SRS, see the following <a href=https://epsg.io/map#srs=4326&x=-71.119974&y=42.354428&z=12&layer=streets target="_blank">link</a> for help:
-     </br>
-     </br>
-     <form action="{{ request.path }}" method="post">
-       <div>Lower Latitude: <input type="text" name="llat"/></div>
-       </br>
-       <div>Upper Latitude: <input type="text" name="ulat"/></div>
-       </br>
-       <div>Lower Longitude: <input type="text" name="llon"/></div>
-       </br>
-       <div>Upper Longitude: <input type="text" name="ulon"/></div>
-       </br>
-       <div><input type="submit" value=Submit></div>
-       {% module xsrf_form_html() %}
-     </form>
+<!DOCTYPE html>
 
-   </body>
- </html>
+{% extends base.html %}
+
+{% block extra-head %}
+      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
+      <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
+      <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+      <script type='text/javascript' src='{{ static_url("map.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
+      <link rel="shortcut icon" href="favicon.ico">
+
+	{% block more-head %}
+	{% end %}
+{% end %}
+
+
+{% block content %}
+
+
+    <div id='map-div' class='mdl-grid'>	
+        <div class='mdl-cell mdl-cell--12-col'>
+
+        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
+
+            <li class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+                <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
+                    <span class="mdlext-accordion__tab__caption">Map</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section id=map-panel class="mdlext-accordion__tabpanel" aria-hidden='false'>
+                    <div class='map' id="map"></div>
+                </section>
+            </li>
+
+            <li class="mdlext-accordion__panel huc-table-panel">
+                <header class="mdlext-accordion__tab mdl-color--indigo mdl-color-text--white mdl-js-button mdl-button--raised mdl-button--accent">
+                    <span class="mdlext-accordion__tab__caption">Selected HUCs</span>
+                    <i class="mdlext-aria-toggle-material-icons"></i>
+                </header>
+                <section class="mdlext-accordion__tabpanel">
+		            {% include huc-table.html %}
+                </section>
+            </li>
+        </ul>
+        </div>
+
+        <div class='mdl-cell mdl-cell--1-col mdl-cell--10-offset' id="submit-button">
+        <form action="{{ request.path }}" method="post">
+            <input type="hidden" name="llat" id="llat"/>
+            <input type="hidden" name="ulat" id="ulat"/>
+            <input type="hidden" name="llon" id="llon"/>
+            <input type="hidden" name="ulon" id="ulon"/>
+            <input type="hidden" name="hucs" id="hucs"/>
+
+		<!-- SUBMIT BUTTON -->		
+                    <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
+                        Submit
+                    </button>
+
+         {% module xsrf_form_html() %}
+        </form>
+	</div>
+
+{% end %}
+
