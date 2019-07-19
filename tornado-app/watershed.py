@@ -60,7 +60,6 @@ class WatershedBoundary(object):
 
 
     def write_shapefile(self, out_shp):
-      
 
         driver = ogr.GetDriverByName('Esri Shapefile')
         ds = driver.CreateDataSource(out_shp)
@@ -96,7 +95,6 @@ def create_shapefile(uid, hucs, outpath, logger=None):
         logger = app_log
 
     watershed = WatershedBoundary()
-#    http_client = AsyncHTTPClient()
 
     for huc in hucs:
         try:
@@ -111,11 +109,8 @@ def create_shapefile(uid, hucs, outpath, logger=None):
                                   'Filter' : huc_filter}
             params = urllib.parse.urlencode(defaultParameters)
             request_url = host_url + params
-            logger.info(request_url)
     
-#            response = yield http_client.fetch(request_url, validate_cert=False)
             response = requests.get(request_url, verify=False)
-#            xmlbody = response.body.decode('utf-8')
             xmlbody = response.text
             tree = ET.ElementTree(ET.fromstring(xmlbody))
             root = tree.getroot()
@@ -123,13 +118,13 @@ def create_shapefile(uid, hucs, outpath, logger=None):
             if watershed.srs is None:
                  watershed.set_srs_from_gml_polygon(root.findall('.//gml:Polygon', namespaces)[0])
             polygons_gml = root.findall('.//gml:Polygon//gml:posList', namespaces)
-            logger.info('Adding boundary from gml') 
             watershed.add_boundary_from_gml(polygons_gml, huc)
-            logger.info(watershed.get_polygon_wkt())
+
         except Exception as e:
              logger.error("Error: " + str(e))
-#    http_client.close()
-   
-    logger.info('watershed.write_shapefile(outpath)')
+
+    # write the shapefile   
     watershed.write_shapefile(outpath)
+
+    logger.info(f'Shapefile written to: {outpath}')
     return outpath
