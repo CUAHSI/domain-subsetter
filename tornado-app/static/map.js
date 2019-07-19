@@ -345,9 +345,12 @@ function clearSelection() {
         // clear the huc boundary list
         delete Map.hucbounds[key];
         
-        // clear the olygon overlays
+        // clear the polygon overlays
         Map.huclayers[key].clearLayers();
         delete Map.huclayers[key];
+
+        // clear the hucs in the html template
+
     }
 
     // clear the HUC table
@@ -504,7 +507,7 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
                         addHucRow(res.hucid);
                         togglePolygon(res.hucid, res.geom);
                     
-			// add a 'success' message for this table entry
+						// add a 'success' message for this table entry
                         var row = getRowByName(res.hucid);
                         var elem = row.getElementsByTagName('td')[2]
                         elem.innerText = 'Loaded';
@@ -534,6 +537,12 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
             }
             getLccBounds(hucs);
 
+			// update the hucs list 
+			// this is used to create a shapefile
+			// that is exported along with the subset
+			update_huc_ids(hucs);
+			
+			
             // remove the specified id
             if (remove != null) {
                 var rid = getRowIdByName(remove);
@@ -541,6 +550,8 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
                     rmHucRow(rid);
                 }
             }
+
+
         },
         error: function (response) {
             // if there was an error calling the ArcGIS WFS,
@@ -741,6 +752,16 @@ function parseWfsXML(xml){
     return response;
 }
 
+function update_huc_ids(huclist) {
+
+	// convert huc array into csv string
+	var hucs = huclist.join(",");
+
+	// set the #hucs hidden field in the html template
+	// using jquery
+	$('#hucs').val(hucs);
+
+}
 
 function update_lcc_bounds(lcc_bbox) {
 
