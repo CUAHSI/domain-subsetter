@@ -20,7 +20,6 @@ class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", handlers.IndexHandler),
-            (r"/subset", handlers.Subset),
             (r"/nwm/v1_2_2/subset", handlers.SubsetNWM122),
             (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
             (r"/jobs", handlers.Job),

@@ -7,7 +7,7 @@ import subprocess
 import transform
 import tarfile
 import shutil
-import polygon
+import watershed
 import environment as env
 
 
@@ -70,7 +70,7 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     # run watershed shapefile creation
     logger.debug('Submitting create_shapefile')
     outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
-    outfile = polygon.create_shapefile(uid, hucs, outpath)
+    outfile = watershed.create_shapefile(uid, hucs, outpath)
 
     # compress the results
     fpath = os.path.join(env.output_dir, uid)
