@@ -16,6 +16,9 @@ class BackgroundWorker(object):
 
         self.queue = mp.Queue()
         self.jobs = {}
+        self.manager = mp.Manager()
+        self.output = self.manager.dict()
+        self.status = self.manager.dict()
 
         self.sql = sqldata.Connect(env.sqldb)
         self.sql.build()
@@ -41,12 +44,16 @@ class BackgroundWorker(object):
         self.queue.put(item)
         self.jobs[uid] = item
 
+        self.status[uid] = 'queued'
+
         app_log.info('job queued: %s' % uid) 
 
         self.sql.save_job(uid, item['state'], '')
 
         return uid       
 
+    def get_status(self, uid):
+        return self.status[uid]
     
     def worker(self, logger):
         while True:
@@ -70,11 +77,11 @@ class BackgroundWorker(object):
                 # update the job state
                 item['state'] = 'running'
                 self.jobs[uid] = item
+                self.status[uid] = 'running'
                 
                 # run the job
                 res = item['function'](*item['args'],**item['kwargs'],
                                        logger=logger)
-            
                 logger.info('job completed %s' % (item['uid']))
                 
                 # save output and yield result
@@ -82,14 +89,18 @@ class BackgroundWorker(object):
                 item['result'] = res
                 item['state'] = 'finished'
                 self.jobs[uid] = item
+                self.output[uid] = res
                 
-                
+                self.status[uid] = 'finished'
+
             except Exception as e:
                 logger.error('job failed %s: %s' % (item['uid'], e))
                 item['state'] = 'failed'
                 item['result'] = dict(filepath='')
                 item['dt_end'] = datetime.now()
                 self.jobs[uid] = item
+                self.output[uid] = item
+                self.status[uid] = 'finished'
                 
             try:
                 self.sql.save_job(uid,
