@@ -58,7 +58,7 @@ class RequestHandler(tornado.web.RequestHandler):
             error = 'Could not find required parameter "%s"' % argname
             self.errors.append(error)
         return arg
-   
+
     def check_for_errors(self):
         response = False
         if len(self.errors) > 0:
@@ -68,7 +68,7 @@ class RequestHandler(tornado.web.RequestHandler):
 
 class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
-        self.render("index.html", title="CUAHSI Subsetter v0.1")
+        self.render("index.html", title="NWM v1.2.2")
 
     def post(self):
         ulat = self.get_argument('ulat')
@@ -97,7 +97,7 @@ class LccBBoxFromHUC(RequestHandler):
         hucs = hucstring.split(',')
         huclevels = [len(huc) for huc in hucs]
         box = bbox.get_bbox_from_hucs(huclevels, hucs)
-    
+
         response = dict(hucID=hucs,
                         hucLevel=huclevels,
                         bbox=box)
@@ -125,12 +125,12 @@ class SubsetNWM122(RequestHandler):
 
         app_log.debug('submitted bbox: (%s, %s, %s, %s) ' %
                       (llat, llon, ulat, ulon))
-       
+
         # calculate unique hash based on bbox
         hasher = hashlib.sha1()
         hasher.update(str([llon, llat, ulon, ulat]).encode('utf-8'))
         uid = hasher.hexdigest()
-       
+
         # check if this job has been executed previously
         app_log.debug('Checking if job exists')
         res = sql.get_job_by_guid(uid)
@@ -239,6 +239,15 @@ class Job(RequestHandler):
             host_url = "{protocol}://{host}".format(**vars(self.request))
             return host_url + relative_file_path
         return None
+
+
+class Results(RequestHandler):
+    @gen.coroutine
+    def get(self, jobid):
+        fname = f'{jobid}.tar.gz'
+        host_url = "{protocol}://{host}".format(**vars(self.request))
+        file_url = f'{host_url}/data/{fname}'
+        self.render('results.html', filepath=file_url)
 
 
 class About(RequestHandler):

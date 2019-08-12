@@ -13,6 +13,7 @@ from tornado.ioloop import IOLoop
 import logs
 
 import handlers
+import pfhandlers
 import environment as env
 
 
@@ -28,10 +29,13 @@ class Application(tornado.web.Application):
             (r"/status/([a-f0-9]{40})", handlers.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": env.output_dir}),
+            (r"/results/([a-f0-9]{40})", handlers.Results),
             (r"/about", handlers.About),
             (r"/help", handlers.Help),
             (r"/api", handlers.Api),
             (r"/getting-started", handlers.GettingStarted),
+            (r"/parflow/v1_0", pfhandlers.Index),
+            (r"/parflow/v1_0/subset", pfhandlers.SubsetParflow1),
         ]
         settings = {
             "debug": env.debug,

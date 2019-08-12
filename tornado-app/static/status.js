@@ -22,19 +22,20 @@ function get_job_status(guid) {
 	    res = JSON.parse(result);
 
         if (res.status == 'finished') {
+	    window.location.replace("/results/"+guid);
 
-            // hide the progress image
-            $('div.progress')[0].style.visibility = 'hidden';
-            
-            // print success message
-            $('#status')[0].innerHTML = 'Job Complete';
-            
-            clearInterval(pollInterval);
-
-            // display file info
-            $('#results')[0].style.display = '';
-            $('#file')[0].innerHTML = res.file;
-            $('#file')[0].setAttribute('href', res.file);
+//            // hide the progress image
+//            $('div.progress')[0].style.visibility = 'hidden';
+//            
+//            // print success message
+//            $('#status')[0].innerHTML = 'Job Complete';
+//            
+//            clearInterval(pollInterval);
+//
+//            // display file info
+//            $('#results')[0].style.display = '';
+//            $('#file')[0].innerHTML = res.file;
+//            $('#file')[0].setAttribute('href', res.file);
 
         } else if (res.status == 'failed') {
             
