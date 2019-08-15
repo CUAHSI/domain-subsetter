@@ -93,16 +93,34 @@ class SubsetParflow1(tornado.web.RequestHandler):
                    '-att', 'ID',
                    '-id']
             cmd.extend(ids)
+            run_cmd(cmd)
 
-            p = subprocess.Popen(cmd,
-                                 cwd=os.path.join(os.getcwd(),
-                                                  'pfconus1/Subsetting'),
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT,
-                                 env=os.environ.copy())
-            app_log.info(p.stdout.read())
+#            p = subprocess.Popen(cmd,
+#                                 cwd=os.path.join(os.getcwd(),
+#                                                  'pfconus1/Subsetting'),
+#                                 stdout=subprocess.PIPE,
+#                                 stderr=subprocess.STDOUT,
+#                                 env=os.environ.copy())
+#            app_log.info(p.stdout.read())
 
         # Subset Domain
+        ofile = os.path.join(outdir, 'subset')
+        cmd = [sys.executable,
+               'Create_Subdomain/subset_domain.py',
+               '-out_name', ofile,
+               '-pfmask', env.pfmask,
+               '-pflakesmask', env.pflakesmask,
+               '-pflakesborder', env.pflakesborder,
+               '-pfbordertype', env.pfbordertype,
+               '-pfsinks', env.pfsinks,
+               'shapefile',
+               '-shp_file', watershed_outfile,
+               '-att', 'ID',
+               '-id']
+        cmd.extend(ids)
+        run_cmd(cmd)
+
+
 
 
         # Extract CLM LatLon
@@ -138,3 +156,13 @@ class SubsetParflow1(tornado.web.RequestHandler):
         self.redirect('/results/%s' % uid)
 
 
+def run_cmd(cmd):
+    p = subprocess.Popen(cmd,
+                         cwd=os.path.join(os.getcwd(),
+                                          'pfconus1/Subsetting'),
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         env=os.environ.copy())
+    output = p.stdout.read().decode('utf-8')
+    if output != '':
+        app_log.info(output)
