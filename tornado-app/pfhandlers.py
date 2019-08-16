@@ -95,14 +95,6 @@ class SubsetParflow1(tornado.web.RequestHandler):
             cmd.extend(ids)
             run_cmd(cmd)
 
-#            p = subprocess.Popen(cmd,
-#                                 cwd=os.path.join(os.getcwd(),
-#                                                  'pfconus1/Subsetting'),
-#                                 stdout=subprocess.PIPE,
-#                                 stderr=subprocess.STDOUT,
-#                                 env=os.environ.copy())
-#            app_log.info(p.stdout.read())
-
         # Subset Domain
         ofile = os.path.join(outdir, 'subset')
         cmd = [sys.executable,
@@ -120,10 +112,17 @@ class SubsetParflow1(tornado.web.RequestHandler):
         cmd.extend(ids)
         run_cmd(cmd)
 
-
-
-
         # Extract CLM LatLon
+        ofile = os.path.join(outdir, 'latlon.txt')
+        cmd = [sys.executable,
+               'CLM/domain_extract_latlon.py',
+               '-shp_file', watershed_outfile,
+               '-id']
+        cmd.extend(ids)
+        cmd.extend(['-att', 'ID',
+                    '-pfmask', env.pfmask,
+                    '-out_name', ofile])
+        run_cmd(cmd)
 
 
        
