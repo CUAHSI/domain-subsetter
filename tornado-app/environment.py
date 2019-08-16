@@ -31,4 +31,14 @@ output_dir = '/share/appdata/output'
 # Location of jobs database
 sqldb = '/share/appdata/jobs.db'
 
-
+# PARFLOW v1.0 settings
+pfdata_v1 = '/share/pfconus.v1.0'
+pfmask = f'{pfdata_v1}/conus_1km_PFmask2.tif'
+pflakesmask = f'{pfdata_v1}/conus_1km_PFmask_selectLakesmask.tif'
+pflakesborder = f'{pfdata_v1}/conus_1km_PFmask_selectLakesborder.tif'
+pfbordertype = f'{pfdata_v1}/1km_PF_BorderCellType.tif'
+pfsinks = f'{pfdata_v1}/conus_1km_PFmask_manualsinks.tif'
+pfslopex = f'{pfdata_v1}/slopex.tif'
+pfslopey = f'{pfdata_v1}/slopey.tif'
+pfgrid = f'{pfdata_v1}/grid3d.v3.tif'
+pfpress = f'{pfdata_v1}/press.in.tif'
