@@ -186,6 +186,18 @@ div.processing {
     transition: none !important;
     animation: none !important;
 }
+
+.mdl-dialog {
+    height:70%;
+    width: 50%;
+//    overflow: auto;
+    position: fixed;
+    margin-top: 20px;
+}
+.mdl-dialog__content {
+   height: 80%;
+   overflow: auto;
+}
 .mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
     border: None;
 }

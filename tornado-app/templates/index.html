@@ -9,6 +9,7 @@
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
       <script type='text/javascript' src='{{ static_url("map.js") }}'></script> 
       <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("dialog.js") }}'></script> 
       <link rel="shortcut icon" href="favicon.ico">
 
 	{% block more-head %}
@@ -18,6 +19,7 @@
 
 {% block content %}
 
+{# <button id="show-dialog" type="button" class="mdl-button">Show Dialog</button> #}
 
     <div id='map-div' class='mdl-grid'>	
         <div class='mdl-cell mdl-cell--12-col'>
@@ -62,6 +64,19 @@
          {% module xsrf_form_html() %}
         </form>
 	</div>
+
+
+   <dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Getting Started</h4>
+    <div class="mdl-dialog__content">
+      <p>
+        {% include getting-started-gen.html %}
+      </p>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Close</button>
+    </div>
+  </dialog>
 
 {% end %}
 

@@ -10,6 +10,7 @@ import tarfile
 import shutil
 import subprocess
 import shapefile
+from subsetting import parflow1
 
 #import multiprocessing
 
@@ -22,12 +23,12 @@ from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
 
-#import jobs
-#executor = jobs.BackgroundWorker()
-#
-#import sqldata
-#sql = sqldata.Connect(env.sqldb)
-#sql.build()
+import jobs
+executor = jobs.BackgroundWorker()
+
+import sqldata
+sql = sqldata.Connect(env.sqldb)
+sql.build()
 
 
 class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
@@ -50,7 +51,7 @@ class SubsetParflow1(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
 
-#        global executor
+        global executor
 
         hucs = self.get_argument('hucs', True, strip=True).split(',')
         app_log.info(f'subsetting PF-CONUS 1.0: {hucs}')
@@ -68,6 +69,7 @@ class SubsetParflow1(tornado.web.RequestHandler):
         app_log.info('Extracting watershed')
         outpath = os.path.join(outdir, 'watershed.shp')
         watershed_outfile = watershed.create_shapefile(uid, hucs, outpath)
+        app_log.info(watershed_outfile)
 
         # read shapefile records
         ids = []
@@ -75,73 +77,32 @@ class SubsetParflow1(tornado.web.RequestHandler):
             for record in shp.records():
                 ids.append(str(record[0]))
 
-        # Clip Inputs
-        files_to_clip = [env.pfslopex,
-                         env.pfslopey,
-                         env.pfgrid,
-                         env.pfpress]
-        for fclip in files_to_clip:
-            name = os.path.basename(fclip)
-            ofile = os.path.join(outdir, name)
-            cmd = [sys.executable,
-                   'Clip_Inputs/clip_inputs.py',
-                   '-i', fclip,
-                   '-out_name', ofile,
-                   '-pfmask', env.pfmask,
-                   'shapefile',
-                   '-shp_file', watershed_outfile,
-                   '-att', 'ID',
-                   '-id']
-            cmd.extend(ids)
-            run_cmd(cmd)
+        app_log.info(f'UID: {uid}')
+        app_log.info(f'IDs: {ids}')
+        app_log.info(f'SHAPEFILE: {watershed_outfile}')
 
-        # Subset Domain
-        ofile = os.path.join(outdir, 'subset')
-        cmd = [sys.executable,
-               'Create_Subdomain/subset_domain.py',
-               '-out_name', ofile,
-               '-pfmask', env.pfmask,
-               '-pflakesmask', env.pflakesmask,
-               '-pflakesborder', env.pflakesborder,
-               '-pfbordertype', env.pfbordertype,
-               '-pfsinks', env.pfsinks,
-               'shapefile',
-               '-shp_file', watershed_outfile,
-               '-att', 'ID',
-               '-id']
-        cmd.extend(ids)
-        run_cmd(cmd)
+        # Subset PF-CONUS 1.0
+        app_log.info('Begin PF-CONUS 1.0 Subsetting')
+        args = (watershed_outfile, ids, outdir)
+        uid = executor.add(uid, parflow1.subset, *args)
 
-        # Extract CLM LatLon
-        ofile = os.path.join(outdir, 'latlon.txt')
-        cmd = [sys.executable,
-               'CLM/domain_extract_latlon.py',
-               '-shp_file', watershed_outfile,
-               '-id']
-        cmd.extend(ids)
-        cmd.extend(['-att', 'ID',
-                    '-pfmask', env.pfmask,
-                    '-out_name', ofile])
-        run_cmd(cmd)
-
-
-       
-#        # check if this job has been executed previously
-#        app_log.debug('Checking if job exists')
-#        res = sql.get_job_by_guid(uid)
-#        app_log.debug(res)
+#       
+##        # check if this job has been executed previously
+##        app_log.debug('Checking if job exists')
+##        res = sql.get_job_by_guid(uid)
+##        app_log.debug(res)
+##
+##        # submit the job
+##        if len(res) == 0:
+##
+##            # submit the subsetting job
+##            args = (uid, llat, llon, ulat, ulon, hucs)
+##            uid = executor.add(uid, subset.subset_nwm_122, *args)
+##
+##        # redirect to status page for this job
+##        app_log.debug('redirecting to status page')
+##        self.redirect('/status/%s' % uid)
 #
-#        # submit the job
-#        if len(res) == 0:
-#
-#            # submit the subsetting job
-#            args = (uid, llat, llon, ulat, ulon, hucs)
-#            uid = executor.add(uid, subset.subset_nwm_122, *args)
-#
-#        # redirect to status page for this job
-#        app_log.debug('redirecting to status page')
-#        self.redirect('/status/%s' % uid)
-
         # todo: move this into a shared module
         # compress the results
         fpath = os.path.join(env.output_dir, uid)
@@ -149,7 +110,7 @@ class SubsetParflow1(tornado.web.RequestHandler):
         outpath = f'{env.output_dir}/{outname}'
         with tarfile.open(outpath,  "w:gz") as tar:
             tar.add(fpath, arcname=os.path.basename(fpath))
-        shutil.rmtree(fpath)
+#        shutil.rmtree(fpath)
 
         # temporary, remove
         self.redirect('/results/%s' % uid)

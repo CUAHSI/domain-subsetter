@@ -2,12 +2,11 @@
 
 import ogr
 import osr
+import requests
 import itertools
 import urllib.parse
 from shapely import geometry
 import xml.etree.ElementTree as ET
-from tornado.httpclient import AsyncHTTPClient
-import requests
 
 class WatershedBoundary(object):
     def __init__(self, srs=None):
@@ -71,13 +70,17 @@ class WatershedBoundary(object):
         layer = ds.CreateLayer('', ref, ogr.wkbPolygon)
 
         # Add one attribute
-        layer.CreateField(ogr.FieldDefn('id', ogr.OFTInteger))
+        layer.CreateField(ogr.FieldDefn('ID', ogr.OFTInteger))
+        layer.CreateField(ogr.FieldDefn('HUC_ID', ogr.OFTString))
         defn = layer.GetLayerDefn()
-    
+        shapeid = 0
         for hucid, poly in self.polygons.items():
+            shapeid += 1
+
             # Create a new feature (attribute and geometry)
             feat = ogr.Feature(defn)
-            feat.SetField('id', hucid)
+            feat.SetField('ID', shapeid)
+            feat.SetField('HUC_ID', hucid)
     
             geom = ogr.CreateGeometryFromWkb(poly.wkb)
             feat.SetGeometry(geom)

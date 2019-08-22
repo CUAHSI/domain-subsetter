@@ -94,7 +94,8 @@ class BackgroundWorker(object):
                 self.status[uid] = 'finished'
 
             except Exception as e:
-                logger.error('job failed %s: %s' % (item['uid'], e))
+                uid = item['uid']
+                logger.error('job failed %s: %s' % (uid, e))
                 item['state'] = 'failed'
                 item['result'] = dict(filepath='')
                 item['dt_end'] = datetime.now()

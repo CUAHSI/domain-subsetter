@@ -32,6 +32,7 @@ output_dir = '/share/appdata/output'
 sqldb = '/share/appdata/jobs.db'
 
 # PARFLOW v1.0 settings
+pfexedir = os.path.join(os.path.dirname(__file__), 'pfconus1/Subsetting')
 pfdata_v1 = '/share/pfconus.v1.0'
 pfmask = f'{pfdata_v1}/conus_1km_PFmask2.tif'
 pflakesmask = f'{pfdata_v1}/conus_1km_PFmask_selectLakesmask.tif'
@@ -42,3 +43,5 @@ pfslopex = f'{pfdata_v1}/slopex.tif'
 pfslopey = f'{pfdata_v1}/slopey.tif'
 pfgrid = f'{pfdata_v1}/grid3d.v3.tif'
 pfpress = f'{pfdata_v1}/press.in.tif'
+gbpl = f'{pfdata_v1}/naigbpl20.tif'
+pftemplate = f'{pfdata_v1}/parking_lot_template.tcl'
