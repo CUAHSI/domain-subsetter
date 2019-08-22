@@ -2,6 +2,8 @@
 
 import os
 import sys
+import shutil
+import tarfile
 import environment as env
 import subprocess
 from tornado.log import enable_pretty_logging
@@ -16,7 +18,7 @@ def get_logger(logger):
     return logger
 
 
-def subset(watershed_file, ids, outdir, logger=None):
+def subset(uid, watershed_file, ids, outdir, logger=None):
     """
     function that runs all subsetting functions for PFCONUS 1.0
     """
@@ -27,10 +29,19 @@ def subset(watershed_file, ids, outdir, logger=None):
     logger.info(f'SHAPEFILE: {watershed_file}')
     logger.info(f'PATH EXISTS: {os.path.exists(watershed_file)}')
 
+    # run the subsetting functions
     clip_inputs(watershed_file, ids, outdir, logger=logger)
     pfsol_file = subset_domain(watershed_file, ids, outdir, logger=logger)
     extract_clm(watershed_file, ids, outdir, logger=logger)
     create_tcl(pfsol_file, outdir, logger=logger)
+
+    # compress the outputs and clean temporary directory
+    fpath = os.path.join(env.output_dir, uid)
+    outname = f'{uid}.tar.gz'
+    outpath = f'{os.path.dirname(outdir)}/{outname}'
+    with tarfile.open(outpath, "w:gz") as tar:
+        tar.add(fpath, arcname=os.path.basename(fpath))
+    shutil.rmtree(fpath)
 
     return dict(message='PF-CONUS 1.0 subsetting complete',
                 filepath=f'/data/{outdir}',

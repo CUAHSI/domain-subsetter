@@ -62,7 +62,10 @@ class SubsetParflow1(tornado.web.RequestHandler):
         uid = hasher.hexdigest()
 
         # make a directory for the output
+        # TODO: return existing directory rather than recreate it!
         outdir = os.path.join(env.output_dir, uid)
+        if os.path.exists(outdir):
+            shutil.rmtree(outdir)
         os.mkdir(outdir)
 
         # run watershed shapefile creation
@@ -83,7 +86,7 @@ class SubsetParflow1(tornado.web.RequestHandler):
 
         # Subset PF-CONUS 1.0
         app_log.info('Begin PF-CONUS 1.0 Subsetting')
-        args = (watershed_outfile, ids, outdir)
+        args = (uid, watershed_outfile, ids, outdir)
         uid = executor.add(uid, parflow1.subset, *args)
 
 #       
@@ -99,18 +102,10 @@ class SubsetParflow1(tornado.web.RequestHandler):
 ##            args = (uid, llat, llon, ulat, ulon, hucs)
 ##            uid = executor.add(uid, subset.subset_nwm_122, *args)
 ##
-##        # redirect to status page for this job
-##        app_log.debug('redirecting to status page')
-##        self.redirect('/status/%s' % uid)
-#
-        # todo: move this into a shared module
-        # compress the results
-        fpath = os.path.join(env.output_dir, uid)
-        outname = f'{uid}.tar.gz'
-        outpath = f'{env.output_dir}/{outname}'
-        with tarfile.open(outpath,  "w:gz") as tar:
-            tar.add(fpath, arcname=os.path.basename(fpath))
-#        shutil.rmtree(fpath)
+#        # redirect to status page for this job
+#        app_log.debug('redirecting to status page')
+#        self.redirect('/status/%s' % uid)
+
 
         # temporary, remove
         self.redirect('/results/%s' % uid)
