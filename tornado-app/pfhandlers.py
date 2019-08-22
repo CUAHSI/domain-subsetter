@@ -1,34 +1,20 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-import tornado.auth
-import tornado.web
-import hashlib
-import environment as env
-import tarfile
+import jobs
 import shutil
-import subprocess
+import hashlib
 import shapefile
-from subsetting import parflow1
-
-#import multiprocessing
-
 import watershed
-#from tornado import gen
-#from tornado.httpclient import AsyncHTTPClient
-
+import tornado.web
+import tornado.auth
+import environment as env
+from subsetting import parflow1
 from tornado.log import app_log
 from tornado.log import enable_pretty_logging
+
 enable_pretty_logging()
-
-
-import jobs
 executor = jobs.BackgroundWorker()
-
-import sqldata
-sql = sqldata.Connect(env.sqldb)
-sql.build()
 
 
 class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
@@ -63,6 +49,10 @@ class SubsetParflow1(tornado.web.RequestHandler):
 
         # make a directory for the output
         # TODO: return existing directory rather than recreate it!
+        # check if this job has been executed previously
+        # app_log.debug('Checking if job exists')
+        # res = sql.get_job_by_guid(uid)
+        # app_log.debug(res)
         outdir = os.path.join(env.output_dir, uid)
         if os.path.exists(outdir):
             shutil.rmtree(outdir)
@@ -89,35 +79,6 @@ class SubsetParflow1(tornado.web.RequestHandler):
         args = (uid, watershed_outfile, ids, outdir)
         uid = executor.add(uid, parflow1.subset, *args)
 
-#       
-##        # check if this job has been executed previously
-##        app_log.debug('Checking if job exists')
-##        res = sql.get_job_by_guid(uid)
-##        app_log.debug(res)
-##
-##        # submit the job
-##        if len(res) == 0:
-##
-##            # submit the subsetting job
-##            args = (uid, llat, llon, ulat, ulon, hucs)
-##            uid = executor.add(uid, subset.subset_nwm_122, *args)
-##
-#        # redirect to status page for this job
-#        app_log.debug('redirecting to status page')
-#        self.redirect('/status/%s' % uid)
-
-
-        # temporary, remove
-        self.redirect('/results/%s' % uid)
-
-
-def run_cmd(cmd):
-    p = subprocess.Popen(cmd,
-                         cwd=os.path.join(os.getcwd(),
-                                          'pfconus1/Subsetting'),
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         env=os.environ.copy())
-    output = p.stdout.read().decode('utf-8')
-    if output != '':
-        app_log.info(output)
+        # redirect to status page for this job
+        app_log.debug('redirecting to status page')
+        self.redirect('/status/%s' % uid)
