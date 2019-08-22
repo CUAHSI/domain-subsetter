@@ -4,8 +4,10 @@ import os
 import sys
 import shutil
 import tarfile
-import environment as env
+import shapefile
+import watershed
 import subprocess
+import environment as env
 from tornado.log import enable_pretty_logging
 
 enable_pretty_logging()
@@ -18,16 +20,23 @@ def get_logger(logger):
     return logger
 
 
-def subset(uid, watershed_file, ids, outdir, logger=None):
+def subset(uid, hucs, outdir, logger=None):
     """
     function that runs all subsetting functions for PFCONUS 1.0
     """
 
     logger = get_logger(logger)
 
-    logger.info(f'IDs: {ids}')
-    logger.info(f'SHAPEFILE: {watershed_file}')
-    logger.info(f'PATH EXISTS: {os.path.exists(watershed_file)}')
+    # run watershed shapefile creation
+    logger.info('Extracting watershed')
+    outpath = os.path.join(outdir, 'watershed.shp')
+    watershed_file = watershed.create_shapefile(uid, hucs, outpath)
+
+    # read shapefile records
+    ids = []
+    with shapefile.Reader(watershed_file) as shp:
+        for record in shp.records():
+            ids.append(str(record[0]))
 
     # run the subsetting functions
     clip_inputs(watershed_file, ids, outdir, logger=logger)
@@ -96,7 +105,7 @@ def subset_domain(watershed_file, ids, outdir, logger=None):
            '-id']
     cmd.extend(ids)
     run_cmd(cmd)
-    
+
     return pfsol_ofile
 
 

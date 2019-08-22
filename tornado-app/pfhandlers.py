@@ -4,8 +4,6 @@ import os
 import jobs
 import shutil
 import hashlib
-import shapefile
-import watershed
 import tornado.web
 import tornado.auth
 import environment as env
@@ -58,25 +56,9 @@ class SubsetParflow1(tornado.web.RequestHandler):
             shutil.rmtree(outdir)
         os.mkdir(outdir)
 
-        # run watershed shapefile creation
-        app_log.info('Extracting watershed')
-        outpath = os.path.join(outdir, 'watershed.shp')
-        watershed_outfile = watershed.create_shapefile(uid, hucs, outpath)
-        app_log.info(watershed_outfile)
-
-        # read shapefile records
-        ids = []
-        with shapefile.Reader(watershed_outfile) as shp:
-            for record in shp.records():
-                ids.append(str(record[0]))
-
-        app_log.info(f'UID: {uid}')
-        app_log.info(f'IDs: {ids}')
-        app_log.info(f'SHAPEFILE: {watershed_outfile}')
-
         # Subset PF-CONUS 1.0
         app_log.info('Begin PF-CONUS 1.0 Subsetting')
-        args = (uid, watershed_outfile, ids, outdir)
+        args = (uid, hucs, outdir)
         uid = executor.add(uid, parflow1.subset, *args)
 
         # redirect to status page for this job
