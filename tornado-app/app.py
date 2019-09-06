@@ -12,7 +12,7 @@ from tornado.ioloop import IOLoop
 # to ensure logs are configured properly
 import logs
 
-from handlers import handlers
+from handlers import core
 from handlers import pf1handlers, nwm122handlers
 import environment as env
 
@@ -20,20 +20,20 @@ import environment as env
 class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
-            (r"/", handlers.IndexHandler),
+            (r"/", core.IndexHandler),
             (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
-            (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
-            (r"/jobs", handlers.Job),
-            (r"/jobs/([a-f0-9]{40})", handlers.Job),
-            (r"/admin/status", handlers.Status),
-            (r"/status/([a-f0-9]{40})", handlers.Status),
+            (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
+            (r"/jobs", core.Job),
+            (r"/jobs/([a-f0-9]{40})", core.Job),
+            (r"/admin/status", core.Status),
+            (r"/status/([a-f0-9]{40})", core.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": env.output_dir}),
-            (r"/results/([a-f0-9]{40})", handlers.Results),
-            (r"/about", handlers.About),
-            (r"/help", handlers.Help),
-            (r"/api", handlers.Api),
-            (r"/getting-started", handlers.GettingStarted),
+            (r"/results/([a-f0-9]{40})", core.Results),
+            (r"/about", core.About),
+            (r"/help", core.Help),
+            (r"/api", core.Api),
+            (r"/getting-started", core.GettingStarted),
             (r"/parflow/v1_0", pf1handlers.Index),
             (r"/parflow/v1_0/subset", pf1handlers.SubsetParflow1),
         ]
