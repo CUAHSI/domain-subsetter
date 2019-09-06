@@ -105,49 +105,6 @@ class LccBBoxFromHUC(RequestHandler):
         self.write(json.dumps(response))
 
 
-class SubsetNWM122(RequestHandler):
-    """
-    Subsetting endpoint for NWM v1.2.2
-    """
-
-    @tornado.gen.coroutine
-    def get(self):
-        global executor
-
-        app_log.debug('SubsetNWM122 function')
-
-        # collect rest arguments
-        llat = self.get_arg_value('llat', True)
-        llon = self.get_arg_value('llon', True)
-        ulat = self.get_arg_value('ulat', True)
-        ulon = self.get_arg_value('ulon', True)
-        hucs = self.get_arg_value('hucs', True).split(',')
-
-        app_log.debug('submitted bbox: (%s, %s, %s, %s) ' %
-                      (llat, llon, ulat, ulon))
-
-        # calculate unique hash based on bbox
-        hasher = hashlib.sha1()
-        hasher.update(str([llon, llat, ulon, ulat]).encode('utf-8'))
-        uid = hasher.hexdigest()
-
-        # check if this job has been executed previously
-        app_log.debug('Checking if job exists')
-        res = sql.get_job_by_guid(uid)
-        app_log.debug(res)
-
-        # submit the job
-        if len(res) == 0:
-
-            # submit the subsetting job
-            args = (uid, llat, llon, ulat, ulon, hucs)
-            uid = executor.add(uid, subset.subset_nwm_122, *args)
-
-        # redirect to status page for this job
-        app_log.debug('redirecting to status page')
-        self.redirect('/status/%s' % uid)
-
-
 class Status(RequestHandler):
     @gen.coroutine
     def get(self, jobid=None):
