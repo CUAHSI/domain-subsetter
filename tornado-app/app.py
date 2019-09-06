@@ -13,7 +13,7 @@ from tornado.ioloop import IOLoop
 import logs
 
 from handlers import handlers
-from handlers import pf1handlers
+from handlers import pf1handlers, nwm122handlers
 import environment as env
 
 
@@ -21,7 +21,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", handlers.IndexHandler),
-            (r"/nwm/v1_2_2/subset", handlers.SubsetNWM122),
+            (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
             (r"/wbd/gethucbbox/lcc", handlers.LccBBoxFromHUC),
             (r"/jobs", handlers.Job),
             (r"/jobs/([a-f0-9]{40})", handlers.Job),
