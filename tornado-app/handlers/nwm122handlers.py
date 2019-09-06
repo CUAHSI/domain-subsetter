@@ -4,7 +4,7 @@ import tornado.auth
 import tornado.web
 import hashlib
 import environment as env
-
+from subsetting import nwm122
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
@@ -16,8 +16,6 @@ executor = jobs.BackgroundWorker()
 import sqldata
 sql = sqldata.Connect(env.sqldb)
 sql.build()
-
-import subset
 
 
 #class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
@@ -77,7 +75,7 @@ class SubsetNWM122(tornado.web.RequestHandler):
 
             # submit the subsetting job
             args = (uid, llat, llon, ulat, ulon, hucs)
-            uid = executor.add(uid, subset.subset_nwm_122, *args)
+            uid = executor.add(uid, nwm122.subset_nwm_122, *args)
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')
