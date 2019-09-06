@@ -12,8 +12,8 @@ from tornado.ioloop import IOLoop
 # to ensure logs are configured properly
 import logs
 
-import handlers
-import pfhandlers
+from handlers import handlers
+from handlers import pf1handlers
 import environment as env
 
 
@@ -34,8 +34,8 @@ class Application(tornado.web.Application):
             (r"/help", handlers.Help),
             (r"/api", handlers.Api),
             (r"/getting-started", handlers.GettingStarted),
-            (r"/parflow/v1_0", pfhandlers.Index),
-            (r"/parflow/v1_0/subset", pfhandlers.SubsetParflow1),
+            (r"/parflow/v1_0", pf1handlers.Index),
+            (r"/parflow/v1_0/subset", pf1handlers.SubsetParflow1),
         ]
         settings = {
             "debug": env.debug,
