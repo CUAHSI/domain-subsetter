@@ -48,7 +48,13 @@
         </ul>
         </div>
 
-        <div class='mdl-cell mdl-cell--1-col mdl-cell--10-offset' id="submit-button">
+        <div class='mdl-cell 
+		    mdl-cell--2-col-desktop
+		    mdl-cell--9-offset-desktop
+		    mdl-cell--2-col-tablet
+		    mdl-cell--3-offset-tablet
+		    mdl-cell--12-col-phone'
+		    id="submit-button">
         <form action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
             <input type="hidden" name="ulat" id="ulat"/>
