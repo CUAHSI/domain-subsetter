@@ -5,6 +5,7 @@ channels:
 dependencies:
   - gdal>=2.2.3
   - bzip2
+  - basemap
   - matplotlib
   - netcdf4
   - numpy
