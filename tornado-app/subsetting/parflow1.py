@@ -140,12 +140,21 @@ def create_tcl(pfsol_file, outdir, logger=None):
 
     logger.info('Creating TCL Script')
     cmd = [sys.executable,
-           'Make_Tcl/generate_tcl_script.py',
-           '-pfsol', f'{pfsol_file}.pfsol',
-           '-s', os.path.join(outdir, 'slope'),
-           '-t', env.pftemplate,
-           '-r', os.path.join(outdir, 'cuahsi_subset'),
-           '-a', outdir]
+           'Make_Tcl/generate_tcl.py',
+           '--runname', 'cuahsi-subset',
+           '-o', os.path.join(outdir, 'cuahsi-subset'),
+           '-i', env.pftemplate,
+           '-sl', os.path.join(outdir, 'slopex.pfb'),
+           '-so', f'{pfsol_file}.pfsol',
+           '-e', '10',
+           '--batches', '6']
+#    cmd = [sys.executable,
+#           'Make_Tcl/generate_tcl_script.py',
+#           '-pfsol', f'{pfsol_file}.pfsol',
+#           '-s', os.path.join(outdir, 'slope'),
+#           '-t', env.pftemplate,
+#           '-r', os.path.join(outdir, 'cuahsi_subset'),
+#           '-a', outdir]
     run_cmd(cmd)
 
 
@@ -158,4 +167,5 @@ def run_cmd(cmd):
                          env=os.environ.copy())
     output = p.stdout.read().decode('utf-8')
     if output != '':
+        print(output)
         logger.info(output)

@@ -20,7 +20,8 @@ import environment as env
 class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
-            (r"/", core.IndexHandler),
+            (r"/", core.Index),
+            (r"/index", core.IndexNew),
             (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),

@@ -18,8 +18,10 @@ sql = sqldata.Connect(env.sqldb)
 sql.build()
 
 
-#class IndexHandler(RequestHandler, tornado.auth.OAuth2Mixin):
+#class Index(tornado.auth.OAuth2Mixin):
 #    def get(self):
+#        print('hello')
+#        import pdb; pdb.set_trace()
 #        self.render("index.html", title="NWM v1.2.2")
 #
 #    def post(self):

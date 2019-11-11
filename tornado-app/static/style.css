@@ -34,6 +34,11 @@
     padding: 0px 0px 8px 25px;
 }
 
+/* Navigation Sub-menu */
+.nav-sub-menu {
+    color: #80808021;
+}
+
 /* Page Fonts */
 body {
     font-family: 'Roboto', sans-serif;
