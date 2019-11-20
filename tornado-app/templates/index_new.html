@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+{% extends base_new.html %}
+
+{% block extra-head %}
+      <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
+      <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
+      <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+      <script type='text/javascript' src='{{ static_url("map.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("dialog.js") }}'></script> 
+      <link rel="shortcut icon" href="favicon.ico">
+
+	{% block more-head %}
+	{% end %}
+{% end %}
+
+
+{% block content %}
+
+{# <button id="show-dialog" type="button" class="mdl-button">Show Dialog</button> #}
+
+    <div class='mdl-grid center-horizontally'>	
+        <div class='mdl-cell
+	            mdl-cell--4-col
+		    mdl-card'
+	      id='subset-card'>
+	    <figure class="mdl-card__media">
+		<img src="{{ static_url("images/nwm122-card.jpg") }}" alt="" />
+	    </figure>
+	    <div class="mdl-card__title">
+		<h2 class="mdl-card__title-text">National Water Model</h2>
+	    </div>
+	    <div class="mdl-card__supporting-text">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.</p>
+	      <button id='btn-nwm' class="mdl-button 
+		     mdl-js-button 
+		     mdl-button--raised">
+                         SUBSET
+              </button>
+	      <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events" for="btn-nwm">
+	          <li class="mdl-menu__item" style="color: #cd8daa;"><span>xyz</span></li>
+	          <li class="mdl-menu__item" style="color: #cd8daa;"><span>yue</span></li>
+		  <li class="mdl-menu__item" style="color: #cd8daa;"><span>24</span></li>
+	    </ul> 
+
+	    </div>
+	</div>
+
+        <div class='mdl-cell
+	            mdl-cell--4-col
+		    mdl-card'
+	      id='subset-card'>
+	      <figure class="mdl-card__media">
+		  <img src="{{ static_url("images/nwm122-card.jpg") }}" alt="" />
+	      </figure>
+	        <div class="mdl-card__title">
+	      <h2 class="mdl-card__title-text">PFCONUS</h2>
+	    </div>
+	    <div class="mdl-card__supporting-text">
+	      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam accusamus, consectetur.</p>
+	      <button id='btn-pfconus' class="mdl-button 
+		     mdl-js-button 
+		     mdl-button--raised">
+                         SUBSET
+              </button>
+	      <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events" for="btn-pfconus">
+	          <li class="mdl-menu__item" style="color: #cd8daa;"><span>xyz</span></li>
+	          <li class="mdl-menu__item" style="color: #cd8daa;"><span>yue</span></li>
+		  <li class="mdl-menu__item" style="color: #cd8daa;"><span>24</span></li>
+	    </ul> 
+
+        </div>
+    </div>
+
+
+
+{% end %}
+
