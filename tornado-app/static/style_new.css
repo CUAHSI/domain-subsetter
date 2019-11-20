@@ -83,10 +83,10 @@ body {
 
 /* Map */
 .map {
-    height: 67vh;
+    height: 100%;
     border: 1px solid #AAA;
     position: relative;
-    margin:50px 10px 5px 50px;
+//    margin:50px 10px 5px 50px;
 }
 
 /* Mouse Coordinates*/ 
@@ -287,4 +287,3 @@ div.processing {
   justify-content: center;
 }
 
-/* Text Block Formatting */
