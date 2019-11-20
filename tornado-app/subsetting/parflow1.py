@@ -27,6 +27,7 @@ def subset(uid, hucs, outdir, logger=None):
 
     logger = get_logger(logger)
 
+
     # run watershed shapefile creation
     logger.info('Extracting watershed')
     outpath = os.path.join(outdir, 'watershed.shp')
@@ -60,6 +61,7 @@ def subset(uid, hucs, outdir, logger=None):
 def clip_inputs(watershed_file, ids, outdir, logger=None):
     logger = get_logger(logger)
 
+    logger.info(env.pfslopex)
     files_to_clip = [env.pfslopex,
                      env.pfslopey,
                      env.pfgrid,
@@ -142,19 +144,12 @@ def create_tcl(pfsol_file, outdir, logger=None):
     cmd = [sys.executable,
            'Make_Tcl/generate_tcl.py',
            '--runname', 'cuahsi-subset',
-           '-o', os.path.join(outdir, 'cuahsi-subset'),
+           '-o', os.path.join(outdir, 'simulation.tcl'),
            '-i', env.pftemplate,
-           '-sl', os.path.join(outdir, 'slopex.pfb'),
+           '-sl', os.path.join(outdir),
            '-so', f'{pfsol_file}.pfsol',
            '-e', '10',
            '--batches', '6']
-#    cmd = [sys.executable,
-#           'Make_Tcl/generate_tcl_script.py',
-#           '-pfsol', f'{pfsol_file}.pfsol',
-#           '-s', os.path.join(outdir, 'slope'),
-#           '-t', env.pftemplate,
-#           '-r', os.path.join(outdir, 'cuahsi_subset'),
-#           '-a', outdir]
     run_cmd(cmd)
 
 
