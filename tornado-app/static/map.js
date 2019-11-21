@@ -1,6 +1,9 @@
 var Map = {}
-$(document).ready(function() {
 
+/**
+ * Functions that will load after the page is fully rendered
+ */
+$(window).bind("load", function() {
 
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
@@ -113,13 +116,8 @@ $(document).ready(function() {
     L.control.mousePosition({
         prefix:"Lat Long: ",
         separator:", "}).addTo(map);
-});
 
 
-/**
- * Functions that will load after the page is fully rendered
- */
-$(window).bind("load", function() {
 
   /**
   * ADD - HUC TABLE - OPEN
