@@ -2,6 +2,11 @@
 .mdl-layout__header-row{
   background: #ffffff;
   padding: 35px; 
+  }
+
+.mdl-layout--fixed-header {
+  position: relative;
+  z-index: 2;
 }
 
 .body-layout .mdl-layout__header {
