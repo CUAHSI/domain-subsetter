@@ -56,7 +56,7 @@ a.nav-sub-menu {
 
 /* main body */
 .mdl-layout__content {
-    background-color: #80808021;
+//    background-color: #80808021;
 }
 
 /* Title Style */
@@ -140,6 +140,8 @@ div.processing {
     margin: 20px 70px 5px 70px;
     padding: 10px;
     background-color: white;
+    font-color: #36474E;
+//    font-family: Roboto,Helvetica,Arial,sans-serif;
 }
 
 /* ACCORDION */

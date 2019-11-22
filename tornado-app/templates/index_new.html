@@ -19,13 +19,16 @@
 
 {% block content %}
 
-{# <button id="show-dialog" type="button" class="mdl-button">Show Dialog</button> #}
 
-<!-- Overview/Description -->
-{% include "description.html" %}
+    <!-- Overview/Description -->
+    <div class='mdl-grid center-horizontally'>	
+	<div class="mdl-cell mdl-cell--10-col">
+	    {% include "welcome.html" %}
+	</div>
+    </div>
 
-<!-- Cards -->
 
+    <!-- Cards -->
     <div class='mdl-grid center-horizontally'>	
 	{% include "cards/nwm-card.html" %}
 	{% include "cards/pf-card.html" %}
