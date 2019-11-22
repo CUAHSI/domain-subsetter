@@ -24,53 +24,43 @@
 {% block content %}
 
 
-    <div id='map-div' class='mdl-grid'
-	style='height:100%'>	
+    <div id=map-div class='mdl-grid'>	
         <div class='mdl-cell mdl-cell--12-col' 
 	     style='margin:0px;height:100%'>
 
-        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
+        <ul id='accordion' class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
 
-            <li class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+            <li id=map-panel class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
                 <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
                     <span class="mdlext-accordion__tab__caption">Map</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
                 </header>
-                <section id=map-panel class="mdlext-accordion__tabpanel" aria-hidden='false'
-		    style='padding:0px'>
-                    <div class='map' id="map"
-			 style='margin:0px'></div>
+		<section id=map-tabpanel class="mdlext-accordion__tabpanel" aria-hidden='false'>
+		    <div class='map' id="map"></div>
                 </section>
             </li>
 
-            <li class="mdlext-accordion__panel huc-table-panel">
-                <header class="mdlext-accordion__tab mdl-color--indigo mdl-color-text--white mdl-js-button mdl-button--raised mdl-button--accent">
-                    <span class="mdlext-accordion__tab__caption">Selected HUCs</span>
+            <li id=menu-panel class="mdlext-accordion__panel huc-table-panel">
+                <header class="mdlext-accordion__tab" hidden>
+		    <span class="mdlext-accordion__tab__caption">Menu</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
                 </header>
-                <section class="mdlext-accordion__tabpanel">
-		            {% include huc-table.html %}
+                <section id=menu-tabpanel class="mdlext-accordion__tabpanel" aria-hidden='true'>
+		            {% include menu.html %} 
                 </section>
             </li>
         </ul>
         </div>
 
-        <div class='mdl-cell mdl-cell--1-col mdl-cell--10-offset' id="submit-button">
-        <form action="{{ request.path }}" method="post">
+        <form id=form-submit action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
             <input type="hidden" name="ulat" id="ulat"/>
             <input type="hidden" name="llon" id="llon"/>
             <input type="hidden" name="ulon" id="ulon"/>
             <input type="hidden" name="hucs" id="hucs"/>
 
-		<!-- SUBMIT BUTTON -->		
-                    <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
-                        Submit
-                    </button>
-
          {% module xsrf_form_html() %}
         </form>
-	</div>
 
 
 {#

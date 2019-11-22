@@ -139,7 +139,8 @@ div.processing {
     background-color: white;
 }
 
-/* collapable elements */
+/* ACCORDION */
+
 .accordion {
     background-color: #eee;
     color: #444;
@@ -158,39 +159,31 @@ div.processing {
     display: none;
     overflow: hidden;
 }
-
-
-/* table styling */
-.admin-table td {
-    text-align:center;
+#map-panel.mdlext-accordion__tabpanel {
+    transition: none !important;
+    animation: none !important;
 }
-.admin-table th {
-    text-align:center;
-}
-
-.admin-table {
-    width: 80%;
-    margin: 10px auto 10px auto;
-}
-#btn-subset-submit {
-    font-size: 20px;
-    height: 40px;
-    width: 100%;
-    border-radius: 10px;
-    text-transform:none;
-}
-#submit-button-div {
+#map-tabpanel {
     padding: 0px;
 }
-#map-div {
-    padding: 0px;
-}
+/* ACCORDION MAP PANEL */
 .map-accordion {
     min-width: 100%; 
     min-height: 100%; 
 }
-.mdlext-accordion__panel.huc-table-panel.is-expanded {
-    width: 525px !important;
+#map-tabpanel > #map {
+    margin:0px;
+}
+
+/* ACCORDION MENU PANEL */
+#menu-panel.is-expanded {
+    width: 350px !important;
+}
+#menu-panel {
+    width: 0px !important;
+}
+.mdlext-accordion__panel.huc-table-panel {
+    min-width: 0px;
 }
 .mdlext-accordion__panel.huc-table-panel > header {
     height: 215px;
@@ -200,22 +193,16 @@ div.processing {
     margin-top: 50px;
     margin-right: 10px;
 }
-#map-panel.mdlext-accordion__tabpanel {
-    transition: none !important;
-    animation: none !important;
+#menu-tabpanel {
+    padding: 0px;
+    margin:0px;
+}
+#menu-tabpanel > #huc-table-div {
+    margin-top: 1px;
 }
 
-.mdl-dialog {
-    height:70%;
-    width: 50%;
-//    overflow: auto;
-    position: fixed;
-    margin-top: 20px;
-}
-.mdl-dialog__content {
-   height: 80%;
-   overflow: auto;
-}
+/* HUC TABLE */
+
 .mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
     border: None;
 }
@@ -242,6 +229,54 @@ div.processing {
     text-align: center;
 }
 *:focus {outline:none !important}
+
+
+/* table styling */
+.admin-table td {
+    text-align:center;
+}
+.admin-table th {
+    text-align:center;
+}
+
+.admin-table {
+    width: 80%;
+    margin: 10px auto 10px auto;
+}
+#btn-subset-submit {
+    font-size: 20px;
+    height: 40px;
+    width: 100%;
+    border-radius: 10px;
+    text-transform:none;
+}
+#submit-button-div {
+    padding: 0px;
+}
+#map-div {
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+}
+#map-div > .mdl-cell {
+    height: 100%;
+    width: 100%;
+}
+
+/* DIALOG */
+
+.mdl-dialog {
+    height:70%;
+    width: 50%;
+//    overflow: auto;
+    position: fixed;
+    margin-top: 20px;
+}
+.mdl-dialog__content {
+   height: 80%;
+   overflow: auto;
+}
+
 
 
 /* Card Styling */

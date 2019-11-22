@@ -24,9 +24,9 @@
     <div id='map-div' class='mdl-grid'>	
         <div class='mdl-cell mdl-cell--12-col'>
 
-        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
+        <ul id='accordion' class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
 
-            <li class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+            <li id='map-panel' class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
                 <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
                     <span class="mdlext-accordion__tab__caption">Map</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
@@ -36,7 +36,7 @@
                 </section>
             </li>
 
-            <li class="mdlext-accordion__panel huc-table-panel">
+            <li id='huc-panel' class="mdlext-accordion__panel huc-table-panel">
                 <header class="mdlext-accordion__tab mdl-color--indigo mdl-color-text--white mdl-js-button mdl-button--raised mdl-button--accent">
                     <span class="mdlext-accordion__tab__caption">Selected HUCs</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
