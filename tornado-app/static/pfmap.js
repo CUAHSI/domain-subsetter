@@ -41,33 +41,36 @@ latLngs.push(new L.LatLng(48.1551, -121.4645));
 L.mask(latLngs).addTo(Map.map);
 
 
-/*
- * Add Menu Button
- */
-var menu = L.easyButton('fa-2x fa-bars', function (){toggleMenu();},
-			{position: 'topright'}).addTo(Map.map);
-menu.button.style.width = '40px';
-
-/*
- * Add Submit Button
- */
-var btn = '<strong>SUBMIT</strong>';
-var submitbtn = L.easyButton(btn,
-			     function (){submit();},
-			     {position: 'bottomright'}).addTo(Map.map);
-submitbtn.button.style.width = '100px';
-
-
-}); 
-
-function toggleMenu() {
-    var accordion = document.querySelector('#accordion');
-    var panel = document.querySelector('#menu-panel');
-    accordion.MaterialExtAccordion.command( {action: 'toggle', target: panel} );
-}
-
-function submit() {
-
-    document.getElementById('form-submit').submit();
-
-}
+///*
+// * Add Menu Button
+// */
+//var menu = L.easyButton('fa-2x fa-bars', function (){toggleMenu();},
+//			{position: 'topright'}).addTo(Map.map);
+//menu.button.style.width = '40px';
+//
+///*
+// * Add Submit Button
+// */
+//var btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
+//var btn_submit = L.easyButton(btn,
+//	 		     function (){submit();},
+//	 		     {position: 'bottomright'}).addTo(Map.map);
+//btn_submit.button.style.width = '100px';
+//btn_submit.disable();
+//// save this button so it can be accessed from other functions
+//Map.submit = btn_submit;
+//
+//
+//}); 
+//
+//function toggleMenu() {
+//    var accordion = document.querySelector('#accordion');
+//    var panel = document.querySelector('#menu-panel');
+//    accordion.MaterialExtAccordion.command( {action: 'toggle', target: panel} );
+//}
+//
+//function submit() {
+//
+//    document.getElementById('form-submit').submit();
+//
+//}
