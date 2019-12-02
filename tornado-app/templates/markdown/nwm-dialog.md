@@ -1,10 +1,5 @@
-#### GETTING STARTED
 
----
-
-
-##### How to use the CUAHSI Subsetter Tool: National Water Model v1.2
-
+##### Getting Started
 
 1. Open the _Map_ tab
 2. Zoom to your area of interest on the map until you can see the catchments outlined in Green (these are HUC12)

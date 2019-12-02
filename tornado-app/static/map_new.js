@@ -96,16 +96,25 @@ $(window).bind("load", function() {
       "HUC 12": huc12
    };
 
+    // hide the Getting Started dialog
+    $('dialog')[0].open = false;
+    $('dialog')[0].style = 'visibility=true';
+
+
 
     /*
      * LEAFLET BUTTONS
      */
 
-
     // Erase
     L.easyButton('fa-eraser',
                  function (){clearSelection();},
                  'clear selected features').addTo(map);
+
+    // Help button
+    var btn = '<span id=help-btn class="material-icons">info-outline</i>'
+    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
+			    {position: 'topleft'}).addTo(Map.map);
 
 
     L.control.mousePosition({
@@ -265,6 +274,9 @@ $(window).bind("load", function() {
  * LEAFLET HANDLERS 
  */
 
+function toggleHelpDialog() {
+    $('dialog')[0].open = true;
+}
 
 function toggleMenu() {
     var accordion = document.querySelector('#accordion');

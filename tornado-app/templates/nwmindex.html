@@ -63,12 +63,11 @@
         </form>
 
 
-{#
-   <dialog class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Getting Started</h4>
+
+   <dialog id='help-dialog' class="mdl-dialog" style='visibility:hidden' >
     <div class="mdl-dialog__content">
       <p>
-        {% include getting-started-gen.html %}
+        {% include nwm-dialog-gen.html %}
       </p>
     </div>
     <div class="mdl-dialog__actions">
@@ -76,7 +75,7 @@
     </div>
   </dialog>
 
-#}
+
 
 {% end %}
 

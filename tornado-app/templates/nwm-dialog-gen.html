@@ -1,0 +1,16 @@
+<h5 id="getting-started">Getting Started</h5>
+<ol style="list-style-type: decimal">
+<li>Open the <em>Map</em> tab</li>
+<li>Zoom to your area of interest on the map until you can see the catchments outlined in Green (these are HUC12)</li>
+<li>Use your cursor to select the one or multiple green HUC12 catchments. You will see a box outlining the area that the tool will subset. <em>Note: if the box outline is Red, the catchment you have selected is too large to subset</em></li>
+<li>Once you are satisfied with selected area, press the <em>Submit</em> button in the lower right corner below the map.</li>
+<li>Your catchment is being subsetted! Wait for the tool to process...</li>
+<li>Download your tar.gz file containing the domain files necessary to run the NWM at the area you selected</li>
+</ol>
+<h5 id="considerations">Considerations</h5>
+<ul>
+<li>Try to select a headwaters catchment, as the tool does not currently support upstream tracing.</li>
+<li>Remember when you use the domain to run your model, you must spin it up until you have reached &quot;realistic&quot; conditions, as the subsetter tool does not provide initial RESTART files.</li>
+</ul>
+<h5 id="disclaimer">Disclaimer</h5>
+<p>The model results obtained using the NWM v1.2.2 domain are not a direct reflection of the operational NOAA/NWS National Water Model.</p>
