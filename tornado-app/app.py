@@ -37,6 +37,8 @@ class Application(tornado.web.Application):
             (r"/getting-started", core.GettingStarted),
             (r"/parflow/v1_0", pf1handlers.Index),
             (r"/parflow/v1_0/subset", pf1handlers.SubsetParflow1),
+            (r"/nwm/v1_2_2", nwm122handlers.Index),
+
         ]
         settings = {
             "debug": env.debug,

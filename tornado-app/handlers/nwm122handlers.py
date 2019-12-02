@@ -18,27 +18,25 @@ sql = sqldata.Connect(env.sqldb)
 sql.build()
 
 
-#class Index(tornado.auth.OAuth2Mixin):
-#    def get(self):
-#        print('hello')
-#        import pdb; pdb.set_trace()
-#        self.render("index.html", title="NWM v1.2.2")
-#
-#    def post(self):
-#        ulat = self.get_argument('ulat')
-#        llat = self.get_argument('llat')
-#        ulon = self.get_argument('ulon')
-#        llon = self.get_argument('llon')
-#        hucs = self.get_argument('hucs')
-#
-#        if '' in [ulat, ulon, llat, llon]:
-#            self.render("index.html",
-#                        title="CUAHSI Subsetter v0.1",
-#                        msg='ERROR: Missing required input')
-#
-#        # build GET url for subsetting
-#        query = f'llat={llat}&llon={llon}&ulat={ulat}&ulon={ulon}&hucs={hucs}'
-#        self.redirect('nwm/v1_2_2/subset?%s' % query)
+class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
+    def get(self):
+        self.render("nwmindex.html", title="NWM v1.2.2")
+
+    def post(self):
+        ulat = self.get_argument('ulat')
+        llat = self.get_argument('llat')
+        ulon = self.get_argument('ulon')
+        llon = self.get_argument('llon')
+        hucs = self.get_argument('hucs')
+
+        if '' in [ulat, ulon, llat, llon]:
+            self.render("index.html",
+                        title="CUAHSI Subsetter v0.1",
+                        msg='ERROR: Missing required input')
+
+        # build GET url for subsetting
+        query = f'llat={llat}&llon={llon}&ulat={ulat}&ulon={ulon}&hucs={hucs}'
+        self.redirect('/nwm/v1_2_2/subset?%s' % query)
 
 
 class SubsetNWM122(tornado.web.RequestHandler):

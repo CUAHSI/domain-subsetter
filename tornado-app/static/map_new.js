@@ -432,12 +432,6 @@ function clearSelection() {
 }
 
 
-
-
-
-
-
-
 /**
 * Queries the global bounding box for a list of hucs ids
 * @param {array} hucids - HUC ids to query the bounding box for
@@ -446,7 +440,7 @@ function clearSelection() {
 function getLccBounds(hucs) {
 
     var ajax = $.ajax({
-        url: document.URL + 'wbd/gethucbbox/lcc',
+        url: '/wbd/gethucbbox/lcc',
         type: 'GET',
         contentType: "text/plain; charset=UTF-8",
         data: {'hucID' : hucs.join(",")},
@@ -610,10 +604,10 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
             }
             getLccBounds(hucs);
 
-			// update the hucs list 
-			// this is used to create a shapefile
-			// that is exported along with the subset
-			update_huc_ids(hucs);
+	    // update the hucs list 
+	    // this is used to create a shapefile
+	    // that is exported along with the subset
+	    update_huc_ids(hucs);
 			
 			
             // remove the specified id

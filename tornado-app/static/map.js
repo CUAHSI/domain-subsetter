@@ -535,11 +535,10 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
             }
             getLccBounds(hucs);
 
-			// update the hucs list 
-			// this is used to create a shapefile
-			// that is exported along with the subset
-			update_huc_ids(hucs);
-			
+	    // update the hucs list 
+	    // this is used to create a shapefile
+	    // that is exported along with the subset
+	    update_huc_ids(hucs);		
 			
             // remove the specified id
             if (remove != null) {
