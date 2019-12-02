@@ -2,7 +2,11 @@
 
 ---
 
-There are fourt public REST endpoints in version 0.1 of the CUAHSI subsetter: subset, gethucbox, jobs, and data (see Figure 1). The subset endpoint accepts bounding box coordinates in the WGS84 spatial reference system and uses these data to (1) validate the bounding box, (2) convert into the coordinate system used by NWM (an Albers Conformal Conic variant), and (3) submit the job to run as a background task. The jobs endpoint is used to lookup the status of any given job via unique identifier. Finally, the data endpoint is used to download the subset domain data via unique identifier. Technical details for each endpoint outlined below.
+There are four public REST endpoints in version 0.1 of the CUAHSI subsetter: subset, gethucbox, jobs, and data (see Figure 1). The subset endpoint accepts bounding box coordinates in the WGS84 spatial reference system and uses these data to (1) validate the bounding box, (2) convert into the coordinate system used by NWM (an Albers Conformal Conic variant), and (3) submit the job to run as a background task. The jobs endpoint is used to lookup the status of any given job via unique identifier. Finally, the data endpoint is used to download the subset domain data via unique identifier. Technical details for each endpoint outlined below.
+
+<div class='mdl-grid center-horizontally info-page'>
+<img src="{{ static_url('images/architecture.png') }}" alt="system-archiecture" style='max-width:600px;width:80%;height:auto'>
+<div>
 
 <button id=p3 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
     Try
@@ -20,20 +24,6 @@ There are fourt public REST endpoints in version 0.1 of the CUAHSI subsetter: su
     - llon: the lower longitude of the bounding box
     - ulat: the upper latitude of the bounding box 
     - ulon: the upper longitude of the bounding box
-
-<button id=p4 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
-    Try
-</button>
-<h5 style="display:inline-block;padding-right:10px">GET - /wbd/gethucbbox/lcc?{params}</h5>
-<div id=p4 class="panel">
-  <p>
-  <a href=http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc?hucID=030501100301 target='_blank'>`http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc?hucID=030501100301`</a>
-  </p>
-</div>
-- Description: gets the bounding box for a list of 12-digit hydrologic unit codes
-- Returns: a json string containing hucIDs, hucLevels, and total bounding box in the Spherical Lambert Conformal Conic SRS.
-- Parameters:
-    - hucID: a comma separated list of hydrologic unit codes
 
 
 <button id=p2 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
