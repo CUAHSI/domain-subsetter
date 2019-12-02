@@ -1,7 +1,9 @@
-##### **GETTING STARTED**  
+#### GETTING STARTED
+
+---
 
 
-###### How to use the CUAHSI Subsetter Tool: National Water Model v1.2
+##### How to use the CUAHSI Subsetter Tool: National Water Model v1.2
 
 
 1. Open the _Map_ tab
@@ -11,10 +13,10 @@
 5. Your catchment is being subsetted! Wait for the tool to process...
 6. Download your tar.gz file containing the domain files necessary to run the NWM at the area you selected
 
-###### Considerations
+##### Considerations
 - Try to select a headwaters catchment, as the tool does not currently support upstream tracing.
 - Remember when you use the domain to run your model, you must spin it up until you have reached "realistic" conditions, as the subsetter tool does not provide initial RESTART files.
 
-###### Disclaimer  
+##### Disclaimer  
 The model results obtained using the NWM v1.2.2 domain are not a direct reflection of the operational NOAA/NWS National Water Model. 
 

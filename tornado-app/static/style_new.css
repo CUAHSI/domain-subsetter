@@ -332,3 +332,7 @@ div.processing {
   justify-content: center;
 }
 
+/* Info pages styling */
+.info-page {
+    padding: 8px 10%;
+}
