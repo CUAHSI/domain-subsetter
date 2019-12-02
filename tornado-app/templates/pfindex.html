@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 
-{% extends base.html %}
+{% extends base_new.html %}
 
 {% block extra-head %}
       <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.css"/>
       <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v1.3.4/leaflet.js'></script>
       <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-      <script type='text/javascript' src='{{ static_url("map.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("map_new.js") }}'></script> 
+      <script type='text/javascript' src='{{ static_url("pfmap.js") }}'></script> 
       <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
       <script type='text/javascript' src='{{ static_url("dialog.js") }}'></script> 
+      <script type="text/javascript" src='{{ static_url("usa-boundary.json") }}'></script>
+      <script type="text/javascript" src='{{ static_url("leaflet.snogylop.js") }}'></script>
+
       <link rel="shortcut icon" href="favicon.ico">
 
 	{% block more-head %}
@@ -19,59 +23,47 @@
 
 {% block content %}
 
-{# <button id="show-dialog" type="button" class="mdl-button">Show Dialog</button> #}
 
-    <div id='map-div' class='mdl-grid'>	
-        <div class='mdl-cell mdl-cell--12-col'>
+    <div id=map-div class='mdl-grid'>	
+        <div class='mdl-cell mdl-cell--12-col' 
+	     style='margin:0px;height:100%'>
 
         <ul id='accordion' class="mdlext-accordion mdlext-js-accordion mdlext-accordion--horizontal mdlext-js-ripple-effect mdlext-js-animation-effect map-accordion" aria-multiselectable="true">
 
-            <li id='map-panel' class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
+            <li id=map-panel class="mdlext-accordion__panel is-expanded" aria-hidden='false'>
                 <header class="mdlext-accordion__tab" aria-expanded='true' hidden>
                     <span class="mdlext-accordion__tab__caption">Map</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
                 </header>
-                <section id=map-panel class="mdlext-accordion__tabpanel" aria-hidden='false'>
-                    <div class='map' id="map"></div>
+		<section id=map-tabpanel class="mdlext-accordion__tabpanel" aria-hidden='false'>
+		    <div class='map' id="map"></div>
                 </section>
             </li>
 
-            <li id='huc-panel' class="mdlext-accordion__panel huc-table-panel">
-                <header class="mdlext-accordion__tab mdl-color--indigo mdl-color-text--white mdl-js-button mdl-button--raised mdl-button--accent">
-                    <span class="mdlext-accordion__tab__caption">Selected HUCs</span>
+            <li id=menu-panel class="mdlext-accordion__panel huc-table-panel">
+                <header class="mdlext-accordion__tab" hidden>
+		    <span class="mdlext-accordion__tab__caption">Menu</span>
                     <i class="mdlext-aria-toggle-material-icons"></i>
                 </header>
-                <section class="mdlext-accordion__tabpanel">
-		            {% include huc-table.html %}
+                <section id=menu-tabpanel class="mdlext-accordion__tabpanel" aria-hidden='true'>
+		            {% include menu.html %} 
                 </section>
             </li>
         </ul>
         </div>
 
-        <div class='mdl-cell 
-		    mdl-cell--2-col-desktop
-		    mdl-cell--9-offset-desktop
-		    mdl-cell--2-col-tablet
-		    mdl-cell--3-offset-tablet
-		    mdl-cell--12-col-phone'
-		    id="submit-button">
-        <form action="{{ request.path }}" method="post">
+        <form id=form-submit action="{{ request.path }}" method="post">
             <input type="hidden" name="llat" id="llat"/>
             <input type="hidden" name="ulat" id="ulat"/>
             <input type="hidden" name="llon" id="llon"/>
             <input type="hidden" name="ulon" id="ulon"/>
             <input type="hidden" name="hucs" id="hucs"/>
 
-		<!-- SUBMIT BUTTON -->		
-                    <button id='btn-subset-submit' class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="submit">
-                        Submit
-                    </button>
-
          {% module xsrf_form_html() %}
         </form>
-	</div>
 
 
+{#
    <dialog class="mdl-dialog">
     <h4 class="mdl-dialog__title">Getting Started</h4>
     <div class="mdl-dialog__content">
@@ -83,6 +75,8 @@
       <button type="button" class="mdl-button close">Close</button>
     </div>
   </dialog>
+
+#}
 
 {% end %}
 

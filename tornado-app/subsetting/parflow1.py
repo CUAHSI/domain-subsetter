@@ -149,7 +149,8 @@ def create_tcl(pfsol_file, outdir, logger=None):
            '-sl', os.path.join(outdir),
            '-so', f'{pfsol_file}.pfsol',
            '-e', '10',
-           '--batches', '6']
+           '--batches', '2', '3', '6',
+           '-dz', '5']
     run_cmd(cmd)
 
 

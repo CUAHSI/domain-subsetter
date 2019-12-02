@@ -1,10 +1,14 @@
 
 
-{% extends base.html  %}
+{% extends base_new.html  %}
 
 <!-- Content Block -->
 {% block content  %}
-    <div class=text-body>
-        {% include help-gen.html %}
+<div class='mdl-grid center-horizontally info-page'>
+    <div class="mdl-cell mdl-cell--10-col">
+        <div class=text-body>
+	    {% include help-gen.html %}
+        </div>
     </div>
+</div>
 {% end %}

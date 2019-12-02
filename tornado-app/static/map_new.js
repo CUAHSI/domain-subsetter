@@ -33,11 +33,6 @@ $(window).bind("load", function() {
                        "-99999999",
                        "-99999999"]);
 
-    box = validate_bbox_size()
-    toggle_submit_button(box.is_valid);
-    
-
-    
     // Initial OSM tile layer
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
@@ -102,22 +97,46 @@ $(window).bind("load", function() {
    };
 
 
-   // Add Layer-Controller
-   L.control.layers(null, mixed).addTo(map);
+    /*
+     * LEAFLET BUTTONS
+     */
 
+
+    // Erase
     L.easyButton('fa-eraser',
                  function (){clearSelection();},
                  'clear selected features').addTo(map);
 
-    map.on("click", function(e){
-        mapClick(e);        
-    });
 
     L.control.mousePosition({
         prefix:"Lat Long: ",
         separator:", "}).addTo(map);
 
+    // Menu Button
+//    var btn = '<span id=menu-btn class="fa fa-2x fa-bars"></i>'
+    var btn = '<div id=menu-btn><strong>MENU</strong></div>';
+    var menu = L.easyButton(btn, function (){toggleMenu();},
+                         {position: 'topright'}).addTo(Map.map);
+    menu.button.style.width = '80px';
 
+    // Submit Button
+    var btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
+    var btn_submit = L.easyButton(btn,
+	                          function (){submit();},
+	                          {position: 'bottomright'}).addTo(Map.map);
+    btn_submit.button.style.width = '100px';
+    // save this button so it can be accessed from other functions
+    Map.submit = btn_submit;
+
+   // Layer Control
+   L.control.layers(null, mixed).addTo(map);
+
+    /*
+     * LEAFLET EVENT HANDLERS
+     */
+    map.on("click", function(e){
+        mapClick(e);        
+    });
 
   /**
   * ADD - HUC TABLE - OPEN
@@ -235,13 +254,29 @@ $(window).bind("load", function() {
         // clear and hide the dialog
         document.getElementById('rmContentDialogTemplate').style.display = "none";
     }
-    
+   
+    // validate the map
+    box = validate_bbox_size()
+    toggle_submit_button(box.is_valid);
 });
 
-/** 
- * Removes all rows from the HUC table
+
+/* 
+ * LEAFLET HANDLERS 
  */
+
+
+function toggleMenu() {
+    var accordion = document.querySelector('#accordion');
+    var panel = document.querySelector('#menu-panel');
+    accordion.MaterialExtAccordion.command( {action: 'toggle', target: panel} );
+}
+function submit() {
+    document.getElementById('form-submit').submit();
+}
+
 function clearHucTable() {
+ // Removes all rows from the HUC table
 
     var table = document.getElementById("huc-table");
     var rows  = $('#huc-table tbody tr');
@@ -250,10 +285,51 @@ function clearHucTable() {
     }
 }
 
-/** 
- * Adds new rows to the HUC table
+function mapClick(e) {
+
+    /*
+    * The event handler for map click events
+    * @param {event} e - a map mouse click event
+    * @returns - null
+    */
+
+    // exit early if not zoomed in enough.
+    // this ensures that objects are not clicked until zoomed in
+    var zoom = e.target.getZoom();
+    if (zoom < Map.selectable_zoom){
+        return
+    }
+
+    // mark the huc as selected.
+    // this will allow the bbox to be drawn.
+    Map.hucselected = true;
+
+    // get the latitude and longitude of the click event.
+    // use this data to query ArcGIS WFS for the selected HUC object.
+    var clickBounds = L.latLngBounds(e.latlng, e.latlng);
+    var defaultParameters = {
+        service : 'WFS',
+        request : 'GetFeature',
+        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
+        typeName : 'HUC_WBD:HUC12_US',
+        SrsName : 'EPSG:4326'
+    };
+    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    var parameters = L.Util.extend(defaultParameters);
+    var URL = root + L.Util.getParamString(parameters);
+    
+    // load the map and table elements async
+    toggleHucsAsync(URL, true, null);
+}
+
+
+/*
+ * HUC TABLE FUNCTIONS
  */
+
+
 function addHucRow(huc_value) {
+ // Adds new rows to the HUC table
 
   // check if the id already exists in the table.
   // if it does, don't add it again
@@ -293,10 +369,8 @@ function addHucRow(huc_value) {
   componentHandler.upgradeAllRegistered();
 }
 
-/**
- * Removes a row from the HUC table
- */
 function rmHucRow(row_id) {
+ // Removes a row from the HUC table
   if (row_id >= 0) {
     var table = document.getElementById("huc-table");
     table.deleteRow(row_id);
@@ -304,11 +378,9 @@ function rmHucRow(row_id) {
 
 }
 
-/** 
- * Gets the row id for a given huc value
- * Returns: index of the matching row, -999 if it doesn't exist in the table
- */
 function getRowIdByName(huc_value) {
+ // Gets the row id for a given huc value
+ // Returns: index of the matching row, -999 if it doesn't exist in the table
 
   var row = $("#huc-table > tbody > tr:contains('"+huc_value+"')");
   if (row.length == 0) {
@@ -318,11 +390,9 @@ function getRowIdByName(huc_value) {
   }
 }
 
-/** 
- * Gets the row object for a given huc value
- * Returns: the row object or -999 if it doesn't exist
- */
 function getRowByName(huc_value) {
+ // Gets the row object for a given huc value
+ // Returns: the row object or -999 if it doesn't exist
 
   var row = $("#huc-table > tbody > tr:contains('"+huc_value+"')");
   if (row.length == 0) {
@@ -333,10 +403,8 @@ function getRowByName(huc_value) {
 }
 
 
-/** 
- * Clears the selected features on the map
-*/
 function clearSelection() {
+ // Clears the selected features on the map
     
     for (var key in Map.hucbounds) {
 
@@ -362,6 +430,13 @@ function clearSelection() {
     document.querySelector('.mdl-textfield').MaterialTextfield.change('');
 
 }
+
+
+
+
+
+
+
 
 /**
 * Queries the global bounding box for a list of hucs ids
@@ -562,41 +637,6 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
     });
 }
 
-/**
-* The event handler for map click events
-* @param {event} e - a map mouse click event
-* @returns - null
-*/
-function mapClick(e) {
-
-    // exit early if not zoomed in enough.
-    // this ensures that objects are not clicked until zoomed in
-    var zoom = e.target.getZoom();
-    if (zoom < Map.selectable_zoom){
-        return
-    }
-
-    // mark the huc as selected.
-    // this will allow the bbox to be drawn.
-    Map.hucselected = true;
-
-    // get the latitude and longitude of the click event.
-    // use this data to query ArcGIS WFS for the selected HUC object.
-    var clickBounds = L.latLngBounds(e.latlng, e.latlng);
-    var defaultParameters = {
-        service : 'WFS',
-        request : 'GetFeature',
-        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
-        typeName : 'HUC_WBD:HUC12_US',
-        SrsName : 'EPSG:4326'
-    };
-    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
-    var parameters = L.Util.extend(defaultParameters);
-    var URL = root + L.Util.getParamString(parameters);
-    
-    // load the map and table elements async
-    toggleHucsAsync(URL, true, null);
-}
 
 /**
 * Calculates and draws the bounding box on the map.
@@ -781,11 +821,13 @@ function get_lcc_bounds() {
 function toggle_submit_button(is_valid){
 
     if (is_valid) { 
-        // disable submit button bc nothing is selected
-        $('#btn-subset-submit').prop( "disabled", false);
+//        // disable submit button bc nothing is selected
+//        $('#btn-subset-submit').prop( "disabled", false);
+	Map.submit.enable();
     } else {
-        // enable submit button 
-        $('#btn-subset-submit').prop( "disabled", true );
+//        // enable submit button 
+//        $('#btn-subset-submit').prop( "disabled", true );
+	Map.submit.disable();
     }
 }
 

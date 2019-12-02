@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+{% block more-head %}
+      <link rel="stylesheet" type="text/css" href='{{ static_url("huc-table.css") }}'/>
+      <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+{% end %}
+
+<div id="addContentDialogTemplate" style="display:none">
+  <div class="mdl-dialog__addContent mdl-shadow--2dp">
+    <h3 class="mdl-dialog__title">Add HUC</h3>
+    <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input" type="text" id="content">
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button id='add-huc-cancel' type="button" class="close mdl-button mdl-button--colored mdl-color-text--red-500">Cancel</button>
+      <button id='add-huc-submit' type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Add</button>
+    </div>
+  </div>
+</div>
+
+<div id="rmContentDialogTemplate" style="display:none">
+  <div class="mdl-dialog__addContent mdl-shadow--2dp">
+    <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield">
+        <p> Are you sure that you want to remove the selected HUCs?</p>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button id='rm-huc-cancel' type="button" class="close mdl-button mdl-button--colored mdl-color-text--red-500">Cancel</button>
+      <button id='rm-huc-submit' type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE -->
+
+ <div id="huc-table-div" class="mdl-data-tabledynamic">
+   <div class="mdl-data-tabledynamic__title">
+<!--     <h2 class="mdl-data-tabledynamic__title-text">Selected HUCS</h2> -->
+     <div class="mdl-data-tabledynamic__actions">
+       <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row" id='add-huc'>
+         ADD
+       </a>
+       <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect remove-row" id='rm-huc'>
+         REMOVE
+       </a>
+     </div>
+   </div>
+ </div>
+
+ <div class="mdl-data-tabledynamic__content">
+   <table id='huc-table' class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+{# mdl-data-table--selectable #}
+{#
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">HUC ID</th>
+      <th></th>
+    </tr>
+  </thead>
+#}
+      <tbody>
+      </tbody>
+    </table>
+</div>
+
