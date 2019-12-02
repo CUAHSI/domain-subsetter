@@ -48,7 +48,11 @@
 	    <!-- Navigation -->
             <nav class="mdl-navigation
 		mdl-layout--large-screen-only">
-	      <a id='subset' class="mdl-navigation__link" href="#">Subset</a>
+	      <a id='subset' class="mdl-navigation__link" href="#">
+		  Subset
+		  <i class="fas fa-caret-down" style='padding-left:10px'>
+		  </i>
+	      </a>
 	      <a id='api' class="mdl-navigation__link" href="/api">API</a>
 	      <a class="mdl-navigation__link" href="/help">Help</a>
               <a class="mdl-navigation__link" href="about">About</a>
@@ -87,6 +91,7 @@
             <a class="mdl-navigation__link" href="/help">Help</a>
             <a class="mdl-navigation__link" href="/about">About</a>
        </nav>
+       <!-- sub menu only visible when clicked on the link above -->
        <ul class='mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect' for='subset-menu'>     
 	   <li class='mdl-menu__item'>
 		<a class="mdl-navigation__link" href="/nwm/v1_2_2">NWM v1.2.2</a>
