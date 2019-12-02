@@ -1,7 +1,4 @@
 
-#### HELP
-
----
 
 This page offers additional resources that users may find helpful when using the CUAHSI Domain Subsetter for both NWM/WRF-Hydro and ParFlow-CONUS. 
 

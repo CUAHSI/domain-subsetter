@@ -1,8 +1,4 @@
 
-#### ABOUT
-
----
-
 ##### Background  
 Large scale surface water and groundwater models are essential tools for improving our understanding of the dynamic interaction between the water cycle and human activity. This is especially true when investigating human impacts, extreme hydrologic events, and future water resource availability. Results from these models advance hydrologic science and inform neighboring research disciplines. As a result, community intellectual contributions to the physics, configuration, and validation of continental-scale models are essential to improving the usefulness and adoption of these models within the academic community. Due to the computational scale of these models, they often require specialized computing hardware and vast amounts of domain and forcing data, making it difficult for the broader water science community to directly engage in development and research efforts. CUAHSI has recognized this challenge and is collaborating with the National Center for Atmospheric Research, Colorado School of Mines, and other entities involved with continental-scale hydrology modeling to improve the accessibility of model domain input data. 
 

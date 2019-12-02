@@ -336,3 +336,10 @@ div.processing {
 .info-page {
     padding: 8px 10%;
 }
+.page-label {
+    margin: 20px 70px 5px 70px;
+    padding: 10px;
+    background-color: white;
+    color: #36474E;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+}
