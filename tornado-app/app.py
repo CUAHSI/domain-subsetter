@@ -20,24 +20,26 @@ import environment as env
 class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
-            (r"/", core.Index),
-            (r"/index", core.IndexNew),
-            (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
+            (r"/", core.IndexNew),
+            # Utility Endpoints
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),
             (r"/jobs/([a-f0-9]{40})", core.Job),
-            (r"/admin/status", core.Status),
+#            (r"/admin/status", core.Status),
             (r"/status/([a-f0-9]{40})", core.Status),
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": env.output_dir}),
             (r"/results/([a-f0-9]{40})", core.Results),
+            # Help Pages
             (r"/about", core.About),
             (r"/help", core.Help),
             (r"/api", core.Api),
             (r"/getting-started", core.GettingStarted),
+            # Subsetting handlers
             (r"/parflow/v1_0", pf1handlers.Index),
             (r"/parflow/v1_0/subset", pf1handlers.SubsetParflow1),
             (r"/nwm/v1_2_2", nwm122handlers.Index),
+            (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
 
         ]
         settings = {
