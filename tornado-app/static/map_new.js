@@ -205,6 +205,10 @@ $(window).bind("load", function() {
     * Opens dialog for removing HUC from to table
     */
     document.getElementById("rm-huc").onclick = function() {
+	// do nothing if the button isn't activated.
+	if ($('#rm-huc').hasClass('mdl-button--disabled')) {
+            return;
+	}
 
       // check if items are selected
       if ($('#huc-table').find('label').hasClass('is-checked')) {
@@ -295,7 +299,11 @@ function clearHucTable() {
     for (var i=rows.length-1; i>=0; i--) {
         table.deleteRow(i);
     }
+  
+    // toggle the delete button
+    toggle_delete_button();
 }
+
 
 function mapClick(e) {
 
@@ -340,6 +348,18 @@ function mapClick(e) {
  */
 
 
+/*
+ * Toggles the delete HUC menu button
+ */
+function toggle_delete_button() {
+    row_count = $('#huc-table tr').length;
+    if (row_count > 0) {
+        $('#rm-huc').removeClass('mdl-button--disabled')
+    } else {
+        $('#rm-huc').addClass('mdl-button--disabled')
+    }
+}
+
 function addHucRow(huc_value) {
  // Adds new rows to the HUC table
 
@@ -377,6 +397,8 @@ function addHucRow(huc_value) {
   var cell2 = row.insertCell(2);
   cell2.innerHTML =  'Loading';
 
+  // toggle the delete button
+  toggle_delete_button();
 
   componentHandler.upgradeAllRegistered();
 }
@@ -388,6 +410,8 @@ function rmHucRow(row_id) {
     table.deleteRow(row_id);
   }
 
+  // toggle the delete button
+  toggle_delete_button();
 }
 
 function getRowIdByName(huc_value) {
