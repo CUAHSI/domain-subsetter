@@ -12,10 +12,10 @@
       <div class="mdl-textfield mdl-js-textfield">
         <input class="mdl-textfield__input" type="text" id="content">
       </div>
-    </div>
     <div class="mdl-dialog__actions">
       <button id='add-huc-cancel' type="button" class="close mdl-button mdl-button--colored mdl-color-text--red-500">Cancel</button>
       <button id='add-huc-submit' type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Add</button>
+    </div>
     </div>
   </div>
 </div>
@@ -38,13 +38,14 @@
 
  <div id="huc-table-div" class="mdl-data-tabledynamic">
    <div class="mdl-data-tabledynamic__title">
-<!--     <h2 class="mdl-data-tabledynamic__title-text">Selected HUCS</h2> -->
+     <h2 class="mdl-data-tabledynamic__title-text">Selected HUCS</h2>
+   </div>
      <div class="mdl-data-tabledynamic__actions">
        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row" id='add-huc'>
-         ADD
+	   <i class="fas fa-2x fa-plus"></i>
        </a>
        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect remove-row" id='rm-huc'>
-         REMOVE
+	   <i class="far fa-2x fa-trash-alt"></i>
        </a>
      </div>
    </div>
