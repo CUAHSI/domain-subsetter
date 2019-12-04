@@ -45,7 +45,13 @@ def subset(uid, hucs, outdir, logger=None):
     extract_clm(watershed_file, ids, outdir, logger=logger)
     create_tcl(pfsol_file, outdir, logger=logger)
 
+    # copying the run script for executing parflow in docker
+    logger.info('Copying run script')
+    shutil.copyfile(os.path.join(env.pfdata_v1, 'run.sh'),
+                    f'{os.path.dirname(outdir)}/{uid}/run.sh')
+
     # compress the outputs and clean temporary directory
+    logger.info('Building and compressing outputs')
     fpath = os.path.join(env.output_dir, uid)
     outname = f'{uid}.tar.gz'
     outpath = f'{os.path.dirname(outdir)}/{outname}'
@@ -70,7 +76,6 @@ def clip_inputs(watershed_file, ids, outdir, logger=None):
         logger.info(f'Clipping inputs - {fclip}')
         name = os.path.basename(fclip)
         ofile = os.path.join(outdir, name)
-        logger.info(f'OUTFILE: {ofile}')
         cmd = [sys.executable,
                'Clip_Inputs/clip_inputs.py',
                '-i', fclip,
@@ -148,9 +153,13 @@ def create_tcl(pfsol_file, outdir, logger=None):
            '-i', env.pftemplate,
            '-sl', os.path.join(outdir),
            '-so', f'{pfsol_file}.pfsol',
-           '-e', '10',
+           '-e', '50',
+           '-ts', '0.5',
+           '--baseu', '0.5',
            '--batches', '2', '3', '6',
-           '-dz', '5']
+           '-dz', '1000',
+           '--dz_scales', '0.001', '0.5', '0.5', '0.5', '0.5',
+           '--perm', '1.0e-6']
     run_cmd(cmd)
 
 
