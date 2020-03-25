@@ -30,6 +30,8 @@ class Application(tornado.web.Application):
             (r"/data/(.*)", tornado.web.StaticFileHandler,
              {"path": env.output_dir}),
             (r"/results/([a-f0-9]{40})", core.Results),
+            (r"/download-zip/([a-f0-9]{40})", core.GetZip),
+            (r"/download-gzip/([a-f0-9]{40})", core.GetGzip),
             # Help Pages
             (r"/about", core.About),
             (r"/help", core.Help),
@@ -43,6 +45,7 @@ class Application(tornado.web.Application):
             (r"/nwm/v2_0", nwm2handlers.Index),
             (r"/nwm/v2_0/subset", nwm2handlers.SubsetNWM2),
 #            (r"/test", test.Index),
+
 
         ]
         settings = {

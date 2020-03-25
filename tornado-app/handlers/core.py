@@ -6,6 +6,7 @@ import time
 import tornado.auth
 import tornado.web
 import uuid
+import shutil
 import subprocess
 import hashlib
 from urllib.parse import urljoin
@@ -208,8 +209,26 @@ class Results(RequestHandler):
         host_url = "{protocol}://{host}".format(**vars(self.request))
         file_url = f'{host_url}/data/{fname}'
         self.render('results.html',
-                    filepath=file_url,
+                    jobid=jobid,
                     title='Results')
+
+
+class GetZip(RequestHandler):
+    @gen.coroutine
+    def get(self, uid):
+        host_url = "{protocol}://{host}".format(**vars(self.request))
+        path = os.path.join(env.output_dir, uid)
+        shutil.make_archive(path, 'zip', path)
+        self.redirect(f'{host_url}/data/{path}.zip')
+
+
+class GetGzip(RequestHandler):
+    @gen.coroutine
+    def get(self, uid):
+        host_url = "{protocol}://{host}".format(**vars(self.request))
+        path = os.path.join(env.output_dir, uid)
+        shutil.make_archive(path, 'gztar', path)
+        self.redirect(f'{host_url}/data/{path}.tar.gz')
 
 
 class About(RequestHandler):

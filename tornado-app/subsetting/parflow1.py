@@ -64,7 +64,7 @@ def subset(uid, hucs, outdir, logger=None):
     outpath = f'{os.path.dirname(outdir)}/{outname}'
     with tarfile.open(outpath, "w:gz") as tar:
         tar.add(fpath, arcname=os.path.basename(fpath))
-    shutil.rmtree(fpath)
+#    shutil.rmtree(fpath)
 
     return dict(message='PF-CONUS 1.0 subsetting complete',
                 filepath=f'/data/{outdir}',

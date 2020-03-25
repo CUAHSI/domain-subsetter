@@ -7,31 +7,30 @@
 
     <div id=results class='mdl-grid center-horizontally'>
         <h3>Access the Data</h3>
-	<!--	<a id=file href='{{ filepath }}'>{{ filepath }}</p> -->
     </div>
 
     <div id=results class='mdl-grid center-horizontally'>
-	<form action='{{ filepath }}' method='get' target='_blank'>
-	<button id='btn-tar' class="mdl-button
+	<form action='/download-gzip/{{ jobid }}' method='get' target='_blank'>
+	<button id='btn-gzip' class="mdl-button
 			            mdl-js-button
 				    mdl-button--raised">
-	    Download as tar.gz </button>
+	    Download GZip </button>
 	</form>
     </div>
 
     <div id=results class='mdl-grid center-horizontally'>
-	<form action='{{ filepath }}' method='get' target='_blank'>
-	    <button id='btn-zip' disabled
+	<form action='/download-zip/{{ jobid }}' method='get' target='_blank'>
+	    <button id='btn-zip'
 		    class="mdl-button
 		           mdl-js-button
 		           mdl-button--raised">
-		Download as zip
+		Download Zip
 	    </button>
 	</form>
     </div>
     
     <div id=results class='mdl-grid center-horizontally'>
-	<form action='{{ filepath }}' method='get' target='_blank'>
+	<form action='{{ jobid }}' method='get' target='_blank'>
 	    <button id='btn-binder' disabled
 		    class="mdl-button
 		           mdl-js-button
