@@ -41,7 +41,9 @@ def subset(uid, hucs, outdir, logger=None):
 
     # run the subsetting functions
     clip_inputs(watershed_file, ids, outdir, logger=logger)
-    pfsol_file = subset_domain(watershed_file, ids, outdir, logger=logger)
+    pfsol_file = subset_domain(watershed_file,
+                               ids, outdir,
+                               logger=logger)
     extract_clm(watershed_file, ids, outdir, logger=logger)
     create_tcl(pfsol_file, outdir, logger=logger)
 
@@ -49,6 +51,11 @@ def subset(uid, hucs, outdir, logger=None):
     logger.info('Copying run script')
     shutil.copyfile(os.path.join(env.pfdata_v1, 'run.sh'),
                     f'{os.path.dirname(outdir)}/{uid}/run.sh')
+
+    # copy the binder files 
+    logger.info('Copying binder files')
+    shutil.copytree(os.path.join(env.pfdata_v1, 'binder'),
+                    f'{os.path.dirname(outdir)}/{uid}/binder')
 
     # compress the outputs and clean temporary directory
     logger.info('Building and compressing outputs')

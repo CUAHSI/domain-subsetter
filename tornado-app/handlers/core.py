@@ -207,7 +207,9 @@ class Results(RequestHandler):
         fname = f'{jobid}.tar.gz'
         host_url = "{protocol}://{host}".format(**vars(self.request))
         file_url = f'{host_url}/data/{fname}'
-        self.render('results.html', filepath=file_url)
+        self.render('results.html',
+                    filepath=file_url,
+                    title='Results')
 
 
 class About(RequestHandler):
