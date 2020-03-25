@@ -27,7 +27,7 @@ class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
         llat = self.get_argument('llat')
         ulon = self.get_argument('ulon')
         llon = self.get_argument('llon')
-        hucs = self.get_argument('hucs')
+        hucs = self.get_argument('hucs', default=[])
 
         if '' in [ulat, ulon, llat, llon]:
             self.render("index.html",
@@ -55,7 +55,7 @@ class SubsetNWM122(tornado.web.RequestHandler):
         llon = self.get_argument('llon', True)
         ulat = self.get_argument('ulat', True)
         ulon = self.get_argument('ulon', True)
-        hucs = self.get_argument('hucs', True, strip=True).split(',')
+        hucs = self.get_argument('hucs', '', strip=True).split(',')
 
         app_log.debug('submitted bbox: (%s, %s, %s, %s) ' %
                       (llat, llon, ulat, ulon))

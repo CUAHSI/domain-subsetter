@@ -12,8 +12,8 @@ from tornado.ioloop import IOLoop
 # to ensure logs are configured properly
 import logs
 
-from handlers import core
-from handlers import pf1handlers, nwm122handlers
+from handlers import core, test
+from handlers import pf1handlers, nwm122handlers, nwm2handlers
 import environment as env
 
 
@@ -40,6 +40,9 @@ class Application(tornado.web.Application):
             (r"/parflow/v1_0/subset", pf1handlers.SubsetParflow1),
             (r"/nwm/v1_2_2", nwm122handlers.Index),
             (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
+            (r"/nwm/v2_0", nwm2handlers.Index),
+            (r"/nwm/v2_0/subset", nwm2handlers.SubsetNWM2),
+#            (r"/test", test.Index),
 
         ]
         settings = {

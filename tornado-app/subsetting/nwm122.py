@@ -70,9 +70,13 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     logger.info('subsetting complete %s' % (uid))
 
     # run watershed shapefile creation
-    logger.debug('Submitting create_shapefile')
-    outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
-    outfile = watershed.create_shapefile(uid, hucs, outpath)
+    if len(hucs) != 0:
+        logger.debug('Submitting create_shapefile')
+        outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
+        outfile = watershed.create_shapefile(uid, hucs, outpath)
+    else:
+        logger.debug('skipping create_shapefile b/c no hucs were provided')
+
 
     # compress the results
     fpath = os.path.join(env.output_dir, uid)

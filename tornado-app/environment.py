@@ -23,6 +23,7 @@ general_level = 'DEBUG'
 
 # WRF-HYDRO settings
 wrfdata = '/share/nwm.v1.2.4'
+wrf2data = '/share/nwm.v2.0.0'
 
 # Output subset directory
 output_dir = '/share/appdata/output'
