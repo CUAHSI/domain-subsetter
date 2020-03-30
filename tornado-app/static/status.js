@@ -1,41 +1,35 @@
 
 $(document).ready(function() {
 
-    // get the guid, necessary to poll job status
-    var guid = window.location.href.split('/').pop();
+    var url = new URL(window.location.href);
+    var jobid = url.searchParams.get('jobid');
+    var model = url.searchParams.get('model');
+    var version = url.searchParams.get('version');
+
+//    // get the guid, necessary to poll job status
+//    var guid = window.location.href.split('/').pop();
+
 
     // initial request so there isn't a polling delay 
-	get_job_status(guid);
+    get_job_status(model, version, jobid);
 
 	// begin polling every 20000 ms
     pollInterval = setInterval(function(){
-	    get_job_status(guid);
+	    get_job_status(model, version, jobid);
 
 	}, 20000);
 
 });
 
 
-function get_job_status(guid) {
+function get_job_status(model, version, guid) {
     $.ajax({url: "/jobs/"+guid,
 	success: function(result) {
 	    res = JSON.parse(result);
 
         if (res.status == 'finished') {
-	    window.location.replace("/results/"+guid);
-
-//            // hide the progress image
-//            $('div.progress')[0].style.visibility = 'hidden';
-//            
-//            // print success message
-//            $('#status')[0].innerHTML = 'Job Complete';
-//            
-//            clearInterval(pollInterval);
-//
-//            // display file info
-//            $('#results')[0].style.display = '';
-//            $('#file')[0].innerHTML = res.file;
-//            $('#file')[0].setAttribute('href', res.file);
+	    var args = 'model='+model+'&version='+version+'&jobid='+guid;
+	    window.location.replace("/results?"+args);
 
         } else if (res.status == 'failed') {
             

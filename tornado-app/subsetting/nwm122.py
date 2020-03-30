@@ -78,16 +78,16 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
         logger.debug('skipping create_shapefile b/c no hucs were provided')
 
 
-    # compress the results
-    fpath = os.path.join(env.output_dir, uid)
-    outname = '%s.tar.gz' % uid
-    outpath = os.path.join(env.output_dir, outname)
-    with tarfile.open(outpath,  "w:gz") as tar:
-        tar.add(fpath, arcname=os.path.basename(fpath))
-    shutil.rmtree(fpath)
-    logger.info('finished compressing results %s' % (uid))
+#    # compress the results
+#    fpath = os.path.join(env.output_dir, uid)
+#    outname = '%s.tar.gz' % uid
+    outpath = os.path.join(env.output_dir, uid)
+#    with tarfile.open(outpath,  "w:gz") as tar:
+#        tar.add(fpath, arcname=os.path.basename(fpath))
+#    shutil.rmtree(fpath)
+#    logger.info('finished compressing results %s' % (uid))
 
     response = dict(message='file created at: %s' % outpath,
-                    filepath='/data/%s' % outname,
+                    filepath='/data/%s' % uid,
                     status='success')
     return response

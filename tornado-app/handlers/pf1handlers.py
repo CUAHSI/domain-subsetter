@@ -63,4 +63,4 @@ class SubsetParflow1(tornado.web.RequestHandler):
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')
-        self.redirect('/status/%s' % uid)
+        self.redirect(f'/status?model=parflow&version=1&jobid={uid}')

@@ -111,16 +111,16 @@ class LccBBoxFromHUC(RequestHandler):
 
 class Status(RequestHandler):
     @gen.coroutine
-    def get(self, jobid=None):
-        if jobid is None:
-            http_client = AsyncHTTPClient()
-            host_url = "{protocol}://{host}".format(**vars(self.request))
-            url = host_url + '/jobs'
-            response = yield http_client.fetch(url)
-            data = json.loads(response.body)
-            self.render('admin_status.html', jobs=data) 
-        else:
-            self.render('status.html')
+    def get(self): #, jobid=None):
+#        if jobid is None:
+#            http_client = AsyncHTTPClient()
+#            host_url = "{protocol}://{host}".format(**vars(self.request))
+#            url = host_url + '/jobs'
+#            response = yield http_client.fetch(url)
+#            data = json.loads(response.body)
+#            self.render('admin_status.html', jobs=data) 
+#        else:
+        self.render('status.html')
 
 
 class Job(RequestHandler):
@@ -201,17 +201,49 @@ class Job(RequestHandler):
             return host_url + relative_file_path
         return None
 
-
 class Results(RequestHandler):
     @gen.coroutine
-    def get(self, jobid):
-        fname = f'{jobid}.tar.gz'
-        host_url = "{protocol}://{host}".format(**vars(self.request))
-        file_url = f'{host_url}/data/{fname}'
-        self.render('results.html',
+    def get(self):
+        model = self.get_argument('model', None)
+        jobid = self.get_argument('jobid', None)
+        version = self.get_argument('version', None)
+        if (model is None) or (jobid is None) or (version is None):
+            self.write('Operation aborted: Missing arguments. Must provide "model", "version", and "jobid"')
+        elif not os.path.exists(os.path.join(env.output_dir, jobid)):
+            self.write(f'Could not find job id: {jobid}')
+            self.finish()
+
+        # render results page based on model and version
+        template = None
+        version = float(version)
+        if model.lower() == 'parflow':
+            if version == 1.0:
+                template = 'results_pf1.html'
+        elif model.lower() == 'nwm':
+            if version == 1.2:
+                template = 'results_nwm1_2.html'
+
+        # render an error if template is not found.
+        if template is None:
+            self.write('Operation aborted: Invalid arguments provided')
+            self.finish()
+
+        # render the template
+        self.render(template,
                     jobid=jobid,
                     title='Results')
 
+
+#class Results(RequestHandler):
+#    @gen.coroutine
+#    def get(self, jobid):
+#        fname = f'{jobid}.tar.gz'
+#        host_url = "{protocol}://{host}".format(**vars(self.request))
+#        file_url = f'{host_url}/data/{fname}'
+#        self.render('results.html',
+#                    jobid=jobid,
+#                    title='Results')
+#
 
 class GetZip(RequestHandler):
     @gen.coroutine

@@ -79,4 +79,4 @@ class SubsetNWM122(tornado.web.RequestHandler):
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')
-        self.redirect('/status/%s' % uid)
+        self.redirect(f'/status?model=nwm&version=1.2&jobid={uid}')

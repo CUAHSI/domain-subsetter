@@ -6,7 +6,7 @@
 {% block content %}
 
     <div id=results class='mdl-grid center-horizontally'>
-        <h3>Access the Data</h3>
+        <h3>Operation Completed Successfully</h3>
     </div>
 
     <div id=results class='mdl-grid center-horizontally'>
@@ -29,14 +29,9 @@
 	</form>
     </div>
     
-    <div id=results class='mdl-grid center-horizontally'>
-	<form action='{{ jobid }}' method='get' target='_blank'>
-	    <button id='btn-binder' disabled
-		    class="mdl-button
-		           mdl-js-button
-		           mdl-button--raised">
-		Launch in MyBinder.org
-	    </button>
-	</form>
-    </div>
+
+    {% block extra-content %}
+    {% end %}
+
 {% end %}
+
