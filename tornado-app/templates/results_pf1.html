@@ -35,26 +35,14 @@
       
     <div id=btn-hs-save-dialog class='mdl-grid center-horizontally'>
 	<button id='btn-binder' disabled
-		class="mdl-button
+		class="mdl-button 
 		       mdl-js-button
 		       mdl-button--raised">
 	    Save-To-HydroShare
 	</button>
     </div>
 
-    <dialog id='dialog-hs' class="mdl-dialog"
-         ..style='visibility:hidden' >
-     <div class="mdl-dialog__content">
-       <p>
          {% include hs-dialog.html %}
-       </p>
-     </div>
-     <div class="mdl-dialog__actions">
-       <button id='btn-hs-save' type="button" class="mdl-button
-       ..close">Submit</button>
-       <button id='btn-hs-close' type="button" class="mdl-button
-       ..close">Exit</button>
-     </div>
-   </dialog>
+
 
 {% end %}

@@ -22,8 +22,34 @@ $(window).bind("load", function() {
     // Handler for model submit
     btn_hs_save.addEventListener('click', function() {
         dialog.close()
-	title = document.querySelector('#hs-res-title');
-	console.log(title);
+	title = document.getElementById('hs-res-title').value;
+	guid = document.getElementById('guid').value;
+	console.log(title + ' ' + guid);
+
+    
     });
     
 });
+
+function res_title_entered(){
+    var text = document.getElementById("hs-res-title").value.trim();
+    // check to see if the title contains text
+    if (text.length > 0) {
+	// activate button
+	document.getElementById("btn-hs-save").disabled = false;
+    } else {
+	// deactivate button
+	document.getElementById("btn-hs-save").disabled = true;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
