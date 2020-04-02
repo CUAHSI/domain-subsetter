@@ -8,6 +8,13 @@ debug = True
 static_path = os.path.join(os.path.dirname(__file__), "static")
 template_path = os.path.join(os.path.dirname(__file__), "templates")
 
+cookie_secret='554451427aba042faa7f7c80ff8337717d7805d26af5707b5102b73fc873cef3'
+
+# hydroshare oauth
+oauth_client_id='TjMr7rPA8AkjVvJgDohn0QEIZ2fKDoPNVjVLKYXz'
+oauth_client_secret='Yy5FhCXJQ5C9HRpv467bCkLma8vq1nRk69gl4l0V8qcTOXONR4fO8KCdZv6V0MWsViK1iUK5TFMC0NrX8VaL1lOkejLjTUHdz8qa6QWY2JYa6wbHxZyNdncx5qyACuHR'
+oauth_callback_url='http://subset.cuahsi.org/authorize'
+
 # multiprocessing settings
 worker_count = 4
 

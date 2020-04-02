@@ -2,12 +2,28 @@
 
 {% extends results.html %}
 
+{% block extra-head %}
+<script type='text/javascript' src='{{static_url("hs.js") }}'></script>
+
+
+{% end %}
 
 {% block extra-content %}
 
     <div id=results class='mdl-grid center-horizontally'>
-	<form action='{{ jobid }}' method='get' target='_blank'>
-	    <button id='btn-binder' disabled
+	<form action='https://adapt.boisestate.edu/Parflow.sh?http://subset.cuahsi.org/download-gzip/{{ jobid }}' method='post'>
+	    <button id='btn-binder'
+		    class="mdl-button
+		           mdl-js-button
+		           mdl-button--raised">
+		Execute at Boise State
+	    </button>
+	</form>
+    </div>
+    
+    <div id=results class='mdl-grid center-horizontally'>
+	<form action='https://mybinder.org/v2/hydroshare/167514aa932e4dd19d9cc43f55a3d9eb/?urlpath=urlparams?unpack=http://subset.cuahsi.org/download-gzip/{{ jobid }}' method='get'>
+	    <button id='btn-binder'
 		    class="mdl-button
 		           mdl-js-button
 		           mdl-button--raised">
@@ -15,4 +31,30 @@
 	    </button>
 	</form>
     </div>
+
+      
+    <div id=btn-hs-save-dialog class='mdl-grid center-horizontally'>
+	<button id='btn-binder' disabled
+		class="mdl-button
+		       mdl-js-button
+		       mdl-button--raised">
+	    Save-To-HydroShare
+	</button>
+    </div>
+
+    <dialog id='dialog-hs' class="mdl-dialog"
+         ..style='visibility:hidden' >
+     <div class="mdl-dialog__content">
+       <p>
+         {% include hs-dialog.html %}
+       </p>
+     </div>
+     <div class="mdl-dialog__actions">
+       <button id='btn-hs-save' type="button" class="mdl-button
+       ..close">Submit</button>
+       <button id='btn-hs-close' type="button" class="mdl-button
+       ..close">Exit</button>
+     </div>
+   </dialog>
+
 {% end %}

@@ -12,10 +12,10 @@ from tornado.ioloop import IOLoop
 # to ensure logs are configured properly
 import logs
 
-from handlers import core, test
+from handlers import core, hydroshare
 from handlers import pf1handlers, nwm122handlers, nwm2handlers
 import environment as env
-
+import auth
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -46,6 +46,9 @@ class Application(tornado.web.Application):
             (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
             (r"/nwm/v2_0", nwm2handlers.Index),
             (r"/nwm/v2_0/subset", nwm2handlers.SubsetNWM2),
+            (r"/login", auth.LoginHandler),
+            (r"/authorize", auth.CallbackHandler),
+            (r"/save-to-hydroshare", hydroshare.SaveToHydroShare),
 #            (r"/test", test.Index),
 
 
@@ -54,6 +57,8 @@ class Application(tornado.web.Application):
             "debug": env.debug,
             "static_path": env.static_path,
             "template_path": env.template_path,
+            "login_url": "/login",
+            "cookie_secret":env.cookie_secret,
         }
         tornado.web.Application.__init__(self, endpoints, **settings)
 
