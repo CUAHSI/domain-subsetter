@@ -109,7 +109,7 @@ $(window).bind("load", function() {
 
     // hide the Getting Started dialog
     $('dialog')[0].open = false;
-    $('dialog')[0].style = 'visibility=true';
+    $('dialog')[0].style['visibility'] = 'hidden';
 
 
 
@@ -124,8 +124,8 @@ $(window).bind("load", function() {
 
     // Help button
     var btn = '<span id=help-btn class="material-icons">info-outline</i>'
-    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
-			    {position: 'topleft'}).addTo(Map.map);
+//    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
+//			    {position: 'topleft'}).addTo(Map.map);
 
 
     L.control.mousePosition({
@@ -282,6 +282,12 @@ $(window).bind("load", function() {
     // validate the map
     box = validate_bbox_size()
     toggle_submit_button(box.is_valid);
+    
+    // fix safari map sizing issue
+    $(window).on("resize", function() {
+        $("#map").height($(window).height()).width($(window).width());
+	map.invalidateSize();
+    }).trigger("resize");
 });
 
 
