@@ -1,0 +1,141 @@
+@charset "UTF-8";
+
+/**
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Use of this module requires the user to include variables from material-design-lite
+//@import "../../node_modules/material-design-lite/src/variables";
+//@import "../../node_modules/material-design-lite/src/mixins";
+@import "../variables";
+
+.mdlext-lightbox {
+  user-select: none;
+  cursor: default;
+  position: relative;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  border: $mdlext-lightbox-border;
+  border-radius: $mdlext-lightbox-border-radius;
+  background-color: $mdlext-lightbox-background-color;
+  box-sizing: border-box;
+  outline: 0;
+  display: block; // display: flex and IE11 has issues with reposition. Set display:block for now.
+
+  *,
+  *::before,
+  *::after,
+  input[type="search"] {
+    box-sizing: border-box;
+  }
+
+  .mdlext-lightbox__slider {
+    // Displays prevvious, current and next image while dragging
+    // Elements are created by lightbox component when dragging starts
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+
+    .mdlext-lightbox__slider__slide {
+      flex-shrink: 0;
+      display: block;
+      text-align: left;
+      color: #7f7f7f;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      //&:nth-child(1),
+      //&:nth-child(3) {
+      //  filter: blur(1px);
+      //}
+    }
+  }
+
+  figure {
+    margin: $mdlext-lightbox-figure-margin;
+    padding: $mdlext-lightbox-figure-padding;
+    position: relative;
+
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border: 0;
+      outline: 0;
+    }
+    figcaption {
+      @include typo-caption($colorContrast: false, $usePreferred: true);
+
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 100%;
+      height: auto;
+      max-height: 50%;
+      overflow: auto;
+      padding: 8px;
+      background-color: $mdlext-lightbox-figcaption-background-color;
+      transform-origin: bottom;
+      transform: scaleY(0);
+      transition: 0.2s ease-in-out;
+
+      &.mdlext-lightbox__show-figcaption {
+        transform: scaleY(1);
+      }
+      tbody {
+        th {
+          text-align: left;
+        }
+        th,
+        td {
+          vertical-align: text-top;
+        }
+      }
+    }
+  }
+  .mdl-card__menu {
+    color: #ffffff;
+    z-index: 1;
+  }
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $mdlext-lightbox-footer-background-color;
+
+    .mdl-card__supporting-text {
+      flex: 1;
+      overflow: hidden;
+      padding: 0;
+      height: $card-supporting-text-line-height;
+      width: 100%;
+    }
+    nav {
+      display: flex;
+    }
+  }
+
+  &.mdlext-lightbox--sticky-footer footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}

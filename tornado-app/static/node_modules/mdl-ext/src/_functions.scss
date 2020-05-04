@@ -1,0 +1,302 @@
+///
+/// Returns the opposite direction of each direction in a list
+/// Modified from: https://css-tricks.com/snippets/sass/opposite-direction-function/
+/// @author Hugo Giraudel
+/// @param {List} $directions - List of initial directions
+/// @return {List} - List of opposite directions
+@function mdlext-opposite-direction($directions) {
+  $opposite-directions: ();
+  $direction-map: (
+    'top':    'bottom',
+    'right':  'left',
+    'bottom': 'top',
+    'left':   'right',
+    'center': 'center',
+    'ltr':    'rtl',
+    'rtl':    'ltr'
+  );
+
+  @each $direction in $directions {
+    $direction: to-lower-case($direction);
+
+    @if map-has-key($direction-map, $direction) {
+      $opposite-directions: append($opposite-directions, unquote(map-get($direction-map, $direction)));
+    }
+    @else {
+      @warn "No opposite direction can be found for `#{$direction}`. Direction omitted.";
+    }
+  }
+
+  @return $opposite-directions;
+}
+
+///
+/// Strip unit from value
+/// @author Hugo Giraudel
+/// http://hugogiraudel.com/2013/08/12/sass-functions/
+/// https://css-tricks.com/snippets/sass/strip-unit-function/
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+
+@function strip-unit($number) {
+  @return if(type-of($number) == 'number' and not unitless($number), $number / ($number * 0 + 1), $number);
+}
+
+///
+/// Clamping a number means restricting it between min and max values.
+///    4 clamped to 1-3 equals 3.
+///   -5 clamped to 1-10 equals 1.
+///   42 clamped to 10-100 equals 42.
+/// @author Hugo Giraudel
+/// http://hugogiraudel.com/2013/08/12/sass-functions/
+/// @param {Number} $value - The value to clamp
+/// @param {Number} $min - min value in range
+/// @param {Number} $max - Max value in range
+/// @return {Number} - The clamped value
+
+@function clamp($value, $min, $max) {
+  @return if($value > $max, $max, if($value < $min, $min, $value));
+}
+
+///
+/// Convert one unit into another
+/// @author Hugo Giraudel
+/// http://www.sitepoint.com/understanding-sass-units/
+/// @param {Number} $value - Initial value
+/// @param {String} $unit - Desired unit
+/// @return {Number}
+/// @throw Error if `$unit` does not exist or if units are incompatible.
+
+/* stylelint-disable */
+@function convert-unit($value, $unit) {
+  $units: (
+    'px'  : 0px,
+    'cm'  : 0cm,
+    'mm'  : 0mm,
+    '%'   : 0%,
+    'ch'  : 0ch,
+    'in'  : 0in,
+    'em'  : 0em,
+    'rem' : 0rem,
+    'pt'  : 0pt,
+    'pc'  : 0pc,
+    'ex'  : 0ex,
+    'vw'  : 0vw,
+    'vh'  : 0vh,
+    'vmin': 0vmin,
+    'vmax': 0vmax,
+    'deg' : 0deg,
+    'turn': 0turn,
+    'rad' : 0rad,
+    'grad': 0grad,
+    's'   : 0s,
+    'ms'  : 0ms,
+    'Hz'  : 0Hz,
+    'kHz' : 0kHz,
+    'dppx': 0dppx,
+    'dpcm': 0dpcm,
+    'dpi' : 0dpi,
+  );
+
+  @if map-has-key($units, $unit) {
+    @return map-get($units, $unit) + $value;
+  }
+
+  @error "Unknown unit `#{$unit}`.";
+}
+/* stylelint-enable */
+
+
+///
+/// Replace `$search` with `$replace` in `$string`
+/// @author Hugo Giraudel, http://hugogiraudel.com/2014/01/13/sass-string-replacement-function/
+/// @param {String} $string - Initial string
+/// @param {String} $search - Substring to replace
+/// @param {String} $replace ('') - New value
+/// @return {String} - Updated string
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+  @return $string;
+}
+
+///
+/// @function explode() -- split a string into a list of strings
+/// @author https://gist.github.com/danielpchen/3677421ea15dcf2579ff
+///  {string} $string: the string to be split
+///  {string} $delimiter: the boundary string
+///  @return {list} the result list
+@function explode($string, $delimiter: ',') {
+  $result: ();
+  @if $delimiter == "" {
+    @for $i from 1 through str-length($string) {
+      $result: append($result, str-slice($string, $i, $i));
+    }
+    @return $result;
+  }
+  $exploding: true;
+  @while $exploding {
+    $d-index: str-index($string, $delimiter);
+    @if $d-index {
+      @if $d-index > 1 {
+        $result: append($result, str-slice($string, 1, $d-index - 1));
+        $string: str-slice($string, $d-index + str-length($delimiter));
+      }
+      @else if $d-index == 1 {
+        $string: str-slice($string, 1, $d-index + str-length($delimiter));
+      }
+      @else {
+        $result: append($result, $string);
+        $exploding: false;
+      }
+    }
+    @else {
+      $result: append($result, $string);
+      $exploding: false;
+    }
+  }
+  @return $result;
+}
+
+///
+/// Add `$unit` to `$value`
+/// @author Hugo Giraudel
+///
+/// @param {Number} $value - Value to add unit to
+/// @param {String} $unit - String representation of the unit
+///
+/// @return {Number} - `$value` expressed in `$unit`
+/// @throw Error if `$unit` does not exist or if units are incompatible.
+///
+@function to-length($value, $unit) {
+  $units: (
+    'px'  : 1px,
+    'cm'  : 1cm,
+    'mm'  : 1mm,
+    '%'   : 1%,
+    'ch'  : 1ch,
+    'pc'  : 1pc,
+    'in'  : 1in,
+    'em'  : 1em,
+    'rem' : 1rem,
+    'pt'  : 1pt,
+    'ex'  : 1ex,
+    'vw'  : 1vw,
+    'vh'  : 1vh,
+    'vmin': 1vmin,
+    'vmax': 1vmax
+  );
+
+  @if not index(map-keys($units), $unit) {
+    @error('Invalid unit `#{$unit}`.');
+  }
+
+  @return $value * map-get($units, $unit);
+}
+
+///
+/// Casts a string into a number
+///
+/// @author Hugo Giraudel
+// @param {String | Number} $value - Value to be parsed
+///
+/// @return {Number}
+/// @throw Error if `$value` is not a number or a string.
+///
+@function to-number($value) {
+  @if type-of($value) == 'number' {
+    @return $value;
+  }
+  @else if type-of($value) != 'string' {
+    @error('Value for `to-number` should be a number or a string.');
+  }
+
+  $result: 0;
+  $digits: 0;
+  $minus: str-slice($value, 1, 1) == '-';
+  $numbers: ('0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9);
+
+  @for $i from if($minus, 2, 1) through str-length($value) {
+    $character: str-slice($value, $i, $i);
+
+    @if not (index(map-keys($numbers), $character) or $character == '.') {
+      @return to-length(if($minus, -$result, $result), str-slice($value, $i));
+    }
+
+    @if $character == '.' {
+      $digits: 1;
+    }
+    @else if $digits == 0 {
+      $result: $result * 10 + map-get($numbers, $character);
+    }
+    @else {
+      $digits: $digits * 10;
+      $result: $result + map-get($numbers, $character) / $digits;
+    }
+  }
+
+  @return if($minus, -$result, $result);
+}
+
+///
+/// Convert `$rgb-string` to a number list
+/// @author Leif Olsen
+/// @param {String | Number} $value - Value to be parsed
+/// @return {list} the rgb number list
+/// @throw Error if `$value` is not a number, color or a string.
+@function rgb-string-to-numbers($value) {
+  @if type-of($value) == 'number' or type-of($value) == 'color' {
+    @return $value;
+  }
+  @else if type-of($value) != 'string' {
+    @error('Value for `rgb-string-to-numbers` should be a number or a string.');
+  }
+
+  $s: str-replace($value, "rgba");
+  $s: str-replace($s, "rgb");
+  $s: str-replace($s, "(");
+  $s: str-replace($s, ")");
+  $s: str-replace($s, " ");
+  $l: explode($s);
+  $result: ();
+  @for $i from 1 through length($l) {
+    $result: append($result, to-number(nth($l, $i)));
+  }
+  @return $result;
+}
+
+///
+/// Convert `$rgb-string` to a corresponding hex value
+/// @author Leif Olsen
+/// @param {String | Number} $value - Value to be parsed
+/// @return {number} the rgb hex value
+/// @throw Error if `$value` is not a number, color or a string.
+@function rgb-string-to-hex($value) {
+  @if type-of($value) == 'number' or type-of($value) == 'color' {
+    @return $value;
+  }
+  @else if type-of($value) != 'string' {
+    @error('Value for `rgb-string-to-numbers` should be a number or a string.');
+  }
+  $l: rgb-string-to-numbers($value);
+  @return rgb(nth($l, 1), nth($l, 2), nth($l, 3));
+}
+
+
+///
+/// Convert hex color to a coresponding `$rgb-string`
+/// @author https://github.com/google/material-design-lite/issues/1689
+/// @param {Number} $hexColor - Value to convert
+/// @return {String} the rgb string value
+///
+/// @example - $color-primary: hex-to-string(#333);
+@function hex-to-rgb-string($hexColor) {
+  // 0.999999 val in alpha actually compiles to 1.0
+  $rgbaVal:  inspect(rgba($hexColor, 0.9999999));
+
+  // slice substring between 'rgba(' and '1.0)'
+  @return str-slice($rgbaVal, 6, str-length($rgbaVal)-4);
+}

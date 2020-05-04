@@ -1,0 +1,273 @@
+/**
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Copied/Modified/Inspired from/by:
+ *   https://github.com/google/material-design-lite/tree/master/src/textfield
+ *   http://red-team-design.com/making-html-dropdowns-not-suck/
+ *   http://codepen.io/etcpe9/pen/PqyOye,
+ *   http://codepen.io/pudgereyem/pen/PqBxQx
+ *   https://github.com/MEYVN-digital/mdl-selectfield
+ *   https://github.com/mebibou/mdl-selectfield
+ */
+
+// Use of this module requires the user to include variables from material-design-lite
+//@import "../../node_modules/material-design-lite/src/variables";
+//@import "../../node_modules/material-design-lite/src/mixins";
+
+@import "../mixins";
+
+// The container for the selectfield.
+.mdlext-selectfield {
+  box-sizing: border-box;
+  position: relative;
+  font-size: $input-text-font-size;
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin: 0;
+  padding: $input-text-vertical-spacing 0;
+
+  // Align buttons, if used.
+  & .mdl-button {
+    bottom: $input-text-vertical-spacing;
+    position: absolute;
+  }
+
+  // Styling the down arrow
+  &::after {
+    @include mdlext-arrow(bottom, $mdlext-selectfield-arrow-width, $mdlext-selectfield-arrow-length);
+
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.mdlext-selectfield.is-disabled {
+  &::after {
+    color: $input-text-disabled-color;
+    @include mdlext-arrow(bottom, $mdlext-selectfield-arrow-width, $mdlext-selectfield-arrow-length, $input-text-disabled-color);
+  }
+}
+
+// Optional class to align right.
+.mdlext-selectfield--align-right {
+  text-align: right;
+}
+
+// Optional class to display at full width.
+.mdlext-selectfield--full-width {
+  width: 100%;
+}
+
+// Optional class to make the select field expandable.
+.mdlext-selectfield--expandable {
+  min-height: $input-text-button-size;
+  min-width: $input-text-button-size;
+  width: auto;
+}
+
+// Styling for the select element.
+.mdlext-selectfield__select {
+
+  // Reset select
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  text-indent: 0.01px; // Removes default arrow from firefox
+  text-overflow: '';   // Removes default arrow from firefox
+  outline: none;
+  box-shadow: none;
+  // End Reset select
+
+  font-size: $input-text-font-size;
+  font-family: $performance_font;
+  padding: $input-text-padding calc(1.2em + #{$input-text-padding}) $input-text-padding 0;
+  width: $input-text-width;
+  border-bottom: 1px solid $input-text-bottom-border-color;
+  display: block;
+  margin: 0;
+  background: none;
+  text-align: left;
+  color: inherit;
+
+  // Mozilla, remove focusring
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000000;
+  }
+
+  // MS, remove selected option background color
+  &:focus::-ms-value {
+    background-color: inherit;
+    color: inherit;
+  }
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  .mdlext-selectfield.is-focused & {
+    outline: none;
+  }
+
+  .mdlext-selectfield.is-invalid & {
+    border-color: $input-text-error-color;
+    box-shadow: none;
+  }
+
+  fieldset[disabled] .mdlext-selectfield &,
+  .mdlext-selectfield.is-disabled & {
+    border-bottom: 1px dotted $input-text-disabled-color;
+    color: $input-text-disabled-text-color;
+    background-color: transparent;
+  }
+
+  option {
+    color: $text-color-primary;
+    box-sizing: border-box;
+    background-color: inherit;
+  }
+}
+
+// Styling for the label / floating label.
+.mdlext-selectfield__label {
+  box-sizing: border-box;
+  color: $input-text-label-color;
+  font-size: $input-text-font-size;
+  top: ($input-text-padding + $input-text-vertical-spacing);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  position: absolute;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+
+  .mdlext-selectfield.is-dirty &,
+  .mdlext-selectfield.has-placeholder & {
+    visibility: hidden;
+  }
+
+  // Floating Label
+  .mdlext-selectfield--floating-label & {
+    @include material-animation-default();
+  }
+
+  .mdlext-selectfield--floating-label.has-placeholder & {
+    transition: none;
+  }
+
+  fieldset[disabled] .mdlext-selectfield &,
+  .mdlext-selectfield.is-disabled.is-disabled & {
+    color: $input-text-disabled-text-color;
+  }
+
+  .mdlext-selectfield--floating-label.is-focused &,
+  .mdlext-selectfield--floating-label.is-dirty.is-dirty &,
+  .mdlext-selectfield--floating-label.has-placeholder & {
+    color: $input-text-highlight-color;
+    font-size: $input-text-floating-label-fontsize;
+    top: $input-text-vertical-spacing - ($input-text-floating-label-fontsize + $input-text-padding);
+    visibility: visible;
+  }
+
+  .mdlext-selectfield--floating-label.is-focused .mdlext-selectfield__expandable-holder &,
+  .mdlext-selectfield--floating-label.is-dirty .mdlext-selectfield__expandable-holder &,
+  .mdlext-selectfield--floating-label.has-placeholder .mdlext-selectfield__expandable-holder & {
+    top: -($input-text-floating-label-fontsize + $input-text-padding);
+  }
+
+  .mdlext-selectfield--floating-label.is-invalid & {
+    color: $input-text-error-color;
+    font-size: $input-text-floating-label-fontsize;
+  }
+
+  // The after label is the colored underline for the Selectfield.
+  &::after {
+    background-color: $input-text-highlight-color;
+    bottom: $input-text-vertical-spacing;
+    content: '';
+    height: 2px;
+    left: 45%;
+    position: absolute;
+    @include material-animation-default();
+
+    visibility: hidden;
+    width: 10px;
+  }
+
+  .mdlext-selectfield.is-focused &::after {
+    left: 0;
+    visibility: visible;
+    width: 100%;
+  }
+
+  .mdlext-selectfield.is-invalid &::after {
+    background-color: $input-text-error-color;
+  }
+}
+
+// SelectField Error.
+.mdlext-selectfield__error {
+  color: $input-text-error-color;
+  font-size: $input-text-floating-label-fontsize;
+  position: absolute;
+  margin-top: 3px;
+  visibility: hidden;
+  display: block;
+
+  .mdlext-selectfield.is-invalid & {
+    visibility: visible;
+  }
+}
+
+// Expandable Holder.
+.mdlext-selectfield__expandable-holder {
+  display: inline-block;
+  position: relative;
+  margin-left: $input-text-button-size;
+
+  @include material-animation-default();
+
+  // Safari (possibly others) need to be convinced that this field is actually
+  // visible, otherwise it cannot be tabbed to nor focused via a <label>.
+  // TODO: In some cases (Retina displays), this is big enough to render the
+  // inner element :(
+  max-width: 0.1px;
+
+  .mdlext-selectfield.is-focused &,
+  .mdlext-selectfield.is-dirty & {
+    // This is an unfortunate hack. Animating between widths in percent (%)
+    // in many browsers (Chrome, Firefox) only animates the inner visual style
+    // of the input - the outer bounding box still 'jumps'.
+    // Thus assume a sensible maximum, and animate to/from that value.
+    max-width: 600px;
+  }
+  .mdlext-selectfield__label::after {
+    bottom: 0;
+  }
+}

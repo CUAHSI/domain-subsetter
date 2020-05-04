@@ -1,0 +1,221 @@
+<!-- See: https://github.com/WICG/ResizeObserver/blob/master/demo.html -->
+
+<style>
+  .resize {
+    border: 2em solid rgba(0,255,0, 0.5);
+    background-color: #DDD;
+    width: 90%; //300.49px;
+    height: 200.5px;
+    overflow: hidden;
+    position:relative;
+    display:inline-block;
+  }
+  .yellowBorder {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .maptiles {
+    overflow: hidden;
+  }
+
+  .maptiles::after {
+    content: "map tiles";
+    position: relative;
+    top: 20px;
+  }
+
+  .elipse {
+    border: 20px solid rgba(100,255,100, 0.5);
+  }
+  .elipse::after {
+    content: "canvas";
+    position: relative;
+    top: -100px;
+  }
+  .domMunch {
+    background-color: orange;
+  }
+  .domMunch > div {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+  }
+  .domMunch::after {
+    content: "domMunch";
+    position: relative;
+    top: 20px;
+  }
+
+  .toolbar {
+    margin: 16px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .toolbar > * {
+    margin-right: 8px;
+    min-width: 110px;
+    width: auto;
+  }
+
+  .toolbar > span {
+    flex-grow: 1;
+    text-align: right;
+    font-weight: 600;
+    font-size: 1.2em;
+  }
+</style>
+
+<h1 style="display:none">ResizeObserver unexpected error</h1>
+<pre id="log" style="display:none">log:</pre>
+
+<section class="toolbar">
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+    <input id="cb-observe" type="checkbox" class="mdl-checkbox__input" checked>
+    <span class="mdl-checkbox__label">Observe</span>
+  </label>
+
+  <div id="input-inc-container" class="mdl-textfield mdl-textfield--floating-label mdl-js-textfield">
+    <input id="input-inc" class="mdl-textfield__input" type="number" min="1" max="40" value="10">
+    <label class="mdl-textfield__label">Size increment</label>
+  </div>
+
+  <button id="btn-grow" class="cmd-button mdl-button mdl-js-button mdl-button--raised">Grow</button>
+  <button id="btn-shrink" class="cmd-button mdl-button mdl-js-button mdl-button--raised">Shrink</button>
+  <button id="btn-delete" class="cmd-button mdl-button mdl-js-button mdl-button--raised">Delete observed element</button>
+
+  <span id="observe-notification">
+  </span>
+</section>
+
+
+<div id="observed-element" class="resize maptiles" ></div>
+
+<script>
+  'use strict';
+
+  (function() {
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function() {
+
+      if (!window.ResizeObserver) {
+        throw new Error('no window.ResizeObserver');
+      }
+
+      function log(msg) {
+        var e = document.querySelector('#log');
+        e.textContent = e.innerText + '\n' + msg;
+      }
+
+      function nextColor() {
+        return '#'+Math.random().toString(16).substr(-6);
+      }
+
+      function grow() {
+        var inc = parseInt(document.querySelector('#input-inc').value);
+        var elements = document.querySelectorAll('.resize');
+        for (var i = 0; i < elements.length; i++) {
+          var el = elements[i];
+          var s = window.getComputedStyle(el);
+          var w = parseFloat(s.width);
+          var h = parseFloat(s.height);
+          el.style.width = (w + inc) + 'px';
+          el.style.height = (h + inc * 2 / 3) + 'px';
+        }
+      }
+
+      function shrink() {
+        var dec = parseInt(document.querySelector('#input-inc').value);
+        var elements = document.querySelectorAll('.resize');
+        for (var i = 0; i < elements.length; i++) {
+          var el = elements[i];
+          var s = window.getComputedStyle(el);
+          var w = parseFloat(s.width);
+          var h = parseFloat(s.height);
+          el.style.width = (w - dec) + 'px';
+          el.style.height = (h - dec * 2 / 3) + 'px';
+        }
+      }
+
+
+      function initResizeHandlers() {
+        var elements = document.querySelectorAll('.maptiles');
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].onresize = function() { this.style.borderColor = nextColor() };
+        }
+      }
+
+      function displayNotification(value) {
+        var notification = document.querySelector("#observe-notification");
+        notification.style.color = nextColor();
+        if(Number.isInteger(value)) {
+          notification.innerHTML = '<span>Observed: ' + value + ' element' + (value > 1 ? 's' : '') + '</span>';
+        }
+        else {
+          notification.innerHTML = '<span>Observer: ' + value + '</span>';
+        }
+      }
+
+      //
+      // Init
+      //
+      window.addEventListener('error', function (e) {
+        var error = e.error;
+        console.log(error);
+        log(error);
+      });
+
+
+      var ro = new ResizeObserver( function(entries) {
+
+        displayNotification(entries.length);
+
+        for (var i = 0; i < entries.length; i++) {
+          var entry = entries[i];
+          if (!entry.target || !entry.target.parentNode) {
+            throw new Error("detected resize on orphan element");
+          }
+          if (entry.target.onresize) {
+            entry.target.onresize(entry);
+          }
+        }
+      });
+
+      function toggleObserve() {
+        var isObserve = document.querySelector('#cb-observe').checked;
+        displayNotification(isObserve ? 'on' : 'off');
+
+        var elements = document.querySelectorAll('.resize');
+        if (isObserve) {
+          for (var i = 0; i < elements.length; i++) {
+            ro.observe(elements[i]);
+          }
+        }
+        else {
+          for (var i = 0; i < elements.length; i++) {
+            ro.unobserve(elements[i]);
+          }
+        }
+      }
+
+      function deleteObservedElement() {
+        var el = document.querySelector('#observed-element');
+        el.parentNode.removeChild(el);
+      }
+
+
+      document.querySelector('#cb-observe').addEventListener('click', function() { toggleObserve() });
+      document.querySelector('#btn-grow').addEventListener('click', function() { grow() });
+      document.querySelector('#btn-shrink').addEventListener('click', function() { shrink() });
+      document.querySelector('#btn-delete').addEventListener('click', function() { deleteObservedElement() });
+
+      // Start
+      initResizeHandlers()
+      toggleObserve();
+    });
+
+  }());
+</script>

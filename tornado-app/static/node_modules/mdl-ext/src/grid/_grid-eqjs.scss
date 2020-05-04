@@ -1,0 +1,321 @@
+@charset "UTF-8";
+
+/**
+ * This code is modified from Material Design Lite _grid.sass,
+ * which is Licensed under the Apache License, Version 2.0
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Element queries for _grid.scss, based on: https://github.com/Snugug/eq.js
+//
+//////////////////////////////////////////////////////////////////////////////////
+
+// Use of this module requires the user to include variables from material-design-lite in hers/his main SASS module
+//@import "../../node_modules/material-design-lite/src/variables";
+.mdlext-grid {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 auto;
+  align-items: stretch;
+
+  &.mdlext-grid--no-spacing {
+    padding: 0;
+  }
+
+  & > .mdlext-cell {
+    box-sizing: border-box;
+  }
+
+  & > .mdlext-cell--top {
+    align-self: flex-start;
+  }
+
+  & > .mdlext-cell--middle {
+    align-self: center;
+  }
+
+  & > .mdlext-cell--bottom {
+    align-self: flex-end;
+  }
+
+  & > .mdlext-cell--stretch {
+    align-self: stretch;
+  }
+
+  .mdlext-grid--no-spacing > .mdlext-cell {
+    margin: 0;
+  }
+
+  // Define order override classes.
+  @for $i from 1 through $grid-max-columns {
+    & > .mdlext-cell--order-#{$i} {
+      order: $i;
+    }
+  }
+}
+
+// Mixins for width calculation.
+@mixin _partial-size($size, $columns, $gutter) {
+  width: calc(#{(($size / $columns) * 100) + "%"} - #{$gutter});
+}
+@mixin _full-size($gutter) {
+  @include _partial-size(1, 1, $gutter);
+}
+@mixin _offset-size($size, $columns, $gutter) {
+  margin-left: calc(#{(($size / $columns) * 100) + "%"} + #{$gutter / 2});
+}
+
+@mixin _partial-size-no-spacing($size, $columns) {
+  width: #{(($size / $columns) * 100) + "%"};
+}
+@mixin _full-size-no-spacing() {
+  @include _partial-size-no-spacing(1, 1);
+}
+@mixin _offset-size-no-spacing($size, $columns) {
+  margin-left: #{(($size / $columns) * 100) + "%"};
+}
+
+
+.mdlext-grid {
+
+  @include eq-pts((
+    grid_phone: 0,
+    grid_tablet: strip-unit($grid-tablet-breakpoint),
+    grid_desktop: strip-unit($grid-desktop-breakpoint)
+  ));
+
+  ////////// Phone //////////
+  @include eq('grid_phone') {
+    padding: $grid-phone-margin - ($grid-phone-gutter / 2);
+
+    & > .mdlext-cell {
+      margin: $grid-phone-gutter / 2;
+      @include _partial-size($grid-cell-default-columns, $grid-phone-columns, $grid-phone-gutter);
+    }
+
+    & > .mdlext-cell--hide-phone {
+      display: none !important;
+    }
+
+    // Define order override classes.
+    @for $i from 1 through $grid-max-columns {
+      & > .mdlext-cell--order-#{$i}-phone.mdlext-cell--order-#{$i}-phone {
+        order: $i;
+      }
+    }
+
+    // Define partial sizes for columnNumber < totalColumns.
+    @for $i from 1 through ($grid-phone-columns - 1) {
+      & > .mdlext-cell--#{$i}-col,
+      & > .mdlext-cell--#{$i}-col-phone.mdlext-cell--#{$i}-col-phone {
+        @include _partial-size($i, $grid-phone-columns, $grid-phone-gutter);
+      }
+    }
+
+    // Define 100% for everything else.
+    @for $i from $grid-phone-columns through $grid-desktop-columns {
+      & > .mdlext-cell--#{$i}-col,
+      & > .mdlext-cell--#{$i}-col-phone.mdlext-cell--#{$i}-col-phone {
+        @include _full-size($grid-phone-gutter);
+      }
+    }
+
+    // Define valid phone offsets.
+    @for $i from 1 through ($grid-phone-columns - 1) {
+      & > .mdlext-cell--#{$i}-offset,
+      & > .mdlext-cell--#{$i}-offset-phone.mdlext-cell--#{$i}-offset-phone {
+        @include _offset-size($i, $grid-phone-columns, $grid-phone-gutter);
+      }
+    }
+
+    &.mdlext-grid--no-spacing {
+      padding: 0;
+
+      & > .mdlext-cell {
+        margin: 0;
+        @include _partial-size-no-spacing($grid-cell-default-columns, $grid-phone-columns);
+      }
+
+      // Define partial sizes for columnNumber < totalColumns.
+      @for $i from 1 through ($grid-phone-columns - 1) {
+        & > .mdlext-cell--#{$i}-col,
+        & > .mdlext-cell--#{$i}-col-phone.mdlext-cell--#{$i}-col-phone {
+          @include _partial-size-no-spacing($i, $grid-phone-columns);
+        }
+      }
+
+      // Define 100% for everything else.
+      @for $i from $grid-phone-columns through $grid-desktop-columns {
+        & > .mdlext-cell--#{$i}-col,
+        & > .mdlext-cell--#{$i}-col-phone.mdlext-cell--#{$i}-col-phone {
+          @include _full-size-no-spacing();
+        }
+      }
+
+      // Define valid phone offsets.
+      @for $i from 1 through ($grid-phone-columns - 1) {
+        & > .mdlext-cell--#{$i}-offset,
+        & > .mdlext-cell--#{$i}-offset-phone.mdlext-cell--#{$i}-offset-phone {
+          @include _offset-size-no-spacing($i, $grid-phone-columns);
+        }
+      }
+    }
+  }
+
+  ////////// Tablet //////////
+  @include eq('grid_tablet') {
+    padding: $grid-tablet-margin - ($grid-tablet-gutter / 2);
+
+    & > .mdlext-cell {
+      margin: $grid-tablet-gutter / 2;
+      @include _partial-size($grid-cell-default-columns, $grid-tablet-columns, $grid-tablet-gutter);
+    }
+
+    & > .mdlext-cell--hide-tablet {
+      display: none !important;
+    }
+
+    // Define order override classes.
+    @for $i from 1 through $grid-max-columns {
+      & > .mdlext-cell--order-#{$i}-tablet.mdlext-cell--order-#{$i}-tablet {
+        order: $i;
+      }
+    }
+
+    // Define partial sizes for columnNumber < totalColumns.
+    @for $i from 1 through ($grid-tablet-columns - 1) {
+      & > .mdlext-cell--#{$i}-col,
+      & > .mdlext-cell--#{$i}-col-tablet.mdlext-cell--#{$i}-col-tablet {
+        @include _partial-size($i, $grid-tablet-columns, $grid-tablet-gutter);
+      }
+    }
+
+    // Define 100% for everything else.
+    @for $i from $grid-tablet-columns through $grid-desktop-columns {
+      & > .mdlext-cell--#{$i}-col,
+      & > .mdlext-cell--#{$i}-col-tablet.mdlext-cell--#{$i}-col-tablet {
+        @include _full-size($grid-tablet-gutter);
+      }
+    }
+
+    // Define valid tablet offsets.
+    @for $i from 1 through ($grid-tablet-columns - 1) {
+      & > .mdlext-cell--#{$i}-offset,
+      & > .mdlext-cell--#{$i}-offset-tablet.mdlext-cell--#{$i}-offset-tablet {
+        @include _offset-size($i, $grid-tablet-columns, $grid-tablet-gutter);
+      }
+    }
+
+    &.mdlext-grid--no-spacing {
+      padding: 0;
+
+      & > .mdlext-cell {
+        margin: 0;
+        @include _partial-size-no-spacing($grid-cell-default-columns, $grid-tablet-columns);
+      }
+
+      // Define partial sizes for columnNumber < totalColumns.
+      @for $i from 1 through ($grid-tablet-columns - 1) {
+        & > .mdlext-cell--#{$i}-col,
+        & > .mdlext-cell--#{$i}-col-tablet.mdlext-cell--#{$i}-col-tablet {
+          @include _partial-size-no-spacing($i, $grid-tablet-columns);
+        }
+      }
+
+      // Define 100% for everything else.
+      @for $i from $grid-tablet-columns through $grid-desktop-columns {
+        & > .mdlext-cell--#{$i}-col,
+        & > .mdlext-cell--#{$i}-col-tablet.mdlext-cell--#{$i}-col-tablet {
+          @include _full-size-no-spacing();
+        }
+      }
+
+      // Define valid tablet offsets.
+      @for $i from 1 through ($grid-tablet-columns - 1) {
+        & > .mdlext-cell--#{$i}-offset,
+        & > .mdlext-cell--#{$i}-offset-tablet.mdlext-cell--#{$i}-offset-tablet {
+          @include _offset-size-no-spacing($i, $grid-tablet-columns);
+        }
+      }
+    }
+  }
+
+  ////////// Desktop //////////
+  @include eq('grid_desktop') {
+    padding: $grid-desktop-margin - ($grid-desktop-gutter / 2);
+
+    & > .mdlext-cell {
+      margin: $grid-desktop-gutter / 2;
+      @include _partial-size($grid-cell-default-columns, $grid-desktop-columns, $grid-desktop-gutter);
+    }
+
+    & > .mdlext-cell--hide-desktop {
+      display: none !important;
+    }
+
+    // Define order override classes.
+    @for $i from 1 through $grid-max-columns {
+      & > .mdlext-cell--order-#{$i}-desktop.mdlext-cell--order-#{$i}-desktop {
+        order: $i;
+      }
+    }
+
+    // Define partial sizes for all numbers of columns.
+    @for $i from 1 through $grid-desktop-columns {
+      & > .mdlext-cell--#{$i}-col,
+      & > .mdlext-cell--#{$i}-col-desktop.mdlext-cell--#{$i}-col-desktop {
+        @include _partial-size($i, $grid-desktop-columns, $grid-desktop-gutter);
+      }
+    }
+
+    // Define valid desktop offsets.
+    @for $i from 1 through ($grid-desktop-columns - 1) {
+      & > .mdlext-cell--#{$i}-offset,
+      & > .mdlext-cell--#{$i}-offset-desktop.mdlext-cell--#{$i}-offset-desktop {
+        @include _offset-size($i, $grid-desktop-columns, $grid-desktop-gutter);
+      }
+    }
+
+    &.mdlext-grid--no-spacing {
+      padding: 0;
+
+      & > .mdlext-cell {
+        margin: 0;
+        @include _partial-size-no-spacing($grid-cell-default-columns, $grid-desktop-columns);
+      }
+
+      // Define partial sizes for all numbers of columns.
+      @for $i from 1 through $grid-desktop-columns {
+        & > .mdlext-cell--#{$i}-col,
+        & > .mdlext-cell--#{$i}-col-desktop.mdlext-cell--#{$i}-col-desktop {
+          @include _partial-size-no-spacing($i, $grid-desktop-columns);
+        }
+      }
+
+      // Define valid desktop offsets.
+      @for $i from 1 through ($grid-desktop-columns - 1) {
+        & > .mdlext-cell--#{$i}-offset,
+        & > .mdlext-cell--#{$i}-offset-desktop.mdlext-cell--#{$i}-offset-desktop {
+          @include _offset-size-no-spacing($i, $grid-desktop-columns);
+        }
+      }
+    }
+  }
+}
+
+@include eq-selectors;

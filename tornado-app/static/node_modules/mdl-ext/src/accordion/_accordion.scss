@@ -1,0 +1,395 @@
+@charset "UTF-8";
+
+/**
+ * @license
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This code is built with Google Material Design Lite,
+ * which is Licensed under the Apache License, Version 2.0
+ */
+
+.mdlext-aria-toggle-plus-minus {
+  @include mdlext-aria-expanded-toggle($font-family: inherit, $font-size: 1.4em);
+}
+
+.mdlext-aria-toggle-material-icons {
+  @include mdlext-aria-expanded-toggle($font-size: 1.3em, $icon: 'expand_more', $icon-expanded: 'expand_less', $icon-offset: -$mdlext-accordion-header-padding);
+}
+
+.mdlext-accordion {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &__panel {
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  &__tab {
+    @include typo-title();
+
+    font-weight: 400;
+    line-height: 1.1;
+    box-sizing: border-box;
+    position: relative;
+    margin: 0;
+    padding: 0; // $mdlext-accordion-header-padding;
+    min-width: $mdlext-accordion-header-height;
+    min-height: $mdlext-accordion-header-height;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    user-select: none;
+    color: $mdlext-accordion-header-secondary-color;
+    background-color: $mdlext-accordion-header-background-color;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:focus {
+      outline-offset: -2px;
+      outline-color: $mdlext-accordion-header-focus-outline-color;
+      outline-width: 2px;
+    }
+
+    &[aria-expanded='true'] {
+      background-color: $mdlext-accordion-header-background-open-color;
+    }
+
+    &[aria-selected='true'] {
+      background-color: $mdlext-accordion-header-background-active-color;
+    }
+
+    &[disabled] {
+      background-color: $mdlext-accordion-header-disabled-color;
+      color: $mdlext-accordion-header-secondary-color-disabled;
+      pointer-events: none;
+
+      > * {
+        color: $mdlext-accordion-header-secondary-color-disabled;
+      }
+    }
+
+    &:hover:not([disabled]) {
+      background-color: $mdlext-accordion-header-background-hover-color;
+    }
+
+    > * {
+      margin: 0;
+      padding: 0;
+    }
+
+    &__caption {
+      padding-left: $mdlext-accordion-header-padding;
+      padding-right: $mdlext-accordion-header-padding;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > *:first-child {
+      padding-left: 0;
+    }
+
+    &--ripple {
+      &[aria-selected='true']::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background: $mdlext-accordion-ripple-color;
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+      }
+      &[aria-selected='true']:focus:not(:active)::before {
+        // http://easings.net/
+        animation: mdlext-accordion-tab-ripple 1s cubic-bezier(0.4, 0.0, 0.4, 1) 0.01s alternate forwards; // cubic-bezier(0.4, 0.0, 1, 1); //cubic-bezier(0.4, 0.0, 0.4, 1) 0.01s alternate forwards; //ease-out;
+      }
+    }
+  }
+
+  &__tabpanel {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 $mdlext-accordion-content-padding;
+    color: $mdlext-accordion-content-color;
+    background-color: $mdlext-accordion-content-background-color;
+    display: block;
+    overflow: auto;
+    flex-grow: 1;
+
+    &[hidden] {
+      @include mdlext-visually-hidden;
+    }
+  }
+}
+
+// Vertical layout
+.mdlext-accordion {
+
+  &--vertical {
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    .mdlext-accordion__panel {
+      min-height: $mdlext-accordion-header-height;
+      flex-direction: column;
+    }
+
+    .mdlext-accordion__tab {
+      height: $mdlext-accordion-header-height;
+      border-top: 1px solid $mdlext-accordion-header-border-color;
+      padding-left: $mdlext-accordion-header-padding;
+      padding-right: $mdlext-accordion-header-padding;
+
+      &[aria-selected='true']::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        width: 100%;
+        display: block;
+        content: " ";
+        background-color: $mdlext-accordion-header-highlight-color;
+        animation: border-expand 0.2s cubic-bezier(0.4, 0.0, 0.4, 1) 0.01s alternate forwards;
+        transition: all 1s cubic-bezier(0.4, 0.0, 1, 1);
+      }
+
+      > * {
+        padding-left: $mdlext-accordion-header-padding;
+      }
+
+      > *:first-child {
+        padding-left: 0;
+      }
+
+      > *:last-child:not(:only-child):not(.mdlext-accordion__tab__caption) {
+        margin-left: auto; // If more than one element, push last element to the right
+      }
+
+      &--ripple {
+        &[aria-selected='true']::before {
+          width: 5%;
+          height: 10%;
+        }
+      }
+
+    }
+
+    .mdlext-accordion__tabpanel {
+      border-top: 1px solid $mdlext-accordion-header-border-color;
+
+      &--animation {
+        transform: scaleY(1);
+        animation: mdlext-accordion-show-tabpanel-y 0.2s ease-in-out;
+
+        &[hidden] {
+          transform: scaleY(0);
+          animation: mdlext-accordion-hide-tabpanel-y 0.2s ease-out;
+          animation-delay: 0.1s;
+        }
+      }
+    }
+  }
+}
+
+// Horizontal layout
+.mdlext-accordion {
+
+  &--horizontal {
+
+    .mdlext-accordion__panel {
+      min-width: $mdlext-accordion-header-height;
+      width: $mdlext-accordion-header-height;
+    }
+
+    &[aria-multiselectable='true'] .mdlext-accordion__panel.is-expanded {
+      width: 100%;
+    }
+
+    .mdlext-accordion__tab {
+      flex-direction: column-reverse;
+      width: $mdlext-accordion-header-height;
+      white-space: nowrap;
+      border-left: 1px solid $mdlext-accordion-header-border-color;
+
+      &[aria-selected='true']::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 1px;
+        display: block;
+        content: " ";
+        background-color: $mdlext-accordion-header-highlight-color;
+
+        // Figure out how to animate a vertical line
+        //animation: border-expand 0.2s cubic-bezier(0.4, 0.0, 0.4, 1) 0.01s alternate forwards;
+        //transition: all 1s cubic-bezier(0.4, 0.0, 1, 1);
+      }
+
+      > * {
+        //transform: rotate(-90deg) translateX(50%);
+        transform: rotate(-90deg) translateX($mdlext-accordion-header-padding);
+      }
+
+      > *:last-child:not(:only-child):not(.mdlext-accordion__tab__caption) {
+        // If more than one element, push last element to top
+        margin-bottom: auto;
+        transform: rotate(-90deg) translateX(0);
+      }
+
+      &__caption {
+        transform: rotate(-90deg) translateX(50%);
+        padding-right: $mdlext-accordion-header-padding + 8px;
+      }
+
+      &--ripple {
+        &[aria-selected='true']::before {
+          width: 10%;
+          height: 5%;
+        }
+      }
+    }
+
+    .mdlext-accordion__tabpanel {
+      border-left: 1px solid $mdlext-accordion-header-border-color;
+
+      &--animation {
+        transform: scaleX(1);
+        animation: mdlext-accordion-show-tabpanel-x 0.2s ease-in-out;
+
+        &[hidden] {
+          transform: scaleX(0);
+          animation: mdlext-accordion-hide-tabpanel-x 0.2s ease-out;
+        }
+      }
+    }
+  }
+}
+
+.mdlext-accordion {
+
+  &__panel:first-child > &__tab {
+    // Use container to set outer borders
+    border-top-color: transparent;
+    border-left-color: transparent;
+  }
+
+  &[aria-multiselectable="false"] {
+    .mdlext-accordion__panel.is-expanded {
+      flex-grow: 1;
+    }
+  }
+}
+
+// Making accordion appear disabled.
+// Note: does not prevent tabbing into a disabled accordion
+.mdlext-accordion[disabled] {
+  * {
+    pointer-events: none;
+  }
+  .mdlext-accordion__tab {
+    background-color: $mdlext-accordion-header-disabled-color;
+    color: $mdlext-accordion-header-secondary-color-disabled;
+
+    > * {
+      color: $mdlext-accordion-header-secondary-color-disabled;
+    }
+  }
+  .mdlext-accordion__tabpanel {
+    opacity: 0.8;
+    filter: blur(1px) grayscale(80%);
+  }
+}
+
+
+@keyframes mdlext-accordion-tab-ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+/*
+@keyframes mdlext-accordion-show-tabpanel-y {
+  0% { transform: scaleY(0.1); }
+  40% { transform: scaleY(1.03); }
+  60% { transform: scaleY(0.98); }
+  80% { transform: scaleY(1.03); }
+  100% { transform: scaleY(0.98); }
+  80% { transform: scaleY(1.01); }
+  100% { transform: scaleY(1); }
+}
+*/
+
+@keyframes mdlext-accordion-show-tabpanel-y {
+  0% { transform: scaleY(0); }
+  60% { transform: scaleY(1.01); }
+  80% { transform: scaleY(0.98); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes mdlext-accordion-hide-tabpanel-y {
+  0% { transform: scaleY(1); }
+  60% { transform: scaleY(0.98); }
+  80% { transform: scaleY(1.01); }
+  100% { transform: scaleY(0); }
+}
+
+/*
+@keyframes mdlext-accordion-show-tabpanel-x {
+  0% { transform: scaleX(0.1); }
+  40% { transform: scaleX(1.03); }
+  60% { transform: scaleX(0.98); }
+  80% { transform: scaleX(1.03); }
+  100% { transform: scaleX(0.98); }
+  80% { transform: scaleX(1.01); }
+  100% { transform: scaleX(1); }
+}
+*/
+
+@keyframes mdlext-accordion-show-tabpanel-x {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(1.01); }
+  80% { transform: scaleX(0.98); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes mdlext-accordion-hide-tabpanel-x {
+  0% { transform: scaleX(1); }
+  60% { transform: scaleX(0.98); }
+  80% { transform: scaleX(1.01); }
+  100% { transform: scaleX(0); }
+}

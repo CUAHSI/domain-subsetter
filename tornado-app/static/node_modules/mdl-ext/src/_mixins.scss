@@ -1,0 +1,211 @@
+@import "functions";
+
+/// Triangle helper mixin
+/// Modified from: http://blustemy.io/drawing-pure-css-arrows-with-mixins/
+///                https://css-tricks.com/snippets/sass/css-triangle-mixin/
+/// @param {Direction} $direction - Triangle direction, either `top`, `right`, `bottom` or `left`
+/// @param {Color} $color [currentcolor] - Triangle color
+/// @param {Length} $size [1em] - Triangle size
+@mixin mdlext-arrow($direction: bottom, $base-width: 15px, $length: 10px, $color: inherit, $font-size: inherit) {
+  content: '';
+  width: 0;
+  height: 0;
+  font-size: $font-size;
+  line-height: $font-size;
+  border-#{mdlext-opposite-direction($direction)}: $length solid $color;
+  border-#{mdlext-opposite-direction($direction)}-width: $length;
+  border-#{mdlext-opposite-direction($direction)}-style: solid;
+  border-#{mdlext-opposite-direction($direction)}-color: $color;
+
+  $perpendicular-borders: ($base-width / 2) solid transparent;
+
+  @if $direction == top or $direction == bottom {
+    border-left: $perpendicular-borders;
+    border-right: $perpendicular-borders;
+  }
+  @else if $direction == right or $direction == left {
+    border-bottom: $perpendicular-borders;
+    border-top: $perpendicular-borders;
+  }
+}
+
+/// Hide element while making it readable for screen readers
+/// Copied from HTML5Boilerplate:
+/// https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css#L119-L133
+@mixin mdlext-visually-hidden() {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+
+/// Toggle for aria-expanded attribute
+///
+/// @author Leif Olsen
+/// @param {Font} $font-family ['Material Icons'] - Font family
+/// @param {Length} $font-size [24px] - Font size
+/// @param {string} $icon ['+'] - icon to display when 'aria-expanded="false"'
+/// @param {string} $icon-expanded ['-'] - icon to display when 'aria-expanded="true"'
+/// @link https://github.com/google/material-design-icons Modified from '.material-icons' class
+/// @param {Length} $icon-offset [0] - Icon offset
+///
+/// @example - +/- toggle
+///   .plus-minus {
+///     @include mdlext-aria-expanded-toggle($font-family: inherit, $font-size: inherit);
+///   }
+///   <div aria-expanded="false">
+///     <i class="plus-minus"></i>
+///   </div>
+///
+/// @example - Material Icons, expand-more/expand_less
+///   .more-less {
+///     @include mdlext-aria-expanded-toggle($content: 'expand_more', $content-expanded: 'expand_less');
+///   }
+///   <div aria-expanded="true">
+///     <i class="more-less"></i>
+///   </div>
+
+@mixin mdlext-aria-expanded-toggle($font-family: 'Material Icons', $font-size: 24px, $icon: '+', $icon-expanded: '-', $icon-offset: 0) {
+  font-family: $font-family;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: $font-size;  // Preferred icon size
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  vertical-align: middle;
+
+  // Support for all WebKit browsers.
+  -webkit-font-smoothing: antialiased;
+  -webkit-font-feature-settings: 'liga';
+
+  // Support for Safari and Chrome.
+  text-rendering: optimizeLegibility;
+
+  // Support for Firefox.
+  -moz-osx-font-smoothing: grayscale;
+
+  // Support for IE.
+  font-feature-settings: 'liga';
+
+  &::after {
+    content: $icon;
+    margin-left: $icon-offset;
+  }
+
+  [aria-expanded='true'] > & {
+    &::after {
+      content: $icon-expanded;
+      margin-left: $icon-offset;
+    }
+  }
+}
+
+
+/// Keyframe mixin
+/// Modified from: http://sassbreak.com/nested-keyframe-rules-sass/
+/// Modified from: http://sassbreak.com/sass-tools-and-snippets/
+///
+/// @example
+///
+/// .some-element {
+///   animation: 10s linear infinite;
+///
+///   @include mdlext-animation-keyframes {
+///     from {
+///       background-position: 0% 0%;
+///     }
+///     to {
+///       background-position: 114.2857% 0%;
+///     }
+///   }
+/// }
+
+@mixin mdlext-animation-keyframes {
+  $animation-name: unique-id();
+  animation-name: $animation-name;
+
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}
+
+
+/// Flexible title mixin
+/// A flexible title consists of three regions, left, middle and right.
+/// The left and right regions are optional and will typically contain state icons
+/// or act as a toolbar. The middle region should contain the title text.
+///
+/// @author Leif Olsen
+/// @param {String} $class - class name
+/// @gutter {Length} [8px] - horizontal spacing between title elements
+///
+/// @example
+///
+/// @include mdlext-flexible-title(my-title) {
+///   overflow: hidden;
+///   background-color: yellow;
+///   &__text {
+///     font-size: 20px;
+///     letter-spacing: 0.02em;
+///     font-weight: 400;
+///     line-height: 1.1;
+///   }
+/// }
+///
+/// <header class="my-title">
+///   <i class="material-icons" role="presentation" style="font-size: 28px;">info</i>
+///   <h2 class="my-title__text">A title</h2>
+///   <span class="my-title__spacer"></span>
+///   <i class="mdlext-aria-expanded-more-less" role="presentation" style="font-size: 28px;"></i>
+/// </header>
+
+@mixin mdlext-flexible-title($class, $gutter: 8px) {
+  .#{$class} {
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    margin: 0;
+    padding: 0 $gutter;
+
+    &__text,
+    &__text > * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0 $gutter 0 0;
+    }
+
+    > *:last-child {
+      padding-right: 0;
+    }
+
+    // Used to align elements inside a header or drawer, by growing to fill
+    // remaining space. Commonly used for aligning elements to the right.
+    &__spacer {
+      flex: 1;
+    }
+
+    @content;
+  }
+}
+

@@ -1,0 +1,69 @@
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after, input[type="search"] {
+  box-sizing: inherit;
+}
+
+body {
+  overflow: hidden; /* Needed by Chrome OSX and IOS to avoid "double" scrollbars when a menu opens */
+}
+
+#mount {
+  padding-left: 12px;
+  padding-right: 8px;
+  height:100%;
+}
+
+#mount > *:first-child:not(h5) {
+  padding-top: 16px;
+}
+
+.is-small-screen #mount {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* Rules for sizing the icon */
+/* Not provided in "material-design-icons/iconfont/material-icon.css" */
+
+.material-icons.md-12 {
+   font-size: 12px;
+ }
+.material-icons.md-16 {
+  font-size: 16px;
+}
+.material-icons.md-18 {
+   font-size: 18px;
+ }
+.material-icons.md-24 {
+   font-size: 24px;
+ }
+.material-icons.md-32 {
+   font-size: 24px;
+ }
+.material-icons.md-36 {
+   font-size: 36px;
+ }
+.material-icons.md-48 {
+   font-size: 48px;
+ }
+.material-icons.md-56 {
+  font-size: 56px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+   color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+   color: rgba(0, 0, 0, 0.26);
+ }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+   color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light.md-inactive {
+   color: rgba(255, 255, 255, 0.3);
+ }

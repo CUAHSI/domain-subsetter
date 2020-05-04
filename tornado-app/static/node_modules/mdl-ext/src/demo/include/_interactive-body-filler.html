@@ -1,0 +1,52 @@
+<script>
+  (function() {
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function() {
+      var title = document.querySelector('#header-title');
+      if(title) {
+        title.innerHTML = 'Sticky Header';
+      }
+    });
+
+    var btn = document.querySelector('#a-button');
+    btn.addEventListener('click', function() {
+
+      var content = document.querySelector('.mdl-layout__content');
+      content.insertAdjacentHTML('beforeend',
+        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor lorem eu faucibus aliquet. ' +
+        'In vehicula risus turpis, ut dictum ante tristique et. Aenean ultricies sed urna ac condimentum. ' +
+        'Vivamus nisl tortor, ultricies at aliquam nec, semper at purus. Duis purus tortor, laoreet eget ante a, ' +
+        'rhoncus vulputate lorem. Pellentesque id enim ut massa posuere vestibulum sit amet eget elit. Nulla quis ' +
+        'euismod massa, id varius dui. Ut congue urna non ipsum placerat rhoncus. Curabitur a sollicitudin diam. ' +
+        'Donec id lectus eleifend, blandit magna a, mattis turpis. Fusce non tellus pulvinar, finibus dui ac, ' +
+        'porttitor ante. Vestibulum et commodo purus, et tincidunt nulla. Suspendisse blandit sodales est, nec ' +
+        'luctus sem sollicitudin in. Etiam libero tellus, porttitor sit amet velit a, commodo sodales neque.</p>' +
+        '<p>Maecenas id sodales lacus, eu ullamcorper nibh. Sed posuere consectetur nunc nec dapibus. Nam tristique ' +
+        'ex vel urna dapibus luctus. Phasellus eget mi ac tortor aliquet auctor non vitae risus. Cum sociis natoque ' +
+        'penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec et egestas elit. Sed id lorem enim.' +
+        'Aliquam maximus enim sed tincidunt pretium.</p>' +
+        '<p>Phasellus dictum, leo vel bibendum efficitur, mauris metus volutpat magna, at pharetra libero dolor id ' +
+        'tellus. Mauris convallis tempus libero, sit amet suscipit massa maximus a. Duis ut dignissim nulla, nec ' +
+        'gravida purus. Proin eget erat justo. Phasellus congue sapien eleifend sapien mollis, nec molestie eros ' +
+        'efficitur. Pellentesque et diam at risus ultrices pharetra nec in augue. Phasellus vestibulum, lacus a ' +
+        'dictum vulputate, mauris nisi dictum massa, in venenatis felis sapien a nunc. Integer mi tellus, imperdiet ' +
+        'vel dignissim sed, fringilla ut urna.</p>' +
+        '<p>Suspendisse potenti. Pellentesque eget suscipit orci, at tempor est. Cras sed sollicitudin nunc. Donec ' +
+        'convallis, arcu a euismod cursus, arcu odio pharetra lectus, vitae feugiat diam massa vestibulum metus. In ' +
+        'odio tellus, consectetur eget est et, vehicula hendrerit dolor. Ut ultrices nulla tellus, sit amet ' +
+        'consectetur dolor aliquet quis. Etiam non fermentum dolor.</p>' +
+        '<p>Donec accumsan risus in lectus sollicitudin ' +
+        'vulputate. Praesent condimentum a leo at interdum. Donec ' +
+        'pharetra congue erat a accumsan. Aliquam gravida ' +
+        'lobortis mi, id elementum sapien ultrices vel. ' +
+        'Pellentesque habitant morbi tristique senectus et ' +
+        'netus et malesuada fames ac turpis egestas. Proin ' +
+        'consequat enim orci, nec blandit lorem luctus ut. ' +
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
+        'Etiam pretium nunc non metus gravida, nec tincidunt ' +
+        'tortor volutpat. Aliquam erat volutpat. Curabitur ' +
+        'varius purus ac auctor pharetra.</p>');
+    });
+
+  }());
+</script>

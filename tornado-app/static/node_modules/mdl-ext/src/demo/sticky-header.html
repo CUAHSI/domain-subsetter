@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <include src="include/_head.html"></include>
+  <title>Material Design Lite Extensions - Sticky Header</title>
+</head>
+
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+  <include src="include/_header.html"></include>
+  <include src="include/_drawer.html"></include>
+  <main id="mount" class="mdl-layout__content">
+
+    <h5>Sticky Header, Fixed Drawer Example</h5>
+
+    <p>A sticky header makes site navigation easily accessible anywhere on the page and saves content space at the same.</p>
+    <p>The header should auto-hide, i.e. hiding the header automatically when a user starts scrolling down the page
+      and bringing the header back when a user might need it: they reach the bottom of the page or start scrolling up.</p>
+    <p class="mdl-typography--subhead">To see how the sticky header works, click the button a few
+      times to add content. Next scroll the page up and down.</p>
+    <button id="a-button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+      Click to add more content
+    </button>
+  </main>
+</div>
+<include src="include/_scripts.html"></include>
+<include src="include/_interactive-body-filler.html"></include>
+</body>
+</html>

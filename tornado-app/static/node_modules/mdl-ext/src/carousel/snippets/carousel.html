@@ -1,0 +1,612 @@
+<p><strong>Note:</strong> Does not work as expected in IE11</p>
+
+<style>
+  .carousel-demo {
+    box-sizing: border-box;
+    display: block;
+    padding: 4px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .carousel-demo * {
+    box-sizing: border-box;
+  }
+
+  #carousel-imgviewer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+
+  #carousel-imgviewer figure {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+
+    position: relative;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  #carousel-imgviewer figure img {
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+    border: 0;
+    outline: 0;
+
+    -webkit-animation: fade-in-element 0.25s ease-out;
+    -moz-animation: fade-in-element 0.25s ease-out;
+    -o-animation: fade-in-element 025s ease-out;
+    animation: fade-in-element 0.25s ease-out;
+  }
+
+  #carousel-footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  #carousel-footer .mdl-card__supporting-text {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0;
+    width: 100%;
+  }
+
+  #carousel-footer nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .carousel-button {
+  }
+  .carousel-button__icon {
+    font-size: 24px;
+  }
+
+  #carousel-container {
+  }
+
+  @media (max-width: 479px) {
+    #carousel-imgviewer {
+      height: 260px;
+    }
+    .carousel-button {
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+    }
+    .carousel-button__icon {
+      font-size: 20px;
+    }
+    #carousel-container {
+      height: 60px;
+      margin-top: 4px;
+    }
+  }
+
+  @media (min-width: 480px) and (max-width: 839px) {
+    #carousel-imgviewer {
+      height: 360px;
+    }
+    #carousel-container {
+      height: 90px;
+    }
+  }
+
+  @media (min-width: 840px) {
+    #carousel-imgviewer {
+      height: 500px;
+    }
+    #carousel-container {
+      height: 110px;
+    }
+  }
+
+  @-webkit-keyframes fade-in-element {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @-moz-keyframes fade-in-element {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @-o-keyframes fade-in-element {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes fade-in-element {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+</style>
+
+<artichle class="carousel-demo" style="height: 64px; margin-bottom: 16px; padding-top: 1px;">
+  <ul class="mdlext-carousel mdlext-js-carousel"
+      data-config="{ 'interactive': false, 'autostart': true, 'type': 'scroll', 'interval': 5000 }">
+
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D802141.jpg" title="Northern goshawk with prey"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D802143.jpg" title="Northern goshawk with prey"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D802591.jpg" title="Whooper swans in flight"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D804370-3.jpg" title="European green woodpecker"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D808689.jpg" title="The bridge"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D802181.jpg" title="Landscape in blue pastel"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+     <figure>
+        <img src="./images/_D800912.jpg" title="Hiking the mountains of Dovre"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D809453-_D809457-4.jpg" title="The Polar Express. End of Line. Ny Aalesund, Spitsbergen" />
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_DSC8214.jpg" title="Still got the blues"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800017.jpg" title="Flowers"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800023.jpg" title="Red-breasted merganser"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800851.jpg" title="Musk oxes, Dovre, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800166.jpg" title="Arctic Fox, Svalbard, Norway" />
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800951.jpg" title="Fly fishing the arctic waters, Svalbard, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801188.jpg" title="Lady of the snows (Pulsatilla vernalis), Dovre, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801205-2.jpg" title="PULSE, Kilden Consert Hall, Kristiansand"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801274.jpg" title="PULSE, Kilden Consert Hall, Kristiansand"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801392.jpg" title="Peregrine falcon, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801436.jpg" title="Peregrine falcon, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D801952-4.jpg" title="Mr. Per E Knudsen"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D807603.jpg" title="Black Woodpecker"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D807689.jpg" title="Goshina"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D807558.jpg" title="Goshina"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800464.jpg" title="Svalbard Rock ptarmigan"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_DSC7535.jpg" title="Nice, France"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D802478.jpg" title="Cheetah, Bloemfontain, South Africa"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D800698.jpg" title="Red Squirrel"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D803118.jpg" title="Milky Way, Bloemfontain, South Africa"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D803521.jpg" title="Winter Light, Senja, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D803465-3.jpg" title="Selfie with Aurora B :)"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D806374.jpg" title="Lista Lighthouse, Norway"/>
+      </figure>
+    </li>
+    <li class="mdlext-carousel__slide">
+      <figure>
+        <img src="./images/_D805345-12.jpg" title="Osprey"/>
+      </figure>
+    </li>
+  </ul>
+</artichle>
+
+
+
+
+<artichle class="carousel-demo">
+
+  <section id="carousel-imgviewer">
+    <figure>
+      <img src="./images/_D802143-2.jpg" alt="" title=""/>
+    </figure>
+  </section>
+
+  <footer id="carousel-footer">
+    <div id="carousel-viewer-title" class="mdl-card__supporting-text">Northern goshawk with prey</div>
+    <nav>
+      <button id="carousel-btn-first" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Scroll First">
+        <i class="material-icons carousel-button__icon">first_page</i>
+      </button>
+      <button id="carousel-btn-scroll-prev" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Scroll Previous">
+        <i class="material-icons carousel-button__icon">fast_rewind</i>
+      </button>
+      <button id="carousel-btn-prev" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Previous">
+        <i class="material-icons carousel-button__icon">navigate_before</i>
+      </button>
+      <button id="carousel-btn-play-pause" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Play">
+        <i class="material-icons carousel-button__icon">play_circle_outline</i>
+      </button>
+      <button id="carousel-btn-next" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Next">
+        <i class="material-icons carousel-button__icon">navigate_next</i>
+      </button>
+      <button id="carousel-btn-scroll-next" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Scroll Next">
+        <i class="material-icons carousel-button__icon">fast_forward</i>
+      </button>
+      <button id="carousel-btn-last" class="mdl-button mdl-button--icon mdl-js-button carousel-button" title="Scroll Last">
+        <i class="material-icons carousel-button__icon">last_page</i>
+      </button>
+    </nav>
+  </footer>
+
+  <section id="carousel-container">
+    <ul id="mdlext-carousel-demo2" class="mdlext-carousel mdlext-js-carousel mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events">
+      <li class="mdlext-carousel__slide" aria-selected >
+        <a href="./images/_D802143-2.jpg">
+          <figure>
+            <img src="./images/_D802143.jpg" title="Northern goshawk with prey"/>
+            <figcaption>_D802143.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D802591-2.jpg">
+          <figure>
+            <img src="./images/_D802591.jpg" title="Whooper swans in flight"/>
+            <figcaption>_D802591.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D802181.jpg" title="Landscape in blue pastel"/>
+          <figcaption>_D802181.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D809453-_D809457-3.jpg">
+          <figure>
+            <img src="./images/_D809453-_D809457-4.jpg" title="The Polar Express. End of Line. Ny Aalesund, Spitsbergen" />
+            <figcaption>_D809453</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_DSC8214-2.jpg">
+          <figure>
+            <img src="./images/_DSC8214.jpg" title="Still got the blues"/>
+            <figcaption>_DSC8214.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D800166-2.jpg">
+          <figure>
+            <img src="./images/_D800166.jpg" title="Arctic Fox, Svalbard, Norway" />
+            <figcaption>_D800166.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D801392-2.jpg">
+          <figure>
+            <img src="./images/_D801392.jpg" title="Peregrine falcon, Norway"/>
+            <figcaption>_D801392.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D801436-2.jpg">
+          <figure>
+            <img src="./images/_D801436.jpg" title="Peregrine falcon, Norway"/>
+            <figcaption>_D801436.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D807558.jpg" title="Goshina"/>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_D800464.jpg">
+          <figure>
+            <img src="./images/_D800464.jpg" title="Svalbard Rock ptarmigan"/>
+            <figcaption>_D800464.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <a href="./images/_DSC7535-2.jpg">
+          <figure>
+            <img src="./images/_DSC7535.jpg" title="Nice, France"/>
+            <figcaption>_DSC7535.jpg</figcaption>
+          </figure>
+        </a>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D802478.jpg" title="Cheetah, Bloemfontain, South Africa"/>
+          <figcaption>_D802478.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D800698.jpg" title="Red Squirrel"/>
+          <figcaption>_D800698.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D803118.jpg" title="Milky Way, Bloemfontain, South Africa"/>
+          <figcaption>_D803118.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D803521.jpg" title="Winter Light, Senja, Norway"/>
+          <figcaption>_D803521.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D803465-3.jpg" title="Selfie with Aurora B :)"/>
+          <figcaption>_D803465.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D806374.jpg" title="Lista Lighthouse, Norway"/>
+          <figcaption>_D806374.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D801087.jpg" title="Brokke, Norway"/>
+          <figcaption>_D801087.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D803221.jpg" title="Mnt. Seglan, Senja, Norway"/>
+          <figcaption>_D803221.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D803759.jpg" title="Fruit bat, Mauritius"/>
+          <figcaption>_D803759.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D809758-2.jpg" title="Polar bear, Svalbard, Norway"/>
+          <figcaption>_D809758.jpg</figcaption>
+        </figure>
+      </li>
+      <li class="mdlext-carousel__slide">
+        <figure>
+          <img src="./images/_D805345-12.jpg" title="Osprey"/>
+          <figcaption>_D805345.jpg</figcaption>
+        </figure>
+      </li>
+    </ul>
+  </section>
+</artichle>
+
+
+<div style="margin-top: 8px">
+  <button id="btn-add-image" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+    Add image to carousel
+  </button>
+  <p class="mdl-typography--caption" style="margin-top: 8px">
+    Click the button to add a new image to the carousel. Move to the inserted
+    image and click it. It should have ripple effect if upgraded correctly.
+  </p>
+</div>
+
+<p class="mdl-typography--caption" style="margin-top: 32px;">
+  All images appearing in this page are the exclusive property of Leif Olsen and are protected under the United States
+  and International Copyright laws. The images may not be reproduced or manipulated without the written permission of
+  Leif Olsen. Use of any image as the basis for another photographic concept or illustration (digital, artist rendering
+  or alike) is a violation of the United States and International Copyright laws. All images are copyrighted &copy; Leif Olsen, 2016.
+</p>
+
+
+<script>
+  (function() {
+    'use strict';
+
+    window.addEventListener('load', function() {
+
+      document.querySelector('#carousel-btn-first').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'first'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-scroll-prev').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'scroll-prev'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-prev').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'prev'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-next').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'next'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-scroll-next').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'scroll-next'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-last').addEventListener('click', function (e) {
+        var ev = new CustomEvent('command', {detail: {action: 'last'}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#carousel-btn-play-pause').addEventListener('click', function (e) {
+        // Toggle play icon
+        var i = this.querySelector('i');
+        var action = i.innerText === 'play_circle_outline' ? 'play' : 'pause';
+        i.textContent = action === 'play' ? 'pause_circle_outline' : 'play_circle_outline';
+
+        var ev = new CustomEvent('command', {detail: {action: action, interval: 3000}});
+        document.querySelector('#mdlext-carousel-demo2').dispatchEvent(ev);
+      });
+
+      document.querySelector('#mdlext-carousel-demo2').addEventListener('select', function (e) {
+
+        if ('pause' === e.detail.command) {
+          // Set play icon
+          var i = document.querySelector('#carousel-btn-play-pause i');
+          i.textContent = 'play_circle_outline';
+        }
+        else {
+          var oldImage = document.querySelector('#carousel-imgviewer img');
+          var selectImage = e.detail.source.querySelector('img');
+          var selectImageSrc = selectImage.src;
+          if (e.detail.source.querySelector('a')) {
+            selectImageSrc = e.detail.source.querySelector('a').href;
+          }
+
+          if (selectImageSrc !== oldImage.src) {
+            var newImage = oldImage.cloneNode(true);
+            newImage.src = selectImageSrc;
+            oldImage.parentNode.replaceChild(newImage, oldImage);
+
+            var title = document.querySelector('#carousel-viewer-title');
+            title.textContent = selectImage.title;
+          }
+        }
+      });
+
+      document.querySelector('#btn-add-image').addEventListener('click', function (e) {
+        var slide_fragment = '<li class="mdlext-carousel__slide"><figure><img src="./images/_D809914-2.jpg" alt="Humpback whale" title="Humpback whale"/></figure></li>';
+        var carousel = document.querySelector('#mdlext-carousel-demo2');
+        carousel.insertAdjacentHTML('beforeend', slide_fragment);
+        carousel.MaterialExtCarousel.upgradeSlides();
+      });
+
+    });
+
+  }());
+
+</script>

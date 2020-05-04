@@ -87,13 +87,24 @@ $(window).bind("load", function() {
         minZoom:Map.huc10_min,
         maxZoom:Map.huc10_max
     }).addTo(map);
-  
+
+    // add USGS gage layer to map
+    url = 'http://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WmsServer?';
+    var gages =  L.tileLayer.wms(url, {
+	layers: 0,
+        transparent: 'true',
+        format: 'image/png',
+        minZoom: 9,
+        maxZoom: 18,
+    }).addTo(map);  
+
     // layer toggling
     var mixed = {
       "HUC 2": huc2,
       "HUC 4": huc4,
       "HUC 10": huc10,
-      "HUC 12": huc12
+      "HUC 12": huc12,
+      "USGS Gages": gages
    };
 
     // hide the Getting Started dialog
