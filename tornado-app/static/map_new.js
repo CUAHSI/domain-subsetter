@@ -135,7 +135,7 @@ $(window).bind("load", function() {
     // Menu Button
 //    var btn = '<span id=menu-btn class="fa fa-2x fa-bars"></i>'
     var btn = '<div id=menu-btn><strong>MENU</strong></div>';
-    var menu = L.easyButton(btn, function (){toggleMenu();},
+    var menu = L.easyButton(btn, function (){toggleMenu();resize_map();},
                          {position: 'topright'}).addTo(Map.map);
     menu.button.style.width = '80px';
 
@@ -285,11 +285,21 @@ $(window).bind("load", function() {
     
     // fix safari map sizing issue
     $(window).on("resize", function() {
-        $("#map").height($(window).height()).width($(window).width());
-	map.invalidateSize();
+	resize_map();
+//	var pheight = $('#map').parent().height();
+//	var pwidth = $('#map').parent().width();
+//        $("#map").height(pheight).width(pwidth);
+//        $("#map").height($(window).height()).width($(window).width());
+//	map.invalidateSize();
     }).trigger("resize");
 });
 
+function resize_map() {
+    var pheight = $('#map').parent().height();
+    var pwidth = $('#map').parent().width();
+    $("#map").height(pheight).width(pwidth);
+    map.invalidateSize();
+}
 
 /* 
  * LEAFLET HANDLERS 
