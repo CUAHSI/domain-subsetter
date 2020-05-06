@@ -164,7 +164,6 @@ $(window).bind("load", function() {
   * Open dialog for adding HUC to table
   */
   document.getElementById("add-huc").onclick = function() {
-    console.log('add huc');
 
     // show the dialog
     document.getElementById('addContentDialogTemplate').style.display = "";
@@ -175,7 +174,6 @@ $(window).bind("load", function() {
   * Cancels the add HUC dialog
   */
   document.getElementById("add-huc-submit").onclick = function() {
-    console.log('huc submit')
     
     // get the content value
     huc = document.getElementById('content').value;
@@ -205,7 +203,6 @@ $(window).bind("load", function() {
     * Submits the add HUC dialog and applies the result to the table
     */
     document.getElementById("add-huc-cancel").onclick = function() {
-        console.log('huc cancel')
     
         // clear and hide the dialog
         document.getElementById('content').value = '';
@@ -237,7 +234,6 @@ $(window).bind("load", function() {
     * Cancels the rm HUC dialog
     */
     document.getElementById("rm-huc-cancel").onclick = function() {
-        console.log('huc cancel')
     
         // clear and hide the dialog
         document.getElementById('rmContentDialogTemplate').style.display = "none";
@@ -396,7 +392,6 @@ function mapClick(e) {
     // we don't want to toggle HUC selection if a gage was clicked
     if (Object.keys(gage).length > 0) {
 	// create map info object here
-	console.log(gage);
 
 	// close all popups
 	if (Map.popups.length > 0) {
@@ -635,7 +630,6 @@ function addFeatureByHUC(hucid) {
     var remove = null;
     if (hucid.length < 12) {
         hucid += '*';
-        console.log(hucid);
         filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>"+hucid+"</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
         
         // add the huc row b/c this could take a while
@@ -662,7 +656,6 @@ function addFeatureByHUC(hucid) {
     var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
     var parameters = L.Util.extend(defaultParameters);
     var URL = root + L.Util.getParamString(parameters);
-    console.log(URL);
 
     // load the map and table elements async
     toggleHucsAsync(URL, false, remove);
