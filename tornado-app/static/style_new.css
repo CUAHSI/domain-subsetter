@@ -22,6 +22,12 @@
   text-transform: uppercase;
 }
 
+a.subset-launch {
+    display: inline-block;
+    height: 100%;
+    width: 100%
+}
+
 /* Nav Sub Menu */
 a.nav-sub-menu {
     color: #36474E !important;
@@ -265,6 +271,8 @@ div.processing {
 }
 #map-div {
     padding: 0px;
+    display: flex;
+    position: absolute;
     height: 100%;
     width: 100%;
 }
