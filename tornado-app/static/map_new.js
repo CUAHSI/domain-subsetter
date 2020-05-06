@@ -8,6 +8,7 @@ $(window).bind("load", function() {
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
     Map.hucbounds = [];
+    Map.popups = [];
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
@@ -286,11 +287,6 @@ $(window).bind("load", function() {
     // fix safari map sizing issue
     $(window).on("resize", function() {
 	resize_map();
-//	var pheight = $('#map').parent().height();
-//	var pwidth = $('#map').parent().width();
-//        $("#map").height(pheight).width(pwidth);
-//        $("#map").height($(window).height()).width($(window).width());
-//	map.invalidateSize();
     }).trigger("resize");
 });
 
@@ -298,7 +294,7 @@ function resize_map() {
     var pheight = $('#map').parent().height();
     var pwidth = $('#map').parent().width();
     $("#map").height(pheight).width(pwidth);
-    map.invalidateSize();
+    Map.map.invalidateSize();
 }
 
 /* 
@@ -331,6 +327,51 @@ function clearHucTable() {
     toggle_delete_button();
 }
 
+function getGageInfo(e) {
+
+    // TESTING GAGE INFO BOX
+    // quick and dirty buffer around cursor
+    // bbox = lon_min, lat_min, lon_max, lat_max
+    var buf = 0.001;
+
+    buffered_bbox = (e.latlng.lng - buf) + ',' 
+		   + (e.latlng.lat - buf) + ','
+		   + (e.latlng.lng + buf) + ','
+	           + (e.latlng.lat + buf);
+    var defaultParameters = {
+        service : 'WFS',
+        request : 'GetFeature',
+        bbox: buffered_bbox, 
+        typeName : 'usgs_gages:usgs_gages_4326',
+        SrsName : 'EPSG:4326',
+	outputFormat:'ESRIGEOJSON'
+    };
+    var root='https://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WFSServer';
+    var parameters = L.Util.extend(defaultParameters);
+    var gageURL = root + L.Util.getParamString(parameters);
+
+    var gage_meta = {};
+    var ajax = $.ajax({
+        url: gageURL,
+	async: false,
+        success: function (response) {
+	    // check that a point was found
+	    if (response.features.length > 0) {
+		var atts = response.features[0].attributes;
+		var geom = response.features[0].geometry;
+		gage_meta.name = atts.STATION_NM;
+		gage_meta.num = atts.SITE_NO;
+		gage_meta.x = geom.x;
+		gage_meta.y = geom.y;
+	    }
+	},
+	error: function(response) {
+	}
+    });
+
+    return gage_meta;
+
+}
 
 function mapClick(e) {
 
@@ -345,6 +386,32 @@ function mapClick(e) {
     var zoom = e.target.getZoom();
     if (zoom < Map.selectable_zoom){
         return
+    }
+
+
+    // check if gage was clicked
+    var gage = getGageInfo(e);
+
+    // if a gage was selected, create a pop up and exit early.
+    // we don't want to toggle HUC selection if a gage was clicked
+    if (Object.keys(gage).length > 0) {
+	// create map info object here
+	console.log(gage);
+
+	// close all popups
+	if (Map.popups.length > 0) {
+	    Map.map.closePopup();
+	}
+
+	// create new popup
+	var popup = L.popup()
+		    .setLatLng([gage.y, gage.x])
+		    .setContent('<b>ID:</b> '+ gage.num + '<br>' 
+			      + '<b>Name</b>: ' + gage.name)
+		    .openOn(Map.map);
+
+	// exit function without toggling HUC
+	return;
     }
 
     // mark the huc as selected.
@@ -367,6 +434,10 @@ function mapClick(e) {
     
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
+
+
+
+
 }
 
 
