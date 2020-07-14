@@ -67,6 +67,10 @@ class RequestHandler(tornado.web.RequestHandler):
             response = dict(message="invalid arguments", status="fail")
         return response
 
+class MapTest(RequestHandler):
+    def get(self):
+        self.render("maptest.html", title="Map Test")
+
 class IndexNew(RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
         self.render("index_new.html", title="New Index Page")

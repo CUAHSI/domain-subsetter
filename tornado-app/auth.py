@@ -22,18 +22,22 @@ class HydroShareMixin(OAuth2Mixin):
 class LoginHandler(tornado.web.RequestHandler, HydroShareMixin):
 
     def get(self):
-        self.authorize_redirect(redirect_uri=env.oauth_callback_url,
+
+        # save the next url so we can redirect to it in the CallbackHandler
+        next = self.get_argument('next', '')
+        self.set_secure_cookie('next', next)
+
+        # perform OAuth
+        self.authorize_redirect(env.oauth_callback_url,
                                 client_id=env.oauth_client_id,
                                 scope=[],
                                 response_type='code')
-        self.write('success')
 
 
 class CallbackHandler(tornado.web.RequestHandler, HydroShareMixin):
 
     @gen.coroutine
     def get(self):
-
         # get the code send back from HydroShare
         code = self.get_argument("code", False)
 
@@ -55,7 +59,6 @@ class CallbackHandler(tornado.web.RequestHandler, HydroShareMixin):
         url = url_concat('https://www.hydroshare.org/o/token/',
                          params).split('?')
 
-
         # build token request
         req = HTTPRequest(url[0],
                           method="POST",
@@ -75,33 +78,27 @@ class CallbackHandler(tornado.web.RequestHandler, HydroShareMixin):
 
             # verify that the login worked
             headers = {"Accept": "application/json",
-                       "Authorization": "Bearer {}".format(access_token)
-                       }
+                       "Authorization": "Bearer {}".format(access_token)}
+
             req = HTTPRequest("https://hydroshare.org/hsapi/userInfo",
                               method="GET",
                               headers=headers
                               )
+
             resp = yield http_client.fetch(req)
+
+            # save the user cookie next time
             self.set_secure_cookie('user',
                                    json.dumps(token_dict))
-            self.redirect('save-to-hydroshare')
 
-        #    return 'test'
+            # get the next url then clear the "next" cookie
+            next = self.get_secure_cookie('next').decode('utf-8')
+            self.clear_cookie('next')
 
-#            auth = HydroShareAuthOAuth2(env.oauth_client_id.client_id,
-#                                        env.oauth_client_secret,
-#                                        token=access_token)
-#            hs = HydroShare(auth=auth)
-#            for resource in hs.resources():
-#                self.write(resource)
-#            resp = yield http_client.fetch(req)
-#            resp_json = json.loads(resp.body.decode('utf8', 'replace'))
-#
-#            # get the username variable from the response
-#            username = resp_json["username"]
-#
-#            self.redirect('home')
+            # redirect to the hs save page
+            self.redirect(next)
 
         except Exception as e:
-            # todo insert error page here
+
+            # TODO: insert error page here
             self.write(e)

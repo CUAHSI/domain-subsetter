@@ -21,6 +21,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         endpoints = [
             (r"/", core.IndexNew),
+            (r"/maptest", core.MapTest),
             # Utility Endpoints
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),
@@ -48,7 +49,7 @@ class Application(tornado.web.Application):
             (r"/nwm/v2_0/subset", nwm2handlers.SubsetNWM2),
             (r"/login", auth.LoginHandler),
             (r"/authorize", auth.CallbackHandler),
-            (r"/save-to-hydroshare", hydroshare.SaveToHydroShare),
+            (r"/save-to-hydroshare/([a-f0-9]{40})", hydroshare.SaveToHydroShare),
 #            (r"/test", test.Index),
 
 
