@@ -20,9 +20,10 @@
 	    </button>
 	</form>
     </div>
-    
+
     <div id=results class='mdl-grid center-horizontally'>
-	<form action='https://mybinder.org/v2/hydroshare/167514aa932e4dd19d9cc43f55a3d9eb/?urlpath=urlparams?unpack=http://subset.cuahsi.org/download-gzip/{{ jobid }}' method='get'>
+	<form action="https://mybinder.org/v2/hydroshare/8f7c2f0341ef4180b0dbe97f59130756/" method=get>
+	    <input type='hidden' name='urlpath' value='notebooks/notebooks/sanity-check.ipynb?subset="http://subset.cuahsi.org/download-zip/{{ jobid }}"' />
 	    <button id='btn-binder'
 		    class="mdl-button
 		           mdl-js-button
@@ -32,16 +33,17 @@
 	</form>
     </div>
 
-      
+
+    <!--
     <div id=btn-hs-save-dialog class='mdl-grid center-horizontally'>
-	<button id='btn-binder' disabled
+	<button id='btn-binder' 
 		class="mdl-button 
 		       mdl-js-button
 		       mdl-button--raised">
 	    Save-To-HydroShare
 	</button>
     </div>
-
+    -->
          {% include hs-dialog.html %}
 
 
