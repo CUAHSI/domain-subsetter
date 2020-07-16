@@ -36,17 +36,26 @@ class SaveToHydroShare(HsAuthHandler):
 
         # render the save to hydroshare template
         self.render('save_to_hydroshare.html',
-                    title='SaveToHydroShare')
+                    title='SaveToHydroShare',
+                    dat={'guid': uid})
 
 
-#    @tornado.web.authenticated
-#    def post(self):
-#
-#
-#        import pdb; pdb.set_trace()
-#
-#        # get the input guid and resource_title which
-#        # will be used to create a new HydroShare resource.
+    @tornado.web.authenticated
+    def post(self, uid):
+
+
+        # get form post parameters that
+        # will be used to create a new HydroShare resource.
+        app_log.info('getting post arguments')
+        title = self.get_body_argument('title', strip=True)
+        abstract = self.get_body_argument('abstract', strip=True)
+
+        # TODO make sure there are no blank keywords
+#        kws = self.get_body_argument('keywords', strip=True).split(',')
+        keywords = [kw.strip() for kw in
+                    self.get_body_argument('keywords').split(',')
+                    if kw.strip() != '']
+
 #        dat = self.get_secure_cookie('dat')
 #        guid = dat['guid']
 #        title = dat['title']
@@ -57,50 +66,45 @@ class SaveToHydroShare(HsAuthHandler):
 ##        guid = self.get_body_argument('guid')
 ##        title = self.get_body_argument('resource_title')
 #
-#        # get the user's oauth token
-#        token = json.loads(self.current_user)
-#
-#        # connect with HydroShare
-#        auth = HydroShareAuthOAuth2(env.oauth_client_id,
-#                                    env.oauth_client_secret,
-#                                    token=token)
-#        hs = HydroShare(auth=auth)
-#        ui = hs.getUserInfo()
-#
-#        # compress the subset output 
-#        datapath = os.path.join(env.output_dir, guid)
-#        shutil.make_archive(datapath, 'zip', datapath)
-#        
-#        # create the resource
-#        resource_id = hs.createResource('CompositeResource',
-#                                        title,
-#                                        resource_file=f'{datapath}.zip',
-#                                        keywords=['Parflow',
-#                                                  'CUAHSI Subsetter'],
-#                                        abstract='')
-#        self.redirect(f'https://hydroshare.org/resource/{resource_id}')
-#
-#
-#    @tornado.web.authenticated
-#    def get(self):
-#
-#        import pdb; pdb.set_trace()
-#
-#        # get the user's oauth token
-#        token = json.loads(self.current_user)
-#
-#        # connect with HydroShare
-#        auth = HydroShareAuthOAuth2(env.oauth_client_id,
-#                                    env.oauth_client_secret,
-#                                    token=token)
-#        hs = HydroShare(auth=auth)
-#        ui = hs.getUserInfo()
-#        self.write(ui)
-##        for resource in hs.resources(owner='TonyCastronova',
-##                                     count=1):
-##            import pdb; pdb.set_trace()
-##            self.write(resource)
-##            break
-#        
+        app_log.info('loading user auth')
 
+        # get the user's oauth token
+        token = json.loads(self.current_user)
 
+        # connect with HydroShare
+        auth = HydroShareAuthOAuth2(env.oauth_client_id,
+                                    env.oauth_client_secret,
+                                    token=token)
+        hs = HydroShare(auth=auth)
+
+        # compress the subset output 
+        app_log.info('compressing subset output as zip')
+        datapath = os.path.join(env.output_dir, uid)
+        shutil.make_archive(datapath, 'zip', datapath)
+
+        # create the resource
+        app_log.info('creating hydroshare resource')
+
+        # add binderHub as an extra metadata kvp
+        extra_metadata = '{"appkey": "MyBinder"}'
+        resource_id = hs.createResource('CompositeResource',
+                                        title,
+                                        resource_file=f'{datapath}.zip',
+                                        keywords=keywords,
+                                        abstract=abstract,
+                                        extra_metadata=extra_metadata,
+                                        )
+        app_log.info(f'created hydroshare resource: {resource_id}')
+
+        options = {
+                    "zip_with_rel_path": f"{uid}.zip",
+                    "remove_original_zip": True,
+                    "overwrite": False
+                  }
+        app_log.info('unzipping the HS content')
+        app_log.info(options)
+        result = hs.resource(resource_id).functions.unzip(options)
+        app_log.info(result)
+
+        app_log.info('redirecting to hs resource')
+        self.redirect(f'https://hydroshare.org/resource/{resource_id}')
