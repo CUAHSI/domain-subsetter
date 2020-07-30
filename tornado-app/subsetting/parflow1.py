@@ -8,6 +8,7 @@ import shapefile
 import watershed
 import subprocess
 import environment as env
+from datetime import datetime
 from tornado.log import enable_pretty_logging
 
 enable_pretty_logging()
@@ -46,6 +47,12 @@ def subset(uid, hucs, outdir, logger=None):
                                logger=logger)
     extract_clm(watershed_file, ids, outdir, logger=logger)
     create_tcl(pfsol_file, outdir, logger=logger)
+
+    # write metadata file
+    with open(f'{os.path.dirname(outdir)}/{uid}/metadata.txt', 'w') as f:
+        f.write(f'Date processed: {datetime.now()}\n')
+        f.write(f'Job ID: {uid}\n')
+        f.write(f'HUCs processed: {",".join(hucs)}\n')
 
     # copying the run script for executing parflow in docker
     logger.info('Copying run script')
