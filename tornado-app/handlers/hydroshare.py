@@ -34,10 +34,27 @@ class SaveToHydroShare(HsAuthHandler):
     @tornado.web.authenticated
     def get(self, uid):
 
+        # open the metadata file and extract info for the 
+        # form text boxes
+        with open(os.path.join(env.output_dir, uid, 'metadata.json'), 'r') as f:
+            data = json.load(f)
+
+        dat = {'guid': uid,
+               'title': f'Subset of {data["model"]} version {data["version"]}',
+               'keywords': f'{data["model"]}, v{data["version"]}, CUAHSI Subsetter',
+               'abstract': '-------------------------------------------\n' +
+                           'This is an auto-generated abstract\n' +
+                           '-------------------------------------------\n' +
+                           f'Model: {data["model"]} \n' +
+                           f'Version: {data["version"]}\n' +
+                           f'Date processed: {data["date_processed"]} \n' +
+                           f'Subset by: subset.cuahsi.org \n' +
+                           f'HUCs processed: {", ".join(data["hucs"])}'}
+        
         # render the save to hydroshare template
         self.render('save_to_hydroshare.html',
                     title='SaveToHydroShare',
-                    dat={'guid': uid})
+                    dat=dat)
 
 
     @tornado.web.authenticated
@@ -73,7 +90,7 @@ class SaveToHydroShare(HsAuthHandler):
 
         # connect with HydroShare
         auth = HydroShareAuthOAuth2(env.oauth_client_id,
-                                    env.oauth_client_secret,
+                                    '',
                                     token=token)
         hs = HydroShare(auth=auth)
 
@@ -96,15 +113,15 @@ class SaveToHydroShare(HsAuthHandler):
                                         )
         app_log.info(f'created hydroshare resource: {resource_id}')
 
-        options = {
-                    "zip_with_rel_path": f"{uid}.zip",
-                    "remove_original_zip": True,
-                    "overwrite": False
-                  }
-        app_log.info('unzipping the HS content')
-        app_log.info(options)
-        result = hs.resource(resource_id).functions.unzip(options)
-        app_log.info(result)
+#        options = {
+#                    "zip_with_rel_path": f"{uid}.zip",
+#                    "remove_original_zip": True,
+#                    "overwrite": False
+#                  }
+#        app_log.info('unzipping the HS content')
+#        app_log.info(options)
+#        result = hs.resource(resource_id).functions.unzip(options)
+#        app_log.info(result)
 
         app_log.info('redirecting to hs resource')
         self.redirect(f'https://hydroshare.org/resource/{resource_id}')

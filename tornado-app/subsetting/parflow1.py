@@ -2,6 +2,7 @@
 
 import os
 import sys
+import json
 import shutil
 import tarfile
 import shapefile
@@ -49,17 +50,21 @@ def subset(uid, hucs, outdir, logger=None):
     create_tcl(pfsol_file, outdir, logger=logger)
 
     # write metadata file
-    with open(f'{os.path.dirname(outdir)}/{uid}/metadata.txt', 'w') as f:
-        f.write(f'Date processed: {datetime.now()}\n')
-        f.write(f'Job ID: {uid}\n')
-        f.write(f'HUCs processed: {",".join(hucs)}\n')
+    meta = {'date_processed': str(datetime.now()),
+            'guid': uid,
+            'model': 'Parflow CONUS',
+            'version': '1.0',
+            'hucs': hucs}
+
+    with open(f'{os.path.dirname(outdir)}/{uid}/metadata.json', 'w') as jsonfile:
+        json.dump(meta, jsonfile)
 
     # copying the run script for executing parflow in docker
     logger.info('Copying run script')
     shutil.copyfile(os.path.join(env.pfdata_v1, 'run.sh'),
                     f'{os.path.dirname(outdir)}/{uid}/run.sh')
 
-    # copy the binder files 
+    # copy the binder files
     logger.info('Copying binder files')
     shutil.copytree(os.path.join(env.pfdata_v1, 'binder'),
                     f'{os.path.dirname(outdir)}/{uid}/binder')
