@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import json
 import shutil
 import tornado.auth
@@ -38,64 +39,40 @@ class SaveToHydroShare(HsAuthHandler):
         # form text boxes
         with open(os.path.join(env.output_dir, uid, 'metadata.json'), 'r') as f:
             data = json.load(f)
-
-        dat = {'guid': uid,
-               'title': f'Subset of {data["model"]} version {data["version"]}',
-               'keywords': f'{data["model"]}, v{data["version"]}, CUAHSI Subsetter',
-               'abstract': f'{"-"*55}\n' +
-                           'This is an auto-generated abstract\n' +
-                           f'{"-"*55}\n\n' +
-                           f'This resource contains static domain data ' +
-                           f'extracted using the ' +
-                           f'<a href=http://subset.cuahsi.org> CUAHSI ' +
-                           f'Subsetter </a>. Additional metadata regarding ' +
-                           f'these data are listed below: \n\n' +
-                           f'Model: {data["model"]} \n' +
-                           f'Version: {data["version"]}\n' +
-                           f'Date processed: {data["date_processed"]} \n' +
-                           f'Included HUCs: {", ".join(data["hucs"])}'}
         
-        # render the save to hydroshare template
-        self.render('save_to_hydroshare.html',
-                    title='SaveToHydroShare',
-                    dat=dat)
+        guid = uid
+        title = f'Subset of {data["model"]} version {data["version"]}'
+        keywords = [data["model"], data["version"], 'CUAHSI Subsetter']
+        abstract = f"""{"-"*55}
+                       This is an auto-generated abstract
+                       {"-"*55}
+        
+                       This resource contains static domain data extracted  \
+                       using the CUAHSI Subsetter (http://subset.cuahsi.org). \
+                       Additional metadata regarding these data are listed \
+                       below:
 
+                       Model: {data["model"]}
+                       Version: {data["version"]}
+                       Date processed: {data["date_processed"]}
+                       Included HUCs: {", ".join(data["hucs"])}
+                    """
 
-    @tornado.web.authenticated
-    def post(self, uid):
+        # clean the abstract by removing tabs and extra spaces
+        abstract = re.sub(' +', ' ', abstract.replace('\t', ''))
 
+        # create hydroshare resource
+        self.create_resource(guid, title, keywords, abstract)
 
-        # get form post parameters that
-        # will be used to create a new HydroShare resource.
-        app_log.info('getting post arguments')
-        title = self.get_body_argument('title', strip=True)
-        abstract = self.get_body_argument('abstract', strip=True)
+    def create_resource(self, uid, title, keywords, abstract):
+        app_log.info('creating hydroshare resource')
 
-        # TODO make sure there are no blank keywords
-#        kws = self.get_body_argument('keywords', strip=True).split(',')
-        keywords = [kw.strip() for kw in
-                    self.get_body_argument('keywords').split(',')
-                    if kw.strip() != '']
-
-#        dat = self.get_secure_cookie('dat')
-#        guid = dat['guid']
-#        title = dat['title']
-#
-#        # delete the browser cookie
-#        self.clear_cookie('dat')
-#
-##        guid = self.get_body_argument('guid')
-##        title = self.get_body_argument('resource_title')
-#
+        # load user credentials
         app_log.info('loading user auth')
-
-        # get the user's oauth token
         token = json.loads(self.current_user)
 
         # connect with HydroShare
-        auth = HydroShareAuthOAuth2(env.oauth_client_id,
-                                    '',
-                                    token=token)
+        auth = HydroShareAuthOAuth2(env.oauth_client_id, '', token=token)
         hs = HydroShare(auth=auth)
 
         # compress the subset output 
@@ -103,10 +80,7 @@ class SaveToHydroShare(HsAuthHandler):
         datapath = os.path.join(env.output_dir, uid)
         shutil.make_archive(datapath, 'zip', datapath)
 
-        # create the resource
-        app_log.info('creating hydroshare resource')
-
-        # add binderHub as an extra metadata kvp
+        # create the resource using the hsapi
         extra_metadata = '{"appkey": "MyBinder"}'
         resource_id = hs.createResource('CompositeResource',
                                         title,
@@ -127,5 +101,6 @@ class SaveToHydroShare(HsAuthHandler):
 #        result = hs.resource(resource_id).functions.unzip(options)
 #        app_log.info(result)
 
+        # redirect to the HS page when finished
         app_log.info('redirecting to hs resource')
-        self.redirect(f'https://hydroshare.org/resource/{resource_id}')
+        self.redirect(f'https://hydroshare.org/resource/{resource_id}?resource-mode=edit')
