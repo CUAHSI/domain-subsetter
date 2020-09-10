@@ -42,14 +42,18 @@ class SaveToHydroShare(HsAuthHandler):
         dat = {'guid': uid,
                'title': f'Subset of {data["model"]} version {data["version"]}',
                'keywords': f'{data["model"]}, v{data["version"]}, CUAHSI Subsetter',
-               'abstract': '-------------------------------------------\n' +
+               'abstract': f'{"-"*55}\n' +
                            'This is an auto-generated abstract\n' +
-                           '-------------------------------------------\n' +
+                           f'{"-"*55}\n\n' +
+                           f'This resource contains static domain data ' +
+                           f'extracted using the ' +
+                           f'<a href=http://subset.cuahsi.org> CUAHSI ' +
+                           f'Subsetter </a>. Additional metadata regarding ' +
+                           f'these data are listed below: \n\n' +
                            f'Model: {data["model"]} \n' +
                            f'Version: {data["version"]}\n' +
                            f'Date processed: {data["date_processed"]} \n' +
-                           f'Subset by: subset.cuahsi.org \n' +
-                           f'HUCs processed: {", ".join(data["hucs"])}'}
+                           f'Included HUCs: {", ".join(data["hucs"])}'}
         
         # render the save to hydroshare template
         self.render('save_to_hydroshare.html',
