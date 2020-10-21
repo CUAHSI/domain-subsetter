@@ -16,6 +16,7 @@ from handlers import core, hydroshare
 from handlers import pf1handlers, nwm122handlers, nwm2handlers
 import environment as env
 import auth
+import websocket
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -50,7 +51,8 @@ class Application(tornado.web.Application):
             (r"/login", auth.LoginHandler),
             (r"/authorize", auth.CallbackHandler),
             (r"/save-to-hydroshare/([a-f0-9]{40})", hydroshare.SaveToHydroShare),
-#            (r"/test", test.Index),
+            # Websocket endpoint for REDIS communication
+            (r"/socket/([a-f0-9]{40})", websocket.SocketHandler),
 
 
         ]

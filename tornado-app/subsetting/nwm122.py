@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import redis
 import subprocess
 import transform
 import tarfile
@@ -14,6 +15,11 @@ import environment as env
 
 def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
 
+    # connect to redis
+    r = redis.Redis(env.redis_url, env.redis_port)
+    
+        
+    # connect to the logger
     if logger is None:
         from tornado.log import app_log
         logger = app_log
@@ -54,7 +60,12 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     for line in iter(p.stdout.readline, b''):
         l = line.decode('utf-8').rstrip()
         if l != '':
+            # save stdout to logs and send to redis
             logger.debug(l)
+            r.publish(uid, json.dumps({'type': 'message',
+                                       'status': 'success',
+                                       'channel': uid,
+                                       'value': l}))
 
     p.stdout.close()
     return_code = p.wait()
@@ -63,6 +74,7 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
         msg = 'The process call "{}" returned with code {}, an error ' \
               'occurred.'.format(list(cmd), return_code)
         logger.error('subsetting failed %s: %s' % (uid, msg))
+#        r.publish(uid, msg)
         response = dict(message=msg, status='error')
 
         return response
@@ -75,8 +87,9 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
         outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
         outfile = watershed.create_shapefile(uid, hucs, outpath)
     else:
-        logger.debug('skipping create_shapefile b/c no hucs were provided')
-
+        msg = 'skipping create_shapefile b/c no hucs were provided'
+        logger.debug(msg)
+#        r.publish(uid, msg)
 
 #    # compress the results
 #    fpath = os.path.join(env.output_dir, uid)
