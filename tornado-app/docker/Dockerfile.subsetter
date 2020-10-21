@@ -1,0 +1,24 @@
+FROM centos:centos7
+LABEL maintainer Tony Castronova <acastronova@cuahsi.org>
+
+
+RUN yum install -y \
+    git \
+    wget \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && sh Miniconda3-latest-Linux-x86_64.sh -b \
+    && rm -f Miniconda3-latest-Linux-x86_64.sh 
+
+ENV PATH="/root/miniconda3/bin:${PATH}"
+
+RUN conda init bash 
+
+RUN git clone https://github.com/CUAHSI/nwm_subsetting.git --branch redis /srv
+
+WORKDIR /srv/tornado-app
+
+RUN conda env create -f environment.yml
+
