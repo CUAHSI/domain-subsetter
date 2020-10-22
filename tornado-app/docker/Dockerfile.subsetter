@@ -25,4 +25,8 @@ RUN conda env update --name base --file environment.yml
 
 EXPOSE 80
 
+# replace the 'placeholder' environment with production settings
+COPY environment.prod /srv/tornado-app/environment.prod
+RUN mv -f /srv/tornado-app/environment.prod /srv/tornado-app/environment.py
+
 ENTRYPOINT ["python", "app.py"]
