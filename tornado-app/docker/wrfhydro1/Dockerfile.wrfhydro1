@@ -4,45 +4,22 @@ LABEL maintainer Tony Castronova <acastronova@cuahsi.org>
 ENV PATH="/root/miniconda3/bin:${PATH}"
 
 RUN yum update -y \
+&& yum -y groupinstall "Development Tools" \
 && yum install -y \
-    git \
-    wget \
-    epel-release \
     deltarpm \
+    epel-release \
     vim \
+    git \
     screen \
+    wget 
+
+RUN yum install -y \
     libcurl-devel \
     openssl-devel \
     libjpeg*devel* \
-    netcdf*devel* \
-    hdf-devel \
-    gdal \
-    gdal-devel \
-    proj \
-    proj-devel \
-    proj-epsg \
-    proj-nad \
-    udunits2-devel \
     libxml2-devel \
     nco \
     libpng-devel \
-    R \
-   && yum -y groupinstall "Development Tools" 
-
-#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-# && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda3 \
-# && rm -f Miniconda3-latest-Linux-x86_64.sh \
-# && /opt/miniconda3/bin/conda init \
-# && /opt/miniconda3/bin/conda config --set auto_activate_base false \
-# && /opt/miniconda3/bin/conda config --add channels conda-forge \
-# && /bin/bash -c "source ~/.bashrc"
-#
-#
-## set up aliases bc activating conda within a Dockerfile is problematic
-#ENV CONDA=/opt/miniconda3/bin/conda
-#ENV WRF_INSTALL="$CONDA run -n wrfhydro /bin/bash -c"
-
-RUN yum install -y \
     netcdf-devel \
     hdf-devel \
     gdal \
@@ -54,156 +31,39 @@ RUN yum install -y \
     udunits2-devel \
     R
 
-#RUN $CONDA create -n wrfhydro python=3 -y \
-# && cp /usr/share/proj/proj_def.dat /opt/miniconda3/envs/wrfhydro/share/proj
-#
-#ENV PATH /opt/miniconda3/envs/wrfhydro/bin:$PATH
-#
-RUN echo "options(repos=structure(c(CRAN=\"https://mirrors.nics.utk.edu/cran/\")))" > ~/.Rprofile \
- && R -e "install.packages(c('devtools', 'rgdal', 'RNetCDF','ggmap', 'dataRetrieval', 'data.table', 'ncdf4', 'iterators','foreach'), dependencies=TRUE, INSTALL_opts=c('--no-help', '--no-html'))"
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+ && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda3 \
+ && rm -f Miniconda3-latest-Linux-x86_64.sh \
+ && /opt/miniconda3/bin/conda init \
+ && /opt/miniconda3/bin/conda config --set auto_activate_base false \
+ && /opt/miniconda3/bin/conda config --add channels conda-forge \
+ && /bin/bash -c "source ~/.bashrc"
 
+ENV PATH="/opt/miniconda3/bin:${PATH}"
+
+RUN conda install -y \
+  --channel anaconda \
+  --channel conda-forge \
+  redis-py \
+  gdal \
+  shapely \
+  pdbpp 
+
+#### RUN cp /usr/share/proj/proj_def.dat /opt/miniconda3/envs/wrfhydro/share/proj
+
+#RUN echo "options(repos=structure(c(CRAN=\"https://mirrors.nics.utk.edu/cran/\")))" > ~/.Rprofile \
+# && R -e "install.packages(c('devtools', 'rgdal', 'RNetCDF','ggmap', 'dataRetrieval', 'data.table', 'ncdf4', 'iterators','foreach'), dependencies=TRUE, INSTALL_opts=c('--no-help', '--no-html'))"
+#
 #ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
 #
 #RUN mkdir -p /usr/share/doc/R-3.6.0/html \
 # && R -e "devtools::install_github('NCAR/rwrfhydro')"
-#
-##############################
-### BEGIN END R DEPENDENCIES #
-##############################
-##
-##RUN yum groups mark install "Development Tools" \
-##    && yum groups mark convert "Development Tools" \
-##    && yum groupinstall -y "Development Tools"
-##
-##RUN yum install -y epel-release
-##
-#### NOTE: The 'which' library is necessary to install covr, dependency of devtools
-##RUN yum install -y \
-##    ncurses-devel \
-##    zlib-devel \
-##    texinfo gtk+-devel \
-##    gtk2-devel qt-devel \
-##    tcl-devel \
-##    tk-devel \
-##    kernel-headers \
-##    kernel-devel \
-##    readline-devel \
-##    gdal.x86_64 \
-##    gdal-devel.x86_64 \
-##    gdal-libs.x86_64 \
-##    proj.x86_64 \
-##    proj-devel.x86_64 \
-##    proj-epsg.x86_64 \
-##    proj-nad.x86_64 \
-##    netcdf-devel \
-##    nco \
-##    libxml2-devel \
-##    libpng-devel \
-##    bzip2 bzip2-devel \
-##    openssl-devel \
-##    libcurl \
-##    libcurl-devel \
-##    libjpeg-turbo-devel \
-##    which \
-##    && yum clean all \
-##    && rm -rf /var/cache/yum
-##
-##
-##RUN wget https://cran.r-project.org/src/base/R-3/R-3.3.3.tar.gz \
-##    && tar xvzf R-3.3.3.tar.gz \
-##    && cd R-3.3.3 \
-##    && ./configure --with-x=no \
-##    && make \
-##    && make install
-##
-##RUN mkdir $HOME/.userRLib
-##RUN echo "options(repos=structure(c(CRAN=\"http://archive.linux.duke.edu/cran\")))" >> $HOME/.Rprofile
-##RUN /usr/local/bin/Rscript -e "install.packages('devtools', dependencies=TRUE)" 
-##RUN /usr/local/bin/Rscript -e "install.packages('rgdal')" 
-##RUN /usr/local/bin/Rscript -e "install.packages('ncdf4')" 
-##RUN /usr/local/bin/Rscript -e "install.packages('RNetCDF')" 
-##RUN /usr/local/bin/Rscript -e "install.packages('ggmap')" 
-##RUN /usr/local/bin/Rscript -e "install.packages('dataRetrieval')" 
-##RUN /usr/local/bin/Rscript -e "install.packages('data.table', dependencies=TRUE)" 
-###RUN /usr/local/bin/Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
-########################
-### END R DEPENDENCIES #
-########################
-#
-## install and configure miniconda
-#RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-#    && sh Miniconda3-latest-Linux-x86_64.sh -b \
-#    && rm -f Miniconda3-latest-Linux-x86_64.sh 
-#RUN conda init bash 
-#
-## download website code
-#RUN git clone https://github.com/CUAHSI/nwm_subsetting.git --branch redis /srv
-#
-#WORKDIR /srv/tornado-app
-#
-## update the base environment with website dependencies
-#RUN conda env update --name base --file environment.yml
-#
-#EXPOSE 80
-#
-## replace the 'placeholder' environment with production settings
-#COPY environment.prod /srv/tornado-app/environment.prod
-#RUN mv -f /srv/tornado-app/environment.prod /srv/tornado-app/environment.py
-#
-#############################################
-## Install R stuff for WRF-Hydro subsetting #
-#############################################
-#
-#RUN yum install -y \
-#    which \
-#    && yum clean all \
-#    && rm -rf /var/cache/yum
-#
-#RUN conda create -n r-env -y \
-#    r-essentials \
-#    r-base \
-#    r-devtools  
-#
-#RUN conda config --add channels conda-forge
-#RUN conda update conda -y 
-#
-#RUN conda install --name r-env -y \
-#    r-rgdal \
-#    r-rnetcdf \
-#    r-ggmap \
-#    r-data.table \
-#    r-ncdf4 \
-#    r-iterators \
-#    r-foreach \
-#    gxx_linux-64 \
-#    gcc_linux-64 \
-#    gfortran_linux-64 \
-#    make 
-#
-#
-#
-#
-#RUN echo "options(repos=structure(c(CRAN=\"https://mirrors.nics.utk.edu/cran/\")))" > ~/.Rprofile \
-#&& mkdir -p /usr/share/doc/R-3.6.0/html
-#
-#ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
-#
-#
-##RUN yum install -y \
-##    make \
-##    && yum clean all \
-##    && rm -rf /var/cache/yum
-#
-##SHELL ["conda", "run", "-n", "r-env", "--verbose", "/bin/bash", "-c"]
-#
-##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "install.packages(c('dataRetrieval'), dependencies=TRUE, INSTALL_opts=c('--no-help', '--no-html'))" 
-#
-##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
-##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github(\"NCAR/rwrfhydro\")"
-#
-##RUN source activate r-env \
-##&& conda activate r-env \
-##&& Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
-##
-##
-##ENTRYPOINT ["python", "app.py"]
+
+ADD run.py /srv/run.py
+ADD watershed.py /srv/watershed.py
+ADD r-subsetting /srv/r-subsetting
+ADD redislogger.py /srv/redislogger.py
+
+WORKDIR /srv
+#CMD ["python", "run.py"]
+
