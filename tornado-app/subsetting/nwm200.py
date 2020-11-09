@@ -15,10 +15,6 @@ import environment as env
 
 def subset_nwm_200(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
 
-    """
-    Subset logic for NWM v2.0.0
-    """
-    
     # connect to redis
     r = redis.Redis(env.redis_url, env.redis_port)
 

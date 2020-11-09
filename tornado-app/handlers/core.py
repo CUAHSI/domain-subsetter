@@ -227,6 +227,9 @@ class Results(RequestHandler):
         elif model.lower() == 'nwm':
             if version == 1.2:
                 template = 'results_nwm1_2.html'
+            if version == 2.0:
+                # todo: update this template for nwm 2.0
+                template = 'results_nwm1_2.html'
 
         # render an error if template is not found.
         if template is None:
