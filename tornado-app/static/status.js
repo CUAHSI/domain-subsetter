@@ -9,6 +9,33 @@ $(document).ready(function() {
 //    // get the guid, necessary to poll job status
 //    var guid = window.location.href.split('/').pop();
 
+    // This page is expecting the following variables:
+    // dat['uuid'] -> channel to connect to
+    // dat['next'] -> url redirect when job is complete
+
+    // connect to the websocket endpoint using the UUID
+    // passed into the template
+    // TODO: remove hardcoded port and job id. These should come from template params, see https://stackoverflow.com/questions/27917471/pass-parameter-with-python-flask-in-external-javascript 
+    var host = window.location.host;
+    // TODO: implement this more throughly for http and https: https://stackoverflow.com/questions/10406930/how-to-construct-a-websocket-uri-relative-to-the-page-uri
+    var ws = new WebSocket("ws://"+host+"/socket/"+jobid);
+	ws.onmessage = function(event) {
+	    // update the page html whenever a new
+	    // message is received
+	    var div = document.getElementById('progress-messages');
+
+	    // check to see if the message should be printed, or
+	    // if a redirect should occur. This function is expecting
+	    // the keyword "NEXT" to indicate that a redirect should
+	    // be invoked
+	    var msg = event.data
+	    if (msg != 'next') {
+		div.innerHTML = event.data + '</br>' + div.innerHTML;
+	    } else {
+		window.location.href = "{{ dat['next'] }}";
+	    }
+    }
+
 
     // initial request so there isn't a polling delay 
     get_job_status(model, version, jobid);

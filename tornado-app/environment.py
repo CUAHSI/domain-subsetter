@@ -11,9 +11,13 @@ template_path = os.path.join(os.path.dirname(__file__), "templates")
 cookie_secret='554451427aba042faa7f7c80ff8337717d7805d26af5707b5102b73fc873cef3'
 
 # hydroshare oauth
-oauth_client_id='TjMr7rPA8AkjVvJgDohn0QEIZ2fKDoPNVjVLKYXz'
-oauth_client_secret='Yy5FhCXJQ5C9HRpv467bCkLma8vq1nRk69gl4l0V8qcTOXONR4fO8KCdZv6V0MWsViK1iUK5TFMC0NrX8VaL1lOkejLjTUHdz8qa6QWY2JYa6wbHxZyNdncx5qyACuHR'
-oauth_callback_url='http://subset.cuahsi.org/authorize'
+oauth_client_id='s0fyGhESD7pDYcglnBFlPrHAmxxsiHpFBo27ROjU'
+oauth_client_secret='ONVdVUUFMX53uhx6HxitcdMZhwF83yBhFKA6OUSO1NZJ2WrSFfTCWoohYkt56SzIotQsaJ1vse92DaoK9DCHB2JFp2IB7un6xCMZeoLBaPvLt3w8LtqGGExRSM5yfnuc'
+oauth_callback_url='http://10.202.2.130/authorize'
+
+# REDIS
+redis_url = 'localhost'
+redis_port = '6379'
 
 # multiprocessing settings
 worker_count = 4

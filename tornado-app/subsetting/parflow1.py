@@ -5,9 +5,11 @@ import sys
 import json
 import shutil
 import tarfile
+import logging
 import shapefile
 import watershed
 import subprocess
+import redislogger as rl
 import environment as env
 from datetime import datetime, timezone
 from tornado.log import enable_pretty_logging
@@ -15,10 +17,17 @@ from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
 
-def get_logger(logger):
+def get_logger(logger, uid=None):
     if logger is None:
         from tornado.log import app_log
         logger = app_log
+
+    # add redis handler
+    if uid is not None:
+        rh = rl.RedisHandler(uid)
+        rh.setLevel(logging.INFO)
+        logger.addHandler(rh)
+
     return logger
 
 
@@ -27,8 +36,7 @@ def subset(uid, hucs, outdir, logger=None):
     function that runs all subsetting functions for PFCONUS 1.0
     """
 
-    logger = get_logger(logger)
-
+    logger = get_logger(logger, uid)
 
     # run watershed shapefile creation
     logger.info('Extracting watershed')

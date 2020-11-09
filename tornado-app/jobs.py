@@ -8,10 +8,13 @@ from datetime import datetime
 from tornado.log import app_log
 from multiprocessing_logging import install_mp_handler
 
+## TODO: add borg class to prevent this from repeatedly spawning workers
+
 
 class BackgroundWorker(object):
 
     def __init__(self):
+        
         self.numprocesses = env.worker_count
 
         self.queue = mp.Queue()
