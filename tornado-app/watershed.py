@@ -124,7 +124,7 @@ def create_shapefile(uid, hucs, outpath, logger=None):
             watershed.add_boundary_from_gml(polygons_gml, huc)
 
         except Exception as e:
-             logger.error("Error: " + str(e))
+             logger.error("Error Building Shapefile: " + str(e))
 
     # write the shapefile   
     watershed.write_shapefile(outpath)

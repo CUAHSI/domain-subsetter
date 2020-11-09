@@ -17,7 +17,6 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
 
     # connect to redis
     r = redis.Redis(env.redis_url, env.redis_port)
-    
         
     # connect to the logger
     if logger is None:
