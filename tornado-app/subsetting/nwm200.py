@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import redis
 import subprocess
 import transform
 import tarfile
@@ -17,6 +18,9 @@ def subset_nwm_200(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     """
     Subset logic for NWM v2.0.0
     """
+    
+    # connect to redis
+    r = redis.Redis(env.redis_url, env.redis_port)
 
     if logger is None:
         from tornado.log import app_log
@@ -51,7 +55,8 @@ def subset_nwm_200(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
            env.output_dir]
     print(' '.join(cmd))
     p = subprocess.Popen(cmd,
-                         cwd=os.path.join(os.getcwd(), 'r-subsetting'),
+                         cwd=os.path.join(os.getcwd(),
+                                          'subsetting/nwm200/subset_w_coordinates'),
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 
@@ -59,6 +64,10 @@ def subset_nwm_200(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
         l = line.decode('utf-8').rstrip()
         if l != '':
             logger.debug(l)
+            r.publish(uid, json.dumps({'type': 'message',
+                                       'status': 'success',
+                                       'channel': uid,
+                                       'value': l}))
 
     p.stdout.close()
     return_code = p.wait()
@@ -74,20 +83,24 @@ def subset_nwm_200(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     logger.info('subsetting complete %s' % (uid))
 
     # run watershed shapefile creation
-    logger.debug('Submitting create_shapefile')
-    outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
-    outfile = watershed.create_shapefile(uid, hucs, outpath)
+    if len(hucs) != 0:
+        logger.debug('Submitting create_shapefile')
+        outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
+        watershed.create_shapefile(uid, hucs, outpath)
+    else:
+        msg = 'skipping create_shapefile b/c no hucs were provided'
+        logger.debug(msg)
 
-    # compress the results
-    fpath = os.path.join(env.output_dir, uid)
-    outname = '%s.tar.gz' % uid
-    outpath = os.path.join(env.output_dir, outname)
-    with tarfile.open(outpath,  "w:gz") as tar:
-        tar.add(fpath, arcname=os.path.basename(fpath))
-    shutil.rmtree(fpath)
-    logger.info('finished compressing results %s' % (uid))
+#    # compress the results
+#    fpath = os.path.join(env.output_dir, uid)
+#    outname = '%s.tar.gz' % uid
+    outpath = os.path.join(env.output_dir, uid)
+#    with tarfile.open(outpath,  "w:gz") as tar:
+#        tar.add(fpath, arcname=os.path.basename(fpath))
+#    shutil.rmtree(fpath)
+#    logger.info('finished compressing results %s' % (uid))
 
     response = dict(message='file created at: %s' % outpath,
-                    filepath='/data/%s' % outname,
+                    filepath='/data/%s' % uid,
                     status='success')
     return response
