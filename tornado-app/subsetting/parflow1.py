@@ -9,7 +9,7 @@ import shapefile
 import watershed
 import subprocess
 import environment as env
-from datetime import datetime
+from datetime import datetime, timezone
 from tornado.log import enable_pretty_logging
 
 enable_pretty_logging()
@@ -50,7 +50,7 @@ def subset(uid, hucs, outdir, logger=None):
     create_tcl(pfsol_file, outdir, logger=logger)
 
     # write metadata file
-    meta = {'date_processed': str(datetime.now()),
+    meta = {'date_processed': str(datetime.now(tz=timezone.utc)),
             'guid': uid,
             'model': 'Parflow CONUS',
             'version': '1.0',
