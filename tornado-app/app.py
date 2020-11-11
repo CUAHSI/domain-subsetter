@@ -69,12 +69,17 @@ class Application(tornado.web.Application):
 def main():
 
     app = Application()
-    http_server = tornado.httpserver.HTTPServer(app)
+    http_server = tornado.httpserver.HTTPServer(app,
+						ssl_options={
+						  'certfile': env.ssl_cert,
+						  'keyfile': env.ssl_key,
+						})
 
     # initialize logs
     applogs = logs.Logs()
 
-    http_server.listen(env.port, address=env.address)
+    http_server.listen(env.port,
+		       address=env.address)
     print('\n'+'-'*60)
     print('server listening on %s:%s' % (env.address, env.port))
     print('-'*60+'\n')

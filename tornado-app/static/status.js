@@ -19,6 +19,7 @@ $(document).ready(function() {
     var host = window.location.host;
     // TODO: implement this more throughly for http and https: https://stackoverflow.com/questions/10406930/how-to-construct-a-websocket-uri-relative-to-the-page-uri
     var ws = new WebSocket("ws://"+host+"/socket/"+jobid);
+//var ws = new WebSocket("ws://10.202.2.182/socket/"+jobid);
 	ws.onmessage = function(event) {
 	    // update the page html whenever a new
 	    // message is received

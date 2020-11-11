@@ -2,7 +2,11 @@ import os
 
 # Server settings
 address = "0.0.0.0"
-port = "80"
+port = "443"
+
+# ssl certs
+ssl_cert = "ssl/cuahsi.cert"
+ssl_key = "ssl/cuahsi.key"
 
 debug = True
 static_path = os.path.join(os.path.dirname(__file__), "static")
