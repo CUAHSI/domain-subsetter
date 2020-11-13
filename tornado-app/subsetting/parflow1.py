@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import time
 import shutil
 import tarfile
 import logging
@@ -14,19 +15,20 @@ import environment as env
 from datetime import datetime, timezone
 from tornado.log import enable_pretty_logging
 
-enable_pretty_logging()
 
-
-def get_logger(logger, uid=None):
-    if logger is None:
-        from tornado.log import app_log
-        logger = app_log
+def get_logger(uid, log_file):
+    logger = logging.getLogger(uid)
+    logger.setLevel(logging.INFO)
+    logger.propagate = False # turns off console logging
+    handler = logging.FileHandler(log_file)
+    formatter = logging.Formatter('%(asctime)-15s %(levelname)s <%(module)s.py - %(funcName)s> %(processName)s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
     # add redis handler
-    if uid is not None:
-        rh = rl.RedisHandler(uid)
-        rh.setLevel(logging.INFO)
-        logger.addHandler(rh)
+    rh = rl.RedisHandler(uid)
+    rh.setLevel(logging.INFO)
+    logger.addHandler(rh)
 
     return logger
 
@@ -35,7 +37,13 @@ def subset(uid, hucs, outdir, logger=None):
     function that runs all subsetting functions for PFCONUS 1.0
     """
 
-    logger = get_logger(logger, uid)
+    logger = get_logger(uid, env.pflogfile)
+
+    # sleep to allow websocket connection to establish before proceeding
+    time.sleep(2)
+
+    logger.info('Beginning subset operation for PFCONUS v1.0 using parflow-subsetter')
+
     # run watershed shapefile creation
     logger.info('Building shapefile for selected region')
     watershed_outpath = os.path.join(outdir, 'watershed.shp')
@@ -60,7 +68,29 @@ def subset(uid, hucs, outdir, logger=None):
            '-e', 'ID',
            '-a']
     cmd.extend(ids)
-    run_cmd(uid, cmd)
+
+    # collect the environment vars for the subprocess
+    environ = os.environ.copy()
+    environ['PARFLOW_DIR'] = env.pfexedir
+
+    # run the job
+    p = subprocess.Popen(cmd,
+                         cwd=outdir,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         env=environ)
+
+    # read stdout and log messages
+    for line in iter(p.stdout.readline, b''):
+        l = line.decode('utf-8').rstrip()
+        if l != '':
+            # save stdout to logs and send to redis
+            logger.info(l)
+
+#    output = p.stdout.read().decode('utf-8')
+#    if output != '':
+##        print(output)
+#        logger.info(output)
 
     # write metadata file
     meta = {'date_processed': str(datetime.now(tz=timezone.utc)),
@@ -96,22 +126,3 @@ def subset(uid, hucs, outdir, logger=None):
                 status='success')
 
 
-def run_cmd(uid, cmd):
-    logger = get_logger(None, uid)
-    logger.info(f'Running subsetting command: {" ".join(cmd)}')
-
-    # collect the environment vars for the subprocess
-    environ = os.environ.copy()
-    environ['PARFLOW_DIR'] = env.pfexedir
-
-    # run the job
-    p = subprocess.Popen(cmd,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT,
-                         env=environ)
-
-    # read stdout and log messages
-    output = p.stdout.read().decode('utf-8')
-    if output != '':
-#        print(output)
-        logger.info(output)

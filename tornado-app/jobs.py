@@ -3,7 +3,7 @@
 import uuid
 import sqldata
 import environment as env
-import  multiprocessing as mp
+import multiprocessing as mp
 from datetime import datetime
 from tornado.log import app_log
 from multiprocessing_logging import install_mp_handler
@@ -67,7 +67,7 @@ class BackgroundWorker(object):
             
             try:
                 uid = item['uid']
-                
+
                 # save the start time for reporting
                 start = datetime.now()
                 item['dt_start'] = start
