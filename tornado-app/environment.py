@@ -47,7 +47,8 @@ output_dir = '/share/appdata/output'
 sqldb = '/share/appdata/jobs.db'
 
 # PARFLOW v1.0 settings
-pfexedir = os.path.join(os.path.dirname(__file__), 'pfconus1/Subsetting')
+#pfexedir = os.path.join(os.path.dirname(__file__), 'pfconus1/Subsetting')
+pfexedir = '/home/acastronova/parflow'
 pfdata_v1 = '/share/pfconus.v1.0'
 pfmask = f'{pfdata_v1}/conus_1km_PFmask2.tif'
 pflakesmask = f'{pfdata_v1}/conus_1km_PFmask_selectLakesmask.tif'
