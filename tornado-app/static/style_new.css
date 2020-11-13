@@ -124,6 +124,21 @@ body {
   width: 75px; 
 }
 
+/* div for status progress messages (footer) */
+div.progress-msg{
+    position: fixed;
+    width: 100%;
+    height: 25%;
+    bottom: 0;
+    margin: -10px;
+    color: white;
+    background: grey;
+    padding: 10px;
+    font-family: Monospace;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 /* Status Logo */
 div.progress {
 
