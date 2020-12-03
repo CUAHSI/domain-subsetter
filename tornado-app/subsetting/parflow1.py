@@ -5,7 +5,6 @@ import sys
 import json
 import time
 import shutil
-import tarfile
 import logging
 import shapefile
 import watershed
@@ -13,15 +12,12 @@ import subprocess
 import redislogger as rl
 import environment as env
 from datetime import datetime, timezone
-from tornado.log import enable_pretty_logging
-from parflow.subset.tools import subset_conus
-import pickle 
 
 
 def get_logger(uid, log_file):
     logger = logging.getLogger(uid)
     logger.setLevel(logging.INFO)
-    logger.propagate = False # turns off console logging
+    logger.propagate = False  # turns off console logging
     handler = logging.FileHandler(log_file)
     formatter = logging.Formatter('%(asctime)-15s %(levelname)s <%(module)s.py - %(funcName)s> %(processName)s %(message)s')
     handler.setFormatter(formatter)
@@ -33,6 +29,7 @@ def get_logger(uid, log_file):
     logger.addHandler(rh)
 
     return logger
+
 
 def subset(uid, hucs, outdir, logger=None):
     """
@@ -64,11 +61,11 @@ def subset(uid, hucs, outdir, logger=None):
            '-i', outdir,
            '-s', 'watershed',
            '-f', env.pfdata_v1,
-           '-v', '1', # subset version
-           '-w', # write json, yaml, pfidb file for runing parflow
-           '-n', 'subset_watershed', # name for the output files
-           '-e', 'ID', # shapefile attribute column name
-           '-a'] # shapefile attribute ids
+           '-v', '1',                 # subset version
+           '-w',                      # write json, yaml, pfidb files
+           '-n', 'subset_watershed',  # name for the output files
+           '-e', 'ID',                # shapefile attribute column name
+           '-a']                      # shapefile attribute ids
     cmd.extend(ids)
 
     # collect the environment vars for the subprocess
@@ -109,17 +106,6 @@ def subset(uid, hucs, outdir, logger=None):
     shutil.copytree(os.path.join(env.pfdata_v1, 'binder'),
                     os.path.join(outdir, 'binder'))
 
-#    # compress the outputs and clean temporary directory
-#    logger.info('Building and compressing outputs')
-#    fpath = os.path.join(env.output_dir, uid)
-#    outname = f'{uid}.tar.gz'
-#    outpath = f'{os.path.dirname(outdir)}/{outname}'
-#    with tarfile.open(outpath, "w:gz") as tar:
-#        tar.add(fpath, arcname=os.path.basename(fpath))
-##    shutil.rmtree(fpath)
-
     return dict(message='PF-CONUS 1.0 subsetting complete',
                 filepath=f'/data/{outdir}',
                 status='success')
-
-
