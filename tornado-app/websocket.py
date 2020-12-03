@@ -5,6 +5,7 @@ import asyncio
 import aioredis
 import tornado.web
 import tornado.websocket
+from datetime import datetime
 from tornado.ioloop import IOLoop
 
 from tornado.log import app_log
@@ -47,12 +48,65 @@ class Message(object):
         return None
 
 
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class Messages(object, metaclass=Singleton):
+    def __init__(self):
+        self.messages = {}
+        self.last_message = {}
+    def add_channel(self, channel):
+        app_log.info(f'adding channel {channel}')
+
+        # create and entry in message_list to hold all messages for the
+        # given channel
+        if channel not in self.messages.keys():
+            self.messages[channel] = []
+            self.last_message[channel] = datetime.now()
+
+    def add_message(self, channel, msg_obj):
+        now = datetime.now()
+        # exit early if we just received a message on this channel within 
+        # 10 milliseconds. This is to prevent adding the same message for multiple
+        # subscribing sockets.
+        if (now - self.last_message[channel]).total_seconds() * 1000 <= 10:
+            return
+        
+        app_log.info('adding message')
+
+        # save the message in message_list so data
+        # will persist between html pages
+        self.messages[channel].append(msg_obj)
+        self.last_message[channel] = now
+
+    def get_messages(self, channel):
+        # return all message for the given channel
+        return self.messages[channel]
+
+    def del_channel(self, channel):
+        app_log.info(f'deleting messages for channel: {channel}')
+        self.messages.pop(channel, None)
+
+
 class SocketHandler(tornado.websocket.WebSocketHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        app_log.info('INITIALIZING')
+
+        self.messages = Messages()
 
     async def open(self, uid):
 
         # use the UID sent from the client to filter REDIS messages
         self.channel = uid
+        
+        # add channel to messages class
+        self.messages.add_channel(self.channel)
 
         # instantiate pubsub listener in the background
         IOLoop.current().spawn_callback(self.pubsub)
@@ -64,10 +118,15 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         app_log.info(f'WebSocket Closed: {self.channel}')
 
+        # remove all message for this channel in message_list
+        self.messages.del_channel(self.channel)
+        
+
     def on_message(self, message):
 
         if message.success:
             self.write_message(message.value)
+
 
     def check_origin(self, origin):
         return True
@@ -92,6 +151,13 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         Async REDIS listener function
         """
         while True:
+            # print any messages that have been previously stored in the 
+            # message_list dictionary
+            channel_id = channel.name.decode()
+            for msg in self.messages.get_messages(channel_id):
+                self.on_message(msg)
+
+            # wait for new messages
             while await channel.wait_message():
 
                 # wait for something to be published to the channel
@@ -100,6 +166,10 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
                 try:
                     # parse into Message object
                     msg = Message(msg_json)
+                    
+                    # save the message in message_list so data 
+                    # will persist between html pages
+                    self.messages.add_message(channel_id, msg)
 
                     # write the message to the client
                     self.on_message(msg)
