@@ -2,7 +2,21 @@
 
 {% extends results.html %}
 
+{% block extra-head %}
+    <script type='text/javascript' src='{{static_url("hs.js") }}'></script>
+{% end %}
 
 {% block extra-content %}
+
+    <div id=btn-hs-save-dialog class='mdl-grid center-horizontally'>
+        <form action="save-to-hydroshare/{{jobid}}" method=get>
+        <button id='btn-binder'
+                class="mdl-button
+                       mdl-js-button
+                       mdl-button--raised">
+            Save to HydroShare
+        </button>
+        </form>
+    </div>
 
 {% end %}
