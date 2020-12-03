@@ -57,18 +57,6 @@ def subset(uid, hucs, outdir, logger=None):
         for record in shp.records():
             ids.append(str(record[0]))
 
-#    os.environ['PARFLOW_DIR'] = env.pfexedir
-#    runobj = subset_conus.subset_conus(outdir,
-#				       'watershed',
-#				       conus_version=1,
-#			               conus_files=env.pfdata_v1,
-#				       run_script=True,
-# 				       out_name='subset_watershed',
-#				       attribute_name='ID',
-#				       attribute_ids=ids)
-#    with open(f'{outdir}/runobj.pkl', 'wb') as f:
-#        pickle.dump(runobj, f)
-
     # run the subsetting functions
     cmd = [sys.executable,
            '-m',
@@ -100,11 +88,6 @@ def subset(uid, hucs, outdir, logger=None):
         if l != '':
             # save stdout to logs and send to redis
             logger.info(l)
-
-#    output = p.stdout.read().decode('utf-8')
-#    if output != '':
-##        print(output)
-#        logger.info(output)
 
     # write metadata file
     meta = {'date_processed': str(datetime.now(tz=timezone.utc)),
