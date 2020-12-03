@@ -51,6 +51,8 @@ sqldb = '/share/appdata/jobs.db'
 pfexedir = '/home/acastronova/parflow'
 pflogfile = '/share/appdata/logs/parflow1.log'
 
+pfdata_v2 = '/share/pfconus.v2.0'
+
 pfdata_v1 = '/share/pfconus.v1.0'
 pfmask = f'{pfdata_v1}/conus_1km_PFmask2.tif'
 pflakesmask = f'{pfdata_v1}/conus_1km_PFmask_selectLakesmask.tif'

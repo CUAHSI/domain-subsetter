@@ -14,6 +14,8 @@ import redislogger as rl
 import environment as env
 from datetime import datetime, timezone
 from tornado.log import enable_pretty_logging
+from parflow.subset.tools import subset_conus
+import pickle 
 
 
 def get_logger(uid, log_file):
@@ -55,6 +57,18 @@ def subset(uid, hucs, outdir, logger=None):
         for record in shp.records():
             ids.append(str(record[0]))
 
+#    os.environ['PARFLOW_DIR'] = env.pfexedir
+#    runobj = subset_conus.subset_conus(outdir,
+#				       'watershed',
+#				       conus_version=1,
+#			               conus_files=env.pfdata_v1,
+#				       run_script=True,
+# 				       out_name='subset_watershed',
+#				       attribute_name='ID',
+#				       attribute_ids=ids)
+#    with open(f'{outdir}/runobj.pkl', 'wb') as f:
+#        pickle.dump(runobj, f)
+
     # run the subsetting functions
     cmd = [sys.executable,
            '-m',
@@ -62,11 +76,11 @@ def subset(uid, hucs, outdir, logger=None):
            '-i', outdir,
            '-s', 'watershed',
            '-f', env.pfdata_v1,
-           '-v', '1',
-           '-w',
-           '-n', 'subset_watershed',
-           '-e', 'ID',
-           '-a']
+           '-v', '1', # subset version
+           '-w', # write json, yaml, pfidb file for runing parflow
+           '-n', 'subset_watershed', # name for the output files
+           '-e', 'ID', # shapefile attribute column name
+           '-a'] # shapefile attribute ids
     cmd.extend(ids)
 
     # collect the environment vars for the subprocess
@@ -103,12 +117,12 @@ def subset(uid, hucs, outdir, logger=None):
         json.dump(meta, jsonfile)
 
     # copying the run script for executing parflow in docker
-    logger.info('Copying run script')
+    logger.info('Adding Docker execution script')
     shutil.copyfile(os.path.join(env.pfdata_v1, 'run.sh'),
                     os.path.join(outdir, 'run.sh'))
 
     # copy the binder files
-    logger.info('Copying binder files')
+    logger.info('Adding binder definitions')
     shutil.copytree(os.path.join(env.pfdata_v1, 'binder'),
                     os.path.join(outdir, 'binder'))
 
