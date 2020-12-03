@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import json
 import redis
 import subprocess
-import transform
-import tarfile
-import shutil
+from datetime import datetime, timezone
 
 import watershed
 import environment as env
@@ -17,7 +14,10 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
 
     # connect to redis
     r = redis.Redis(env.redis_url, env.redis_port)
-        
+
+    # define the output directory where subset files will be saved
+    outdir = os.path.join(env.output_dir, uid)
+
     # connect to the logger
     if logger is None:
         from tornado.log import app_log
@@ -30,12 +30,11 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     stdout = []
     stdout.append(jobinfo)
 
-    bbox = (float(xmin),
-            float(ymin),
-            float(xmax),
-            float(ymax))
-
-    # TODO: check bbox size
+#    # TODO: check bbox size
+#    bbox = (float(xmin),
+#            float(ymin),
+#            float(xmax),
+#            float(ymax))
 
     # run R script and save output as random guid
     logger.info('begin NWM v1.2.2 subsetting %s' % (uid))
@@ -56,6 +55,7 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 
+    # read stdout and log messages
     for line in iter(p.stdout.readline, b''):
         l = line.decode('utf-8').rstrip()
         if l != '':
@@ -73,7 +73,6 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
         msg = 'The process call "{}" returned with code {}, an error ' \
               'occurred.'.format(list(cmd), return_code)
         logger.error('subsetting failed %s: %s' % (uid, msg))
-#        r.publish(uid, msg)
         response = dict(message=msg, status='error')
 
         return response
@@ -83,23 +82,23 @@ def subset_nwm_122(uid, ymin, xmin, ymax, xmax, hucs, logger=None):
     # run watershed shapefile creation
     if len(hucs) != 0:
         logger.debug('Submitting create_shapefile')
-        outpath = os.path.join(env.output_dir, uid, 'watershed.shp')
-        outfile = watershed.create_shapefile(uid, hucs, outpath)
+        outpath = os.path.join(outdir, 'watershed.shp')
+        watershed.create_shapefile(uid, hucs, outpath)
     else:
         msg = 'skipping create_shapefile b/c no hucs were provided'
         logger.debug(msg)
-#        r.publish(uid, msg)
 
-#    # compress the results
-#    fpath = os.path.join(env.output_dir, uid)
-#    outname = '%s.tar.gz' % uid
-    outpath = os.path.join(env.output_dir, uid)
-#    with tarfile.open(outpath,  "w:gz") as tar:
-#        tar.add(fpath, arcname=os.path.basename(fpath))
-#    shutil.rmtree(fpath)
-#    logger.info('finished compressing results %s' % (uid))
+    # write metadata file
+    meta = {'date_processed': str(datetime.now(tz=timezone.utc)),
+            'guid': uid,
+            'model': 'WRF-Hydro configured as NWM',
+            'version': '1.2.2',
+            'hucs': hucs}
 
-    response = dict(message='file created at: %s' % outpath,
-                    filepath='/data/%s' % uid,
+    with open(os.path.join(outdir, 'metadata.json'), 'w') as jsonfile:
+        json.dump(meta, jsonfile)
+
+    response = dict(message=f'file created at: {outdir}',
+                    filepath=f'/data/{uid}',
                     status='success')
     return response
