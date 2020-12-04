@@ -4,10 +4,12 @@ import os
 import re
 import json
 import shutil
+import logging
 import tornado.auth
 import tornado.web
 import tornado.web
 import tornado.auth
+import redislogger as rl
 import environment as env
 from .core import RequestHandler
 from tornado.log import app_log, gen_log, access_log, LogFormatter
@@ -15,6 +17,21 @@ from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 from hs_restclient import HydroShare, HydroShareAuthOAuth2
 
+def get_logger(uid, log_file):
+    logger = logging.getLogger(uid)
+    logger.setLevel(logging.INFO)
+    logger.propagate = False  # turns off console logging
+    handler = logging.FileHandler(log_file)
+    formatter = logging.Formatter('%(asctime)-15s %(levelname)s <%(module)s.py - %(funcName)s> %(processName)s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    # add redis handler
+    rh = rl.RedisHandler(uid)
+    rh.setLevel(logging.INFO)
+    logger.addHandler(rh)
+
+    return logger
 
 class HsAuthHandler(RequestHandler):
     def get_current_user(self):
@@ -34,6 +51,8 @@ class HsAuthHandler(RequestHandler):
 class SaveToHydroShare(HsAuthHandler):
     @tornado.web.authenticated
     def get(self, uid):
+    
+        self.logger = get_logger(uid, env.hslogfile)
 
         # open the metadata file and extract info for the 
         # form text boxes
@@ -65,10 +84,9 @@ class SaveToHydroShare(HsAuthHandler):
         self.create_resource(guid, title, keywords, abstract)
 
     def create_resource(self, uid, title, keywords, abstract):
-        app_log.info('creating hydroshare resource')
 
         # load user credentials
-        app_log.info('loading user auth')
+        self.logger.info('Connecting to the HydroShare API')
         token = json.loads(self.current_user)
 
         # connect with HydroShare
@@ -76,11 +94,12 @@ class SaveToHydroShare(HsAuthHandler):
         hs = HydroShare(auth=auth)
 
         # compress the subset output 
-        app_log.info('compressing subset output as zip')
+        self.logger.info('Compressing subset output as zip')
         datapath = os.path.join(env.output_dir, uid)
         shutil.make_archive(datapath, 'zip', datapath)
 
         # create the resource using the hsapi
+        self.logger.info('Creating HydroShare resource')
         extra_metadata = '{"appkey": "MyBinder"}'
         resource_id = hs.createResource('CompositeResource',
                                         title,
@@ -89,7 +108,6 @@ class SaveToHydroShare(HsAuthHandler):
                                         abstract=abstract,
                                         extra_metadata=extra_metadata,
                                         )
-        app_log.info(f'created hydroshare resource: {resource_id}')
 
 #        options = {
 #                    "zip_with_rel_path": f"{uid}.zip",
@@ -102,5 +120,4 @@ class SaveToHydroShare(HsAuthHandler):
 #        app_log.info(result)
 
         # redirect to the HS page when finished
-        app_log.info('redirecting to hs resource')
         self.redirect(f'https://hydroshare.org/resource/{resource_id}?resource-mode=edit')
