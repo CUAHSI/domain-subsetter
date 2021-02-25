@@ -110,7 +110,7 @@ $(window).bind("load", function() {
 
     // hide the Getting Started dialog
     $('dialog')[0].open = false;
-    $('dialog')[0].style['visibility'] = 'hidden';
+//    $('dialog')[0].style['visibility'] = 'hidden';
 
 
 
@@ -125,8 +125,8 @@ $(window).bind("load", function() {
 
     // Help button
     var btn = '<span id=help-btn class="material-icons">info-outline</i>'
-//    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
-//			    {position: 'topleft'}).addTo(Map.map);
+    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
+			    {position: 'topleft'}).addTo(Map.map);
 
 
     L.control.mousePosition({
@@ -298,6 +298,7 @@ function resize_map() {
  */
 
 function toggleHelpDialog() {
+    $('dialog')[0].style.display = '';
     $('dialog')[0].open = true;
 }
 

@@ -97,6 +97,7 @@ body {
     height: 100%;
     border: 1px solid #AAA;
     position: relative;
+    z-index: 1;
 //    margin:50px 10px 5px 50px;
 }
 
@@ -304,6 +305,7 @@ div.processing {
 //    overflow: auto;
     position: fixed;
     margin-top: 20px;
+    z-index:2;
 }
 .mdl-dialog__content {
    height: 80%;

@@ -45,4 +45,9 @@ $(window).bind("load", function() {
     latLngs.push(new L.LatLng(31.6462, -115.9740 ));
     latLngs.push(new L.LatLng(48.1551, -121.4645));
     L.mask(latLngs).addTo(Map.map);
-}); 
+
+//    dialog = document.querySelector('dialog');
+//    dialog.close();
+
+
+   }); 

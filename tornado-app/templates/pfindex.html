@@ -12,9 +12,9 @@
       <script type='text/javascript' src='{{ static_url("map_new.js") }}'></script> 
       <script type='text/javascript' src='{{ static_url("pfmap.js") }}'></script>
       <script type='text/javascript' src='{{ static_url("L.Control.MousePosition.js") }}'></script> 
-      <script type='text/javascript' src='{{ static_url("dialog.js") }}'></script> 
       <script type="text/javascript" src='{{ static_url("usa-boundary.json") }}'></script>
       <script type="text/javascript" src='{{ static_url("leaflet.snogylop.js") }}'></script>
+      <script type='text/javascript' src='{{ static_url("dialog.js") }}'></script> 
 
 
 	{% block more-head %}
@@ -64,8 +64,7 @@
         </form>
 
 
-
-   <dialog class="mdl-dialog" style='visibility:hidden'>
+   <dialog class="mdl-dialog" style="display:none">
     <div class="mdl-dialog__content">
       <p>
         {% include pf-dialog-gen.html %}
@@ -76,6 +75,7 @@
     </div>
   </dialog>
 
+   </div>
 
 {% end %}
 
