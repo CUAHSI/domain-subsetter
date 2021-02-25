@@ -60,6 +60,7 @@ class Messages(object, metaclass=Singleton):
     def __init__(self):
         self.messages = {}
         self.last_message = {}
+        self.active_listeners = {}
     def add_channel(self, channel):
         app_log.info(f'adding channel {channel}')
 
@@ -68,6 +69,11 @@ class Messages(object, metaclass=Singleton):
         if channel not in self.messages.keys():
             self.messages[channel] = []
             self.last_message[channel] = datetime.now()
+            self.active_listeners[channel] = 1
+        else:
+            self.active_listeners[channel] += 1
+        
+        app_log.info(f'{channel}: {self.active_listeners[channel]} listeners')
 
     def add_message(self, channel, msg_obj):
         now = datetime.now()
@@ -89,14 +95,18 @@ class Messages(object, metaclass=Singleton):
         return self.messages[channel]
 
     def del_channel(self, channel):
-        app_log.info(f'deleting messages for channel: {channel}')
-        self.messages.pop(channel, None)
+
+        self.active_listeners[channel] -= 1
+        app_log.info(f'removing listener for channel: {channel}')
+        app_log.info(f'{channel}: {self.active_listeners[channel]} listeners')
+        if self.active_listeners[channel] == 0:
+            app_log.info(f'deleting messages for channel: {channel}')
+            self.messages.pop(channel, None)
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        app_log.info('INITIALIZING')
 
         self.messages = Messages()
 
@@ -114,12 +124,23 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         app_log.info(f'new connection listening on channel: {self.channel}')
         app_log.info('WebSocket Opened')
+    
+    async def delay_close(self):
+        await asyncio.sleep(2)
 
-    def on_close(self):
         app_log.info(f'WebSocket Closed: {self.channel}')
 
         # remove all message for this channel in message_list
         self.messages.del_channel(self.channel)
+        
+    def on_close(self):
+
+        IOLoop.current().add_callback(
+                self.delay_close
+                )
+
+#        # remove all message for this channel in message_list
+#        self.messages.del_channel(self.channel)
         
 
     def on_message(self, message):
