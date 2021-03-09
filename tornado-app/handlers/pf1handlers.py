@@ -7,6 +7,7 @@ import hashlib
 import tornado.web
 import tornado.auth
 import environment as env
+from cas import CASClient
 from subsetting import parflow1
 from tornado.log import app_log
 from tornado.log import enable_pretty_logging
@@ -26,6 +27,37 @@ class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
         query = f'hucs={hucs}'
         self.redirect('/parflow/v1_0/subset?%s' % query)
 
+
+class HfLogin(tornado.web.RequestHandler):
+    cas_client = CASClient(version=3,
+                           service_url=env.cas_service_url,
+                           server_url=env.cas_server_url)
+    def get(self):
+        next_url = self.get_argument('next', None)
+        ticket = self.get_argument('ticket', None)
+        cas_username = self.get_secure_cookie('cas-username')
+        app_log.info(f'{next_url}, {ticket}, {cas_username}')
+        
+        if cas_username:
+            self.redirect(self.request.headers.get('Referer'))
+        
+        # perform CAS Authentication
+        if ticket is None:
+            app_log.info('no cas ticket found')
+            # No ticket, the request come from end user, send to CAS login
+            cas_login_url = self.cas_client.get_login_url()
+            return self.redirect(cas_login_url)
+
+        # There is a ticket, the request come from CAS as callback.
+        # need call `verify_ticket()` to validate ticket and get user profile.
+        user, attributes, pgtiou = self.cas_client.verify_ticket(ticket)
+        if not user:
+            return 'Failed to verify ticket. <a href="/login">Login</a>'
+        else:
+            app_log.info('setting cas-username cookie')
+            self.set_secure_cookie('cas-username', user)
+            return self.redirect(next_url)
+        
 
 class SubsetParflow1(tornado.web.RequestHandler):
     """

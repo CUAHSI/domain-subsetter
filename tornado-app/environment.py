@@ -8,6 +8,11 @@ port = "443"
 ssl_cert = "ssl/cuahsi.cert"
 ssl_key = "ssl/cuahsi.key"
 
+# CAS authentication for HydroFrame - Parflow
+#cas_service_url='https://subset.cuahsi.org/hflogin?next='
+cas_service_url='https://subset.cuahsi.org/parflow/v1_0'
+cas_server_url='https://fed.princeton.edu/cas/login?method=GET'
+
 debug = True
 static_path = os.path.join(os.path.dirname(__file__), "static")
 template_path = os.path.join(os.path.dirname(__file__), "templates")
