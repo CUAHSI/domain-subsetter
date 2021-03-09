@@ -144,5 +144,6 @@ dependencies:
     - requests-toolbelt==0.9.1
     - shapely==1.6.4.post2
     - yarl==1.4.2
+    - python-cas
 prefix: /home/acastronova/.conda/envs/subsetting-server
 
