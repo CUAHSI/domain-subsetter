@@ -6,6 +6,7 @@ import shutil
 import hashlib
 import tornado.web
 import tornado.auth
+import urllib.parse
 import environment as env
 from cas import CASClient
 from subsetting import parflow1
@@ -33,19 +34,27 @@ class HfLogin(tornado.web.RequestHandler):
                            service_url=env.cas_service_url,
                            server_url=env.cas_server_url)
     def get(self):
-        next_url = self.get_argument('next', None)
+        next_url = self.get_argument('next',
+                                     self.request.headers.get('Referer'))
+                                     
         ticket = self.get_argument('ticket', None)
         cas_username = self.get_secure_cookie('cas-username')
         app_log.info(f'{next_url}, {ticket}, {cas_username}')
         
         if cas_username:
-            self.redirect(self.request.headers.get('Referer'))
+            return self.redirect(self.request.headers.get('Referer'))
         
         # perform CAS Authentication
         if ticket is None:
             app_log.info('no cas ticket found')
+            
+            # add the referrer url as the next url
+            self.cas_client.service_url += f'?next={next_url}'
+
             # No ticket, the request come from end user, send to CAS login
             cas_login_url = self.cas_client.get_login_url()
+
+            app_log.info(f'redirecting to {cas_login_url}')
             return self.redirect(cas_login_url)
 
         # There is a ticket, the request come from CAS as callback.
