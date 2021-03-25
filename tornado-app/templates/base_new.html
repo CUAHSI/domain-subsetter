@@ -125,11 +125,17 @@
                 <li><a href="https://github.com/CUAHSI/nwm_subsetting">Find us on GitHub</a></li>
                 </ul>
             </div>
-        <div class="mdl-mini-footer__right-section
-		    mdl-layout--small-screen-only">
-            <div class="footer-logo">
-		<img src='{{ static_url("logo.png") }}'>
+           
+        <div class="mdl-mini-footer__right-section">
+            <ul class="mdl-mini-footer__link-list">
+            <div class="footer-logo
+		       mdl-layout--small-screen-only">
+		<li><img src='{{ static_url("logo.png") }}'></li>
 	    </div>
+            <div class="footer-logo" id='hf-logo-logged-in'>
+		<li><img src='{{ static_url("images/hf-logo.png") }}'></li>
+	    </div>
+            </ul>
         </div>
     </footer>
 

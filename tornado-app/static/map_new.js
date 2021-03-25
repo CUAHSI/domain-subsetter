@@ -144,10 +144,15 @@ $(window).bind("load", function() {
     var btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
     var btn_submit = L.easyButton(btn,
 	                          function (){submit();},
-	                          {position: 'bottomright'}).addTo(Map.map);
-    btn_submit.button.style.width = '100px';
+	                          {id: 'submit',
+				   position: 'bottomright'});
+//.addTo(Map.map);
+    btn_submit.button.style.width = '150px';
+    var submit_group = L.easyBar([btn_submit],
+		                 {position: 'bottomright',
+			          id: 'submit-button-group'}).addTo(Map.map);
     // save this button so it can be accessed from other functions
-    Map.submit = btn_submit;
+    Map.submit = submit_group; //btn_submit;
 
    // Layer Control
    L.control.layers(null, mixed).addTo(map);

@@ -49,5 +49,78 @@ $(window).bind("load", function() {
 //    dialog = document.querySelector('dialog');
 //    dialog.close();
 
+    $.ajax({
+        url: '/hfisauthenticated',
+        async: true,
+        success: function(response) {
+            updateSubmitButtonGroup(response);
+            updateHFLogo(response);
+        },
+        error: function(response) {
+            console.log('error checking HF authentication');
+        }
+	});
 
-   }); 
+
+
+   });
+
+function hydroframe_submit() {
+    alert('HydroFrame Submit')
+//    document.getElementById('form-submit').submit();
+}
+
+function updateHFLogo(authData){
+   if (authData['authenticated'] == true) {
+       $('#hf-logo-logged-in').show();
+   } else {
+       $('#hf-logo-logged-in').hide();
+   }
+
+}
+function updateSubmitButtonGroup(authData){
+
+   if (authData['authenticated'] == true) {
+
+        // add HF SUBMIT button 
+        // this is hacky but I need to refresh the easyBar and the only way that I can
+        // figure out is to remove and recreate it.
+        Map.submit.remove()
+        
+        // Submit Button
+        var btn_submit = L.easyButton('<div id=submit-btn><strong>SUBMIT</strong></div>',
+                                      function (){submit();},
+                                      {id: 'submit'});
+        btn_submit.button.style.width = '150px';
+        
+        var btn_hfsubmit = L.easyButton('<div class=btn-submit id=hf-submit-btn><strong>HydroFrame Submit</strong></div>',
+        function (){hydroframe_submit();},
+        {id: 'hf-submit'});
+        btn_hfsubmit.button.style.width = '150px';
+        
+        var submit_group = L.easyBar([btn_submit, btn_hfsubmit],
+                                     {position: 'bottomright',
+                                      id: 'submit-button-group'}).addTo(Map.map);
+        
+        // save this button so it can be accessed from other functions
+        Map.submit = submit_group;
+    }
+    else if (Map.submit._buttons.length > 1) {
+        // this is hacky but I need to refresh the easyBar and the only way that I can
+        // figure out is to remove and recreate it.
+        Map.submit.remove()
+        
+        // Submit Button
+        var btn_submit = L.easyButton('<div id=submit-btn><strong>SUBMIT</strong></div>',
+                                      function (){submit();},
+                                      {id: 'submit'});
+        btn_submit.button.style.width = '150px';
+        
+        var submit_group = L.easyBar([btn_submit],
+                                     {position: 'bottomright',
+                                      id: 'submit-button-group'}).addTo(Map.map);
+        
+        // save this button so it can be accessed from other functions
+        Map.submit = submit_group;
+    }
+}

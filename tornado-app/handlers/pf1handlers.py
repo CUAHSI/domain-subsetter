@@ -28,8 +28,27 @@ class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
         query = f'hucs={hucs}'
         self.redirect('/parflow/v1_0/subset?%s' % query)
 
+class HFIsAuthenticated(tornado.web.RequestHandler):
+    """
+    Endpoint used to update the Map display depending on whether or not
+    the user has authenticated with a HydroFrame Account
+    """
+    def get(self):
+        cas_username = self.get_secure_cookie('cas-username')
+        
+        if cas_username:
+            self.write({'authenticated': True,
+                        'username': cas_username.decode()})
+        else:
+            self.write({'authenticated': False})
+
 
 class HfLogin(tornado.web.RequestHandler):
+    """
+    Endpoint for performing HydroFrame Authentication using CAS + DUO
+    two-factor authentication. When successful, a cookie is set in the
+    browser which can be checked via HFIsAuthenticated.
+    """
     cas_client = CASClient(version=3,
                            service_url=env.cas_service_url,
                            server_url=env.cas_server_url)

@@ -61,8 +61,22 @@ a.nav-sub-menu {
     text-transform: uppercase;
 }
 .mdl-mini-footer .footer-logo img {
-    height: 30px;
-    width: auto;
+    height: 40px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.footer-logo img {
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 10px;
+}
+#hf-logo-logged-in {
+    display: none;
+}
+
+#submit-button-group {
+    margin: 20px;
 }
 
 /* main body */
@@ -285,6 +299,11 @@ div.processing {
 #submit-button-div {
     padding: 0px;
 }
+
+.btn-submit {
+   width: 150px;
+}
+
 #map-div {
     padding: 0px;
     display: flex;
