@@ -304,7 +304,7 @@ div.processing {
     width: 50%;
 //    overflow: auto;
     position: fixed;
-    margin-top: 20px;
+    margin-top: 100px; // large top margin to push the modal below the fixed page header
     z-index:2;
 }
 .mdl-dialog__content {
