@@ -143,7 +143,7 @@ $(window).bind("load", function() {
     // Submit Button
     var btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
     var btn_submit = L.easyButton(btn,
-	                          function (){submit();},
+	                          function (btn){submit(btn);},
 	                          {id: 'submit',
 				   position: 'bottomright'});
 //.addTo(Map.map);
@@ -184,7 +184,7 @@ $(window).bind("load", function() {
     huc = document.getElementById('content').value;
    
     // check for 12-digit string match (i.e. HUC 12)
-    var re = /\d{8,12}/;
+    var re = /\d{4,12}/;
     var match = huc.match(re);
     if (match) {
 
@@ -312,7 +312,7 @@ function toggleMenu() {
     var panel = document.querySelector('#menu-panel');
     accordion.MaterialExtAccordion.command( {action: 'toggle', target: panel} );
 }
-function submit() {
+function submit(e) {
     document.getElementById('form-submit').submit();
 }
 

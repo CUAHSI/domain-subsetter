@@ -65,9 +65,16 @@ $(window).bind("load", function() {
 
    });
 
-function hydroframe_submit() {
-    alert('HydroFrame Submit')
-//    document.getElementById('form-submit').submit();
+function hydroframe_submit(e) {
+
+    // get the selected huc ids
+    var hucs = $('#hucs').val();
+
+    // build the query string for verde
+    var target = 'https://verde.princeton.edu/pun/sys/pfclm-flask/subset?huc=' + $('#hucs').val().split(',').join('&huc=');
+
+    // redirect
+    window.location.replace(target);
 }
 
 function updateHFLogo(authData){
@@ -89,13 +96,14 @@ function updateSubmitButtonGroup(authData){
         
         // Submit Button
         var btn_submit = L.easyButton('<div id=submit-btn><strong>SUBMIT</strong></div>',
-                                      function (){submit();},
+                                      function (e){submit(e);},
                                       {id: 'submit'});
         btn_submit.button.style.width = '150px';
         
         var btn_hfsubmit = L.easyButton('<div class=btn-submit id=hf-submit-btn><strong>HydroFrame Submit</strong></div>',
-        function (){hydroframe_submit();},
-        {id: 'hf-submit'});
+        function (e){hydroframe_submit(e);},
+        {id: 'hf-submit',
+         value: 'hf-submit'});
         btn_hfsubmit.button.style.width = '150px';
         
         var submit_group = L.easyBar([btn_submit, btn_hfsubmit],
@@ -112,8 +120,9 @@ function updateSubmitButtonGroup(authData){
         
         // Submit Button
         var btn_submit = L.easyButton('<div id=submit-btn><strong>SUBMIT</strong></div>',
-                                      function (){submit();},
-                                      {id: 'submit'});
+                                      function (e){submit(e);},
+                                      {id: 'submit',
+				       value: 'submit'});
         btn_submit.button.style.width = '150px';
         
         var submit_group = L.easyBar([btn_submit],
@@ -123,4 +132,9 @@ function updateSubmitButtonGroup(authData){
         // save this button so it can be accessed from other functions
         Map.submit = submit_group;
     }
+
+
+    // validate the map
+    box = validate_bbox_size()
+    toggle_submit_button(box.is_valid);
 }
