@@ -49,12 +49,26 @@ $(window).bind("load", function() {
 //    dialog = document.querySelector('dialog');
 //    dialog.close();
 
+    // make the HF login button visible
+    $('#hf-login-button').show();
+
     $.ajax({
         url: '/hfisauthenticated',
         async: true,
         success: function(response) {
             updateSubmitButtonGroup(response);
             updateHFLogo(response);
+            if (response['authenticated']) {	
+	    	// hide the login button
+	 	$('#hf-login-button').hide();
+                // show the logout button
+    	        $('#hf-logout-button').show();
+	    } else {
+	    	// hide the login button
+	 	$('#hf-login-button').show();
+                // show the logout button
+    	        $('#hf-logout-button').hide();
+	    }
         },
         error: function(response) {
             console.log('error checking HF authentication');

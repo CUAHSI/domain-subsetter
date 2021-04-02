@@ -42,6 +42,18 @@ class HFIsAuthenticated(tornado.web.RequestHandler):
         else:
             self.write({'authenticated': False})
 
+class HfLogout(tornado.web.RequestHandler):
+    """
+    Endpoint for performing HydroFrame logout.
+    When successful, a cookie is removed from the browser.
+    """
+    cas_client = CASClient(version=3,
+                           service_url=env.cas_service_url,
+                           server_url=env.cas_server_url)
+    def get(self):
+        cas_logout_url = self.cas_client.get_logout_url(self.request.headers.get('Referer'))
+        self.clear_cookie('cas-username')
+        return self.redirect(cas_logout_url)
 
 class HfLogin(tornado.web.RequestHandler):
     """

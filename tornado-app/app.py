@@ -53,8 +53,9 @@ class Application(tornado.web.Application):
             (r"/save-to-hydroshare/([a-f0-9]{40})", hydroshare.SaveToHydroShare),
             # Websocket endpoint for REDIS communication
             (r"/socket/([a-f0-9]{40})", websocket.SocketHandler),
-            # HydroFrame login handler
+            # HydroFrame login handlers
             (r"/hflogin", pf1handlers.HfLogin),
+            (r"/hflogout", pf1handlers.HfLogout),
             (r"/hfisauthenticated", pf1handlers.HFIsAuthenticated),
 
 

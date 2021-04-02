@@ -135,6 +135,24 @@
             <div class="footer-logo" id='hf-logo-logged-in'>
 		<li><img src='{{ static_url("images/hf-logo.png") }}'></li>
 	    </div>
+            <div class="hf-login-button" id='hf-login-button' style='display: none;'>
+		<li>
+		<a href=/hflogin>
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+				HydroFrame Login
+			</button>
+		</a>
+	 	</li>
+	    </div>
+            <div class="hf-logout-button" id='hf-logout-button' style='display: none;'>
+		<li>
+		<a href='/hflogout'>
+		<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+		  HydroFrame Logout
+		</button>
+		</a>
+	 	</li>
+	    </div>
             </ul>
         </div>
     </footer>
