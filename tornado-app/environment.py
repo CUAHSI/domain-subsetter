@@ -23,7 +23,7 @@ cookie_secret='554451427aba042faa7f7c80ff8337717d7805d26af5707b5102b73fc873cef3'
 # hydroshare oauth
 oauth_client_id='TjMr7rPA8AkjVvJgDohn0QEIZ2fKDoPNVjVLKYXz'
 oauth_client_secret='Yy5FhCXJQ5C9HRpv467bCkLma8vq1nRk69gl4l0V8qcTOXONR4fO8KCdZv6V0MWsViK1iUK5TFMC0NrX8VaL1lOkejLjTUHdz8qa6QWY2JYa6wbHxZyNdncx5qyACuHR'
-oauth_callback_url='http://subset.cuahsi.org/authorize'
+oauth_callback_url='https://subset.cuahsi.org/authorize'
 
 # REDIS
 redis_url = 'localhost'
@@ -42,6 +42,10 @@ access_level = 'DEBUG'
 application_level = 'DEBUG'
 general_level = 'DEBUG'
 
+# logfiles
+pflogfile = '/share/appdata/logs/parflow1.log'
+hslogfile = '/share/appdata/logs/hydroshare.log'
+
 # WRF-HYDRO settings
 wrfdata = '/share/nwm.v1.2.4'
 wrf2data = '/share/nwm.v2.0.0'
@@ -55,10 +59,7 @@ sqldb = '/share/appdata/jobs.db'
 # PARFLOW v1.0 settings
 #pfexedir = os.path.join(os.path.dirname(__file__), 'pfconus1/Subsetting')
 pfexedir = '/home/acastronova/parflow'
-pflogfile = '/share/appdata/logs/parflow1.log'
-
 pfdata_v2 = '/share/pfconus.v2.0'
-
 pfdata_v1 = '/share/pfconus.v1.0'
 pfmask = f'{pfdata_v1}/conus_1km_PFmask2.tif'
 pflakesmask = f'{pfdata_v1}/conus_1km_PFmask_selectLakesmask.tif'
