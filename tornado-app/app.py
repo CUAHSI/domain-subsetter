@@ -74,10 +74,11 @@ def main():
 
     app = Application()
     http_server = tornado.httpserver.HTTPServer(app,
-						ssl_options={
-						  'certfile': env.ssl_cert,
-						  'keyfile': env.ssl_key,
-						})
+#						ssl_options={
+#						  'certfile': env.ssl_cert,
+#						  'keyfile': env.ssl_key,
+#						}
+)
 
     # initialize logs
     applogs = logs.Logs()

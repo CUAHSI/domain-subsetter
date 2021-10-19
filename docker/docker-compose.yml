@@ -1,22 +1,23 @@
 version: "3.3"
 services:
-  subsetter:
+  app:
     image: subsetter:latest
     build:
-      context: .
-      dockerfile: Dockerfile.subsetter
+      context: ..
+      dockerfile: docker/Dockerfile.subsetter
     environment: 
       PYTHONWARNINGS: "ignore:Unverified HTTPS request"
       GDAL_DATA: "/root/miniconda3/share/gdal"
       PROJ_LIB: "/root/miniconda3/share/proj"
+      PORT: '8888'
     ports: 
-      - "80:80"
+      - "80:8888"
     expose:
       - "80"
     volumes:
-      - /share:/share
+      #      - /share:/share
+      - ../tornado-app:/srv
   redis:
     image: redis:alpine
     expose:
       - "6379"
-

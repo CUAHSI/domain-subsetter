@@ -7,8 +7,8 @@ import shutil
 import logging
 import tornado.auth
 import tornado.web
-import tornado.web
 import tornado.auth
+from tornado import gen
 import redislogger as rl
 import environment as env
 from .core import RequestHandler
@@ -16,6 +16,7 @@ from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 from hs_restclient import HydroShare, HydroShareAuthOAuth2
+
 
 def get_logger(uid, log_file):
     logger = logging.getLogger(uid)
@@ -49,7 +50,7 @@ class HsAuthHandler(RequestHandler):
 
 
 class SaveToHydroShare(HsAuthHandler):
-    @tornado.web.authenticated
+    @gen.coroutine
     def get(self, uid):
     
         self.logger = get_logger(uid, env.hslogfile)

@@ -3,9 +3,22 @@ LABEL maintainer Tony Castronova <acastronova@cuahsi.org>
 
 ENV PATH="/root/miniconda3/bin:${PATH}"
 
-RUN yum install -y \
+#########################
+## SYSTEM DEPENDENCIES ##
+#########################
+
+RUN yum -y install epel-release \
     git \
     wget \
+    vim \
+    && yum clean all \
+    && rm -rf /var/cache/yum 
+
+# gdal-python and python3-devel are
+# and needed to install gdal python bindings
+RUN yum install -y \
+    gdal-devel \
+    python3-devel \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -79,73 +92,75 @@ RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 RUN conda init bash 
 
 # download website code
-RUN git clone https://github.com/CUAHSI/nwm_subsetting.git --branch redis /srv
+#RUN git clone https://github.com/CUAHSI/nwm_subsetting.git --branch redis /srv
+ADD tornado-app/environment.yml /srv
 
-WORKDIR /srv/tornado-app
+WORKDIR /srv
 
 # update the base environment with website dependencies
+RUN conda install --name base python=3.8 -y
+RUN conda update -n base conda
 RUN conda env update --name base --file environment.yml
 
 EXPOSE 80
 
-# replace the 'placeholder' environment with production settings
-COPY environment.prod /srv/tornado-app/environment.prod
-RUN mv -f /srv/tornado-app/environment.prod /srv/tornado-app/environment.py
+## replace the 'placeholder' environment with production settings
+#COPY environment.prod /srv/tornado-app/environment.prod
+#RUN mv -f /srv/tornado-app/environment.prod /srv/tornado-app/environment.py
 
-############################################
-# Install R stuff for WRF-Hydro subsetting #
-############################################
-
-RUN yum install -y \
-    which \
-    && yum clean all \
-    && rm -rf /var/cache/yum
-
-RUN conda create -n r-env -y \
-    r-essentials \
-    r-base \
-    r-devtools  
-
-RUN conda config --add channels conda-forge
-RUN conda update conda -y 
-
-RUN conda install --name r-env -y \
-    r-rgdal \
-    r-rnetcdf \
-    r-ggmap \
-    r-data.table \
-    r-ncdf4 \
-    r-iterators \
-    r-foreach \
-    gxx_linux-64 \
-    gcc_linux-64 \
-    gfortran_linux-64 \
-    make 
-
-
-
-
-RUN echo "options(repos=structure(c(CRAN=\"https://mirrors.nics.utk.edu/cran/\")))" > ~/.Rprofile \
-&& mkdir -p /usr/share/doc/R-3.6.0/html
-
-ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
-
-
+#############################################
+## Install R stuff for WRF-Hydro subsetting #
+#############################################
+#
 #RUN yum install -y \
-#    make \
+#    which \
 #    && yum clean all \
 #    && rm -rf /var/cache/yum
-
-#SHELL ["conda", "run", "-n", "r-env", "--verbose", "/bin/bash", "-c"]
-
-#RUN /root/miniconda3/envs/r-env/bin/Rscript -e "install.packages(c('dataRetrieval'), dependencies=TRUE, INSTALL_opts=c('--no-help', '--no-html'))" 
-
-#RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
-#RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github(\"NCAR/rwrfhydro\")"
-
-#RUN source activate r-env \
-#&& conda activate r-env \
-#&& Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
+#
+#RUN conda create -n r-env -y \
+#    r-essentials \
+#    r-base \
+#    r-devtools  
+#
+#RUN conda config --add channels conda-forge
+#RUN conda update conda -y 
+#
+#RUN conda install --name r-env -y \
+#    r-rgdal \
+#    r-rnetcdf \
+#    r-ggmap \
+#    r-data.table \
+#    r-ncdf4 \
+#    r-iterators \
+#    r-foreach \
+#    gxx_linux-64 \
+#    gcc_linux-64 \
+#    gfortran_linux-64 \
+#    make 
 #
 #
-#ENTRYPOINT ["python", "app.py"]
+#RUN echo "options(repos=structure(c(CRAN=\"https://mirrors.nics.utk.edu/cran/\")))" > ~/.Rprofile \
+#&& mkdir -p /usr/share/doc/R-3.6.0/html
+#
+#ENV R_REMOTES_NO_ERRORS_FROM_WARNINGS=true
+#
+#
+##RUN yum install -y \
+##    make \
+##    && yum clean all \
+##    && rm -rf /var/cache/yum
+#
+##SHELL ["conda", "run", "-n", "r-env", "--verbose", "/bin/bash", "-c"]
+#
+##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "install.packages(c('dataRetrieval'), dependencies=TRUE, INSTALL_opts=c('--no-help', '--no-html'))" 
+#
+##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
+##RUN /root/miniconda3/envs/r-env/bin/Rscript -e "devtools::install_github(\"NCAR/rwrfhydro\")"
+#
+##RUN source activate r-env \
+##&& conda activate r-env \
+##&& Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
+##
+##
+
+ENTRYPOINT ["python", "app.py"]

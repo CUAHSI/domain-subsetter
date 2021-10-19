@@ -21,7 +21,6 @@ import multiprocessing
 
 from tornado import gen 
 from tornado.httpclient import AsyncHTTPClient
-import tornado.web
 import tornado.auth
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
@@ -129,14 +128,14 @@ class Status(RequestHandler):
 
 
 class Job(RequestHandler):
-    @tornado.web.asynchronous
+    @gen.coroutine
     def get(self, jobid=None):
         if jobid is None:
             self.get_all_jobs()
         else:
             self.get_job_by_id(jobid)
 
-    @tornado.web.asynchronous
+    @gen.coroutine
     def get_all_jobs(self):
         response = []
         jobs = sql.get_jobs()
@@ -166,7 +165,7 @@ class Job(RequestHandler):
         self.write(json.dumps(response))
         self.finish()
 
-    @tornado.web.asynchronous
+    @gen.coroutine
     def get_job_by_id(self, jobid):
         response = None
 
