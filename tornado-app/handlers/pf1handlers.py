@@ -126,7 +126,7 @@ class SubsetParflow1(tornado.web.RequestHandler):
         outdir = os.path.join(env.output_dir, uid)
         if os.path.exists(outdir):
             shutil.rmtree(outdir)
-        os.mkdir(outdir)
+        os.makedirs(outdir)
 
         # Subset PF-CONUS 1.0
         app_log.info('Begin PF-CONUS 1.0 Subsetting')
