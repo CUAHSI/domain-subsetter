@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import ogr
-from osgeo import osr
+from osgeo import osr, ogr
 import requests
 import itertools
 import urllib.parse

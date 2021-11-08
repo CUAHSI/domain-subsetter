@@ -4,15 +4,15 @@ channels:
   - defaults
 dependencies:
   - pip
-  - gdal
+  - gdal<3.1
   - basemap
   - pip:
     - aiohttp
-    - aioredis
+    - aioredis<2.0
     - asyncio
     - hs-restclient
     - multiprocessing-logging
-    - pfio
+      #    - pfio
     - redis
     - requests
     - requests-oauthlib
@@ -33,6 +33,3 @@ dependencies:
     - pyproj
     - h5py
     - pysqlite3
-    - geos
-    - ogr
-    - osr

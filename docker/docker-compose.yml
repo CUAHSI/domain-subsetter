@@ -9,15 +9,22 @@ services:
       PYTHONWARNINGS: "ignore:Unverified HTTPS request"
       GDAL_DATA: "/root/miniconda3/share/gdal"
       PROJ_LIB: "/root/miniconda3/share/proj"
-      PORT: '8888'
+      PORT: 8888
+      REDIS_URL: redis_db
+      REDIS_PORT: 6379
+      PF_EXE_DIR: /usr/local
     ports: 
       - "80:8888"
     expose:
       - "80"
     volumes:
-      #      - /share:/share
+      - ./share:/share
       - ../tornado-app:/srv
-  redis:
+    links:
+      - redis_db
+  redis_db:
     image: redis:alpine
+    ports:
+      - "6379:6379"
     expose:
       - "6379"

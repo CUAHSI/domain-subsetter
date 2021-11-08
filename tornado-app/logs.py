@@ -7,8 +7,6 @@ import environment as env
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 
 
-
-
 class Logs(object):
 
     if not os.path.exists(env.log_dir):
@@ -26,8 +24,8 @@ class Logs(object):
     fpath = os.path.join(env.log_dir, 'general.log')
     general_handler = logging.handlers.RotatingFileHandler(fpath,
                                                            'a',
-                                                          env.log_file_size,
-                                                          env.log_count)
+                                                           env.log_file_size,
+                                                           env.log_count)
     general_handler.setFormatter(formatter)
     general_logger.addHandler(general_handler)
 
@@ -54,7 +52,7 @@ class Logs(object):
     fpath = os.path.join(env.log_dir, 'application.log')
     application_handler = logging.handlers.RotatingFileHandler(fpath,
                                                                'a',
-                                                          env.log_file_size,
-                                                          env.log_count)
+                                                               env.log_file_size,
+                                                               env.log_count)
     application_handler.setFormatter(application_formatter)
     application_logger.addHandler(application_handler)
