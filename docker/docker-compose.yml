@@ -1,14 +1,15 @@
 version: "3.3"
 services:
   app:
-    image: subsetter:latest
+    image: subsetter-ubuntu:latest
     build:
       context: ..
-      dockerfile: docker/Dockerfile.subsetter
+      #dockerfile: docker/Dockerfile.subsetter
+      dockerfile: docker/Dockerfile.ubuntu
     environment: 
       PYTHONWARNINGS: "ignore:Unverified HTTPS request"
-      GDAL_DATA: "/root/miniconda3/share/gdal"
-      PROJ_LIB: "/root/miniconda3/share/proj"
+      GDAL_DATA: "/opt/miniconda/share/gdal"
+      PROJ_LIB: "/opt/miniconda/share/proj"
       PORT: 8888
       REDIS_URL: redis_db
       REDIS_PORT: 6379
@@ -18,7 +19,8 @@ services:
     expose:
       - "80"
     volumes:
-      - ./share:/share
+#      - ./share:/share
+      - /Volumes/ColdStorage/subsetter/domain-data/:/share
       - ../tornado-app:/srv
     links:
       - redis_db

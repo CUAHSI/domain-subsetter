@@ -1,18 +1,16 @@
 FROM centos:centos7
 LABEL maintainer Tony Castronova <acastronova@cuahsi.org>
 
-ENV PATH="/root/miniconda3/bin:${PATH}"
-
-#########################
-## SYSTEM DEPENDENCIES ##
-#########################
+#######################
+## SUBSETTER WEB APP ##
+#######################
 
 RUN yum -y install epel-release \
     git \
     wget \
     vim \
-    && yum clean all \
-    && rm -rf /var/cache/yum 
+ && yum clean all \
+ && rm -rf /var/cache/yum 
 
 # gdal-python and python3-devel are
 # and needed to install gdal python bindings
@@ -22,143 +20,302 @@ RUN yum -y install epel-release \
     #    && yum clean all \
     #    && rm -rf /var/cache/yum
 
+# install and configure miniconda in /opt/miniconda so that it's accessible
+# to all system users. 
+ENV CONDA_PATH=/opt/miniconda
 
-# install and configure miniconda
+# needs to be declared separately from CONDA_PATH since it uses that
+# environment variable
+ENV PATH=$PATH:$CONDA_PATH/bin:$CONDA_PATH/condabin
+
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && sh Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm -f Miniconda3-latest-Linux-x86_64.sh 
-RUN conda init bash 
+ && sh Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_PATH \
+ && rm -f Miniconda3-latest-Linux-x86_64.sh 
+# && conda init bash 
+
+# create a system user and group for the subsetting service. Make sure the
+# Miniconda directory is owned by this group.
+RUN groupadd subsetting \
+ && chgrp -R subsetting $CONDA_PATH \
+ && chmod 770 -R $CONDA_PATH \
+ && useradd docker \
+ && usermod -aG subsetting docker
+
+USER docker
 
 WORKDIR /srv
 ## download website code
 ##RUN git clone https://github.com/CUAHSI/nwm_subsetting.git --branch redis /srv
 #ADD tornado-app/environment.yml /srv
+#
+### Notes: 
+### 	gdal installs: proj geos tiledb mkl blas poppler hdf5 numpy libgfortran
+##"gdal<3.1" \
+##"aioredis=1.3.1" \
+#RUN conda update conda \
+# && conda install -y \
+#    "python=3.7.3" \
+#    gdal \
+#    aioredis \
+#    matplotlib \
+#    pyproj \
+#    sqlite \
+#    tornado \
+#    xarray 
+#
+#RUN pip install \
+#    hs_restclient==1.3.6 \
+#    shapely \
+#    multiprocessing-logging==0.3.0 \
+#    python-cas==1.5.0 \
+#    pyshp \
+#    redis
 
-# Notes: 
-# 	gdal installs: proj geos tiledb mkl blas poppler hdf5 numpy libgfortran
-RUN conda install -y \
-    "gdal<3.1" \
-    "aioredis=1.3.1" \
-    matplotlib \
-    pyproj \
-    sqlite \
-    tornado \
-    xarray 
+#####################
+### INSTALL PARFLOW #
+#####################
+#
+## install Parflow dependencies. 
+### this also installs pandas and python-dateutil
+#RUN pip install pftools==0.0.6 numpy parflowio parflow_subsetter
+#
+#RUN yum  install -y  \
+#    curl \
+#    libcurl-devel \
+#    gcc  \
+#    gcc-c++  \
+#    gcc-gfortran \
+#    git \
+#    m4 \
+#    make \
+#    openmpi \
+#    openmpi-devel \
+#    tcl-devel \
+#    tk-devel \
+#    wget \
+#    which \
+#    zlib \
+#    zlib-devel \
+#    && rm -rf /var/cache/yum
+#
+#RUN mkdir -p /home/parflow 
+#WORKDIR /home/parflow
+#
+#ENV CMAKE_DIR /home/parflow/cmake-3.14.5-Linux-x86_64
+#ENV PARFLOW_DIR /usr/local
+#ENV PATH $PATH:/usr/lib64/openmpi/bin:$CMAKE_DIR/bin:$PARFLOW_DIR/bin
+#ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
+#
+## HDF5
+#run wget -q https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.21/src/hdf5-1.8.21.tar.gz && \ 
+#    tar -xf hdf5-1.8.21.tar.gz && \
+#    source /etc/profile.d/modules.sh && \
+#    module load mpi/openmpi-x86_64 && \
+#    cd hdf5-1.8.21 && \
+#    CC=mpicc ./configure \
+#      --prefix=$PARFLOW_DIR \
+#      --enable-parallel && \
+#    make && make install && \
+#    cd .. && \
+#    rm -fr hdf5-1.8.21 hdf5-1.8.21.tar.gz
+#
+## NetCDF
+#run wget -q https://github.com/Unidata/netcdf-c/archive/v4.5.0.tar.gz && \ 
+#    tar -xf v4.5.0.tar.gz && \
+#    source /etc/profile.d/modules.sh && \
+#    module load mpi/openmpi-x86_64 && \
+#    cd netcdf-c-4.5.0 && \
+#    CC=mpicc CPPFLAGS=-I${PARFLOW_DIR}/include LDFLAGS=-L${PARFLOW_DIR}/lib \
+#    ./configure --disable-shared --prefix=${NCDIR} && \
+#   make && \
+#   make install && \
+#   cd .. && \
+#   rm -fr netcdf-c-4.5.0 v4.5.0.tar.gz
+#
+## SILO && CMake
+#RUN wget -nv --no-check-certificate http://cmake.org/files/v3.14/cmake-3.14.5-Linux-x86_64.tar.gz && \
+#    tar -xvf cmake-3.14.5-Linux-x86_64.tar.gz && \
+#    curl "https://wci.llnl.gov/sites/wci/files/2021-09/silo-4.11.tgz" -o "silo-4.11.tgz" && \
+#    tar -xf silo-4.11.tgz && \
+#    cd silo-4.11 && \
+#    ./configure  --prefix=$PARFLOW_DIR --disable-silex --disable-hzip --disable-fpzip && \
+#    make install && \
+#    cd .. && \
+#    rm -rf silo-4.11 silo-4.11.tgz
+#
+## Hypre
+#RUN source /etc/profile.d/modules.sh && \
+#   module load mpi/openmpi-x86_64 && \
+#   wget -q https://github.com/hypre-space/hypre/archive/v2.17.0.tar.gz && \
+#   tar xf v2.17.0.tar.gz && \
+#   cd hypre-2.17.0/src && \
+#   ./configure --prefix=$PARFLOW_DIR && \
+#   make install && \
+#   cd ../.. && \
+#   rm -fr hypre-2.17.0 v2.17.0.tar.gz
+#
+#ENV PARFLOW_MPIEXEC_EXTRA_FLAGS "--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
+#
+#RUN git clone -b master --single-branch https://github.com/parflow/parflow.git parflow
+#
+#RUN mkdir -p build && \
+#    cd build && \
+#    CC=mpicc CXX=mpic++ LDFLAGS="-lcurl" cmake ../parflow \
+#       -DPARFLOW_AMPS_LAYER=mpi1 \
+#       -DPARFLOW_AMPS_SEQUENTIAL_IO=TRUE \
+#       -DHYPRE_ROOT=$PARFLOW_DIR \
+#       -DSILO_ROOT=$PARFLOW_DIR \
+#       -DPARFLOW_ENABLE_HDF5=TRUE \
+#       -DPARFLOW_ENABLE_NETCDF=TRUE \
+#       -DPARFLOW_ENABLE_TIMING=TRUE \
+#       -DPARFLOW_HAVE_CLM=TRUE \
+#       -DCMAKE_INSTALL_PREFIX=$PARFLOW_DIR && \
+#     make install && \
+#     cd .. && \
+#     rm -fr parflow build
+#
+###################################
+## INSTALL WRF-HYDRO DEPENDENCIES #
+###################################
 
+USER root
 
-RUN pip install \
-    hs_restclient==1.3.6 \
-    shapely \
-    multiprocessing-logging==0.3.0 \
-    python-cas==1.5.0 \
-    pyshp \
-    redis
+#RUN yum groupinstall -y "Development Tools"
+#
+#RUN yum install -y \
+#    readline-devel \
+#    zlib-devel \
+#    bzip2-devel \
+#    xz-devel \
+#    pcre-devel \
+#    libcurl-devel \
+# && yum clean all \
+# && rm -rf /var/cache/yum
 
+#WORKDIR /tmp
+#RUN wget https://cran.r-project.org/src/base/R-3/R-3.5.2.tar.gz \
+#    && tar xvzf R-3.5.2.tar.gz \
+#    && cd R-3.5.2 \
+#    && ./configure --with-x=no \
+#    && make \
+#    && make install
 
-####################
-## INSTALL PARFLOW #
-####################
-
-# install Parflow dependencies. 
-## this also installs pandas and python-dateutil
-RUN pip install pftools==0.0.6 numpy parflowio parflow_subsetter
-
-RUN yum  install -y  \
-    curl \
-    libcurl-devel \
-    gcc  \
-    gcc-c++  \
+RUN yum install -y \
+    readline-devel \
+    gcc-c++ \
     gcc-gfortran \
-    git \
-    m4 \
-    make \
-    openmpi \
-    openmpi-devel \
-    tcl-devel \
-    tk-devel \
-    wget \
-    which \
-    zlib \
     zlib-devel \
-    && rm -rf /var/cache/yum
+    bzip2-devel \
+    xz-devel \
+    pcre-devel \
+    curl-devel \
+    libpng-devel \
+    libjpeg-devel \
+    libtiff-devel \
+    libX11-devel \
+    libXt-devel \
+    cairo \
+    pango-devel \
+    libicu-devel \
+    texinfo \
+    texlive-latex-bin-bin \ 
+    make \
+    java-1.8.0-openjdk-* \
+    which \
+    qpdf \
+    valgrind \
+    openssl-devel \
+    libxml2-devel \
+    binutils \
+ && yum clean all \
+ && rm -rf /var/cache/yum
 
-RUN mkdir -p /home/parflow 
-WORKDIR /home/parflow
+# Version of R to build and install
+ENV R_VERSION=3.5.2
 
-ENV CMAKE_DIR /home/parflow/cmake-3.14.5-Linux-x86_64
-ENV PARFLOW_DIR /usr/local
-ENV PATH $PATH:/usr/lib64/openmpi/bin:$CMAKE_DIR/bin:$PARFLOW_DIR/bin
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
+# Build and install R from source
+RUN cd /tmp \
+    && curl -O https://cloud.r-project.org/src/base/R-3/R-${R_VERSION}.tar.gz \
+    && tar -zxf R-${R_VERSION}.tar.gz \
+    && cd /tmp/R-${R_VERSION} \
+    && ./configure --with-readline=yes --enable-memory-profiling \
+    && make \
+    && make install
 
-# HDF5
-run wget -q https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.21/src/hdf5-1.8.21.tar.gz && \ 
-    tar -xf hdf5-1.8.21.tar.gz && \
-    source /etc/profile.d/modules.sh && \
-    module load mpi/openmpi-x86_64 && \
-    cd hdf5-1.8.21 && \
-    CC=mpicc ./configure \
-      --prefix=$PARFLOW_DIR \
-      --enable-parallel && \
-    make && make install && \
-    cd .. && \
-    rm -fr hdf5-1.8.21 hdf5-1.8.21.tar.gz
+RUN R CMD javareconf
 
-# NetCDF
-run wget -q https://github.com/Unidata/netcdf-c/archive/v4.5.0.tar.gz && \ 
-    tar -xf v4.5.0.tar.gz && \
-    source /etc/profile.d/modules.sh && \
-    module load mpi/openmpi-x86_64 && \
-    cd netcdf-c-4.5.0 && \
-    CC=mpicc CPPFLAGS=-I${PARFLOW_DIR}/include LDFLAGS=-L${PARFLOW_DIR}/lib \
-    ./configure --disable-shared --prefix=${NCDIR} && \
-   make && \
-   make install && \
-   cd .. && \
-   rm -fr netcdf-c-4.5.0 v4.5.0.tar.gz
+RUN URL=https://mirrors.nics.utk.edu/cran/ && \
+    echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
 
-# SILO && CMake
-RUN wget -nv --no-check-certificate http://cmake.org/files/v3.14/cmake-3.14.5-Linux-x86_64.tar.gz && \
-    tar -xvf cmake-3.14.5-Linux-x86_64.tar.gz && \
-    curl "https://wci.llnl.gov/sites/wci/files/2021-09/silo-4.11.tgz" -o "silo-4.11.tgz" && \
-    tar -xf silo-4.11.tgz && \
-    cd silo-4.11 && \
-    ./configure  --prefix=$PARFLOW_DIR --disable-silex --disable-hzip --disable-fpzip && \
-    make install && \
-    cd .. && \
-    rm -rf silo-4.11 silo-4.11.tgz
+RUN R -e "install.packages('devtools', dependencies=T)"
 
-# Hypre
-RUN source /etc/profile.d/modules.sh && \
-   module load mpi/openmpi-x86_64 && \
-   wget -q https://github.com/hypre-space/hypre/archive/v2.17.0.tar.gz && \
-   tar xf v2.17.0.tar.gz && \
-   cd hypre-2.17.0/src && \
-   ./configure --prefix=$PARFLOW_DIR && \
-   make install && \
-   cd ../.. && \
-   rm -fr hypre-2.17.0 v2.17.0.tar.gz
+### R runtime properties
+#RUN mkdir /usr/local/lib64/R/site-library   ## Where to install packages
 
-ENV PARFLOW_MPIEXEC_EXTRA_FLAGS "--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
 
-RUN git clone -b master --single-branch https://github.com/parflow/parflow.git parflow
+#RUN yum install -y \
+#    R \
+# && rm -rf /var/cache/yum
 
-RUN mkdir -p build && \
-    cd build && \
-    CC=mpicc CXX=mpic++ LDFLAGS="-lcurl" cmake ../parflow \
-       -DPARFLOW_AMPS_LAYER=mpi1 \
-       -DPARFLOW_AMPS_SEQUENTIAL_IO=TRUE \
-       -DHYPRE_ROOT=$PARFLOW_DIR \
-       -DSILO_ROOT=$PARFLOW_DIR \
-       -DPARFLOW_ENABLE_HDF5=TRUE \
-       -DPARFLOW_ENABLE_NETCDF=TRUE \
-       -DPARFLOW_ENABLE_TIMING=TRUE \
-       -DPARFLOW_HAVE_CLM=TRUE \
-       -DCMAKE_INSTALL_PREFIX=$PARFLOW_DIR && \
-     make install && \
-     cd .. && \
-     rm -fr parflow build
+#RUN conda update conda \
+    #    && install -y \
+#    "gdal==2.4.1" \
+#    "geos==3.7.1"
 #
+
+#RUN yum install -y \
+#    libjpeg-turbo-devel \
+#    netcdf*devel* \
+#    gdal-devel \
+#    proj-devel \
+#    proj-nad \
+#    proj-epsg \
+# && rm -rf /var/cache/yum
 #
+#RUN R -e "install.packages(c('rgdal', 'RNetCDF', 'ggmap', 'dataRetrieval', 'data.table'), dependencies=TRUE)"
+#
+#RUN R -e "devtools::install_github('NCAR/rwrfhydro')"
+#
+#    libcurl-devel \
+#    hdf-devel \
+#    gdal \
+#    proj \
+#    udunits2-devel \
+#    nco \
+
+#    openssl-devel \
+#    libxml2-devel \
+#    libpng-devel \
+#    epel-release \
+
+## modify the default location for installed R libraries. Set GDAL_DATA
+## and PROJ_LIB envars based on the python packages that were installed.
+#ENV R_LIBS_USER=/home/docker/lib/R/site-library \
+#    GDAL_DATA=/opt/miniconda/share/gdal \
+#    PROJ_LIB=/opt/miniconda/share/proj \
+#
+#RUN echo "LD_LIBRARY_PATH=/opt/miniconda/lib" >> ~/.bashrc
+#
+##RUN cp /usr/share/proj/proj_def.dat $CONDA_PATH/share/proj
+#
+#USER docker
+#
+#RUN mkdir -p /home/docker/lib/R/site-library 
+#
+##RUN yum groupinstall -y 'Development Tools'
+##
+#RUN URL=https://mirrors.nics.utk.edu/cran/ && \
+#    echo "options(repos=structure(c(CRAN=\"$URL\")))" > ~/.Rprofile
+
+#RUN R -e "install.packages(c('remotes', 'raster', 'ncdf4'), dependencies=T)"
+#RUN R -e "install.packages(c('devtools', 'rgdal', 'RNetCDF', 'ggmap', 'dataRetrieval', 'data.table'), dependencies=TRUE)"
+#RUN R -e "devtools::install_github('NCAR/rwrfhydro')"
+
+
+
+
+
+
 #RUN pip install pftools==0.0.6 numpy parflowio parflow_subsetter
 ## this also installs pandas and python-dateutil
 #

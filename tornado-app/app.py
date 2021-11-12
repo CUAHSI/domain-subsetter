@@ -82,6 +82,10 @@ def main():
 
     # initialize logs
     applogs = logs.Logs()
+    
+    # create output directory
+    if not os.path.exists(env.output_dir):
+        os.makedirs(env.output_dir)
 
     http_server.listen(env.port,
 		       address=env.address)
