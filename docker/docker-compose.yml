@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   app:
-    image: subsetter-ubuntu:latest
+    image: cuahsi/subsetter-ubuntu:0.1
     build:
       context: ..
       #dockerfile: docker/Dockerfile.subsetter
@@ -14,16 +14,14 @@ services:
       REDIS_URL: redis_db
       REDIS_PORT: 6379
       PF_EXE_DIR: /usr/local
-      SSL_CERT: ssl/wildcard_cuahsi_org.cert
-      SSL_KEY: ssl/wildcard_cuahsi_org.key
-
+      SSL_CERT: /srv/ssl/wildcard_cuahsi_org.crt
+      SSL_KEY: /srv/ssl/wildcard_cuahsi_org.key
     ports: 
-      - "80:8888"
+      - "443:8888"
     expose:
-      - "80"
+      - "443"
     volumes:
-#      - ./share:/share
-      - /Volumes/ColdStorage/subsetter/domain-data/:/share
+      - ./share:/share
       - ../tornado-app:/srv
     links:
       - redis_db
