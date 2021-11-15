@@ -1,12 +1,20 @@
 import os
 
+# ssl certs
+ssl_cert = os.environ.get("SSL_CERT", None)
+ssl_key = os.environ.get("SSL_KEY", None)
+
 # Server settings
 address = os.environ.get("ADDRESS", "0.0.0.0")
-port = os.environ.get("PORT", "443")
 
-# ssl certs
-ssl_cert = os.environ.get("SSL_CERT", "ssl/cuahsi.cert")
-ssl_key = os.environ.get("SSL_KEY", "ssl/cuahsi.key")
+# set server port based on environment variable. If not provided, default to
+# 443 if ssl is enabled, otherwise 80
+port = os.environ.get("PORT", None)
+if port is None:
+    if all((ssl_key, ssl_cert)):
+        port = "443"
+    else:
+        port = "80"
 
 # CAS authentication for HydroFrame - Parflow
 cas_service_url = os.environ.get("CAS_SERVICE_URL", "https://subset.cuahsi.org/hflogin")

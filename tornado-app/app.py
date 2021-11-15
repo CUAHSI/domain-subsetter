@@ -2,23 +2,21 @@
 
 
 import os
-import sys
-import logging
-import tornado.web
-from tornado import httpserver
 from tornado.ioloop import IOLoop
+from tornado import web, httpserver
 
 # import 'logs' before other modules
 # to ensure logs are configured properly
 import logs
 
-from handlers import core, hydroshare
-from handlers import pf1handlers, nwm122handlers, nwm2handlers
-import environment as env
 import auth
 import websocket
+import environment as env
+from handlers import core, hydroshare
+from handlers import pf1handlers, nwm122handlers, nwm2handlers
 
-class Application(tornado.web.Application):
+
+class Application(web.Application):
     def __init__(self):
         endpoints = [
             (r"/", core.IndexNew),
@@ -27,12 +25,11 @@ class Application(tornado.web.Application):
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),
             (r"/jobs/([a-f0-9]{40})", core.Job),
-#            (r"/admin/status", core.Status),
-#            (r"/status/([a-f0-9]{40})", core.Status),
+            #            (r"/admin/status", core.Status),
+            #            (r"/status/([a-f0-9]{40})", core.Status),
             (r"/status", core.Status),
-            (r"/data/(.*)", tornado.web.StaticFileHandler,
-             {"path": env.output_dir}),
-#            (r"/results/([a-f0-9]{40})", core.Results),
+            (r"/data/(.*)", web.StaticFileHandler, {"path": env.output_dir}),
+            #            (r"/results/([a-f0-9]{40})", core.Results),
             (r"/results", core.Results),
             (r"/download-zip/([a-f0-9]{40})", core.GetZip),
             (r"/download-gzip/([a-f0-9]{40})", core.GetGzip),
@@ -57,42 +54,45 @@ class Application(tornado.web.Application):
             (r"/hflogin", pf1handlers.HfLogin),
             (r"/hflogout", pf1handlers.HfLogout),
             (r"/hfisauthenticated", pf1handlers.HFIsAuthenticated),
-
-
         ]
         settings = {
             "debug": env.debug,
             "static_path": env.static_path,
             "template_path": env.template_path,
             "login_url": "/login",
-            "cookie_secret":env.cookie_secret,
+            "cookie_secret": env.cookie_secret,
         }
-        tornado.web.Application.__init__(self, endpoints, **settings)
+        web.Application.__init__(self, endpoints, **settings)
 
 
 def main():
 
     app = Application()
-    http_server = tornado.httpserver.HTTPServer(app,
-#						ssl_options={
-#						  'certfile': env.ssl_cert,
-#						  'keyfile': env.ssl_key,
-#						}
-)
+    ssl = (env.ssl_cert, env.ssl_key)
+    if all(ssl):
+        http_server = httpserver.HTTPServer(
+            app,
+            ssl_options={
+                "certfile": ssl[0],
+                "keyfile": ssl[1],
+            },
+        )
+    else:
+        http_server = httpserver.HTTPServer(app)
 
     # initialize logs
     applogs = logs.Logs()
-    
+
     # create output directory
     if not os.path.exists(env.output_dir):
         os.makedirs(env.output_dir)
 
-    http_server.listen(env.port,
-		       address=env.address)
-    print('\n'+'-'*60)
-    print('server listening on %s:%s' % (env.address, env.port))
-    print('-'*60+'\n')
+    http_server.listen(env.port, address=env.address)
+    print("\n" + "-" * 60)
+    print("server listening on %s:%s" % (env.address, env.port))
+    print("-" * 60 + "\n")
     IOLoop.instance().start()
+
 
 if __name__ == "__main__":
     main()
