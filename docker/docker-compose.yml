@@ -14,6 +14,9 @@ services:
       REDIS_URL: redis_db
       REDIS_PORT: 6379
       PF_EXE_DIR: /usr/local
+      SSL_CERT: ssl/wildcard_cuahsi_org.cert
+      SSL_KEY: ssl/wildcard_cuahsi_org.key
+
     ports: 
       - "80:8888"
     expose:
