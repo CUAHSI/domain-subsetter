@@ -4,7 +4,6 @@ services:
     image: cuahsi/subsetter-ubuntu:0.1
     build:
       context: ..
-      #dockerfile: docker/Dockerfile.subsetter
       dockerfile: docker/Dockerfile.ubuntu
     environment: 
       PYTHONWARNINGS: "ignore:Unverified HTTPS request"
@@ -14,12 +13,12 @@ services:
       REDIS_URL: redis_db
       REDIS_PORT: 6379
       PF_EXE_DIR: /usr/local
-      SSL_CERT: /srv/ssl/wildcard_cuahsi_org.crt
-      SSL_KEY: /srv/ssl/wildcard_cuahsi_org.key
+      #      SSL_CERT: /srv/ssl/wildcard_cuahsi_org.crt
+      #      SSL_KEY: /srv/ssl/wildcard_cuahsi_org.key
     ports: 
-      - "443:8888"
+      - "80:8888"
     expose:
-      - "443"
+      - "80"
     volumes:
       - ./share:/share
       - ../tornado-app:/srv
