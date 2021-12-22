@@ -16,6 +16,9 @@ services:
       PF_EXE_DIR: /usr/local
       SSL_CERT: /share/ssl/cuahsi_org_2021.cert
       SSL_KEY: /share/ssl/cuahsi_org_2021.key
+      OAUTH_CLIENT_ID=s0fyGhESD7pDYcglnBFlPrHAmxxsiHpFBo27ROjU
+      OAUTH_CLIENT_SECRET=ONVdVUUFMX53uhx6HxitcdMZhwF83yBhFKA6OUSO1NZJ2WrSFfTCWoohYkt56SzIotQsaJ1vse92DaoK9DCHB2JFp2IB7un6xCMZeoLBaPvLt3w8LtqGGExRSM5yfnuc
+      OAUTH_CALLBACL_URL=https://subset-dev.cuahsi.org/authorize
     ports: 
       - "443:8888"
     expose:
