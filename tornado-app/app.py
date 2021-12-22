@@ -26,10 +26,8 @@ class Application(web.Application):
             (r"/jobs", core.Job),
             (r"/jobs/([a-f0-9]{40})", core.Job),
             #            (r"/admin/status", core.Status),
-            #            (r"/status/([a-f0-9]{40})", core.Status),
             (r"/status", core.Status),
             (r"/data/(.*)", web.StaticFileHandler, {"path": env.output_dir}),
-            #            (r"/results/([a-f0-9]{40})", core.Results),
             (r"/results", core.Results),
             (r"/download-zip/([a-f0-9]{40})", core.GetZip),
             (r"/download-gzip/([a-f0-9]{40})", core.GetGzip),
@@ -45,6 +43,7 @@ class Application(web.Application):
             (r"/nwm/v1_2_2/subset", nwm122handlers.SubsetNWM122),
             (r"/nwm/v2_0", nwm2handlers.Index),
             (r"/nwm/v2_0/subset", nwm2handlers.SubsetNWM2),
+            # HydroShare handlers
             (r"/login", auth.LoginHandler),
             (r"/authorize", auth.CallbackHandler),
             (r"/save-to-hydroshare/([a-f0-9]{40})", hydroshare.SaveToHydroShare),
