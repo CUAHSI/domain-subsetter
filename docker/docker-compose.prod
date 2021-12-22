@@ -16,9 +16,10 @@ services:
       PF_EXE_DIR: /usr/local
       SSL_CERT: /share/ssl/cuahsi_org_2021.cert
       SSL_KEY: /share/ssl/cuahsi_org_2021.key
-      OAUTH_CLIENT_ID=s0fyGhESD7pDYcglnBFlPrHAmxxsiHpFBo27ROjU
-      OAUTH_CLIENT_SECRET=ONVdVUUFMX53uhx6HxitcdMZhwF83yBhFKA6OUSO1NZJ2WrSFfTCWoohYkt56SzIotQsaJ1vse92DaoK9DCHB2JFp2IB7un6xCMZeoLBaPvLt3w8LtqGGExRSM5yfnuc
-      OAUTH_CALLBACL_URL=https://subset-dev.cuahsi.org/authorize
+      OAUTH_CLIENT_ID: "TjMr7rPA8AkjVvJgDohn0QEIZ2fKDoPNVjVLKYXz"
+      OAUTH_CLIENT_SECRET: "Yy5FhCXJQ5C9HRpv467bCkLma8vq1nRk69gl4l0V8qcTOXONR4fO8KCdZv6V0MWsViK1iUK5TFMC0NrX8VaL1lOkejLjTUHdz8qa6QWY2JYa6wbHxZyNdncx5qyACuHR"
+      OAUTH_CALLBACK_URL: "https://subset.cuahsi.org/authorize"
+      CAS_SERVICE_URL: "https://subset.cuahsi.org/hflogin"
     ports: 
       - "443:8888"
     expose:
