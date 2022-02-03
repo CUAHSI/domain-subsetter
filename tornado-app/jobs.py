@@ -3,15 +3,24 @@
 import uuid
 import sqldata
 import environment as env
-import  multiprocessing as mp
+import multiprocessing as mp
 from datetime import datetime
 from tornado.log import app_log
 from multiprocessing_logging import install_mp_handler
 
+## TODO: add borg class to prevent this from repeatedly spawning workers
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
-class BackgroundWorker(object):
+class BackgroundWorker(object, metaclass=Singleton):
 
     def __init__(self):
+        app_log.info(f'INITIALIZING WORKER POOL: {env.worker_count} workers')
+
         self.numprocesses = env.worker_count
 
         self.queue = mp.Queue()
@@ -64,7 +73,7 @@ class BackgroundWorker(object):
             
             try:
                 uid = item['uid']
-                
+
                 # save the start time for reporting
                 start = datetime.now()
                 item['dt_start'] = start
@@ -94,7 +103,8 @@ class BackgroundWorker(object):
                 self.status[uid] = 'finished'
 
             except Exception as e:
-                logger.error('job failed %s: %s' % (item['uid'], e))
+                uid = item['uid']
+                logger.error('job failed %s: %s' % (uid, e))
                 item['state'] = 'failed'
                 item['result'] = dict(filepath='')
                 item['dt_end'] = datetime.now()

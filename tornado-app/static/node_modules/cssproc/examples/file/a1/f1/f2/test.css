@@ -1,0 +1,78 @@
+.yui-test-cssprocessor {
+    background: url( ../../../foo.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url( "../../s1/s2/foo.gif" );
+}
+
+.yui-test-cssprocessor {
+    background: url( bar.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url( .././../../foo.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url( ./foo.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url( /a1/a2/foobar.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url(http://www.yahoo.com/a1/a2/foobar.gif );
+}
+
+.yui-test-cssprocessor {
+    background: url( "http://www.yahoo.com/a1/a2/foobar.gif");
+}
+
+.yui-test-cssprocessor {
+    background: url    (     'http://www.yahoo.com/a1/a2/foobar.gif'    );
+}
+
+.yui-test-cssprocessor {
+    background: url('http://www.yahoo.com/a1/a2/foobar.gif');
+}
+
+.yui-test-cssprocessor {
+    background: url(
+        '../../s1/foo.png'
+    );
+}
+
+v\:oval,
+v\:shadow,
+v\:fill {
+    behavior: url(#default#VML);
+    display: inline-block;
+    zoom: 1; *display: inline; /* IE < 8: fake inline-block */
+}
+
+*html .yui-picker-bg {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='picker_mask.png', sizingMethod='scale');
+
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale', src="picker_mask.png");
+}
+
+*html .yui-picker-bg {
+    filter:AlphaImageLoader(src="picker_mask.png");
+}
+
+*html .yui-picker-bg {
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../picker_mask.png');
+
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader( src="../../s1/picker_mask.png" );
+}
+
+*html .yui-picker-bg {
+    background-image: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
+		src='picker_mask.png', 
+		sizingMethod='scale'
+    );
+}

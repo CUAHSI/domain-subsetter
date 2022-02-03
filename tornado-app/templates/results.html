@@ -1,0 +1,55 @@
+<!DOCTYPE html> 
+
+{% extends base_new.html %}
+
+{% block extra-head %}
+    <script type='text/javascript' src='{{ static_url("progress-messages.js") }}'></script>
+{% end %}
+
+
+{% block content %}
+
+    <div id=results class='mdl-grid center-horizontally'>
+        <h3>Operation Completed Successfully</h3>
+    </div>
+
+    <div id=results class='mdl-grid center-horizontally'>
+	<form action='/download-gzip/{{ jobid }}' method='get' target='_blank'>
+	<button id='btn-gzip' class="mdl-button
+			            mdl-js-button
+				    mdl-button--raised">
+	    Download GZip </button>
+	</form>
+    </div>
+
+    <div id=results class='mdl-grid center-horizontally'>
+	<form action='/download-zip/{{ jobid }}' method='get' target='_blank'>
+	    <button id='btn-zip'
+		    class="mdl-button
+		           mdl-js-button
+		           mdl-button--raised">
+		Download Zip
+	    </button>
+	</form>
+    </div>
+    
+    <div id=btn-hs-save-dialog class='mdl-grid center-horizontally'>
+        <form action="save-to-hydroshare/{{jobid}}" method=get>
+        <button id='btn-hs-save'
+                class="mdl-button
+                       mdl-js-button
+                       mdl-button--raised">
+            Save to HydroShare
+        </button>
+        </form>
+    </div>
+
+    {% block extra-content %}
+    {% end %}
+
+    <! -- DIV for status messages -->
+    <div id=progress-messages class=progress-msg>
+    </div>
+
+{% end %}
+

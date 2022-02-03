@@ -1,0 +1,114 @@
+<p>The formatfield component formats an input field using
+  language sensitive number formatting. It acts as a "pluggable"
+  component. It can be added to a <code>mdl-textfield</code> component or to
+  a <code>&lt;input&gt</code> element.
+</p>
+
+<style>
+  .mdl-data-table .mdl-textfield {
+    width: auto;
+  }
+</style>
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp" style="margin-top: 16px;">
+<thead>
+<tr>
+  <th class="mdl-data-table__cell--non-numeric">Language</th>
+  <th class="mdl-data-table__cell--non-numeric">Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric" id="browser-lang">Browser language</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield" id="sample2-component">
+      <input class="mdl-textfield__input" type="text" pattern="-?[0-9, ]*([\.,][0-9]+)?"
+             id="sample2-input" value="1234.5">
+      <label class="mdl-textfield__label" for="sample2-input">Number...</label>
+      <span class="mdl-textfield__error">Input is not a number!</span>
+    </div>
+    <div id="sample2-unformatted"></div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">nb-NO</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield"
+      data-formatfield-options="{'locales': 'nb-NO'}">
+
+      <input class="mdl-textfield__input" type="text" pattern="-?[0-9 ]*([\.,][0-9]+)?" value="1234.5">
+      <label class="mdl-textfield__label">Number...</label>
+      <span class="mdl-textfield__error">Input is not a number!</span>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">en-GB</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield" data-formatfield-options="{'locales': 'en-GB'}">
+      <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" value="1234.5">
+      <label class="mdl-textfield__label">Number...</label>
+      <span class="mdl-textfield__error">Input is not a number!</span>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">nb-NO, integer</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield">
+      <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?"
+        data-formatfield-options="{'locales': 'nb-NO', 'minimumFractionDigits': 0,'maximumFractionDigits': 0}" value="1234.5">
+
+      <label class="mdl-textfield__label">Number...</label>
+      <span class="mdl-textfield__error">Input is not a number!</span>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">Percent. Input not supported</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield">
+      <input class="mdl-textfield__input" type="text" readonly
+        data-formatfield-options="{'locales': 'en-GB', 'style': 'percent'}" value="0.20">
+      <label class="mdl-textfield__label">Number...</label>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">Currency. Input not supported</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <div class="mdl-textfield mdl-js-textfield mdlext-js-formatfield">
+      <input class="mdl-textfield__input" type="text" readonly
+        data-formatfield-options="{'locales': 'nb-NO', 'style': 'currency', 'currency': 'NOK'}" value="1234.5">
+      <label class="mdl-textfield__label">Number...</label>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td class="mdl-data-table__cell--non-numeric">Input</td>
+  <td class="mdl-data-table__cell--non-numeric">
+    <input class=" mdlext-js-formatfield" type="text"
+      data-formatfield-options="{'locales': 'nb-NO'}" value="1234.5">
+  </td>
+</tr>
+</tbody>
+</table>
+
+<script>
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      var lang = navigator.languages
+        ? navigator.languages[0]
+        : navigator.language || navigator.userLanguage;
+
+      document.querySelector('#browser-lang').innerText = 'Browser language (' + lang + ')';
+
+      var formatfieldComponent = document.querySelector('#sample2-component');
+      formatfieldComponent.querySelector('input').addEventListener('blur', function () {
+        var unformatted = document.querySelector('#sample2-unformatted');
+        unformatted.innerText = 'Unformatted: ' + formatfieldComponent.MaterialExtFormatfield.getUnformattedValue();
+      });
+    });
+  }());
+</script>
+

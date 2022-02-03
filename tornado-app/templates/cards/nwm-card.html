@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+
+<div class='mdl-cell mdl-cell--4-col mdl-card'
+      id='subset-card'>
+    
+    <!-- Card Image -->
+    <figure class="mdl-card__media">
+	<img src="{{ static_url("images/nwm-card-med.png") }}" alt="" />
+    </figure>
+
+    <!-- Card Content -->
+    <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">National Water Model</h2>
+	<a href="/help#nwm">
+	    <button class='mdl-button mdl-js-button mdl-js--ripple-effect'>
+		<i class='material-icons'>info_outline</i>
+	    </button>
+	</a>
+    </div>
+    <div class="mdl-card__supporting-text">
+	<p>
+	The National Water Model is a hydrologic modeling framework that simulates observed and forecast streamflow over the entire continental United States. It's a special configuration of the WRF-Hydro open-source community model maintained by the National Center for Atmospheric Research. 
+	</p>
+      <button id='btn-nwm' class="mdl-button 
+	     mdl-js-button 
+	     mdl-button--raised">
+                 Subset Domain
+      </button>
+
+      <!-- Button Drop List -->
+      <ul class="mdl-menu 
+	         mdl-js-menu 
+		 mdl-js-ripple-effect
+		 mdl-js-ripple-effect--ignore-events"
+		 for="btn-nwm">
+          <li class="mdl-menu__item" style="color: #cd8daa;">
+	      <a class='mdl-navigation__link
+		        subset-launch' 
+		 href='/nwm/v2_0'>V 2.0</a>
+	  </li>
+          <li class="mdl-menu__item" style="color: #cd8daa;">
+	      <a class='mdl-navigation__link
+		        subset-launch'
+		 href='/nwm/v1_2_2'>V 1.2.2</a>
+	  </li>
+    </ul> 
+
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chrome Ripple Issue</title>
+  <!-- styles -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+</head>
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Title</span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Title</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="page-content" style="padding: 128px 0 0 32px"><!-- Your content goes here -->
+
+      <h2>Ripple Issue</h2>
+      <ul>
+        <li>What MDL Version: material-design-lite-1.2.1</li>
+        <li>What browser(s) is this bug affecting (including version)? Chrome Version 53.0.2785.116 (64-bit)</li>
+        <li>What OS (and version) are you using? OSX, 10.11.6</li>
+        <li>What are the steps to reproduce the bug?
+          <ol>
+            <li>Resize browser until a scrollbar appears</li>
+            <li>Scroll the menu button into view</li>
+            <li>It's important to scroll, at least some pixels, to see the effect of this issue</li>
+            <li>Click the button to open the menu</li>
+            <li>The position of the content changes position while button ripple is animatings</li>
+            <li>Click on a menu item to close the menu</li>
+            <li>The position of the content changes while menu ripple is animating</li>
+          </ol>
+        </li>
+        <li>What is the expected behavior? The position of the should stay fixed</li>
+        <li>What is the actual behavior? The position of the page content changes</li>
+      </ul>
+
+      <div style="margin: 32px 0 640px 32px;">
+        <p><strong>Click the button</strong></p>
+        <button id="demo-menu-lower-left" style="height:46px; width:46px;"
+                class="mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect">
+          <i class="material-icons">more_vert</i>
+        </button>
+
+        <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+            for="demo-menu-lower-left">
+          <li class="mdl-menu__item">Some Action</li>
+          <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Another Action</li>
+          <li disabled class="mdl-menu__item">Disabled Action</li>
+          <li class="mdl-menu__item">Yet Another Action</li>
+        </ul>
+      </div>
+
+      <p>Some text</p>
+
+    </div>
+  </main>
+</div>
+<script src="https://code.getmdl.io/1.2.1/material.min.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

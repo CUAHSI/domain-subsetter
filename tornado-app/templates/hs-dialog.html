@@ -1,0 +1,31 @@
+
+
+
+<dialog id='dialog-hs' class="mdl-dialog" style='height:40%;width:50%'>
+     <div class="mdl-dialog__content">
+
+
+<h5>Save to HydroShare</h5>
+<p>
+    This will save the data that has been extracted to the HydroShare repository. Note, this requires you to have a valid HydroShare account. To obtain an account go to the <a href=https://hydroshare.org/sign-up/> sign-up</a> page. If you already have a HydroShare account, please specify a title for your dataset and then click Submit.
+</p>
+
+<form action='/save-to-hydroshare' method='post'>
+    Title: 
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+	<input class="mdl-textfield__input"
+	       type="text" 
+	       id="hs-res-title"
+	       name="resource_title"
+	       onkeyup="res_title_entered()">
+	<label class="mdl-textfield__label" for="hs-res-title">Resource Title...</label>
+    </div>
+    <input type=hidden id=guid name=guid value='{{ jobid }}'> 
+           
+  <div class="mdl-dialog__actions">
+    <button id='btn-hs-save' type="submit" class="mdl-button
+       ..close" disabled>Submit</button>
+	</form>
+       <button id='btn-hs-close' type="button" class="mdl-button
+       ..close">Exit</button>
+     </div>

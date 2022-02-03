@@ -1,10 +1,19 @@
 
 
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 
 <! -- Content Block -->
 {% block content %}
-    <div class=text-body>
-        {% include about-gen.html %}
+<div class='mdl-grid center-horizontally'>
+    <div class='mdl-cell mdl-cell--2-col'>
+	<h3 class=page-label> ABOUT </h3>
     </div>
+    <div class="mdl-cell mdl-cell--8-col">
+	<div class=text-body>
+	    {% include about-gen.html %}
+        </div>
+    </div>
+    <div class='mdl-cell mdl-cell--2-col'>
+    </div>
+</div>
 {% end %}

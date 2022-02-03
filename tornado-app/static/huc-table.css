@@ -55,8 +55,9 @@
 }
 
 .mdl-data-tabledynamic__actions {
-  float: right;
+  float: left;
   margin-right: 12px;
+  padding-left: 20px;
 }
 
 .mdl-data-tabledynamic__actions .mdl-button {
@@ -104,12 +105,11 @@
 
 .mdl-dialog__addContent {
   text-align: left;
-  width: 320px;
+  width: 100%;
   height: 180px;
   display: block;
   position: absolute;
   background: #fafafa;
-  margin-top: -14px;
   z-index: 99;
 }
 

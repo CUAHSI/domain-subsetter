@@ -1,0 +1,581 @@
+/**
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "functions";
+
+// ----------------------------------------------------------------
+// Sample colors
+// ----------------------------------------------------------------
+$mdlext-palette-amber-50:                         #FFF8E1;
+$mdlext-palette-amber-100:                        #FFECB3;
+$mdlext-palette-amber-500:                        #FFC107;
+$mdlext-palette-amber-700:                        #FFA000;
+$mdlext-palette-blue-grey-500:                    #607D8B;
+$mdlext-palette-deep-orange-500:                  #FF5722;
+$mdlext-palette-deep-purple-100:                  #D1C4E9;
+$mdlext-palette-deep-purple-500:                  #512DA8;
+$mdlext-palette-deep-purple-700:                  #673AB7;
+$mdlext-palette-green-50:                         #E8F5E9;
+$mdlext-palette-green-100:                        #C8E6C9;
+$mdlext-palette-green-500:                        #4CAF50;
+$mdlext-palette-green-700:                        #388E3C;
+$mdlext-palette-grey-50:                          #FAFAFA;
+$mdlext-palette-grey-100:                         #F5F5F5;
+$mdlext-palette-grey-200:                         #EEEEEE;
+$mdlext-palette-grey-300:                         #E0E0E0;
+$mdlext-palette-grey-400:                         #BDBDBD;
+$mdlext-palette-grey-500:                         #9E9E9E;
+$mdlext-palette-grey-600:                         #757575;
+$mdlext-palette-grey-700:                         #616161;
+$mdlext-palette-grey-800:                         #424242;
+$mdlext-palette-grey-900:                         #212121;
+$mdlext-palette-indigo-A200:                      #536DFE;
+$mdlext-palette-light-blue-500:                   #03A9F4;
+$mdlext-palette-light-green-500:                  #8BC34A;
+$mdlext-palette-pink-500:                         #E91E63;
+$mdlext-palette-pink-700:                         #C2185B;
+$mdlext-palette-pink-A400:                        #F50057;
+$mdlext-palette-purple-A200:                      #E040FB;
+$mdlext-palette-red-700:                          #D32F2F;
+$mdlext-palette-red-A200:                         #FF5252;
+$mdlext-palette-red-A400:                         #FF1744;
+$mdlext-palette-yellow-500:                       #FFEB3B;
+$mdlext-color-black:                              #000000;
+$mdlext-color-white:                              #FFFFFF;
+
+
+/* ==========   Sticky Header   ========== */
+$mdlext-sticky-header-background-color           : transparent !default;
+$mdlext-sticky-header-background-color-scroll    : transparent !default;
+$mdlext-sticky-header-gradient-color             : rgb-string-to-hex($color-primary) !default;
+$mdlext-sticky-header-gradient-color-start       : $mdlext-sticky-header-gradient-color !default;
+$mdlext-sticky-header-gradient-color-end         : $mdlext-sticky-header-gradient-color-start !default;
+$mdlext-sticky-header-gradient-color-scroll-start: rgba($mdlext-sticky-header-gradient-color, 0.98) !default;
+$mdlext-sticky-header-gradient-color-scroll-end  : rgba($mdlext-sticky-header-gradient-color, 0.95) !default;
+
+// Background shorthand
+/* stylelint-disable */
+$mdlext-sticky-header-background                 : $mdlext-sticky-header-background-color
+                                                   linear-gradient(to bottom,
+                                                      $mdlext-sticky-header-gradient-color-start 0,
+                                                      $mdlext-sticky-header-gradient-color-end 100%) !default;
+
+// Background shorthand when content is scrolling
+$mdlext-sticky-header-background-scroll          : $mdlext-sticky-header-background-color-scroll
+                                                   linear-gradient(to bottom,
+                                                      $mdlext-sticky-header-gradient-color-scroll-start 100%,
+                                                      $mdlext-sticky-header-gradient-color-scroll-end 100%) !default;
+/* stylelint-enable */
+
+/* ==========     Accordion     ========== */
+$mdlext-accordion-header-background-color-base   : $mdlext-palette-grey-500 !default;
+$mdlext-accordion-header-background-color        : rgba($mdlext-accordion-header-background-color-base, 0.20) !default;
+$mdlext-accordion-header-background-open-color   : rgba($mdlext-accordion-header-background-color-base, 0.30) !default;
+$mdlext-accordion-header-background-active-color : rgba($mdlext-accordion-header-background-color-base, 0.40) !default;
+$mdlext-accordion-header-border-color            : rgba($mdlext-accordion-header-background-color-base, 0.50) !default;
+$mdlext-accordion-header-background-hover-color  : rgba($mdlext-accordion-header-background-color-base, 0.40) !default;
+$mdlext-accordion-header-focus-outline-color     : invert !default;
+$mdlext-accordion-header-disabled-color          : rgba($mdlext-accordion-header-background-color-base, 0.12) !default;
+$mdlext-accordion-header-secondary-color         : $mdlext-color-black !default;
+$mdlext-accordion-header-secondary-color-disabled: rgba($mdlext-color-black, 0.26) !default;
+$mdlext-accordion-header-highlight-color         : darken($mdlext-accordion-header-border-color, 3%) !default;
+$mdlext-accordion-ripple-color                   : rgba(rgb-string-to-hex($color-accent-contrast), 0.5) !default;
+$mdlext-accordion-header-padding                 : 8px !default;
+$mdlext-accordion-header-height                  : 56px !default;
+$mdlext-accordion-content-padding                : $mdlext-accordion-header-padding !default;
+$mdlext-accordion-content-color                  : inherit !default;
+$mdlext-accordion-content-background-color       : transparent !default;
+
+
+/* ==========     Dialog     ========== */
+$mdlext-dialog-padding           : 0;
+$mdlext-dialog-background-color  : transparent !default;
+$mdlext-dialog-backdrop-color    : rgba(0, 0, 0, 0.86) !default;
+$mdlext-dialog-open-animation    : 0.5s 0.2s forwards !default;
+$mdlext-dialog-backdrop-animation: 0.2s forwards !default;
+
+
+/* ==========     Lightbox     ========== */
+$mdlext-lightbox-background-color           : $card-background-color !default;
+$mdlext-lightbox-border                     : 0 !default;
+$mdlext-lightbox-border-radius              : 0 !default;
+$mdlext-lightbox-figure-margin              : 0 !default;
+$mdlext-lightbox-figure-padding             : 0 !default;
+$mdlext-lightbox-figcaption-background-color: rgba(255, 255, 255, 0.76) !default;
+$mdlext-lightbox-footer-background-color    : rgba(255, 255, 255, 0.86) !default;
+
+
+/* ==========  Lightboard  ========== */
+$mdlext-lightboard-medium-small-breakpoint     : $grid-tablet-breakpoint !default;          // 480
+$mdlext-lightboard-medium-breakpoint           : $grid-tablet-breakpoint + 180px !default;  // 480 + 180
+$mdlext-lightboard-medium-large-breakpoint     : $grid-desktop-breakpoint !default;         // 840
+$mdlext-lightboard-large-breakpoint            : $grid-desktop-breakpoint + 360px !default; // 840+360
+
+$mdlext-lightboard-small-gutter                : 2px !default;
+$mdlext-lightboard-small-margin                : 0 !default;
+$mdlext-lightboard-small-columns               : 2 !default;
+$mdlext-lightboard-small-frame-width           : 8px !default;
+
+$mdlext-lightboard-medium-small-gutter         : 4px !default;
+$mdlext-lightboard-medium-small-margin         : 0 !default;
+$mdlext-lightboard-medium-small-columns        : 4 !default;
+$mdlext-lightboard-medium-small-frame-width    : 8px !default;
+
+$mdlext-lightboard-medium-gutter               : 4px !default;
+$mdlext-lightboard-medium-margin               : 0 !default;
+$mdlext-lightboard-medium-columns              : 5 !default;
+$mdlext-lightboard-medium-frame-width          : 8px !default;
+
+$mdlext-lightboard-medium-large-gutter         : 8px !default;
+$mdlext-lightboard-medium-large-margin         : 0 !default;
+$mdlext-lightboard-medium-large-columns        : 6 !default;
+$mdlext-lightboard-medium-large-frame-width    : 12px !default;
+
+$mdlext-lightboard-large-gutter                : 8px !default;
+$mdlext-lightboard-large-margin                : 0 !default;
+$mdlext-lightboard-large-columns               : 7 !default;
+$mdlext-lightboard-large-frame-width           : 12px !default;
+
+$mdlext-lightboard-slide-max-size              : 250px !default;
+$mdlext-lightboard-slide-border-color          : #D8D8D8 !default;
+$mdlext-lightboard-slide-background-color      : #F8F8F8 !default;
+$mdlext-lightboard-slide-border-radius         : 5px !default;
+$mdlext-lightboard-slide-inner-border-radius   : 3px !default;
+$mdlext-lightboard-slide-box-shadow            : 2px 2px 6px -1px rgba(219, 215, 219, 0.5) !default;
+$mdlext-lightboard-slide-border-color-hover    : #B8B8B8 !default;
+$mdlext-lightboard-slide-background-color-hover: #E8E8E8 !default;
+$mdlext-lightboard-slide-active-bacground-color: #E8E8E8 !default;
+$mdlext-lightboard-slide-box-shadow-hover      : 2px 2px 12px -1px rgba(219, 215, 219, 1) !default;
+$mdlext-lightboard-ripple-color                : $tab-highlight-color !default;
+$mdlext-lightboard-focus-outline-color         : inherit !default;
+$mdlext-lightboard-figcaption-text-color       : rgb-string-to-hex($palette-grey-400) !default;
+
+
+/* ==========  Carousel  ========== */
+$mdlext-carousel-slide-border-top-width        : 2px !default;
+$mdlext-carousel-slide-border-top-color        : rgb-string-to-hex($color-accent) !default;
+$mdlext-carousel-slide-margin-horizontal       : 0;
+$mdlext-carousel-slide-figcaption-color        : $mdlext-lightboard-figcaption-text-color !default;
+$mdlext-carousel-slide-ripple-color            : $mdlext-lightboard-ripple-color !default;
+
+
+/* ==========  Bordered fields  ========== */
+$mdlext-bordered-field-vertical-spacing-top           : 0 !default;
+$mdlext-bordered-field-vertical-spacing-bottom        : $input-text-vertical-spacing !default;
+
+$mdlext-bordered-field-input-text-font-size           : $input-text-font-size !default;
+$mdlext-bordered-field-font-weight                    : normal !default;
+$mdlext-bordered-field-border-width                   : 1px !default;
+$mdlext-bordered-field-border-radius                  : 3px !default;
+$mdlext-bordered-field-padding                        : $input-text-padding + 4px !default;
+$mdlext-bordered-field-padding-top                    : $input-text-vertical-spacing !default;
+$mdlext-bordered-field-padding-bottom                 : $input-text-padding !default;
+
+$mdlext-bordered-field-input-text-color               : inherit !default;
+$mdlext-bordered-field-border-color                   : rgba($mdlext-color-black, 0.26) !default;
+$mdlext-bordered-field-background-color               : rgba(#FFFFFF, 0.2) !default;
+$mdlext-bordered-field-focus-border-color             : rgb-string-to-hex($color-primary) !default;
+$mdlext-bordered-field-focus-background-color         : rgba(#EEEEEE, 0.2) !default;
+
+$mdlext-bordered-field-input-text-disabled-text-color : rgba($mdlext-color-black, 0.12) !default;
+$mdlext-bordered-field-disabled-border-color          : rgba($mdlext-color-black, 0.12) !default;
+$mdlext-bordered-field-disabled-background-color      : $mdlext-bordered-field-background-color !default;
+
+$mdlext-bordered-field-input-text-error-color         : $mdlext-bordered-field-input-text-color !default;
+$mdlext-bordered-field-error-border-color             : rgb-string-to-hex($input-text-error-color) !default;
+$mdlext-bordered-field-error-background-color         : rgba(lighten($mdlext-bordered-field-error-border-color, 50%), 0.5) !default;
+$mdlext-bordered-field-error-focus-border-color       : darken($mdlext-bordered-field-error-border-color, 10%) !default;
+$mdlext-bordered-field-error-focus-background-color   : $mdlext-bordered-field-error-background-color !default;
+
+$mdlext-bordered-field-input-text-label-color         : rgba($mdlext-color-black, 0.26) !default;
+$mdlext-bordered-field-input-text-label-focus-color   : $mdlext-bordered-field-focus-border-color !default;
+$mdlext-bordered-field-input-text-label-error-color   : $mdlext-bordered-field-error-border-color !default;
+$mdlext-bordered-field-input-text-label-disabled-color: rgba($mdlext-color-black, 0.12) !default;
+
+$mdlext-bordered-field-label-font-size                : $mdlext-bordered-field-input-text-font-size !default;
+$mdlext-bordered-field-floating-label-font-size       : $input-text-floating-label-fontsize !default;
+$mdlext-bordered-field-floating-label-font-weight     : normal !default;
+
+$mdlext-bordered-field-height                         : $mdlext-bordered-field-padding-top + $mdlext-bordered-field-padding-bottom + $mdlext-bordered-field-input-text-font-size + 6px !default;
+$mdlext-bordered-field-floating-label-focus-bottom    : $mdlext-bordered-field-height - $mdlext-bordered-field-floating-label-font-size - $mdlext-bordered-field-padding-top/2 !default;
+
+
+// MDL can not handle required attribute properly. Planned for MDL-v2
+//$mdlext-bordered-field-required-border-color          : rgba(rgb-string-to-hex($color-accent), 0.8) !default;
+//$mdlext-bordered-field-required-background-color      : $mdlext-bordered-field-background-color !default;
+//$mdlext-bordered-field-required-focus-border-color    : rgba(rgb-string-to-hex($color-accent), 0.8) !default;
+//$mdlext-bordered-field-required-focus-background-color: $mdlext-bordered-field-background-color !default;
+//$mdlext-bordered-field-label-required-color           : $mdlext-bordered-field-required-border-color !default;
+
+
+
+/* ==========  Color Themes  ========== */
+
+// ----------------------------------------------------------------
+// Light Color Theme.
+// ----------------------------------------------------------------
+$mdlext-light-color-primary:                      #4CAF50 !default;
+$mdlext-light-color-primary-dark:                 #388E3C !default;
+$mdlext-light-color-primary-light:                #4CAF50 !default;  // Fallback color. Set to color-primary if fallback is not needed
+$mdlext-light-color-primary-contrast:             #C8E6C9 !default;  // text color on primary/primary dark background
+$mdlext-light-color-accent:                       #E040FB !default;
+$mdlext-light-color-accent-light:                 #E040FB !default;  // Fallback color. Set to color-accent if fallback is not needed
+$mdlext-light-color-accent-contrast:              #FAFAFA !default;
+
+$mdlext-light-content-background-color:           #FAFAFA !default;                         // background color on content (paper/card) background
+$mdlext-light-text-color-primary:                 rgba($mdlext-color-black, 0.87) !default; // text color on content (paper/card) background
+$mdlext-light-text-color-secondary:               rgba($mdlext-color-black, 0.54) !default; // text color on content (paper/card) background
+$mdlext-light-text-color-disabled:                rgba($mdlext-color-black, 0.38) !default; // disabled text, hint text, and icons
+$mdlext-light-divider-color:                      rgba($mdlext-color-black, 0.12) !default; // -> $card-border-color
+$mdlext-light-error-color:                        #D32F2F !default;
+
+// Anchor
+$mdlext-light-text-link-color:                    $mdlext-light-color-accent !default;
+
+// Card
+$mdlext-light-card-background-color:              $mdlext-light-content-background-color !default;
+$mdlext-light-card-text-color:                    $mdlext-light-text-color-primary !default;
+$mdlext-light-card-image-placeholder-color:       $mdlext-light-color-accent !default;
+$mdlext-light-card-supporting-text-text-color:    rgba($mdlext-color-black, 0.54) !default;
+$mdlext-light-card-border-color:                  rgba(0, 0, 0, 0.1) !default;
+$mdlext-light-card-subtitle-color:                rgba($mdlext-color-black, 0.54) !default;
+
+//  Item
+
+// Default Item Colors
+$mdlext-light-default-item-text-color:            rgba($mdlext-color-black, 0.87) !default;
+$mdlext-light-default-item-outline-color:         $mdlext-palette-grey-400 !default;
+$mdlext-light-default-item-hover-bg-color:        $mdlext-palette-grey-200 !default;
+$mdlext-light-default-item-focus-bg-color:        $mdlext-palette-grey-200 !default;
+$mdlext-light-default-item-active-bg-color:       $mdlext-palette-grey-300 !default;
+$mdlext-light-default-item-divider-color:         rgba($mdlext-color-black, 0.12) !default;
+
+// Disabled Button Colors
+$mdlext-light-disabled-item-text-color:           $mdlext-palette-grey-400 !default;
+
+// Dropdown menu / menu-button
+$mdlext-light-default-dropdown-bg-color:          $mdlext-color-white !default;
+
+// Badge
+$mdlext-light-badge-color:                        $mdlext-light-color-accent-contrast !default;
+$mdlext-light-badge-color-inverse:                $mdlext-light-color-accent !default;
+$mdlext-light-badge-background:                   $mdlext-light-color-accent !default;
+$mdlext-light-badge-background-inverse:           $mdlext-light-color-accent-contrast !default;
+
+// Default button colors.
+$mdlext-light-button-primary-color:               rgba($mdlext-palette-grey-500, 0.20) !default;
+$mdlext-light-button-secondary-color:             $mdlext-color-black !default;
+$mdlext-light-button-hover-color:                 $mdlext-light-button-primary-color !default;
+$mdlext-light-button-active-color:                rgba($mdlext-palette-grey-500, 0.40) !default;
+$mdlext-light-button-focus-color:                 rgba($mdlext-color-black, 0.12) !default;
+
+// Colored button colors.
+$mdlext-light-button-primary-color-alt:           $mdlext-light-color-primary-light !default;
+$mdlext-light-button-secondary-color-alt:         $mdlext-light-color-primary-contrast !default;
+$mdlext-light-button-hover-color-alt:             darken($mdlext-light-color-primary-light, 10%) !default;
+$mdlext-light-button-active-color-alt:            darken($mdlext-light-color-primary-light, 10%) !default;
+$mdlext-light-button-focus-color-alt:             $mdlext-light-button-focus-color !default;
+
+// Ripple color for colored raised buttons.
+$mdlext-light-button-ripple-color-alt:            $mdlext-light-color-primary-contrast !default;
+
+// Disabled button colors.
+$mdlext-light-button-primary-color-disabled:      rgba($mdlext-color-black, 0.12) !default;
+$mdlext-light-button-secondary-color-disabled:    rgba($mdlext-color-black, 0.26) !default;
+
+// FAB colors and sizes.
+$mdlext-light-button-fab-color-alt:               $mdlext-light-color-accent !default;
+$mdlext-light-button-fab-hover-color-alt:         $mdlext-light-color-accent !default;
+$mdlext-light-button-fab-active-color-alt:        $mdlext-light-color-accent !default;
+$mdlext-light-button-fab-text-color-alt:          $mdlext-light-color-accent-contrast !default;
+$mdlext-light-button-fab-ripple-color-alt:        $mdlext-light-color-accent-contrast !default;
+
+// Slider
+$mdlext-light-range-bg-color:                     rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-range-color:                        $mdlext-light-color-accent-light !default;
+$mdlext-light-range-faded-color:                  rgba($mdlext-light-color-accent-light, 0.26) !default;
+$mdlext-light-range-bg-focus-color:               rgba($mdlext-color-black, 0.12) !default;
+
+// Textfields
+$mdlext-light-input-text-background-color:        transparent !default;
+$mdlext-light-input-text-label-color:             rgba($mdlext-color-black, 0.54) !default;
+$mdlext-light-input-text-bottom-border-color:     rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-input-text-highlight-color:         $mdlext-light-color-accent-light !default;
+$mdlext-light-input-text-disabled-color:          rgba($mdlext-color-black, 0.12) !default;
+$mdlext-light-input-text-disabled-text-color:     rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-input-text-error-color:             $mdlext-light-error-color !default;
+
+// Checkboxes
+$mdlext-light-checkbox-color:                     $mdlext-light-color-accent-light !default;
+$mdlext-light-checkbox-off-color:                 rgba($mdlext-color-black, 0.54) !default;
+$mdlext-light-checkbox-disabled-color:            rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-checkbox-focus-color:               rgba($mdlext-light-color-accent-light, 0.26) !default;
+
+// Icon Toggles
+$mdlext-light-icon-toggle-color:                  $mdlext-palette-grey-700 !default;
+$mdlext-light-icon-toggle-focus-color:            $mdlext-light-button-focus-color !default;
+$mdlext-light-icon-toggle-checked-color:          $mdlext-light-color-accent-light !default;
+$mdlext-light-icon-toggle-checked-focus-color:    rgba($mdlext-light-color-accent-light, 0.26) !default;
+$mdlext-light-icon-toggle-disabled-color:         rgba($mdlext-color-black, 0.26) !default;
+
+// Radio Buttons
+$mdlext-light-radio-color:                        $mdlext-light-color-accent-light !default;
+$mdlext-light-radio-off-color:                    rgba($mdlext-color-black, 0.54) !default;
+$mdlext-light-radio-disabled-color:               rgba($mdlext-color-black, 0.26) !default;
+
+// Switches
+$mdlext-light-switch-color:                       $mdlext-light-color-accent-light !default;
+$mdlext-light-switch-faded-color:                 rgba($mdlext-light-color-accent-light, 0.26) !default;
+$mdlext-light-switch-thumb-color:                 $mdlext-light-switch-color !default;
+$mdlext-light-switch-track-color:                 rgba($mdlext-light-color-accent-light, 0.54) !default;
+$mdlext-light-switch-off-thumb-color:             $mdlext-palette-grey-50 !default;
+$mdlext-light-switch-off-track-color:             rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-switch-disabled-thumb-color:        $mdlext-palette-grey-400 !default;
+$mdlext-light-switch-disabled-track-color:        rgba($mdlext-color-black, 0.12) !default;
+
+// Data table
+$mdlext-light-data-table-background-color:               $mdlext-light-content-background-color !default;
+$mdlext-light-data-table-header-color:                   rgba($mdlext-color-black, 0.54) !default;
+$mdlext-light-data-table-header-sorted-color:            rgba($mdlext-color-black, 0.87) !default;
+$mdlext-light-data-table-header-sorted-icon-hover-color: rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-data-table-hover-color:                    $mdlext-palette-grey-200 !default;
+$mdlext-light-data-table-selection-color:                $mdlext-palette-grey-200 !default;
+$mdlext-light-data-table-divider-color:                  rgba($mdlext-color-black, 0.12) !default;
+$mdlext-light-data-table-dividers:                       1px solid $mdlext-light-data-table-divider-color !default;
+
+
+// Selectfield
+// Uses variables from textfield
+$mdlext-selectfield-arrow-width: 0.7em;
+$mdlext-selectfield-arrow-length: 0.5em;
+
+
+// Accordion
+$mdlext-light-accordion-header-background-color-base   : $mdlext-palette-grey-600 !default;
+$mdlext-light-accordion-header-background-color        : rgba($mdlext-light-accordion-header-background-color-base, 0.20) !default;
+$mdlext-light-accordion-header-background-open-color   : rgba($mdlext-light-accordion-header-background-color-base, 0.30) !default;
+$mdlext-light-accordion-header-background-active-color : rgba($mdlext-light-accordion-header-background-color-base, 0.40) !default;
+$mdlext-light-accordion-header-border-color            : rgba($mdlext-light-accordion-header-background-color-base, 0.50) !default;
+$mdlext-light-accordion-header-background-hover-color  : rgba($mdlext-light-accordion-header-background-color-base, 0.40) !default;
+$mdlext-light-accordion-header-focus-outline-color     : darken($mdlext-light-accordion-header-border-color, 3%) !default;
+$mdlext-light-accordion-header-disabled-color          : rgba($mdlext-light-accordion-header-background-color-base, 0.12) !default;
+$mdlext-light-accordion-header-secondary-color         : $mdlext-color-black !default;
+$mdlext-light-accordion-header-secondary-color-disabled: rgba($mdlext-color-black, 0.26) !default;
+$mdlext-light-accordion-header-highlight-color         : darken($mdlext-light-accordion-header-border-color, 6%) !default;
+$mdlext-light-accordion-ripple-color                   : rgba($mdlext-light-accordion-header-background-color-base, 0.4) !default;
+$mdlext-light-accordion-content-color                  : inherit !default;
+$mdlext-light-accordion-content-background-color       : transparent !default;
+
+
+// Bordered fields
+$mdlext-light-bordered-field-input-text-color               : inherit !default;
+$mdlext-light-bordered-field-border-color                   : $mdlext-light-input-text-bottom-border-color !default;
+$mdlext-light-bordered-field-background-color               : rgba($mdlext-light-content-background-color, 0.1) !default;
+$mdlext-light-bordered-field-focus-border-color             : $mdlext-light-color-accent-light !default;
+$mdlext-light-bordered-field-focus-background-color         : rgba(darken($mdlext-light-bordered-field-background-color, 10%), 0.1) !default;
+
+$mdlext-light-bordered-field-input-text-disabled-text-color : $mdlext-light-input-text-disabled-text-color;
+$mdlext-light-bordered-field-disabled-border-color          : $mdlext-light-input-text-disabled-color !default;
+$mdlext-light-bordered-field-disabled-background-color      : $mdlext-light-bordered-field-background-color !default;
+
+$mdlext-light-bordered-field-input-text-error-color         : $mdlext-light-bordered-field-input-text-color !default;
+$mdlext-light-bordered-field-error-border-color             : $mdlext-light-input-text-error-color !default;
+$mdlext-light-bordered-field-error-background-color         : rgba(lighten($mdlext-light-bordered-field-error-border-color, 50%), 0.5) !default;
+$mdlext-light-bordered-field-error-focus-border-color       : darken($mdlext-light-bordered-field-error-border-color, 10%) !default;
+$mdlext-light-bordered-field-error-focus-background-color   : $mdlext-light-bordered-field-error-background-color !default;
+
+$mdlext-light-bordered-field-input-text-label-color         : $mdlext-light-input-text-label-color !default;
+$mdlext-light-bordered-field-input-text-label-focus-color   : $mdlext-light-bordered-field-focus-border-color !default;
+$mdlext-light-bordered-field-input-text-label-error-color   : $mdlext-light-bordered-field-error-border-color !default;
+$mdlext-light-bordered-field-input-text-label-disabled-color: $mdlext-light-input-text-disabled-text-color !default;
+
+
+
+// ----------------------------------------------------------------
+// Dark Color Theme.
+// ----------------------------------------------------------------
+$mdlext-dark-color-primary:                       #FFC107 !default;
+$mdlext-dark-color-primary-dark:                  #FFA000 !default;
+$mdlext-dark-color-primary-light:                 #FFC107 !default;             // Fallback color. Set to color-primary if fallback is not needed
+$mdlext-dark-color-primary-contrast:              #FFF8E1 !default;             // text color on primary/primary dark background
+$mdlext-dark-color-accent:                        #536DFE !default;
+$mdlext-dark-color-accent-light:                  #536DFE !default;             // Fallback color. Set to color-accent if fallback is not needed
+$mdlext-dark-color-accent-contrast:               #FFFFFF !default;
+
+$mdlext-dark-content-background-color:            #303030 !default;             // #424242 or #303030, background color on content (paper/card) background
+$mdlext-dark-text-color-primary:                  rgba(#FFFFFF, 1.00) !default; // text color on content (paper/card) background
+$mdlext-dark-text-color-secondary:                rgba(#FFFFFF, 0.70) !default; // text color on content (paper/card) background
+$mdlext-dark-text-color-disabled:                 rgba(#FFFFFF, 0.50) !default; // disabled text, hint text, and icons
+$mdlext-dark-divider-color:                       rgba(#FFFFFF, 0.12) !default; // -> $card-border-color
+$mdlext-dark-error-color:                         #FF1744 !default;
+
+// Anchor
+$mdlext-dark-text-link-color:                     $mdlext-dark-color-accent !default;
+
+// Card
+$mdlext-dark-card-background-color:               $mdlext-dark-content-background-color !default;
+$mdlext-dark-card-text-color:                     $mdlext-dark-text-color-primary !default;
+$mdlext-dark-card-image-placeholder-color:        $mdlext-dark-color-accent !default;
+$mdlext-dark-card-supporting-text-text-color:     rgba($mdlext-color-white, 0.70) !default;
+$mdlext-dark-card-border-color:                   rgba(0, 0, 0, 0.1) !default;
+$mdlext-dark-card-subtitle-color:                 rgba($mdlext-color-black, 0.70) !default;
+
+//  Item
+
+// Default Item Colors
+$mdlext-dark-default-item-text-color:             rgba($mdlext-color-white, 0.87) !default;
+$mdlext-dark-default-item-outline-color:          $mdlext-palette-grey-700 !default;
+$mdlext-dark-default-item-hover-bg-color:         $mdlext-palette-grey-900 !default;
+$mdlext-dark-default-item-focus-bg-color:         $mdlext-palette-grey-900 !default;
+$mdlext-dark-default-item-active-bg-color:        $mdlext-palette-grey-800 !default;
+$mdlext-dark-default-item-divider-color:          rgba($mdlext-color-white, 0.20) !default;
+
+// Disabled Button Colors
+$mdlext-dark-disabled-item-text-color:            $mdlext-palette-grey-500 !default;
+
+// Dropdown menu / menu-button
+$mdlext-dark-default-dropdown-bg-color:           $mdlext-color-black !default;
+
+// Badge
+$mdlext-dark-badge-color:                         $mdlext-dark-color-accent-contrast !default;
+$mdlext-dark-badge-color-inverse:                 $mdlext-dark-color-accent !default;
+$mdlext-dark-badge-background:                    $mdlext-dark-color-accent !default;
+$mdlext-dark-badge-background-inverse:            $mdlext-dark-color-accent-contrast !default;
+
+// Default button colors.
+$mdlext-dark-button-primary-color:                rgba($mdlext-palette-grey-500, 0.20) !default;
+$mdlext-dark-button-secondary-color:              $mdlext-color-white !default;
+$mdlext-dark-button-hover-color:                  $mdlext-dark-button-primary-color !default;
+$mdlext-dark-button-active-color:                 rgba($mdlext-palette-grey-500, 0.40) !default;
+$mdlext-dark-button-focus-color:                  rgba($mdlext-color-black, 0.12) !default;
+
+// Colored button colors.
+$mdlext-dark-button-primary-color-alt:            $mdlext-dark-color-primary-light !default;
+$mdlext-dark-button-secondary-color-alt:          $mdlext-dark-color-primary-contrast !default;
+$mdlext-dark-button-hover-color-alt:              darken($mdlext-dark-color-primary-light, 10%) !default;
+$mdlext-dark-button-active-color-alt:             darken($mdlext-dark-color-primary-light, 10%) !default;
+$mdlext-dark-button-focus-color-alt:              $mdlext-dark-button-focus-color !default;
+
+// Ripple color for colored raised buttons.
+$mdlext-dark-button-ripple-color-alt:             $mdlext-dark-color-primary-contrast !default;
+
+// Disabled button colors.
+$mdlext-dark-button-primary-color-disabled:       rgba($mdlext-color-white, 0.12) !default;
+$mdlext-dark-button-secondary-color-disabled:     rgba($mdlext-color-white, 0.26) !default;
+
+// FAB colors and sizes.
+$mdlext-dark-button-fab-color-alt:                $mdlext-dark-color-accent !default;
+$mdlext-dark-button-fab-hover-color-alt:          $mdlext-dark-color-accent !default;
+$mdlext-dark-button-fab-active-color-alt:         $mdlext-dark-color-accent !default;
+$mdlext-dark-button-fab-text-color-alt:           $mdlext-dark-color-accent-contrast !default;
+$mdlext-dark-button-fab-ripple-color-alt:         $mdlext-dark-color-accent-contrast !default;
+
+// Slider
+$mdlext-dark-range-bg-color:                      rgba($mdlext-color-white, 0.87) !default;
+$mdlext-dark-range-color:                         $mdlext-dark-color-accent-light !default;
+$mdlext-dark-range-faded-color:                   rgba($mdlext-dark-color-accent-light, 0.50) !default;
+$mdlext-dark-range-bg-focus-color:                rgba($mdlext-color-white, 0.50) !default;
+
+// Textfields
+$mdlext-dark-input-text-background-color:         transparent !default;
+$mdlext-dark-input-text-label-color:              rgba($mdlext-color-white, 0.50) !default;
+$mdlext-dark-input-text-bottom-border-color:      rgba($mdlext-color-white, 0.26) !default;
+$mdlext-dark-input-text-highlight-color:          $mdlext-dark-color-accent-light !default;
+$mdlext-dark-input-text-disabled-color:           rgba($mdlext-color-white, 0.12) !default;
+$mdlext-dark-input-text-disabled-text-color:      rgba($mdlext-color-white, 0.26) !default;
+$mdlext-dark-input-text-error-color:              $mdlext-dark-error-color !default;
+
+// Checkboxes
+$mdlext-dark-checkbox-color:                      $mdlext-dark-color-accent-light !default;
+$mdlext-dark-checkbox-off-color:                  rgba($mdlext-color-white, 0.50) !default;
+$mdlext-dark-checkbox-disabled-color:             rgba($mdlext-color-white, 0.26) !default;
+$mdlext-dark-checkbox-focus-color:                rgba($mdlext-dark-color-accent-light, 0.26) !default;
+
+// Icon Toggles
+$mdlext-dark-icon-toggle-color:                   $mdlext-palette-grey-700 !default;
+$mdlext-dark-icon-toggle-focus-color:             $mdlext-dark-button-focus-color !default;
+$mdlext-dark-icon-toggle-checked-color:           $mdlext-dark-color-accent-light !default;
+$mdlext-dark-icon-toggle-checked-focus-color:     rgba($mdlext-dark-color-accent-light, 0.26) !default;
+$mdlext-dark-icon-toggle-disabled-color:          rgba($mdlext-color-white, 0.50) !default;
+
+// Radio Buttons
+$mdlext-dark-radio-color:                         $mdlext-dark-color-accent-light !default;
+$mdlext-dark-radio-off-color:                     rgba($mdlext-color-white, 0.50) !default;
+$mdlext-dark-radio-disabled-color:                rgba($mdlext-color-white, 0.26) !default;
+
+// Switches
+$mdlext-dark-switch-color:                        $mdlext-dark-color-accent-light !default;
+$mdlext-dark-switch-faded-color:                  rgba($mdlext-dark-color-accent-light, 0.26) !default;
+$mdlext-dark-switch-thumb-color:                  $mdlext-dark-switch-color !default;
+$mdlext-dark-switch-track-color:                  rgba($mdlext-dark-color-accent-light, 0.5) !default;
+$mdlext-dark-switch-off-thumb-color:              $mdlext-palette-grey-50 !default;
+$mdlext-dark-switch-off-track-color:              rgba($mdlext-color-white, 0.26) !default;
+$mdlext-dark-switch-disabled-thumb-color:         $mdlext-palette-grey-50 !default;
+$mdlext-dark-switch-disabled-track-color:         rgba($mdlext-color-white, 0.12) !default;
+
+// Data table
+$mdlext-dark-data-table-background-color:               $mdlext-dark-content-background-color !default;
+$mdlext-dark-data-table-header-color:                   rgba($mdlext-color-white, 0.87) !default;
+$mdlext-dark-data-table-header-sorted-color:            rgba($mdlext-color-white, 0.87) !default;
+$mdlext-dark-data-table-header-sorted-icon-hover-color: rgba($mdlext-color-white, 0.26) !default;
+$mdlext-dark-data-table-hover-color:                    $mdlext-dark-default-item-hover-bg-color !default;
+$mdlext-dark-data-table-selection-color:                $mdlext-dark-default-item-active-bg-color !default;
+$mdlext-dark-data-table-divider-color:                  rgba($mdlext-color-white, 0.12) !default;
+$mdlext-dark-data-table-dividers:                       1px solid $mdlext-dark-data-table-divider-color !default;
+
+
+// Selectfield
+// Uses variables from textfield
+
+
+// Accordion
+$mdlext-dark-accordion-header-background-color-base   : $mdlext-color-black !default;
+$mdlext-dark-accordion-header-background-color        : rgba($mdlext-dark-accordion-header-background-color-base, 1.0) !default;
+$mdlext-dark-accordion-header-background-open-color   : rgba($mdlext-dark-accordion-header-background-color-base, 0.9) !default;
+$mdlext-dark-accordion-header-border-color            : $mdlext-palette-grey-800 !default;
+$mdlext-dark-accordion-header-background-hover-color  : rgba($mdlext-dark-accordion-header-background-color-base, 0.5) !default;
+$mdlext-dark-accordion-header-background-active-color : rgba($mdlext-dark-accordion-header-background-color-base, 0.6) !default;
+$mdlext-dark-accordion-header-focus-outline-color     : lighten($mdlext-dark-accordion-header-border-color, 40%) !default;
+$mdlext-dark-accordion-header-disabled-color          : rgba($mdlext-dark-accordion-header-background-color-base, 0.4) !default;
+$mdlext-dark-accordion-header-secondary-color         : $mdlext-dark-text-color-primary !default;
+$mdlext-dark-accordion-header-secondary-color-disabled: $mdlext-dark-text-color-disabled !default;
+$mdlext-dark-accordion-header-highlight-color         : lighten($mdlext-dark-accordion-header-border-color, 40%) !default;
+$mdlext-dark-accordion-ripple-color                   : rgba($mdlext-dark-accordion-header-background-color-base, 0.3) !default;
+$mdlext-dark-accordion-content-color                  : inherit !default;
+$mdlext-dark-accordion-content-background-color       : transparent !default;
+
+
+// Bordered fields
+$mdlext-dark-bordered-field-input-text-color               : inherit !default;
+$mdlext-dark-bordered-field-border-color                   : $mdlext-dark-input-text-bottom-border-color !default;
+$mdlext-dark-bordered-field-background-color               : rgba($mdlext-dark-content-background-color, 0.1) !default;
+$mdlext-dark-bordered-field-focus-border-color             : $mdlext-dark-color-accent-light !default;
+$mdlext-dark-bordered-field-focus-background-color         : rgba(darken($mdlext-dark-bordered-field-background-color, 10%), 0.1) !default;
+
+$mdlext-dark-bordered-field-input-text-disabled-text-color : $mdlext-dark-input-text-disabled-text-color;
+$mdlext-dark-bordered-field-disabled-border-color          : $mdlext-dark-input-text-disabled-color !default;
+$mdlext-dark-bordered-field-disabled-background-color      : $mdlext-dark-bordered-field-background-color !default;
+
+$mdlext-dark-bordered-field-input-text-error-color         : $mdlext-dark-bordered-field-input-text-color !default;
+$mdlext-dark-bordered-field-error-border-color             : $mdlext-dark-input-text-error-color !default;
+$mdlext-dark-bordered-field-error-background-color         : rgba($mdlext-dark-bordered-field-error-border-color, 0.1) !default;
+$mdlext-dark-bordered-field-error-focus-border-color       : darken($mdlext-dark-bordered-field-error-border-color, 10%) !default;
+$mdlext-dark-bordered-field-error-focus-background-color   : $mdlext-dark-bordered-field-error-background-color !default;
+
+$mdlext-dark-bordered-field-input-text-label-color         : $mdlext-dark-input-text-label-color !default;
+$mdlext-dark-bordered-field-input-text-label-focus-color   : $mdlext-dark-bordered-field-focus-border-color !default;
+$mdlext-dark-bordered-field-input-text-label-error-color   : $mdlext-dark-bordered-field-error-border-color !default;
+$mdlext-dark-bordered-field-input-text-label-disabled-color: $mdlext-dark-input-text-disabled-text-color !default;

@@ -34,6 +34,11 @@
     padding: 0px 0px 8px 25px;
 }
 
+/* Navigation Sub-menu */
+.nav-sub-menu {
+    color: #80808021;
+}
+
 /* Page Fonts */
 body {
     font-family: 'Roboto', sans-serif;
@@ -56,6 +61,7 @@ body {
     border: 1px solid #AAA;
     position: relative;
     margin:50px 10px 5px 50px;
+    z-index: 1;
 }
 
 /* Mouse Coordinates*/ 
@@ -77,6 +83,20 @@ body {
   display: block; 
   height: 75px; 
   width: 75px; 
+}
+
+/* div for status progress messages (footer) */
+div.progress-msg{
+    position: fixed;
+    width: 100%;
+    height: 25%;
+    bottom: 0;
+    margin: -10px;
+    color: white;
+    background: grey;
+    padding: 10px;
+    font-family: Monospace;
+    overflow: hidden;
 }
 
 /* Status Logo */
@@ -121,7 +141,7 @@ div.processing {
     width: auto;
 }
 
-/* collapable elements */
+/* collapsible elements */
 .accordion {
     background-color: #eee;
     color: #444;
@@ -157,7 +177,7 @@ div.processing {
 #btn-subset-submit {
     font-size: 20px;
     height: 40px;
-    width: 100px;
+    width: 100%;
     border-radius: 10px;
     text-transform:none;
 }
@@ -185,6 +205,19 @@ div.processing {
 #map-panel.mdlext-accordion__tabpanel {
     transition: none !important;
     animation: none !important;
+}
+
+.mdl-dialog {
+    height:70%;
+    width: 50%;
+//    overflow: auto;
+    position: fixed;
+    margin-top: 20px;
+    z-index: 2;
+}
+.mdl-dialog__content {
+   height: 80%;
+   overflow: auto;
 }
 .mdlext-accordion--horizontal .mdlext-accordion__tabpanel {
     border: None;

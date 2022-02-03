@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <include src="include/_head.html"></include>
+  <title>Material Design Lite Extensions - Menu Button</title>
+</head>
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+  <include src="include/_header.html"></include>
+  <include src="include/_drawer.html"></include>
+  <main id="mount" class="mdl-layout__content">
+    <include src="../../src/menu-button/snippets/menu-button.html"></include>
+  </main>
+</div>
+<include src="include/_scripts.html"></include>
+<script>
+  (function() {
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function() {
+      var title = document.querySelector('#header-title');
+      if(title) {
+        title.innerHTML = 'Menu Button';
+      }
+    });
+  }());
+</script>
+</body>
+</html>

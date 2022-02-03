@@ -1,0 +1,35 @@
+name: base
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  - gdal<3.1
+  - basemap
+  - pip:
+    - aiohttp
+    - aioredis<2.0
+    - asyncio
+    - hs-restclient
+    - multiprocessing-logging
+      #    - pfio
+    - redis
+    - requests
+    - requests-oauthlib
+    - requests-toolbelt
+    - shapely
+    - python-cas
+    - matplotlib
+    - numpy
+    - pandas
+    - python-dateutil
+    - scipy
+    - tornado
+    - xarray
+    - pyproj
+    - pyshp
+    - pytz
+    - netcdf4
+    - pyproj
+    - h5py
+    - pysqlite3

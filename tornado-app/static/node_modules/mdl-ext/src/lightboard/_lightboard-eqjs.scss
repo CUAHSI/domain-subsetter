@@ -1,0 +1,110 @@
+@charset "UTF-8";
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Element queries for _lightbox.scss, based on: https://github.com/Snugug/eq.js
+//
+//////////////////////////////////////////////////////////////////////////////////
+
+@import "../variables";
+@import "../functions";
+
+.mdlext-lightboard {
+
+  @include eq-pts((
+    lightboard_medium_small: strip-unit($mdlext-lightboard-medium-small-breakpoint),
+    lightboard_medium: strip-unit($mdlext-lightboard-medium-breakpoint),
+    lightboard_medium_large: strip-unit($mdlext-lightboard-medium-large-breakpoint),
+    lightboard_large: strip-unit($mdlext-lightboard-large-breakpoint)
+  ));
+
+  ////// small - meduim-small //////
+  @include eq('lightboard_medium_small') {
+    padding: calc((#{$mdlext-lightboard-medium-small-margin} - #{$mdlext-lightboard-medium-small-gutter}) / 2);
+
+    .mdlext-lightboard__slide {
+      margin: calc(#{$mdlext-lightboard-medium-small-gutter} / 2);
+      width: calc(1 / #{$mdlext-lightboard-medium-small-columns} * 100% - #{$mdlext-lightboard-medium-small-gutter});
+
+      .mdlext-lightboard__slide__frame figure {
+        margin: $mdlext-lightboard-medium-small-frame-width;
+      }
+    }
+    &.mdlext-lightboard--no-spacing {
+      padding: 0;
+
+      .mdlext-lightboard__slide {
+        margin: 0;
+        width: calc(1 / #{$mdlext-lightboard-medium-small-columns} * 100%);
+      }
+    }
+  }
+
+  ////// meduim-small - medium //////
+  @include eq('lightboard_medium') {
+    padding: calc((#{$mdlext-lightboard-medium-margin} - #{$mdlext-lightboard-medium-gutter}) / 2);
+
+    .mdlext-lightboard__slide {
+      margin: calc(#{$mdlext-lightboard-medium-gutter} / 2);
+      width: calc(1 / #{$mdlext-lightboard-medium-columns} * 100% - #{$mdlext-lightboard-medium-gutter});
+
+      .mdlext-lightboard__slide__frame figure {
+        margin: $mdlext-lightboard-medium-frame-width;
+      }
+    }
+    &.mdlext-lightboard--no-spacing {
+      padding: 0;
+
+      .mdlext-lightboard__slide {
+        margin: 0;
+        width: calc(1 / #{$mdlext-lightboard-medium-columns} * 100%);
+      }
+    }
+  }
+
+  ////// meduim - medium-large //////
+  @include eq('lightboard_medium_large') {
+    padding: calc((#{$mdlext-lightboard-medium-large-margin} - #{$mdlext-lightboard-medium-large-gutter}) / 2);
+
+    .mdlext-lightboard__slide {
+      margin: calc(#{$mdlext-lightboard-medium-large-gutter} / 2);
+      width: calc(1 / #{$mdlext-lightboard-medium-large-columns} * 100% - #{$mdlext-lightboard-medium-large-gutter});
+
+      .mdlext-lightboard__slide__frame figure {
+        margin: $mdlext-lightboard-medium-large-frame-width;
+      }
+    }
+    &.mdlext-lightboard--no-spacing {
+      padding: 0;
+
+      .mdlext-lightboard__slide {
+        margin: 0;
+        width: calc(1 / #{$mdlext-lightboard-medium-large-columns} * 100%);
+      }
+    }
+  }
+
+  ////// meduim-large - large //////
+  @include eq('lightboard_large') {
+    padding: calc((#{$mdlext-lightboard-large-margin} - #{$mdlext-lightboard-large-gutter}) / 2);
+
+    .mdlext-lightboard__slide {
+      margin: calc(#{$mdlext-lightboard-large-gutter} / 2);
+      width: calc(1 / #{$mdlext-lightboard-large-columns} * 100% - #{$mdlext-lightboard-large-gutter});
+
+      .mdlext-lightboard__slide__frame figure {
+        margin: $mdlext-lightboard-large-frame-width;
+      }
+    }
+    &.mdlext-lightboard--no-spacing {
+      padding: 0;
+
+      .mdlext-lightboard__slide {
+        margin: 0;
+        width: calc(1 / #{$mdlext-lightboard-large-columns} * 100%);
+      }
+    }
+  }
+}
+
+@include eq-selectors;
+

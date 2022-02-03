@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rq
+    role: dashboard
+    tier: frontend
+  name: rq-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rq
+      role: dashboard
+      tier: frontend
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rq
+        role: dashboard
+        tier: frontend
+    spec:
+      containers:
+      - env:
+        - name: GET_HOSTS_FROM
+          value: env
+        image: eoranged/rq-dashboard:v0.6.3
+        name: rq-dashboard
+        ports:
+        - containerPort: 9181
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+status: {}

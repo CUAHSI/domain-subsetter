@@ -1,6 +1,9 @@
 var Map = {}
-$(document).ready(function() {
 
+/**
+ * Functions that will load after the page is fully rendered
+ */
+$(window).bind("load", function() {
 
     var map = L.map('map').setView([38.2, -96], 5);
     Map.map = map;
@@ -113,13 +116,8 @@ $(document).ready(function() {
     L.control.mousePosition({
         prefix:"Lat Long: ",
         separator:", "}).addTo(map);
-});
 
 
-/**
- * Functions that will load after the page is fully rendered
- */
-$(window).bind("load", function() {
 
   /**
   * ADD - HUC TABLE - OPEN
@@ -180,6 +178,11 @@ $(window).bind("load", function() {
     */
     document.getElementById("rm-huc").onclick = function() {
 
+      // do nothing if the button isn't activated.
+      if ($('#rm-huc').hasClass('mdl-button--disabled')) {
+	  return;
+      }
+
       // check if items are selected
       if ($('#huc-table').find('label').hasClass('is-checked')) {
         // show the dialog
@@ -239,6 +242,17 @@ $(window).bind("load", function() {
     }
     
 });
+/**
+ * Toggles the delete HUC menu button 
+ */
+function toggle_delete_button() {
+    row_count = $('#huc-table tr').length;
+    if (row_count > 0) {
+	$('#rm-huc').removeClass('mdl-button--disabled')
+    } else {
+	$('#rm-huc').addClass('mdl-button--disabled')
+    }
+}
 
 /** 
  * Removes all rows from the HUC table
@@ -250,6 +264,9 @@ function clearHucTable() {
     for (var i=rows.length-1; i>=0; i--) {
         table.deleteRow(i);
     }
+
+  // toggle the delete button
+  toggle_delete_button();
 }
 
 /** 
@@ -291,6 +308,8 @@ function addHucRow(huc_value) {
   var cell2 = row.insertCell(2);
   cell2.innerHTML =  'Loading';
 
+  // toggle the delete button
+  toggle_delete_button();
 
   componentHandler.upgradeAllRegistered();
 }
@@ -303,6 +322,9 @@ function rmHucRow(row_id) {
     var table = document.getElementById("huc-table");
     table.deleteRow(row_id);
   }
+
+  // toggle the delete button
+  toggle_delete_button();
 
 }
 
@@ -537,11 +559,10 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
             }
             getLccBounds(hucs);
 
-			// update the hucs list 
-			// this is used to create a shapefile
-			// that is exported along with the subset
-			update_huc_ids(hucs);
-			
+	    // update the hucs list 
+	    // this is used to create a shapefile
+	    // that is exported along with the subset
+	    update_huc_ids(hucs);		
 			
             // remove the specified id
             if (remove != null) {
@@ -848,3 +869,5 @@ function notify(message) {
     notify.MaterialSnackbar.showSnackbar(data);
 
 }
+
+

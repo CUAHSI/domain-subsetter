@@ -1,13 +1,17 @@
-<h5 id="application-programming-interface"><strong>APPLICATION PROGRAMMING INTERFACE</strong></h5>
-<p>There are three REST endpoints in version 0.1 of the subsetting tool: subset, jobs, and data (Figure 3). The subset endpoint accepts bounding box coordinates in the WGS84 spatial reference system, and uses these data to (1) validate the bounding box, (2) convert into the coordinate system used by NWM (an Albers Conformal Conic variant), and (3) submit the job to run as a background task. The jobs endpoint is used to lookup the status of any given job via unique identifier. Finally, the data endpoint is used to download the subsetted domain data via unique identifier. Technical details for each endpoint outlined below.</p>
-<button id="p3" class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+<p>There are four public REST endpoints in version 0.1 of the CUAHSI subsetter: subset, gethucbox, jobs, and data (see Figure 1). The subset endpoint accepts bounding box coordinates in the WGS84 spatial reference system and uses these data to (1) validate the bounding box, (2) convert into the coordinate system used by NWM (an Albers Conformal Conic variant), and (3) submit the job to run as a background task. The jobs endpoint is used to lookup the status of any given job via unique identifier. Finally, the data endpoint is used to download the subset domain data via unique identifier. Technical details for each endpoint outlined below.</p>
+<div class="mdl-grid center-horizontally info-page">
+<img src="{{ static_url('images/architecture.png') }}" alt="system-archiecture" style='max-width:600px;width:80%;height:auto'>
+</div>
+<button id=p3 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+    
 Try
 </button>
 <h5 style="display:inline-block;padding-right:10px">
 GET - /nwm/v1_2_2/subset?{params}
 </h5>
-<div id="p3" class="panel">
-<p>
+<div id=p3 class="panel">
+  <p>
+  
 <a href=http://subset.cuahsi.org:8080/nwm/v1_2_2/subset?llat=-511677.79030000046&llon=1435517.3967999965&ulat=-505666.89020000043&ulon=1442976.6818999965 target='_blank'><code>http://subset.cuahsi.org:8080/nwm/v1_2_2/subset?llat=-511677.79030000046&amp;llon=1435517.3967999965&amp;ulat=-505666.89020000043&amp;ulon=1442976.6818999965</code></a>
 </p>
 </div>
@@ -22,33 +26,16 @@ GET - /nwm/v1_2_2/subset?{params}
 <li>ulon: the upper longitude of the bounding box</li>
 </ul></li>
 </ul>
-<button id="p4" class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
-Try
-</button>
-<h5 style="display:inline-block;padding-right:10px">
-GET - /wbd/gethucbbox/lcc?{params}
-</h5>
-<div id="p4" class="panel">
-<p>
-<a href=http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc?hucID=030501100301 target='_blank'><code>http://subset.cuahsi.org:8080/wbd/gethucbbox/lcc?hucID=030501100301</code></a>
-</p>
-</div>
-<ul>
-<li>Description: gets the bounding box for a list of 12-digit hydrologic unit codes</li>
-<li>Returns: a json string containing hucIDs, hucLevels, and total bounding box in the Spherical Lambert Conformal Conic SRS.</li>
-<li>Parameters:
-<ul>
-<li>hucID: a comma separated list of hydrologic unit codes</li>
-</ul></li>
-</ul>
-<button id="p2" class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+<button id=p2 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+    
 Try
 </button>
 <h5 style="display:inline-block;padding-right:10px">
 GET - /jobs/{id}
 </h5>
-<div id="p2" class="panel">
-<p>
+<div id=p2 class="panel">
+  <p>
+  
 <a href=http://subset.cuahsi.org:8080/jobs/2b51d4b68eb675421de14f75d6bd72b35f1d3524 target='_blank'><code>http://subset.cuahsi.org:8080/jobs/2b51d4b68eb675421de14f75d6bd72b35f1d3524</code></a>
 </p>
 </div>
@@ -60,14 +47,16 @@ GET - /jobs/{id}
 <li>id: the unique identifier for the job</li>
 </ul></li>
 </ul>
-<button id="p1" class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+<button id=p1 class="mdl-button mdl-button--colored mdl-button--raised is-upgraded accordion">
+    
 Try
 </button>
 <h5 style="display:inline-block;padding-right:10px">
 GET - /data/{id}.tar.gz
 </h5>
-<div id="p1" class="panel">
+<div id=p1 class="panel">
 <p>
+  
 <a href=http://subset.cuahsi.org:8080/data/2b51d4b68eb675421de14f75d6bd72b35f1d3524.tar.gz target='_blank'><code>http://subset.cuahsi.org:8080/data/2b51d4b68eb675421de14f75d6bd72b35f1d3524.tar.gz</code></a>
 </p>
 </div>

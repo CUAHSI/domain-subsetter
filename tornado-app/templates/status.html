@@ -1,10 +1,10 @@
 <html>
   <head>
-  <link rel="stylesheet" href='{{ static_url("style.css") }}'>
+  <link rel="stylesheet" href='{{ static_url("style_new.css") }}'>
    <link href="https://fonts.googleapis.com/css?family=Suez+One" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+   <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
    <script type='text/javascript' src='{{ static_url("status.js") }}'></script>
   </head>
    <body>
@@ -15,6 +15,9 @@
      </div>
 
 
+     <! -- DIV for status messages -->
+     <div id=progress-messages class=progress-msg>
+     </div>
 
     <div id=results style="display:none;">
         <h3>Your data can be downloaded using the following URL: </h3>

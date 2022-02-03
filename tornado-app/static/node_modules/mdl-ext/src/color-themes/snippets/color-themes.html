@@ -1,0 +1,2769 @@
+<style>
+  .demo-theme-container {
+    margin: 0 auto 32px;
+    /*max-width: 800px;*/
+  }
+
+  .demo-theme-container table.info,
+  .demo-card-grid table.info {
+    width: 100%
+  }
+  .demo-theme-container table.info th,
+  .demo-card-grid table.info th {
+    padding-right: 40px;
+    vertical-align: middle;
+    text-align: left;
+    width: 30%;
+  }
+  .demo-theme-container section,
+  .demo-card-grid section {
+    margin: 0 16px;
+  }
+
+  .demo-badge-grid {
+  }
+  .demo-badge-grid .mdl-cell {
+    text-align: center;
+  }
+  .demo-badge-grid .mdl-cell p {
+    margin-top: 32px;
+  }
+
+  .demo-button-grid {
+  }
+  .demo-button-grid .mdl-cell {
+    text-align: center;
+    padding: 12px 4px;
+  }
+
+  .demo-toggle-grid {
+  }
+  .demo-toggle-grid .mdl-cell p {
+    margin-top: 16px;
+  }
+
+  .demo-slider-grid  {
+  }
+  .demo-slider-grid p {
+    margin-top: 16px;
+  }
+
+  .textfield-demo-container {
+  }
+
+  .textfield-demo-container .mdl-cell {
+    padding: 0 4px 8px 0;
+  }
+
+  .textfield-demo-container .mdl-cell p {
+    margin-bottom: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+
+  .demo-menu {
+    padding-top: 16px;
+    max-width: 300px;
+  }
+  .demo-menu-container {
+    position: relative;
+    width: 100%;
+  }
+  .demo-menu-bar {
+    box-sizing: border-box;
+    height: 64px;
+    width: 100%;
+    padding: 16px;
+  }
+  .demo-menu-background-light {
+    background: white;
+    height: 148px;
+    width: 100%;
+  }
+  .demo-menu-background-dark {
+    background: #212121;
+    height: 148px;
+    width: 100%;
+  }
+
+
+  .mdl-card {
+    width: auto;
+  }
+  .mdl-card__media {
+    margin: 0;
+    text-align: center;
+  }
+  .mdl-card__media > img {
+    max-width: 100%;
+    height: auto;
+  }
+  .mdl-card__supporting-text {
+    width: auto;
+  }
+  .mdl-card__actions {
+    display: flex;
+  }
+
+
+  .borderedfield-demo-container .mdl-cell {
+    padding: 0 4px 8px 0;
+  }
+
+  .borderedfield-demo-container .mdl-cell p {
+    margin-bottom: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  /* File input example */
+  .mdl-button--file input {
+    cursor: pointer;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+</style>
+
+
+<datalist id="languages">
+  <option value="HTML">
+  <option value="CSS">
+  <option value="JavaScript">
+  <option value="Java">
+  <option value="Ruby">
+  <option value="PHP">
+  <option value="Go">
+  <option value="Erlang">
+  <option value="Python">
+  <option value="C">
+  <option value="C#">
+  <option value="C++">
+</datalist>
+
+
+<div class="mdl-grid demo-card-grid" style="margin-bottom: 32px;">
+
+  <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdlext-light-color-theme">
+    <div class="mdl-card mdl-shadow--2dp">
+      <header class="mdl-card__title mdl-color--primary mdl-color-text--primary-contrast">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">view_headline</i>
+        </button>
+        <h2 class="mdl-card__title-text">Light Theme</h2>
+        <div class="mdl-layout-spacer"></div>
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">share</i>
+        </button>
+      </header>
+      <figure class="mdl-card__media">
+        <img src="./images/_DSC7535-2.jpg" alt="">
+      </figure>
+      <section style="margin-top:16px">
+        <table class="info">
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+            <td class="mdl-color--primary-dark mdl-color-text--primary-contrast">primary dark</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary</th>
+            <td class="mdl-color--primary mdl-color-text--primary-contrast">primary</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">accent</th>
+            <td class="mdl-color--accent mdl-color-text--accent-contrast">accent</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+            <td class="mdl-color--primary-contrast mdl-color-text--primary-dark">primary dark, inverted</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary</th>
+            <td class="mdl-color--primary-contrast mdl-color-text--primary">primary, inverted</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">accent</th>
+            <td class="mdl-color--accent-contrast mdl-color-text--accent">accent, inverted</td>
+          </tr>
+        </table>
+      </section>
+
+      <div class="mdl-card__supporting-text">
+        Card Supporting Text
+      </div>
+
+      <footer class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+          Read more
+        </a>
+        <div class="mdl-layout-spacer"></div>
+        <button class="mdl-button mdl-button--icon"><i class="material-icons">radio</i></button>
+        <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">favorite</i></button>
+        <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">share</i></button>
+      </footer>
+    </div>
+
+  </div>
+
+
+  <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone mdlext-dark-color-theme">
+
+    <div class="mdl-card mdl-shadow--2dp">
+      <header class="mdl-card__title mdl-color--primary mdl-color-text--primary-contrast">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">view_headline</i>
+        </button>
+        <h2 class="mdl-card__title-text">Dark Theme</h2>
+        <div class="mdl-layout-spacer"></div>
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i class="material-icons">share</i>
+        </button>
+      </header>
+      <figure class="mdl-card__media">
+        <img src="./images/_DSC7535-2.jpg" alt="">
+      </figure>
+      <section style="margin-top:16px">
+        <table class="info">
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+            <td class="mdl-color--primary-dark mdl-color-text--primary-contrast">primary dark</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary</th>
+            <td class="mdl-color--primary mdl-color-text--primary-contrast">primary</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">accent</th>
+            <td class="mdl-color--accent mdl-color-text--accent-contrast">accent</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+            <td class="mdl-color--primary-contrast mdl-color-text--primary-dark">primary dark, inverted</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">primary</th>
+            <td class="mdl-color--primary-contrast mdl-color-text--primary">primary, inverted</td>
+          </tr>
+          <tr>
+            <th class="mdl-typography--caption-color-contrast">accent</th>
+            <td class="mdl-color--accent-contrast mdl-color-text--accent">accent, inverted</td>
+          </tr>
+        </table>
+      </section>
+
+      <div class="mdl-card__supporting-text">
+        Card Supporting Text
+      </div>
+
+      <footer class="mdl-card__actions mdl-card--border">
+        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+          Read more
+        </a>
+        <div class="mdl-layout-spacer"></div>
+        <button class="mdl-button mdl-button--icon"><i class="material-icons">radio</i></button>
+        <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">favorite</i></button>
+        <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">share</i></button>
+      </footer>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+<h2>Light Color Theme</h2>
+
+<div class="demo-theme-container mdlext-light-color-theme">
+
+  <section>
+    <table class="info">
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">.mdl-typography--</th>
+        <td class="mdl-typography--title">Scale &amp; Basic Styles</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-4</th>
+        <td class="mdl-typography--display-4">Light 112px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-3</th>
+        <td class="mdl-typography--display-3">Regular 56px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-2</th>
+        <td class="mdl-typography--display-2">Regular 45px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-1</th>
+        <td class="mdl-typography--display-1">Regular 34px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">headline</th>
+        <td class="mdl-typography--headline">Regular 24px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">title</th>
+        <td class="mdl-typography--title">Medium 20px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">subhead</th>
+        <td class="mdl-typography--subhead">Regular 16px (Device), Regular 15px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2</th>
+        <td class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1</th>
+        <td class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2-force-preferred-font</th>
+        <td class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1-force-preferred-font</th>
+        <td class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">caption</th>
+        <td class="mdl-typography--caption">Regular 12px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">menu</th>
+        <td class="mdl-typography--menu">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">button</th>
+        <td class="mdl-typography--button">Medium (All Caps) 14px</td>
+      </tr>
+
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-dark mdl-color-text--primary-contrast">mdl-color--primary-dark mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary mdl-color-text--primary-contrast">mdl-color--primary mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent mdl-color-text--accent-contrast">mdl-color--accent mdl-color-text--accent-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary-dark">mdl-color--primary-contrast mdl-color-text--primary-dark</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary">mdl-color-text--primary</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent-contrast mdl-color-text--accent">mdl-color--accent-contrast mdl-color-text--accent</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h1>Base font</h1>
+
+    <p>Material Design Lite start’s with a base font of</p>
+    <ul>
+      <li>A size of 14px</li>
+      <li>A weight of 400</li>
+      <li>A line height of 20px</li>
+    </ul>
+
+    <p class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p class="mdl-typography--body-2-color-contrast">Body with color contrast</p>
+    <p class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p><a href="#" onclick="return false">An anchor</a></p>
+
+    <h1>Headings</h1>
+    <h1>h1 (56px) <small>Subtitle</small></h1>
+    <h2>h2 (45px) <small>Subtitle</small></h2>
+    <h3>h3 (34px) <small>Subtitle</small></h3>
+    <h4>h4 (24px) <small>Subtitle</small></h4>
+    <h5>h5 (20px) <small>Subtitle</small></h5>
+    <h6>h6 (16px) <small>Subtitle</small></h6>
+  </section>
+
+
+  <!-- textfields -->
+  <section class = "textfield-demo-container">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a programming language" required>
+          <label class="mdl-textfield__label">Programming Language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
+          <label class="mdl-button mdl-js-button mdl-button--icon" for="mdl-expandable-demo3">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="q" value="" id="mdl-expandable-demo3" pattern=".{3,}" />
+            <label class="mdl-textfield__label" for="mdl-expandable-demo1">Expandable Input</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--8-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
+          <textarea class="mdl-textfield__input" rows= "3"></textarea>
+          <label class="mdl-textfield__label">Text lines...</label>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Selectfield -->
+  <section style="margin-bottom: 16px;">
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- bordered fields -->
+  <section class="mdlext-bordered-fields" style="margin-top:16px;">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a language" required>
+          <label class="mdl-textfield__label">Programming language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Numeric with floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label" >Disabled floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right ">
+          <input class="mdl-textfield__input" type="text" id="uploadfile12" readonly>
+          <label class="mdl-textfield__label">File (work in progress)</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--primary mdl-button--icon mdl-button--file" for="uploadfile12">
+            <i class="material-icons">attach_file</i>
+            <input type="file" id="uploadBtn12">
+          </label>
+        </div>
+        <!--
+          // Need a script to work properly - something like this
+        -->
+        <script>
+          (function() {
+            'use strict';
+            document.querySelector('#uploadBtn12').addEventListener('change', function() {
+              var n = document.querySelector("#uploadfile12");
+              n.value = this.files[0].name;
+              n.parentNode.classList.add('is-dirty');
+            });
+          }());
+        </script>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text, disabled</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <fieldset disabled>
+      <legend>Disabled fieldset</legend>
+      <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <select class="mdlext-selectfield__select">
+          <option value=""></option>
+          <option value="option1">option 1</option>
+          <option value="option2">option 2</option>
+          <option value="option3">option 3</option>
+          <option value="option4">option 4</option>
+          <option value="option5">option 5</option>
+          <option value="option6">option 5 abcdefghijklmnopqrstuvw0123456789</option>
+        </select>
+        <label class="mdlext-selectfield__label">Profession</label>
+      </div>
+
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+        <label class="mdl-textfield__label">Number...</label>
+        <span class="mdl-textfield__error">Input is not a number!</span>
+      </div>
+
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+        <i class="material-icons">radio</i>
+        <input class="mdl-textfield__input" type="text">
+        <label class="mdl-textfield__label">Text...</label>
+        <label class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">settings_voice</i>
+        </label>
+      </div>
+    </fieldset>
+
+  </section>
+
+
+  <!-- Badges -->
+  <section style="margin-top:16px">
+    <div class="mdl-grid demo-badge-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="4">Inbox</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="1">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="♥">Mood</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="♥">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <a href="#" onclick="return false" class="mdl-badge" data-badge="5">Inbox</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <section>
+    <div class="mdl-grid demo-button-grid">
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised">
+          Raised
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect animated bounce">
+          <i class="material-icons">favorite</i>&nbsp;Fav
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          Flat
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--primary">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          <i class="material-icons">snooze</i>&nbsp;Ring, ring...
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--lime mdl-button--accent">
+          <i class="material-icons">cloud</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-color--deep-orange-100 mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Toggles -->
+  <section>
+    <div class="mdl-grid demo-toggle-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input">
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked disabled>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options30" value="1" checked>
+          <span class="mdl-radio__label">First</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options30" value="2">
+          <span class="mdl-radio__label">Second</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options30" value="3" disabled>
+          <span class="mdl-radio__label">Third</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" checked>
+          <i class="mdl-icon-toggle__label material-icons">format_bold</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input">
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" disabled>
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" checked>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input">
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" disabled>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Sliders -->
+  <section>
+    <div class="mdl-grid demo-slider-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Default Slider -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0">
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Slider with Starting Value -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="25">
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Data table -->
+  <section>
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Materials</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
+        <td>25</td>
+        <td>$2.90</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
+        <td>50</td>
+        <td>$1.25</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
+        <td>10</td>
+        <td>$2.35</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- Menu -->
+  <!--
+  <section>
+    <div class="demo-menu demo-menu__lower-left">
+      <div class="demo-menu-container mdl-shadow--2dp mdl-color--primary-dark mdl-color-text--primary-contrast">
+        <div class="demo-menu-bar">
+          <button id="demo-menu-lower-left-30" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left-30">
+            <li class="mdl-menu__item">Some Action</li>
+            <li class="mdl-menu__item">Another Action</li>
+            <li disabled class="mdl-menu__item">Disabled Action</li>
+            <li class="mdl-menu__item">Yet Another Action</li>
+          </ul>
+
+          <span>Menu lower left</span>
+
+        </div>
+        <div class="demo-menu-background-light"></div>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- Menu button -->
+  <section style="padding-bottom:16px">
+    <h4>Menu button</h4>
+
+    <button class="mdl-button mdl-button--raised mdl-js-ripple-effect mdl-js-button mdlext-js-menu-button">
+      <i class="material-icons">gesture</i>
+      <span class="mdlext-menu-button__caption">Select</span>
+      <i class="material-icons mdlext-aria-expanded-more-less"></i>
+    </button>
+    <ul class="mdlext-menu mdlext-light-color-theme" hidden >
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">info</i>
+        <span class="mdlext-menu__item__caption">Menu item #1</span>
+      </li>
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">help_outline</i>
+        <span class="mdlext-menu__item__caption">Menu item #2. A long text to check ellipsis overflow 0123456789</span>
+        <i class="material-icons md-18">radio</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item" disabled>
+        <span class="mdlext-menu__item__caption">Menu item #3, disabled</span>
+        <i class="material-icons md-18">accessibility</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #IV</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #V</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VI</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VII</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        Menu item #n
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+
+
+<!-- Dark theme -->
+<h2>Dark Color Theme</h2>
+
+
+<div class="demo-theme-container mdlext-dark-color-theme">
+
+  <section>
+    <table class="info">
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">.mdl-typography--</th>
+        <td class="mdl-typography--title">Scale &amp; Basic Styles</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-4</th>
+        <td class="mdl-typography--display-4">Light 112px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-3</th>
+        <td class="mdl-typography--display-3">Regular 56px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-2</th>
+        <td class="mdl-typography--display-2">Regular 45px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-1</th>
+        <td class="mdl-typography--display-1">Regular 34px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">headline</th>
+        <td class="mdl-typography--headline">Regular 24px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">title</th>
+        <td class="mdl-typography--title">Medium 20px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">subhead</th>
+        <td class="mdl-typography--subhead">Regular 16px (Device), Regular 15px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2</th>
+        <td class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1</th>
+        <td class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2-force-preferred-font</th>
+        <td class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1-force-preferred-font</th>
+        <td class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">caption</th>
+        <td class="mdl-typography--caption">Regular 12px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">menu</th>
+        <td class="mdl-typography--menu">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">button</th>
+        <td class="mdl-typography--button">Medium (All Caps) 14px</td>
+      </tr>
+
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-dark mdl-color-text--primary-contrast">mdl-color--primary-dark mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary mdl-color-text--primary-contrast">mdl-color--primary mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent mdl-color-text--accent-contrast">mdl-color--accent mdl-color-text--accent-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary-dark">mdl-color--primary-contrast mdl-color-text--primary-dark</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary">mdl-color-text--primary</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent-contrast mdl-color-text--accent">mdl-color--accent-contrast mdl-color-text--accent</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h1>Base font</h1>
+
+    <p>Material Design Lite start’s with a base font of</p>
+    <ul>
+      <li>A size of 14px</li>
+      <li>A weight of 400</li>
+      <li>A line height of 20px</li>
+    </ul>
+
+    <p class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p class="mdl-typography--body-2-color-contrast">Body with color contrast</p>
+    <p class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p><a href="#" onclick="return false">An anchor</a></p>
+
+    <h1>Headings</h1>
+    <h1>h1 (56px) <small>Subtitle</small></h1>
+    <h2>h2 (45px) <small>Subtitle</small></h2>
+    <h3>h3 (34px) <small>Subtitle</small></h3>
+    <h4>h4 (24px) <small>Subtitle</small></h4>
+    <h5>h5 (20px) <small>Subtitle</small></h5>
+    <h6>h6 (16px) <small>Subtitle</small></h6>
+  </section>
+
+
+  <!-- textfields -->
+  <section class = "textfield-demo-container">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a programming language" required>
+          <label class="mdl-textfield__label">Programming Language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
+          <label class="mdl-button mdl-js-button mdl-button--icon" for="mdl-expandable-demo2">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="q" value="" id="mdl-expandable-demo2" pattern=".{3,}" />
+            <label class="mdl-textfield__label" for="mdl-expandable-demo2">Expandable Input</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--8-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
+          <textarea class="mdl-textfield__input" rows= "3" ></textarea>
+          <label class="mdl-textfield__label">Text lines...</label>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- Selectfield -->
+  <section style="margin-bottom: 16px;">
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield">
+          <select class="mdlext-selectfield__select" name="mdl-professsion3">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" name="mdl-professsion20">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" name="mdl-professsion22" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- bordered fields -->
+  <section class="mdlext-bordered-fields" style="margin-top:16px;">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a language" required>
+          <label class="mdl-textfield__label">Programming language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Numeric with floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label" >Disabled floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right ">
+          <input class="mdl-textfield__input" type="text" id="uploadfile22" readonly>
+          <label class="mdl-textfield__label">File (work in progress)</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--primary mdl-button--icon mdl-button--file" for="uploadfile22">
+            <i class="material-icons">attach_file</i>
+            <input type="file" id="uploadBtn22">
+          </label>
+        </div>
+        <!--
+          // Need a script to work properly - something like this
+        -->
+        <script>
+          (function() {
+            'use strict';
+            document.querySelector('#uploadBtn22').addEventListener('change', function() {
+              var n = document.querySelector("#uploadfile22");
+              n.value = this.files[0].name;
+              n.parentNode.classList.add('is-dirty');
+            });
+          }());
+        </script>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text, disabled</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <fieldset disabled>
+      <legend>Disabled fieldset</legend>
+      <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <select class="mdlext-selectfield__select">
+          <option value=""></option>
+          <option value="option1">option 1</option>
+          <option value="option2">option 2</option>
+          <option value="option3">option 3</option>
+          <option value="option4">option 4</option>
+          <option value="option5">option 5</option>
+          <option value="option6">option 5 abcdefghijklmnopqrstuvw0123456789</option>
+        </select>
+        <label class="mdlext-selectfield__label">Profession</label>
+      </div>
+
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+        <label class="mdl-textfield__label">Number...</label>
+        <span class="mdl-textfield__error">Input is not a number!</span>
+      </div>
+
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+        <i class="material-icons">radio</i>
+        <input class="mdl-textfield__input" type="text">
+        <label class="mdl-textfield__label">Text...</label>
+        <label class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">settings_voice</i>
+        </label>
+      </div>
+    </fieldset>
+
+  </section>
+
+
+  <!-- Badges -->
+  <section style="margin-top:16px">
+    <div class="mdl-grid demo-badge-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="4">Inbox</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="1">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="♥">Mood</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="♥">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <a href="#" onclick="return false" class="mdl-badge" data-badge="5">Inbox</a>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- Buttons -->
+  <section>
+    <div class="mdl-grid demo-button-grid">
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised">
+          Raised
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect animated bounce">
+          <i class="material-icons">favorite</i>&nbsp;Fav
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          Flat
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--primary">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          <i class="material-icons">snooze</i>&nbsp;Ring, ring...
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--lime mdl-button--accent">
+          <i class="material-icons">cloud</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-color--deep-orange-100 mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toggles -->
+  <section>
+    <div class="mdl-grid demo-toggle-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input">
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked disabled>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options2" value="1" checked>
+          <span class="mdl-radio__label">First</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options2" value="2">
+          <span class="mdl-radio__label">Second</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options2" value="3" disabled>
+          <span class="mdl-radio__label">Third</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" checked>
+          <i class="mdl-icon-toggle__label material-icons">format_bold</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input">
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" disabled>
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" checked>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input">
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" disabled>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Sliders -->
+  <section>
+    <div class="mdl-grid demo-slider-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Default Slider -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0">
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Slider with Starting Value -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="25">
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Data table -->
+  <section>
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Materials</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
+        <td>25</td>
+        <td>$2.90</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
+        <td>50</td>
+        <td>$1.25</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
+        <td>10</td>
+        <td>$2.35</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- Menu -->
+  <!--
+  <section>
+    <div class="demo-menu">
+      <div class="demo-menu-container mdl-shadow--2dp mdl-color--primary-dark mdl-color-text--primary-contrast">
+        <div class="demo-menu-background-dark"></div>
+        <div class="demo-menu-bar">
+          <button id="demo-menu-top-left" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+
+          <ul class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect"
+              for="demo-menu-top-left">
+            <li class="mdl-menu__item">Some Action</li>
+            <li class="mdl-menu__item">Another Action</li>
+            <li disabled class="mdl-menu__item">Disabled Action</li>
+            <li class="mdl-menu__item">Yet Another Action</li>
+          </ul>
+
+          <span>Menu top left</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- Menu button -->
+  <section style="padding-bottom:16px">
+    <h4>Menu button</h4>
+    <button class="mdl-button mdl-button--raised mdl-js-ripple-effect mdl-js-button mdlext-js-menu-button">
+      <i class="material-icons">gesture</i>
+      <span class="mdlext-menu-button__caption">Select</span>
+      <i class="material-icons mdlext-aria-expanded-more-less"></i>
+    </button>
+    <ul class="mdlext-menu mdlext-dark-color-theme" hidden >
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">info</i>
+        <span class="mdlext-menu__item__caption">Menu item #1</span>
+      </li>
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">help_outline</i>
+        <span class="mdlext-menu__item__caption">Menu item #2. A long text to check ellipsis overflow 0123456789</span>
+        <i class="material-icons md-18">radio</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item" disabled>
+        <span class="mdlext-menu__item__caption">Menu item #3, disabled</span>
+        <i class="material-icons md-18">accessibility</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #IV</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #V</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VI</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VII</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        Menu item #n
+      </li>
+    </ul>
+  </section>
+
+
+</div>
+
+
+
+<h2>Default Color Theme</h2>
+
+<!-- Default theme -->
+<div class="demo-theme-container">
+
+  <section>
+    <table class="info">
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">.mdl-typography--</th>
+        <td class="mdl-typography--title">Scale &amp; Basic Styles</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-4</th>
+        <td class="mdl-typography--display-4">Light 112px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-3</th>
+        <td class="mdl-typography--display-3">Regular 56px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-2</th>
+        <td class="mdl-typography--display-2">Regular 45px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">display-1</th>
+        <td class="mdl-typography--display-1">Regular 34px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">headline</th>
+        <td class="mdl-typography--headline">Regular 24px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">title</th>
+        <td class="mdl-typography--title">Medium 20px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">subhead</th>
+        <td class="mdl-typography--subhead">Regular 16px (Device), Regular 15px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2</th>
+        <td class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1</th>
+        <td class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-2-force-preferred-font</th>
+        <td class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">body-1-force-preferred-font</th>
+        <td class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">caption</th>
+        <td class="mdl-typography--caption">Regular 12px</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">menu</th>
+        <td class="mdl-typography--menu">Medium 14px (Device), Medium 13px (Desktop)</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">button</th>
+        <td class="mdl-typography--button">Medium (All Caps) 14px</td>
+      </tr>
+
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-dark mdl-color-text--primary-contrast">mdl-color--primary-dark mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary mdl-color-text--primary-contrast">mdl-color--primary mdl-color-text--primary-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent mdl-color-text--accent-contrast">mdl-color--accent mdl-color-text--accent-contrast</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary-dark</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary-dark">mdl-color--primary-contrast mdl-color-text--primary-dark</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">primary</th>
+        <td class="mdl-color--primary-contrast mdl-color-text--primary">mdl-color-text--primary</td>
+      </tr>
+      <tr>
+        <th class="mdl-typography--caption-color-contrast">accent</th>
+        <td class="mdl-color--accent-contrast mdl-color-text--accent">mdl-color--accent-contrast mdl-color-text--accent</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h1>Base font</h1>
+
+    <p>Material Design Lite start’s with a base font of</p>
+    <ul>
+      <li>A size of 14px</li>
+      <li>A weight of 400</li>
+      <li>A line height of 20px</li>
+    </ul>
+
+    <p class="mdl-typography--body-1">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-1-force-preferred-font">Regular 14px (Device), Regular 13px (Desktop)</p>
+    <p class="mdl-typography--body-2">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p class="mdl-typography--body-2-color-contrast">Body with color contrast</p>
+    <p class="mdl-typography--body-2-force-preferred-font">Medium 14px (Device), Medium 13px (Desktop)</p>
+    <p><a href="#" onclick="return false">An anchor</a></p>
+
+    <h1>Headings</h1>
+    <h1>h1 (56px) <small>Subtitle</small></h1>
+    <h2>h2 (45px) <small>Subtitle</small></h2>
+    <h3>h3 (34px) <small>Subtitle</small></h3>
+    <h4>h4 (24px) <small>Subtitle</small></h4>
+    <h5>h5 (20px) <small>Subtitle</small></h5>
+    <h6>h6 (16px) <small>Subtitle</small></h6>
+  </section>
+
+
+  <!-- textfields -->
+  <section class = "textfield-demo-container">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a programming language" required>
+          <label class="mdl-textfield__label">Programming Language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label">Number...</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
+          <label class="mdl-button mdl-js-button mdl-button--icon" for="mdl-expandable-demo1">
+            <i class="material-icons">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="q" value="" id="mdl-expandable-demo1" pattern=".{3,}" />
+            <label class="mdl-textfield__label" for="mdl-expandable-demo1">Expandable Input</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--8-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--full-width mdl-textfield--floating-label">
+          <textarea class="mdl-textfield__input" rows= "3"></textarea>
+          <label class="mdl-textfield__label">Text lines...</label>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Selectfield -->
+  <section style="margin-bottom: 16px;">
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- bordered fields -->
+  <section class="mdlext-bordered-fields" style="margin-top:16px;">
+
+    <div class="mdl-grid mdl-grid--no-spacing">
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" list="languages" placeholder="Select a language" required>
+          <label class="mdl-textfield__label">Programming language</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?">
+          <label class="mdl-textfield__label">Numeric with floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" disabled value="123">
+          <label class="mdl-textfield__label" >Disabled floating label</label>
+          <span class="mdl-textfield__error">Input is not a number!</span>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right ">
+          <input class="mdl-textfield__input" type="text" id="uploadfile33" readonly>
+          <label class="mdl-textfield__label">File (work in progress)</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--primary mdl-button--icon mdl-button--file" for="uploadfile33">
+            <i class="material-icons">attach_file</i>
+            <input type="file" id="uploadBtn33">
+          </label>
+        </div>
+        <!--
+          // Need a script to work properly - something like this
+        -->
+        <script>
+          (function() {
+            'use strict';
+            document.querySelector('#uploadBtn33').addEventListener('change', function() {
+              var n = document.querySelector("#uploadfile33");
+              n.value = this.files[0].name;
+              n.parentNode.classList.add('is-dirty');
+            });
+          }());
+        </script>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text, disabled</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select">
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdlext-bordered-fields__icon-left">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+          <select class="mdlext-selectfield__select" disabled>
+            <option value=""></option>
+            <option value="option1">option 1</option>
+            <option value="option2">option 2</option>
+            <option value="option3">option 3</option>
+            <option value="option4">option 4</option>
+            <option value="option5">option 5</option>
+          </select>
+          <label class="mdlext-selectfield__label">Profession</label>
+        </div>
+      </div>
+
+
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-right">
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <i class="material-icons">fingerprint</i>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">phone</i>
+          </label>
+
+          <input class="mdl-textfield__input" type="text" disabled>
+          <label class="mdl-textfield__label">Text...</label>
+
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdlext-bordered-fields__icon-left mdlext-bordered-fields__icon-right">
+          <i class="material-icons">radio</i>
+          <input class="mdl-textfield__input" type="text">
+          <label class="mdl-textfield__label">Text...</label>
+          <label class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">settings_voice</i>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Badges -->
+  <section style="margin-top:16px">
+    <div class="mdl-grid demo-badge-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="4">Inbox</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="1">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="mdl-badge" data-badge="♥">Mood</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <span class="material-icons mdl-badge" data-badge="♥">account_box</span>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <a href="#" onclick="return false" class="mdl-badge" data-badge="5">Inbox</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buttons -->
+  <section>
+    <div class="mdl-grid demo-button-grid">
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" disabled>
+          <i class="material-icons">add</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised">
+          Raised
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect animated bounce">
+          <i class="material-icons">favorite</i>&nbsp;Fav
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          Flat
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button" disabled>
+          Disabled
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--primary">
+          Colored
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--accent">
+          Accent
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button">
+          <i class="material-icons">snooze</i>&nbsp;Ring, ring...
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+          <i class="material-icons">mood</i>
+        </button>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--lime mdl-button--accent">
+          <i class="material-icons">cloud</i>
+        </button>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--middle">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-color--deep-orange-100 mdl-js-ripple-effect">
+          <i class="material-icons">settings</i>&nbsp;Settings
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Toggles -->
+  <section>
+    <div class="mdl-grid demo-toggle-grid">
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input">
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-checkbox__input" checked disabled>
+          <span class="mdl-checkbox__label">Checkbox</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options" value="1" checked>
+          <span class="mdl-radio__label">First</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options" value="2">
+          <span class="mdl-radio__label">Second</span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">
+          <input type="radio" class="mdl-radio__button" name="options" value="3" disabled>
+          <span class="mdl-radio__label">Third</span>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" checked>
+          <i class="mdl-icon-toggle__label material-icons">format_bold</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input">
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-icon-toggle__input" disabled>
+          <i class="mdl-icon-toggle__label material-icons">format_italic</i>
+        </label>
+      </div>
+
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" checked>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input">
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+          <input type="checkbox" class="mdl-switch__input" disabled>
+          <span class="mdl-switch__label"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Sliders -->
+  <section>
+    <div class="mdl-grid demo-slider-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Default Slider -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0">
+      </div>
+
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-phone">
+        <!-- Slider with Starting Value -->
+        <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="25">
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Data table -->
+  <section>
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Materials</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
+        <td>25</td>
+        <td>$2.90</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
+        <td>50</td>
+        <td>$1.25</td>
+      </tr>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
+        <td>10</td>
+        <td>$2.35</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- Menu -->
+  <!--
+  <section>
+    <div class="demo-menu demo-menu__lower-left">
+      <div class="demo-menu-container mdl-shadow--2dp mdl-color--primary-dark mdl-color-text--primary-contrast">
+        <div class="demo-menu-bar">
+          <button id="demo-menu-lower-left" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">
+            <li class="mdl-menu__item">Some Action</li>
+            <li class="mdl-menu__item">Another Action</li>
+            <li disabled class="mdl-menu__item">Disabled Action</li>
+            <li class="mdl-menu__item">Yet Another Action</li>
+          </ul>
+
+          <span>Menu lower left</span>
+
+        </div>
+        <div class="demo-menu-background-light"></div>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- Menu button -->
+  <section style="padding-bottom:16px">
+    <h4>Menu button</h4>
+    <button class="mdl-button mdl-button--raised mdl-js-ripple-effect mdl-js-button mdlext-js-menu-button">
+      <i class="material-icons">gesture</i>
+      <span class="mdlext-menu-button__caption">Select</span>
+      <i class="material-icons mdlext-aria-expanded-more-less"></i>
+    </button>
+    <ul class="mdlext-menu" hidden >
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">info</i>
+        <span class="mdlext-menu__item__caption">Menu item #1</span>
+      </li>
+      <li class="mdlext-menu__item">
+        <i class="material-icons md-18">help_outline</i>
+        <span class="mdlext-menu__item__caption">Menu item #2. A long text to check ellipsis overflow 0123456789</span>
+        <i class="material-icons md-18">radio</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item" disabled>
+        <span class="mdlext-menu__item__caption">Menu item #3, disabled</span>
+        <i class="material-icons md-18">accessibility</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #IV</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #V</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item-separator"></li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VI</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        <span class="mdlext-menu__item__caption">Menu item #VII</span>
+        <i class="material-icons md-18">build</i>
+      </li>
+      <li class="mdlext-menu__item">
+        Menu item #n
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+

@@ -1,0 +1,178 @@
+@charset "UTF-8";
+
+/**
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * A lightboard is a translucent surface illuminated from behind, used for situations
+ * where a shape laid upon the surface needs to be seen with high contrast. In the "old days" of photography
+ * photograpers used a lightboard to get a quick view of their slides. The goal is to create a responsive lightbox
+ * design, based on flex layout, similar to what is used in Adobe LightRoom to browse images.
+ */
+
+// Use of this module requires the user to include variables from material-design-lite
+//@import "../../node_modules/material-design-lite/src/variables";
+//@import "../../node_modules/material-design-lite/src/mixins";
+@import "../variables";
+
+ul.mdlext-lightboard {
+  list-style: none;
+}
+
+.mdlext-lightboard {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-flow:row wrap;
+  align-items: stretch;
+
+  *,
+  *::before,
+  *::after,
+  input[type="search"] {
+    box-sizing: border-box;
+  }
+
+  .mdlext-lightboard__slide {
+    background-color: $mdlext-lightboard-slide-background-color;
+    border: 1px solid $mdlext-lightboard-slide-border-color;
+    border-radius: $mdlext-lightboard-slide-border-radius;
+    box-shadow: $mdlext-lightboard-slide-box-shadow;
+    position: relative;
+    display: block;
+    max-width: $mdlext-lightboard-slide-max-size;
+
+    &::before {
+      // 1:1 ratio
+      // TODO: Use a class for ratio so the grid can display slides with different ratios (16:9, 16:10, 4:3 ...)
+      content: '';
+      display: block;
+      padding-top: 100%;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      border-color: $mdlext-lightboard-slide-border-color-hover;
+      background-color: $mdlext-lightboard-slide-background-color-hover;
+      box-shadow: $mdlext-lightboard-slide-box-shadow-hover;
+
+      figcaption {
+        color: rgba(0, 0, 0, 1) !important;
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    &:focus {
+      outline-offset: -2px;
+      outline-color: $mdlext-lightboard-focus-outline-color;
+    }
+    &[aria-selected='true'] {
+      background-color: $mdlext-lightboard-slide-active-bacground-color;
+
+      figcaption {
+        color: rgba(0, 0, 0, 1) !important;
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    &__frame,
+    &__ripple-container {
+      text-decoration: none;
+      display: block;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      &:focus {
+        outline-offset: -2px;
+        outline-color: $mdlext-lightboard-focus-outline-color;
+      }
+      & .mdl-ripple {
+        background: $mdlext-lightboard-ripple-color;
+      }
+      figure {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          margin: auto;
+          max-width: 100%;
+          max-height: 100%;
+          border-width: 0;
+          border-radius: $mdlext-lightboard-slide-inner-border-radius;
+        }
+        figcaption {
+          @include typo-caption($colorContrast: false, $usePreferred: true);
+
+          color: $mdlext-lightboard-figcaption-text-color;
+          position: absolute;
+          bottom: -2px;
+          white-space: nowrap;
+          overflow: hidden;
+          max-width: 100%;
+          width: 100%;
+          text-align: center;
+          text-overflow: ellipsis;
+          padding: 4px 0;
+        }
+      }
+      &:hover {
+        figcaption {
+          // As far as I can see there is no way to darken/lighten a text color
+          // defined by MDL, due to the "unqote" functions.
+          // So this is a hack
+          color: rgba(0, 0, 0, 1) !important;
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+}
+
+////// Media / Element queries default, Small //////
+.mdlext-lightboard {
+  padding: calc((#{$mdlext-lightboard-small-margin} - #{$mdlext-lightboard-small-gutter}) / 2);
+
+  .mdlext-lightboard__slide {
+    margin: calc(#{$mdlext-lightboard-small-gutter} / 2);
+    width: calc(1 / #{$mdlext-lightboard-small-columns} * 100% - #{$mdlext-lightboard-small-gutter});
+
+    .mdlext-lightboard__slide__frame figure {
+      margin: $mdlext-lightboard-small-frame-width;
+    }
+  }
+  &.mdlext-lightboard--no-spacing {
+    padding: 0;
+
+    .mdlext-lightboard__slide {
+      margin: 0;
+      width: calc(1 / #{$mdlext-lightboard-small-columns} * 100%);
+    }
+  }
+}
+
+// Import one of _lightboard-media-queries.scss or _lightboard-eq-js.scss to complete SASS

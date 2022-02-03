@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<div class='mdl-cell mdl-cell--4-col mdl-card'
+     id='subset-card'>
+
+    <!-- Card Image -->
+    <figure class="mdl-card__media">
+	<img src="{{ static_url("images/pf-card-med.jpg") }}" alt="" />
+    </figure>
+
+    <!-- Card Content -->
+    <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">ParFlow-CONUS</h2>
+	<a href='/help#parflow'>
+	    <button class="mdl-button mdl-js-button mdl-js-ripple-effect">
+		<i class="material-icons">info_outline</i>
+	    </button>
+	</a>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <p>
+      ParFlow is a parallel, integrated hydrology model that simulates spatially distributed surface and subsurface flow, as well as land surface processes including evapotranspiration and snow. PF-CONUS (version 1) is an implementation of this model for a large portion of the US.
+      </p>
+      <button id='btn-pfconus' class="mdl-button 
+	     mdl-js-button 
+	     mdl-button--raised">
+                 Subset Domain
+      </button>
+
+      <!-- Button Drop List -->
+      <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events" for="btn-pfconus">
+	  <li class="mdl-menu__item" style="color: #cd8daa;">
+	      <a href='/parflow/v1_0' class="mdl-navigation__link subset-launch">V 1.0</a>
+	  </li>
+    </ul> 
+
+</div>

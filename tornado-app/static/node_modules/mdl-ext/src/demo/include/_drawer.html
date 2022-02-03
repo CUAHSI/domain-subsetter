@@ -1,0 +1,81 @@
+<style>
+  /* Ugly CSS! Only for demo. */
+
+  #demo-drawer-accordion {
+    height: 100%;
+  }
+
+  #demo-drawer-accordion .mdlext-accordion__tab {
+    height: 64px;
+    min-height: 64px;
+    min-width: 64px;
+    padding-left: 16px;
+  }
+
+  .is-small-screen #demo-drawer-accordion .mdlext-accordion__tab {
+    height: 56px;
+    min-height: 56px;
+    min-width: 56px;
+  }
+
+  #demo-drawer-accordion .mdlext-accordion__tabpanel,
+  #demo-drawer-accordion .mdlext-accordion__tabpanel nav {
+    padding: 0;
+  }
+
+  #demo-drawer-accordion .mdlext-accordion__tabpanel .mdl-navigation__link {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  #demo-drawer-accordion .mdlext-accordion__tabpanel .mdl-navigation__link:hover {
+    background-color: #212121;
+  }
+
+</style>
+
+
+<aside class="mdl-layout__drawer">
+
+  <ul id="demo-drawer-accordion"
+      class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect mdlext-js-animation-effect mdlext-dark-color-theme"
+      aria-multiselectable="false">
+
+    <li class="mdlext-accordion__panel">
+      <header class="mdlext-accordion__tab" aria-expanded="true">
+        <span class="mdlext-accordion__tab__caption">MDL Extensions</span>
+        <i class="mdlext-aria-toggle-material-icons"></i>
+      </header>
+      <section class="mdlext-accordion__tabpanel">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="accordion.html">Accordion</a>
+          <a class="mdl-navigation__link" href="bordered-fields.html">Bordered Fields</a>
+          <a class="mdl-navigation__link" href="collapsible.html">Collapsible</a>
+          <a class="mdl-navigation__link" href="color-themes.html">Color Themes</a>
+          <a class="mdl-navigation__link" href="formatfield.html">Formatted Fields</a>
+          <a class="mdl-navigation__link" href="grid.html">Grid</a>
+          <a class="mdl-navigation__link" href="carousel.html">Image Carousel</a>
+          <a class="mdl-navigation__link" href="lightboard.html">Lightboard</a>
+          <a class="mdl-navigation__link" href="lightbox.html">Lightbox</a>
+          <a class="mdl-navigation__link" href="menu-button.html">Menu Button</a>
+          <a class="mdl-navigation__link" href="selectfield.html">Selectfield</a>
+        </nav>
+      </section>
+    </li>
+    <li class="mdlext-accordion__panel">
+      <header class="mdlext-accordion__tab">
+        <span class="mdlext-accordion__tab__caption">Sticky headers</span>
+        <i class="mdlext-aria-toggle-material-icons"></i>
+      </header>
+      <section class="mdlext-accordion__tabpanel">
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="sticky-header.html">Sticky Header I</a>
+          <a class="mdl-navigation__link" href="sticky-header-ii.html">Sticky Header II</a>
+          <a class="mdl-navigation__link" href="sticky-header-iii.html">Sticky Header III</a>
+          <a class="mdl-navigation__link" href="sticky-header-iv.html">Sticky Header IV</a>
+          <a class="mdl-navigation__link" href="sticky-header-v.html">Sticky Header V</a>
+          <a class="mdl-navigation__link" href="sticky-header-vi.html">Sticky Header VI</a>
+        </nav>
+      </section>
+    </li>
+  </ul>
+</aside>

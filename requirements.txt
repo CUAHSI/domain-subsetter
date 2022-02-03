@@ -318,3 +318,4 @@ xz=5.2.4=h470a237_1
 zeromq=4.2.5=hfc679d8_5
 zlib=1.2.11=h470a237_3
 zope.interface=4.5.0=py36h470a237_1
+hs_restclient

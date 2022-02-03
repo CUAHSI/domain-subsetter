@@ -1,0 +1,181 @@
+@charset "UTF-8";
+
+/**
+ * @license
+ * Copyright 2016 Leif Olsen. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This code is built with Google Material Design Lite,
+ * which is Licensed under the Apache License, Version 2.0
+ */
+
+/* Moved to aria-expanded-toggle.scss
+
+.mdlext-aria-expanded-plus-minus {
+  @include mdlext-aria-expanded-toggle($font-family: inherit);
+}
+
+.mdlext-aria-expanded-more-less {
+  @include mdlext-aria-expanded-toggle($icon: 'expand_more', $icon-expanded: 'expand_less');
+}
+*/
+
+.mdlext-menu-button {
+  box-sizing: border-box;
+  @include typo-menu();
+  text-transform: none;
+  position: relative;
+  height: $button-height;
+  padding: 0 $button-padding;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+
+  > * {
+    margin: 0;
+    padding: 0 0 0 8px;
+  }
+
+  > *:first-child {
+    padding-left: 0;
+  }
+
+  > *:last-child:not(:only-child):not(.mdlext-menu__item__caption) {
+    margin-left: auto; // If more than one element, push last element to the right
+  }
+
+}
+
+.mdlext-menu-button__caption {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.mdlext-menu,
+.mdlext-menu__item {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.mdlext-menu {
+  position: absolute; //fixed;
+  background: $default-dropdown-bg-color;
+  z-index: 1000;
+  min-width: 124px;
+  border-radius: 2px;
+  @include shadow-3dp();
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  overflow-y: auto;
+
+  &:focus {
+    outline-offset: -1px;
+    outline-width: 1px;
+  }
+
+  &[hidden] {
+    @include mdlext-visually-hidden;
+    pointer-events: none;
+  }
+
+  &__item {
+    @include typo-body-1();
+    color: $default-item-text-color;
+    background-color: $default-dropdown-bg-color;
+    position: relative;
+    padding: 0 16px 0 24px;
+    align-items: center;
+    align-self: stretch;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    min-height: 40px;
+    overflow: hidden;
+
+    &[aria-selected='true'] {
+      background-color: $default-item-active-bg-color;
+    }
+
+    // checkmark
+    &[aria-selected='true']::before {
+      content:'\2713';
+      position: absolute;
+      font-size: 1.4em;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    &:hover:not([disabled]) {
+      background-color: $default-item-hover-bg-color;
+    }
+
+    &:focus {
+      outline-offset: -2px;
+      outline-width: 1px;
+      outline-color: $default-item-outline-color;
+      background-color: $default-item-focus-bg-color;
+    }
+
+    &::-moz-focus-inner {
+      border: 0;
+    }
+
+    &[disabled] {
+      color: $disabled-item-text-color;
+      background-color: transparent;
+      cursor: auto;
+      pointer-events: none;
+
+      > * {
+        color: $disabled-item-text-color;
+      }
+    }
+
+    &__caption {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > * {
+      margin: 0;
+      padding: 0 0 0 8px;
+    }
+
+    > *:first-child {
+      padding-left: 0;
+    }
+
+    > *:last-child:not(:only-child):not(.mdlext-menu__item__caption) {
+      margin-left: auto; // If more than one element, push last element to the right
+    }
+
+  }
+  &__item-separator {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid $default-item-divider-color;
+  }
+
+}

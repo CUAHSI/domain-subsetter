@@ -1,0 +1,87 @@
+<!DOCTYPE html> 
+
+{% extends base_new.html %}
+
+{% block extra-head %}
+    <script type='text/javascript' src='{{static_url("hs.js") }}'></script>
+{% end %}
+
+{% block content %}
+
+    <div id=results class='mdl-grid center-horizontally'>
+	<div class="mdl-cell mdl-cell--10-col" >
+          <h3>Save to HydroShare</h3>
+	</div>
+	<div class="mdl-cell mdl-cell--10-col" >
+          <p>
+             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu posuere metus, vitae gravida quam. Aliquam sed augue aliquet risus hendrerit lobortis. Etiam ac feugiat turpis. Nunc augue tellus, ultricies in rhoncus sed, interdum nec nisl. Cras commodo auctor tortor, nec rhoncus nulla porta vitae. Cras a nunc congue nisl venenatis congue eget malesuada urna. Donec posuere pretium felis eu volutpat. Vestibulum ultricies vestibulum rutrum. Vestibulum lacinia, nulla sit amet sagittis iaculis, diam nulla vehicula augue, in consectetur sapien neque vitae augue. Ut venenatis, enim ac porta auctor, libero urna rutrum nulla, et consequat ipsum velit a purus. Vestibulum facilisis ac justo id tempus. Pellentesque convallis, nunc in varius volutpat, dolor elit dignissim arcu, mollis ullamcorper neque massa in ipsum. Integer eget ultrices dolor. Cras accumsan, ipsum vel vulputate tincidunt, arcu ex commodo arcu, iaculis lacinia leo mauris ut sapien. Maecenas blandit enim ut fringilla commodo. Nullam consectetur vel augue eu maximus.
+         </p>
+      </div>
+	
+    </div>
+
+    <form action=/save-to-hydroshare/{{dat['guid']}} method='post'  enctype='multipart/form-data' target='_blank'>
+
+	<!-- HS TITLE -->
+    	<div id=hs-metadata class='mdl-grid center-horizontally'>
+	<div class="mdl-cell mdl-cell--10-col">
+  	   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:75%">
+	       <input class="mdl-textfield__input" type="text" name='title' id="hs-title" onkeyup="validate()" value="{{ dat['title'] }}">
+	      	<label class="mdl-textfield__label" for="hs-title">
+		    Title
+		</label>
+		<div class='mdl-tooltip mdl-tooltip--right' for='hs-title'>
+		    The title that will be given to your HydroShare resource.
+		</div>
+	   </div>
+	</div>
+
+	<!-- HS KEYWORDS -->
+	<div class="mdl-cell mdl-cell--10-col">
+  	   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:75%">
+	       <input class="mdl-textfield__input" type="text" name='keywords' id="hs-keywords" onkeyup="validate()" value='{{ dat["keywords"] }}'>
+	      	<label class="mdl-textfield__label" for="hs-keywords">Keywords (comma separated)</label>
+		<div class='mdl-tooltip mdl-tooltip--right' for='hs-keywords'>
+		    A comma separated list of subject keywords that describe your data.
+		</div>
+	   </div>
+	</div>
+
+
+	<!-- HS ABSTRACT -->
+	<div class="mdl-cell mdl-cell--10-col">
+  	   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" style="width:75%">
+	       <textarea class="mdl-textfield__input" type="text" rows="5" name='abstract' id="hs-abstract" onkeyup="validate()">{{ dat["abstract"] }}</textarea>
+	      	<label class="mdl-textfield__label" for="hs-abstract">Abstract</label>
+		<div class='mdl-tooltip mdl-tooltip--right' for='hs-abstract'>
+		    A description for the data that will be stored in HydroShare.
+		</div>
+	   </div>
+	</div>
+
+	</div>
+
+    <div id=hs-metadata class='mdl-grid center-horizontally'>
+	<div class="mdl-cell mdl-cell--10-col">
+          <button id='btn-hs-save'
+                  class="mdl-button
+                         mdl-js-button
+			 mdl-button--colored
+                         mdl-button--raised">
+                Create HydroShare Resource
+          </button>
+	<div class="mdl-layout-spacer"></div>
+    </div>
+
+
+
+      </form>
+
+
+    
+
+    {% block extra-content %}
+    {% end %}
+
+{% end %}
+
