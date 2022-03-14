@@ -291,11 +291,15 @@ In this option we modify the existing worker pool such that each job is represen
 
 - New approach that will take longer for us to implement.
 
+- Managing our own Kubernetes cluster.
 
 
-### 3.4 Firebase
+TODO: replace Firebase with CloudFunction approach. The cloud function approach is similar to above except that subsetting jobs are containerized lambda functions that execute and then disappear. In this scenario we wouldn't need a "Router" component.
 
-In this option we leverage google’s firebase framework and tools to accomplish the goals of 3.3, however couple the design to a framework (this may be undesirable). This approach would use firebase’s hosting to host the frontend and backend services and migrate subsetting jobs to google cloud functions. Transient data, such as subset output, would be stored in google cloud buckets which work nicely with firebase. One major advantage of this proposed solution in firebase’s analytics toolchain. This would allow us to better understand who, how, and how often this service is used.
+
+
+### 3.4 Cloud Functions
+
 
 #### 3.4.1 Pros
 
@@ -303,15 +307,9 @@ In this option we leverage google’s firebase framework and tools to accomplish
 
 - Workers execute jobs as cloud functions separate from the front-end/back-end components.
 
-- All in one solution. It is easy to add firebase solutions to our existing deployments (i.e. analytics).
-
 - New subsetting algorithms can be included by adding new cloud functions.
 
-- This should be faster than 3.3 in two ways: 
-
-    - Going from development to deployment. There are a plethora of adaptable examples.
-    
-    - Google has optimized their cloud functions, I would expect runtime to be faster in this solution than 3.3.
+- Google has optimized their cloud functions
 
 
 #### 3.4.2 Cons
