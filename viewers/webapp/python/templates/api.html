@@ -1,0 +1,45 @@
+{% extends base_new.html %}
+
+
+<!-- Content Block -->
+{% block content %}
+<div class='mdl-grid center-horizontally'>
+    <div class='mdl-cell mdl-cell--2-col'>
+        <h3 class=page-label> API </h3>
+    </div>
+
+    <div class="mdl-cell mdl-cell--8-col">
+        <div class=text-body>
+            {% include api-gen.html %}
+        </div>
+    </div>
+
+    <div class='mdl-cell mdl-cell--2-col'>
+    </div>
+</div>
+{% end %}
+
+{% block extra-js %}
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+
+            /* Toggle between adding and removing the "active" class,
+            to highlight the button that controls the panel */
+            this.classList.toggle("active");
+
+            /* Toggle between hiding and showing the active panel */
+            var selector = '#' + this.id + ".panel";
+            var panel = $(selector)[0];
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+</script>
+{% end %}

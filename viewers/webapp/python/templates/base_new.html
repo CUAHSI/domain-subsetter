@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html> 
+   <head> 
+      <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+
+      <!-- Material Design Libraries -->
+      <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+      <script src="{{ static_url('node_modules/mdl-ext/lib/mdl-ext.js') }}"></script>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+      <link rel="stylesheet" type="text/css" href="{{ static_url('node_modules/mdl-ext/lib/mdl-ext-eqjs.css') }}" />
+
+      <!-- custom styling -->
+      <link rel="stylesheet" type="text/css" href='{{ static_url("style_new.css") }}'/> 
+
+      <!-- Fonts -->
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+      {# Suppress favicon. Should add icon in the future #}
+      <link rel='shortcut icon' href="">
+
+
+      {% block extra-head %}
+      {% end %}
+
+
+   </head>
+
+
+<div class="body-layout mdl-layout mdl-js-layout">
+    <div class="mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+	    <!-- Logo -->
+            <div class="header-logo 
+		        mdl-layout--large-screen-only"
+			style="padding-left:25px">
+		<img src='{{ static_url("logo.png") }}'>
+	    </div>
+	    <!-- Title -->
+            <span class="mdl-layout-title title-font">
+	    <!--                Domain Subsetter - {{ title}} --!>
+            </span>
+	    <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+	    <!-- Navigation -->
+            <nav class="mdl-navigation
+		mdl-layout--large-screen-only">
+	      <a id='home' class="mdl-navigation__link" href="/">HOME</a>
+	      <a id='subset' class="mdl-navigation__link" href="#">
+		  Subset
+		  <i class="fas fa-caret-down" style='padding-left:10px'>
+		  </i>
+	      </a>
+	      <a id='api' class="mdl-navigation__link" href="/api">API</a>
+	      <a class="mdl-navigation__link" href="/help">Help</a>
+              <a class="mdl-navigation__link" href="about">About</a>
+	    </nav>
+       <!-- sub menu only visible when clicked on the link above -->
+	<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+        for="subset">
+	    <a class="
+		      mdl-menu__item 
+		      mdl-navigation__link
+		      nav-sub-menu
+		      "
+		      href="/nwm/v2_0">NWM v2.0</a>
+	    <a class="
+		      mdl-menu__item 
+		      mdl-navigation__link
+		      nav-sub-menu
+		      "
+		      href="/nwm/v1_2_2">NWM v1.2.2</a>
+	    <a class="
+		      mdl-menu__item 
+		      mdl-navigation__link
+		      nav-sub-menu
+		      "
+		      href="/parflow/v1_0">PFCONUS v1.0</a>
+	</ul>
+	    <!-- Beta Tag -->
+            <div id="beta-tag"> </div>
+    </header>
+</div>
+    
+    <div class="mdl-layout__drawer
+		mdl-layout--small-screen-only">
+        <span class="mdl-layout-title">Menu</span>
+        <nav class="mdl-navigation">
+	    <a id='home' class="mdl-navigation__link" href="/">Home</a>
+	    <a id=subset-menu class="mdl-navigation__link" href='#'>
+		Subset 
+		<i class="fas fa-caret-right" style='padding-left:10px'>
+		</i>
+	    </a>
+            <a class="mdl-navigation__link" href="/api">API</a>
+            <a class="mdl-navigation__link" href="/help">Help</a>
+            <a class="mdl-navigation__link" href="/about">About</a>
+       </nav>
+       <!-- sub menu only visible when clicked on the link above -->
+       <ul class='mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect' for='subset-menu'>     
+	   <li class='mdl-menu__item'>
+		<a class="mdl-navigation__link" href="/nwm/v1_2_2">NWM v1.2.2</a>
+	   </li>
+	   <li class='mdl-menu__item'>
+		<a class="mdl-navigation__link" href="/parflow/v1_0">PFCONUS V1.0</a>
+	   </li>
+       </ul>
+   </div>
+
+
+    <main class="mdl-layout__content">
+    {% block content %}
+        <!--  This is where page content goes -->
+    {% end %}
+    </main>
+
+    <footer class="mdl-mini-footer">
+        <div class="mdl-mini-footer__left-section">
+            <ul class="mdl-mini-footer__link-list">
+                <li><a href="/about">About</a></li>
+                <li><a href="mailto:help@cuahsi.org">Contact</a></li>
+                <li><a href="https://github.com/CUAHSI/nwm_subsetting">Find us on GitHub</a></li>
+                </ul>
+            </div>
+           
+        <div class="mdl-mini-footer__right-section">
+            <ul class="mdl-mini-footer__link-list">
+            <div class="footer-logo
+		       mdl-layout--small-screen-only">
+		<li><img src='{{ static_url("logo.png") }}'></li>
+	    </div>
+            <div class="footer-logo" id='hf-logo-logged-in'>
+		<li><img src='{{ static_url("images/hf-logo.png") }}'></li>
+	    </div>
+            <div class="hf-login-button" id='hf-login-button' style='display: none;'>
+		<li>
+		<a href=/hflogin>
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+				HydroFrame Login
+			</button>
+		</a>
+	 	</li>
+	    </div>
+            <div class="hf-logout-button" id='hf-logout-button' style='display: none;'>
+		<li>
+		<a href='/hflogout'>
+		<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+		  HydroFrame Logout
+		</button>
+		</a>
+	 	</li>
+	    </div>
+            </ul>
+        </div>
+    </footer>
+
+<div id="notification" class="mdl-js-snackbar mdl-snackbar">
+  <div class="mdl-snackbar__text"></div>
+  <button class="mdl-snackbar__action" type="button"></button>
+</div>
+
+</div>
+
+    {% block extra-js %}
+    {% end %}
+
+</html>
