@@ -1,6 +1,10 @@
 .DS_Store
 .DS_Store?
 
+## Python virtual environments
+venv/
+env/
+
 # VI Swap #
 ###########
 *.swp
