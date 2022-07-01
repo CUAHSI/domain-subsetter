@@ -365,9 +365,8 @@ function getGageInfo(e) {
 		gage_meta.y = geom.y;
 	    }
 	},
-	error: function(response) {
-	    // todo:
-	    console.log(response);
+	error: function(error) {
+            console.log('error collecting gage info: ' + error);
 	}
     });
 
@@ -441,8 +440,6 @@ function mapClick(e) {
 
 function traceUpstream(usgs_gage) {
     
-    console.log('traceUpstream --> selected gage = ' + usgs_gage);
-	    
     // start progress spinner
     Map.map.spin(true);
     
