@@ -329,15 +329,15 @@ function clearHucTable() {
 
 function getGageInfo(e) {
 
-    // TESTING GAGE INFO BOX
     // quick and dirty buffer around cursor
-    // bbox = lon_min, lat_min, lon_max, lat_max
-    var buf = 0.001;
+    var buf = (Map.map.getZoom()/2) * 0.001;
 
+    // buffered_bbox = lon_min, lat_min, lon_max, lat_max
     buffered_bbox = (e.latlng.lng - buf) + ',' 
 		   + (e.latlng.lat - buf) + ','
 		   + (e.latlng.lng + buf) + ','
 	           + (e.latlng.lat + buf);
+
     var defaultParameters = {
         service : 'WFS',
         request : 'GetFeature',
