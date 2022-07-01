@@ -113,9 +113,6 @@ $(window).bind("load", function() {
 
     // hide the Getting Started dialog
     $('dialog')[0].open = false;
-//    $('dialog')[0].style['visibility'] = 'hidden';
-
-
 
     /*
      * LEAFLET BUTTONS
@@ -127,7 +124,6 @@ $(window).bind("load", function() {
                  'clear selected features').addTo(map);
 
     // Help 
-//    var btn = '<span id=help-btn class="material-icons">info-outline</i>'
     L.easyButton('fas fa-question', function (){toggleHelpDialog();},
                  {position: 'topleft'}).addTo(Map.map);
 
@@ -412,7 +408,7 @@ function mapClick(e) {
 	L.popup().setLatLng([gage.y, gage.x])
 		 .setContent('<b>ID:</b> '+ gage.num + '<br>' 
 		             + '<b>Name</b>: ' + gage.name + '<br>'
-		             + '<b>Select</b>: <a onClick=traceUpstream("'+gage.num+'")>upstream</a>')
+		             + '<a onClick=traceUpstream("'+gage.num+'")>Trace Upstream Area</a>')
 		 .openOn(Map.map);
 
 	// exit function without toggling HUC
@@ -444,7 +440,7 @@ function mapClick(e) {
 
 
 function traceUpstream(usgs_gage) {
-
+    
     console.log('traceUpstream --> selected gage = ' + usgs_gage);
 	    
     // start progress spinner
@@ -471,72 +467,6 @@ function traceUpstream(usgs_gage) {
 	    Map.map.spin(false);
         }
     });
-
-//
-//
-//	    // add the reaches to the map and replace the global reaches
-//	    // object with the newly selected reaches.
-//	    var reaches = L.geoJSON(response.features, {style: {color: 'green'}});
-//	    Map.reaches.start_id = reaches._leaflet_id;
-//	    Map.reaches.count = response.features.length;
-//	    Map.reaches.obj = reaches;
-//	    reaches.addTo(Map.map);
-//	    
-//
-//	    // a list to store a single coordinate for each reach
-//	    let centroids = [];
-//
-//	    // generate a list of points for each of the reaches
-//	    response.features.forEach(function (reach) {
-//		
-//		// select the middle geometry feature.
-//		// This is a hack and should be replaced with something better
-//		geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
-//
-//		geom_coord = reach.geometry.coordinates[geom_idx];
-//		centroids.push(geom_coord);
-//	    });
-//    
-//	    console.log('Number of reaches found = ' + centroids.length);
-//	    return centroids;
-//
-//	    // TODO: move this into a function since it's used in several places.
-//	    // query the HUC geometry for each of the reach coordinate points
-//	    // use this data to query ArcGIS WFS for the selected HUC object.
-////	    centroids.forEach(function (coord) {
-////	        var defaultParameters = {
-////			service : 'WFS',
-////	   	        request : 'GetFeature',
-////	   	        bbox: coord[0]+','+coord[1]+','+coord[0]+','+coord[1],
-////	   	        typeName : 'HUC_WBD:HUC12_US',
-////	   	        SrsName : 'EPSG:4326'
-////		};
-////    	    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
-////	    var parameters = L.Util.extend(defaultParameters);
-////	    var URL = root + L.Util.getParamString(parameters);
-//	   	    
-////	   	// load the map and table elements async
-//		// todo: highlight the unique set of HUCs, do not toggle.
-////	   	toggleHucsAsync(URL, true, null);
-//	   
-//
-////	    })
-//        },
-//        error: function(error) {
-//            console.log('error querying NLDI upstream: ' + error);
-//	    return [];
-//        },
-//	complete: function(data) {
-//	    debugger;
-//	    if (points.length > 0) {
-//		// toggle HUCs that intersect with the centroids
-//		queryHucsIntersectPoints(points);
-//	    } else {
-//		console.log('No reaches found');
-//	    }
-//	}
-//    });
-
 }
 
 // Callback for the NLDI query
@@ -679,111 +609,7 @@ async function queryHucsIntersectPoints(points) {
     return response = await fetch(url, {method: "POST", mode: "cors", body: xml} )
 	.then(response => response.text())
         .then(str => new window.DOMParser().parseFromString(str, "text/xml"));
-
-//    var xmldata = await response.text();
-//    return xmldata
-
-    // extract the HUC ID and Boundary from the WFS XML response.
-    // only process the first element of the response since the user can only
-    // select a single map element at a time.
-//    selected_hucs = parseWfsXML(xmldata);
-    
-    // TODO: clear any highlighted hucs
-    
-//    debugger;
-//    for (i = 0; i < selected_hucs.length; i ++) {
-//
-//	// Toggle HUCs
-//	var res = selected_hucs[i];
-//        Map.hucbounds[res.hucid] = res.bbox;
-//        addHucRow(res.hucid);
-//        togglePolygon(res.hucid, res.geom);
-//                
-//        }
-//	// refresh map
-//        $('#huc-table-div').hide().show(0);
-//        $('#map').hide().show(0);
-//
-
 }
-
-//    $.ajax({
-//        url: 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer',
-//        type: 'POST',
-//	crossDomain: true,
-////	beforeSend: function(request) {
-////	    request.setRequestHeader("Access-Control-Allow-Origin", '*/*');
-////	 },
-//	headers: {'Access-Control-Allow-Origin':'*/*'},
-//        contentType: "application/xml",
-////	dataType: "xml",
-//        data: xml,
-//        success: function (response) {
-//	    debugger;
-//
-//    // extract the HUC ID and Boundary from the WFS XML response.
-//    // only process the first element of the response since the user can only
-//    // select a single map element at a time.
-//    selected_hucs = parseWfsXML(response);
-//
-////	    // save the calculated bbox in LCC coordinates
-////            lcc_bbox = JSON.parse(response).bbox;
-////
-////            // update the global lcc bbox that will be used to submit the subsetting job
-////            update_lcc_bounds(lcc_bbox);
-//
-//        },
-//        error: function(xhrm, ajaxOptions, thrownError) {
-//	    debugger;
-//            console.log('error querying bounding box: ' + thrownError);
-//        }
-//    });
-
-
-//    // get the latitude and longitude of the click event.
-//    // use this data to query ArcGIS WFS for the selected HUC object.
-//    var defaultParameters = {
-//        service : 'WFS',
-//        request : 'GetFeature',
-//        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
-//        typeName : 'HUC_WBD:HUC12_US',
-//        SrsName : 'EPSG:4326'
-//    };
-//    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
-//    var parameters = L.Util.extend(defaultParameters);
-//    var URL = root + L.Util.getParamString(parameters);
-//   
-//    pts = [[-89.4, 33.9],
-//           [-88.5, 34.0],
-//           [-88.6, 34.34]]
-//    multipoint = '<gml:MultiPoint srsName="EPSG:4326">'
-//    for pt in pts:
-//        multipoint += f'<gml:pointMember><gml:Point><gml:coordinates>{pt[0]} {pt[1]}</gml:coordinates></gml:Point></gml:pointMember>'
-//    multipoint += '</gml:MultiPoint>'
-//
-//
-//    xml = f"""
-//    <wfs:GetFeature service="WFS"
-//     xmlns:wfs="http://www.opengis.net/wfs"
-//     xmlns:xsi="http://www.w3.org/2001/xmlschema-instance"
-//     xmlns:ogc="http://www.opengis.net/ogc"
-//     xmlns:gml="http://www.opengis.net/gml/3.2"
-//     xsi:schemalocation="http://www.opengis.net/wfs
-//     http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-//     <wfs:Query typeName="HUC_WBD:HUC12_US">
-//       <ogc:Filter>
-//        <ogc:Intersects>
-//          <ogc:PropertyName>HUC12</ogc:PropertyName>
-//          {multipoint}
-//        </ogc:Intersects>
-//       </ogc:Filter>
-//    </wfs:Query>
-//    </wfs:GetFeature>
-//     """
-//    headers = {'content-type': 'application/xml'}
-//    
-//
-//}
 
 /*
  * HUC TABLE FUNCTIONS
@@ -938,7 +764,6 @@ function getLccBounds(hucs) {
             console.log('error querying bounding box: ' + error);
         }
     });
-
 }
 
 function addFeatureToMap(feature) {
@@ -1294,16 +1119,13 @@ function get_lcc_bounds() {
 function toggle_submit_button(is_valid){
 
     if (is_valid) { 
-//        // disable submit button bc nothing is selected
-//        $('#btn-subset-submit').prop( "disabled", false);
+        // disable submit button bc nothing is selected
 	Map.submit.enable();
     } else {
-//        // enable submit button 
-//        $('#btn-subset-submit').prop( "disabled", true );
+        // enable submit button 
 	Map.submit.disable();
     }
 }
-
 
 /**
 * Validates that size constraints for the subset bounding box
@@ -1349,7 +1171,6 @@ function validate_bbox_size(){
     }
     return {style:style, is_valid:valid}
 }
-
 
 /**
  * Displays a notification message at the bottom of the screen 
