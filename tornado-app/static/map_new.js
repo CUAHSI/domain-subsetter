@@ -441,15 +441,18 @@ function mapClick(e) {
 }
 
 
+
+
 function traceUpstream(usgs_gage) {
 
     console.log('traceUpstream --> selected gage = ' + usgs_gage);
 	    
-    // clear any existing reaches from the map
-    if (Map.reaches.obj != null) {
-	Map.reaches.obj.clearLayers();
-    }
+    // start progress spinner
+    Map.map.spin(true);
     
+    // clear selected area
+    clearSelection();
+
     // query the upstream reaches via NLDI
     $.ajax({
 	url: '/nldi-trace',
@@ -458,60 +461,329 @@ function traceUpstream(usgs_gage) {
         data: {'site_provider': 'nwis',
 	       'site': usgs_gage},
         success: function (response) {
-
-
-	    // add the reaches to the map and replace the global reaches
-	    // object with the newly selected reaches.
-	    var reaches = L.geoJSON(response.features, {style: {color: 'green'}});
-	    Map.reaches.start_id = reaches._leaflet_id;
-	    Map.reaches.count = response.features.length;
-	    Map.reaches.obj = reaches;
-	    reaches.addTo(Map.map);
-        
-    
-	    // a list to store a single coordinate for each reach
-	    let centroids = [];
+	    render_nhd_reaches(response) 
 	    
-	    
-	    // generate a list of points for each of the reaches
-	    response.features.forEach(function (reach) {
-		
-		// select the middle geometry feature.
-		// This is a hack and should be replaced with something better
-		geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
-
-		geom_coord = reach.geometry.coordinates[geom_idx];
-		centroids.push(geom_coord);
-	    })
-    
-	    console.log('Number of reaches found = ' + centroids.length);
-
-	    // TODO: move this into a function since it's used in several places.
-	    // query the HUC geometry for each of the reach coordinate points
-	    // use this data to query ArcGIS WFS for the selected HUC object.
-	    centroids.forEach(function (coord) {
-	        var defaultParameters = {
-			service : 'WFS',
-	   	        request : 'GetFeature',
-	   	        bbox: coord[0]+','+coord[1]+','+coord[0]+','+coord[1],
-	   	        typeName : 'HUC_WBD:HUC12_US',
-	   	        SrsName : 'EPSG:4326'
-		};
-	    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
-	    var parameters = L.Util.extend(defaultParameters);
-	    var URL = root + L.Util.getParamString(parameters);
-	   	    
-//	   	// load the map and table elements async
-		// todo: highlight the unique set of HUCs, do not toggle.
-//	   	toggleHucsAsync(URL, true, null);
-	    })
-        },
+	},
         error: function(error) {
             console.log('error querying NLDI upstream: ' + error);
+	
+	    // stop progress spinner
+	    Map.map.spin(false);
         }
     });
+
+//
+//
+//	    // add the reaches to the map and replace the global reaches
+//	    // object with the newly selected reaches.
+//	    var reaches = L.geoJSON(response.features, {style: {color: 'green'}});
+//	    Map.reaches.start_id = reaches._leaflet_id;
+//	    Map.reaches.count = response.features.length;
+//	    Map.reaches.obj = reaches;
+//	    reaches.addTo(Map.map);
+//	    
+//
+//	    // a list to store a single coordinate for each reach
+//	    let centroids = [];
+//
+//	    // generate a list of points for each of the reaches
+//	    response.features.forEach(function (reach) {
+//		
+//		// select the middle geometry feature.
+//		// This is a hack and should be replaced with something better
+//		geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
+//
+//		geom_coord = reach.geometry.coordinates[geom_idx];
+//		centroids.push(geom_coord);
+//	    });
+//    
+//	    console.log('Number of reaches found = ' + centroids.length);
+//	    return centroids;
+//
+//	    // TODO: move this into a function since it's used in several places.
+//	    // query the HUC geometry for each of the reach coordinate points
+//	    // use this data to query ArcGIS WFS for the selected HUC object.
+////	    centroids.forEach(function (coord) {
+////	        var defaultParameters = {
+////			service : 'WFS',
+////	   	        request : 'GetFeature',
+////	   	        bbox: coord[0]+','+coord[1]+','+coord[0]+','+coord[1],
+////	   	        typeName : 'HUC_WBD:HUC12_US',
+////	   	        SrsName : 'EPSG:4326'
+////		};
+////    	    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+////	    var parameters = L.Util.extend(defaultParameters);
+////	    var URL = root + L.Util.getParamString(parameters);
+//	   	    
+////	   	// load the map and table elements async
+//		// todo: highlight the unique set of HUCs, do not toggle.
+////	   	toggleHucsAsync(URL, true, null);
+//	   
+//
+////	    })
+//        },
+//        error: function(error) {
+//            console.log('error querying NLDI upstream: ' + error);
+//	    return [];
+//        },
+//	complete: function(data) {
+//	    debugger;
+//	    if (points.length > 0) {
+//		// toggle HUCs that intersect with the centroids
+//		queryHucsIntersectPoints(points);
+//	    } else {
+//		console.log('No reaches found');
+//	    }
+//	}
+//    });
+
 }
 
+// Callback for the NLDI query
+function render_nhd_reaches(response) {
+   
+    // add the reaches to the map and replace the global reaches
+    // object with the newly selected reaches.
+    var reaches = L.geoJSON(response.features, {style: {color: 'green'}});
+    Map.reaches.start_id = reaches._leaflet_id;
+    Map.reaches.count = response.features.length;
+    Map.reaches.obj = reaches;
+    reaches.addTo(Map.map);
+
+    // a list to store a single coordinate for each reach
+    let centroids = [];
+
+    // generate a list of points for each of the reaches
+    response.features.forEach(function (reach) {
+	
+	// select the middle geometry feature.
+	// This is a hack and should be replaced with something better
+	geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
+
+	geom_coord = reach.geometry.coordinates[geom_idx];
+	centroids.push(geom_coord);
+    });
+
+    if (centroids.length > 0) {
+	toggleHucsFromPoints(centroids);
+    }
+
+}
+
+async function toggleHucsFromPoints(points) {
+   
+
+    // collect hucs that intersect with the input points
+    var xml = await queryHucsIntersectPoints(points);
+
+    // parse xml features
+    selected_hucs = parseWfsXML(xml);
+    
+    // highlight hucs on map 
+    await toggleHucs(selected_hucs, false);
+	    
+    // stop progress spinner
+    Map.map.spin(false);
+    
+}
+
+/*
+ * Toggles HUC geometries on the map interface.
+ * hucs: [hucid: <id>, bbox: <bbox>, geom: <geom>
+ * remove_if_selected: boolean
+*/
+
+async function toggleHucs(hucs, remove_if_selected) {
+
+                
+    for (i = 0; i < selected_hucs.length; i ++) {
+        try {
+            var res = selected_hucs[i];
+
+            // toggle bounding box using the following rules:
+            // 1. if the object is already selected, remove it from the 
+            //    map and the table.
+            // 2. if the object is not selected, add it to the map and
+            //    add it to the table.
+
+            if (res.hucid in Map.hucbounds)
+            {
+                // remove only if explicitly specified to.
+                // this is because the "ADD" dialog should never
+                // remove features, unlike the map click event.
+                if (remove_if_selected) {
+                    delete Map.hucbounds[res.hucid];
+                    var row_id = getRowIdByName(res.hucid)
+                    rmHucRow(row_id);
+                    togglePolygon(res.hucid, res.geom);
+                }
+            }
+            else{
+                Map.hucbounds[res.hucid] = res.bbox;
+                addHucRow(res.hucid);
+                togglePolygon(res.hucid, res.geom);
+            
+					// add a 'success' message for this table entry
+                var row = getRowByName(res.hucid);
+                var elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Loaded';
+                elem.style.color = 'green';
+            }
+        } catch(err) {
+            // if there was an error adding the HUC,
+            // add an error message in the table
+            var row = getRowByName(hucid);
+            var elem = row.getElementsByTagName('td')[2]
+            elem.innerText = 'Error';
+            elem.style.color = 'red';
+        }
+        // refresh page
+        $('#huc-table-div').hide().show(0);
+        $('#map').hide().show(0);
+    }
+
+    // update the boundaries of the global bbox.
+    // this is all that we really care about when the
+    // subset job is submitted.
+    // retrieve the LCC coordinate for this bounding box
+    hucs = [];
+    updateMapBBox();
+    for (key in Map.hucbounds){
+        hucs.push(key);
+    }
+    getLccBounds(hucs);
+
+    // update the hucs list 
+    // this is used to create a shapefile
+    // that is exported along with the subset
+    update_huc_ids(hucs);
+		
+}
+
+
+/*
+ * Queries HUC boundaries that intersect with the provided point locations using WFD
+ * points: [(lon, lat),...]
+ */
+async function queryHucsIntersectPoints(points) {
+
+    let multipoint = '<gml:MultiPoint srsName="EPSG:4326">';
+    for (let i=0; i < points.length; i++) {
+        multipoint += "<gml:pointMember><gml:Point><gml:coordinates>"+points[i][0]+" "+points[i][1]+"</gml:coordinates></gml:Point></gml:pointMember>";
+    }
+    multipoint += "</gml:MultiPoint>";
+
+    let xml = '<wfs:GetFeature service="WFS" xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/xmlschema-instance" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml/3.2" xsi:schemalocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"> <wfs:Query typeName="HUC_WBD:HUC12_US"> <ogc:Filter> <ogc:Intersects> <ogc:PropertyName>HUC12</ogc:PropertyName>' + multipoint + '</ogc:Intersects></ogc:Filter></wfs:Query></wfs:GetFeature>';
+
+    let url = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    return response = await fetch(url, {method: "POST", mode: "cors", body: xml} )
+	.then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"));
+
+//    var xmldata = await response.text();
+//    return xmldata
+
+    // extract the HUC ID and Boundary from the WFS XML response.
+    // only process the first element of the response since the user can only
+    // select a single map element at a time.
+//    selected_hucs = parseWfsXML(xmldata);
+    
+    // TODO: clear any highlighted hucs
+    
+//    debugger;
+//    for (i = 0; i < selected_hucs.length; i ++) {
+//
+//	// Toggle HUCs
+//	var res = selected_hucs[i];
+//        Map.hucbounds[res.hucid] = res.bbox;
+//        addHucRow(res.hucid);
+//        togglePolygon(res.hucid, res.geom);
+//                
+//        }
+//	// refresh map
+//        $('#huc-table-div').hide().show(0);
+//        $('#map').hide().show(0);
+//
+
+}
+
+//    $.ajax({
+//        url: 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer',
+//        type: 'POST',
+//	crossDomain: true,
+////	beforeSend: function(request) {
+////	    request.setRequestHeader("Access-Control-Allow-Origin", '*/*');
+////	 },
+//	headers: {'Access-Control-Allow-Origin':'*/*'},
+//        contentType: "application/xml",
+////	dataType: "xml",
+//        data: xml,
+//        success: function (response) {
+//	    debugger;
+//
+//    // extract the HUC ID and Boundary from the WFS XML response.
+//    // only process the first element of the response since the user can only
+//    // select a single map element at a time.
+//    selected_hucs = parseWfsXML(response);
+//
+////	    // save the calculated bbox in LCC coordinates
+////            lcc_bbox = JSON.parse(response).bbox;
+////
+////            // update the global lcc bbox that will be used to submit the subsetting job
+////            update_lcc_bounds(lcc_bbox);
+//
+//        },
+//        error: function(xhrm, ajaxOptions, thrownError) {
+//	    debugger;
+//            console.log('error querying bounding box: ' + thrownError);
+//        }
+//    });
+
+
+//    // get the latitude and longitude of the click event.
+//    // use this data to query ArcGIS WFS for the selected HUC object.
+//    var defaultParameters = {
+//        service : 'WFS',
+//        request : 'GetFeature',
+//        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
+//        typeName : 'HUC_WBD:HUC12_US',
+//        SrsName : 'EPSG:4326'
+//    };
+//    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+//    var parameters = L.Util.extend(defaultParameters);
+//    var URL = root + L.Util.getParamString(parameters);
+//   
+//    pts = [[-89.4, 33.9],
+//           [-88.5, 34.0],
+//           [-88.6, 34.34]]
+//    multipoint = '<gml:MultiPoint srsName="EPSG:4326">'
+//    for pt in pts:
+//        multipoint += f'<gml:pointMember><gml:Point><gml:coordinates>{pt[0]} {pt[1]}</gml:coordinates></gml:Point></gml:pointMember>'
+//    multipoint += '</gml:MultiPoint>'
+//
+//
+//    xml = f"""
+//    <wfs:GetFeature service="WFS"
+//     xmlns:wfs="http://www.opengis.net/wfs"
+//     xmlns:xsi="http://www.w3.org/2001/xmlschema-instance"
+//     xmlns:ogc="http://www.opengis.net/ogc"
+//     xmlns:gml="http://www.opengis.net/gml/3.2"
+//     xsi:schemalocation="http://www.opengis.net/wfs
+//     http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+//     <wfs:Query typeName="HUC_WBD:HUC12_US">
+//       <ogc:Filter>
+//        <ogc:Intersects>
+//          <ogc:PropertyName>HUC12</ogc:PropertyName>
+//          {multipoint}
+//        </ogc:Intersects>
+//       </ogc:Filter>
+//    </wfs:Query>
+//    </wfs:GetFeature>
+//     """
+//    headers = {'content-type': 'application/xml'}
+//    
+//
+//}
 
 /*
  * HUC TABLE FUNCTIONS
@@ -621,8 +893,11 @@ function clearSelection() {
         Map.huclayers[key].clearLayers();
         delete Map.huclayers[key];
 
-        // clear the hucs in the html template
-
+    }
+    
+    // clear any existing reaches from the map
+    if (Map.reaches.obj != null) {
+	Map.reaches.obj.clearLayers();
     }
 
     // clear the HUC table

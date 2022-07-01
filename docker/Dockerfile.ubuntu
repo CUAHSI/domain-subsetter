@@ -134,3 +134,5 @@ EXPOSE 80
 WORKDIR /srv
 ENTRYPOINT ["python", "app.py"]
 
+RUN pip install \
+    geopandas
