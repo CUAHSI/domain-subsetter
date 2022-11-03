@@ -44,4 +44,14 @@ Thumbs.db
 #####################
 .R*
 
-.Rproj.user
+*.Rproj.user
+*.Rproj
+
+# Local project dirs to ignore #
+################################
+
+utility-scripts/
+ssl/
+minikube/
+*.bak
+old/

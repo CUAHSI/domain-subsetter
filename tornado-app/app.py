@@ -12,7 +12,7 @@ import logs
 import auth
 import websocket
 import environment as env
-from handlers import core, hydroshare
+from handlers import core, hydroshare, nldi
 from handlers import pf1handlers, nwm122handlers, nwm2handlers
 
 
@@ -53,6 +53,8 @@ class Application(web.Application):
             (r"/hflogin", pf1handlers.HfLogin),
             (r"/hflogout", pf1handlers.HfLogout),
             (r"/hfisauthenticated", pf1handlers.HFIsAuthenticated),
+            # NLDI
+            (r'/nldi-trace', nldi.NLDI)
         ]
         settings = {
             "debug": env.debug,
