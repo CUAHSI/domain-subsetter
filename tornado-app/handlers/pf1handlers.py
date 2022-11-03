@@ -9,6 +9,7 @@ import tornado.auth
 import urllib.parse
 import environment as env
 from cas import CASClient
+from datetime import datetime
 from subsetting import parflow1
 from tornado.log import app_log
 from tornado.log import enable_pretty_logging
@@ -16,6 +17,9 @@ from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 executor = jobs.BackgroundWorker()
 
+import sqldata
+sql = sqldata.Connect(env.sqldb)
+sql.build()
 
 class Index(tornado.web.RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
@@ -123,15 +127,43 @@ class SubsetParflow1(tornado.web.RequestHandler):
         # app_log.debug('Checking if job exists')
         # res = sql.get_job_by_guid(uid)
         # app_log.debug(res)
-        outdir = os.path.join(env.output_dir, uid)
-        if os.path.exists(outdir):
-            shutil.rmtree(outdir)
-        os.makedirs(outdir)
+        # check if this job has been executed previously
+        app_log.debug('Checking if job exists')
+        res = sql.get_job_by_guid(uid)
+        app_log.debug(res)
 
-        # Subset PF-CONUS 1.0
-        app_log.info('Begin PF-CONUS 1.0 Subsetting')
-        args = (uid, hucs, outdir)
-        uid = executor.add(uid, parflow1.subset, *args)
+        # check that the file still exists on the system
+        if len(res) > 0:
+
+            fpath = res[0][2]
+            if not os.path.exists(fpath):
+                app_log.debug(f'Could not find results from job: {uid}')
+
+                # clear the res array because this location must be processed again.
+                res = []
+
+        # create the output directory if it doesn't already exist
+        outdir = os.path.join(env.output_dir, uid)
+        app_log.info(f'OUTDIR: {outdir}')
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
+
+#        if os.path.exists(outdir):
+#            shutil.rmtree(outdir)
+#        os.makedirs(outdir
+
+         # submit the job
+        if len(res) == 0:
+
+            # Subset PF-CONUS 1.0
+            app_log.info('Begin PF-CONUS 1.0 Subsetting')
+            args = (uid, hucs, outdir)
+            uid = executor.add(uid, parflow1.subset, *args)
+        else:
+
+            # save a record of this request even though it was retrieved from cache
+            t = datetime.now()
+            sql.save_job(uid, 'finished', fpath, t, t)
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')

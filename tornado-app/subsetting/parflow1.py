@@ -107,5 +107,5 @@ def subset(uid, hucs, outdir, logger=None):
                     os.path.join(outdir, 'binder'))
 
     return dict(message='PF-CONUS 1.0 subsetting complete',
-                filepath=f'/data/{outdir}',
+                filepath=f'{outdir}',
                 status='success')

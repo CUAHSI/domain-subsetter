@@ -29,7 +29,7 @@ source("Utils_ReachFiles.R")
 
 subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_path) {
 
-    cat("hello world")
+#    cat("hello world")
 
     # guid: unique identifier used to name the output
     # Specify the clip bounding coordinates
