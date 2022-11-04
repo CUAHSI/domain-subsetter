@@ -216,6 +216,28 @@ $(window).bind("load", function() {
     }
     
     /**
+     * BBOX - OPEN
+     * showBboxDialogTemplate
+     **/
+
+    document.getElementById("show-bbox").onclick = function() {
+
+        document.getElementById('showBboxDialogTemplate').style.display = "";
+    };
+    
+    /**
+    * BBOX - CLOSE 
+    * Cancels the rm HUC dialog
+    */
+    document.getElementById("show-bbox-close").onclick = function() {
+    
+        // clear and hide the dialog
+        document.getElementById('showBboxDialogTemplate').style.display = "none";
+    }
+
+
+    
+    /**
     * REMOVE - HUC TABLE - OPEN
     * Opens dialog for removing HUC from to table
     */
@@ -234,6 +256,7 @@ $(window).bind("load", function() {
         notify(message);
       }
     };
+
 
     /**
     * REMOVE - HUC TABLE - CANCEL
@@ -411,8 +434,8 @@ function mapClick(e) {
 	// create new popup containing gage info
 	L.popup().setLatLng([gage.y, gage.x])
 		 .setContent('<b>ID:</b> '+ gage.num + '<br>' 
-		             + '<b>Name</b>: ' + gage.name + '<br>'
-		             + '<b>Select</b>: <a onClick=traceUpstream("'+gage.num+'")>upstream</a>')
+		             + '<b>Name</b>: ' + gage.name + '<br>')
+//		             + '<b>Select</b>: <a onClick=traceUpstream("'+gage.num+'")>upstream</a>')
 		 .openOn(Map.map);
 
 	// exit function without toggling HUC
@@ -1006,6 +1029,12 @@ function update_lcc_bounds(lcc_bbox) {
      $('#llat').val(lcc_bbox[1]);
      $('#ulon').val(lcc_bbox[2]);
      $('#ulat').val(lcc_bbox[3]);
+
+     // update bounding box in menu
+     $('#td-llon-val').html(parseFloat(lcc_bbox[0]).toFixed(5));
+     $('#td-llat-val').html(parseFloat(lcc_bbox[1]).toFixed(5));
+     $('#td-ulon-val').html(parseFloat(lcc_bbox[2]).toFixed(5));
+     $('#td-ulat-val').html(parseFloat(lcc_bbox[3]).toFixed(5));
 }
 
 function get_lcc_bounds() {
