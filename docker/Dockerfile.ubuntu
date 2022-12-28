@@ -1,10 +1,9 @@
 FROM r-base:4.1.1
 
 RUN apt update \
+ && apt remove -y binutils \
  && apt install -y \
  curl \
- # libcurl4-openssl-dev
- # might not need ^. try below
  libcurl4 \
  libssl-dev \
  libxml2-dev \
@@ -12,32 +11,67 @@ RUN apt update \
  proj-bin \
  netcdf-bin \
  nco \
- # PARFLOW dependencies 
+ libharfbuzz-dev \
+ libfribidi-dev \
  build-essential \ 
- git \ 
- gfortran \ 
- libopenblas-dev \ 
- liblapack-dev \ 
- openssh-client \ 
- openssh-server \ 
- openmpi-bin \ 
- libopenmpi-dev \ 
- tcl-dev \ 
- tk-dev \
- cmake \
- # gdal-bin # this has not been installed
- # Install R-WRFHYDRO
- && install.r remotes ncdf4 raster \
- # download rwrfhydro
- && curl -fsSL https://api.github.com/repos/NCAR/rwrfhydro/tarball/HEAD -o /tmp/rwrfhydro.tar.gz \
- # install rwrfhydro
- && R -e "remotes::install_local('/tmp/rwrfhydro.tar.gz', dependencies=T)" \
- # clean up
- # remove apt cache
- && rm -rf /var/lib/apt/lists/* \
- # remove package cache
- && rm -rf /tmp/downloaded_packages /tmp/rwrfhydro.tar.gz
+# # PARFLOW dependencies 
+# git \ 
+# gfortran \ 
+# libopenblas-dev \ 
+# liblapack-dev \ 
+# openssh-client \ 
+# openssh-server \ 
+# openmpi-bin \ 
+# libopenmpi-dev \ 
+# tcl-dev \ 
+# tk-dev \
+# cmake \
+# gdal-bin \ 
+ && rm -rf /var/lib/apt/lists/*
+ 
 
+# libcurl4-openssl-dev
+ # might not need ^. try below
+
+#apt install -y libharfbuzz-dev  libfribidi-dev
+#install.r textshaping
+
+
+RUN curl -fsSL https://api.github.com/repos/NCAR/rwrfhydro/tarball/HEAD -o /tmp/rwrfhydro.tar.gz
+
+# Install R-WRFHYDRO
+RUN install.r remotes
+#ncdf4 raster
+
+RUN apt update \
+ && apt install -y \
+ libfontconfig1-dev \
+ gfortran \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN R -e "remotes::install_local('/tmp/rwrfhydro.tar.gz', dependencies=TRUE, build_vignettes=FALSE)"
+
+# && rm -rf /var/lib/apt/lists/* \
+# && rm -rf /tmp/downloaded_packages /tmp/rwrfhydro.tar.gz
+
+###########
+# PARFLOW #
+###########
+
+RUN apt update \
+ && apt install -y \
+  git \ 
+  libopenblas-dev \ 
+  liblapack-dev \ 
+  openssh-client \ 
+  openssh-server \ 
+  openmpi-bin \ 
+  libopenmpi-dev \ 
+  tcl-dev \ 
+  tk-dev \
+  cmake \
+  gdal-bin \ 
+ && rm -rf /var/lib/apt/lists/*
 
 ##############
 # WEB SERVER #
@@ -128,6 +162,7 @@ RUN git clone -b master --single-branch https://github.com/parflow/parflow.git p
  && make install \
  && cd .. && rm -fr parflow build
 
+RUN pip install geopandas
 
 EXPOSE 80
 
