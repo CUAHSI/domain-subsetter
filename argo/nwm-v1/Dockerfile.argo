@@ -1,0 +1,6 @@
+FROM cuahsi/subset-wrfhydro:v1
+COPY argo-entry.py /srv/argo-entry.py
+
+ENTRYPOINT ["python", \ 
+	    "-u", \
+	    "argo-entry.py"]
