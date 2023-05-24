@@ -1,3 +1,5 @@
+
+// global object to store map info
 var Map = {}
 
 /**
@@ -12,6 +14,7 @@ $(window).bind("load", function() {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
+    Map.reaches = {};
     Map.huc2_min = 0;
     Map.huc2_max = 7;
     Map.huc4_min = 6;
@@ -73,7 +76,7 @@ $(window).bind("load", function() {
 
     // HUC 12 Layer
     var huc12 = L.tileLayer.wms(url, {
-        layers: 0,
+        layers: 2,
         transparent: 'true',
         format: 'image/png',
         minZoom:Map.huc12_min,
@@ -123,30 +126,28 @@ $(window).bind("load", function() {
                  function (){clearSelection();},
                  'clear selected features').addTo(map);
 
-    // Help button
-    var btn = '<span id=help-btn class="material-icons">info-outline</i>'
-    var help = L.easyButton('fas fa-question', function (){toggleHelpDialog();},
-			    {position: 'topleft'}).addTo(Map.map);
-
+    // Help 
+//    var btn = '<span id=help-btn class="material-icons">info-outline</i>'
+    L.easyButton('fas fa-question', function (){toggleHelpDialog();},
+                 {position: 'topleft'}).addTo(Map.map);
 
     L.control.mousePosition({
         prefix:"Lat Long: ",
         separator:", "}).addTo(map);
 
-    // Menu Button
-//    var btn = '<span id=menu-btn class="fa fa-2x fa-bars"></i>'
+    // Menu 
     var btn = '<div id=menu-btn><strong>MENU</strong></div>';
     var menu = L.easyButton(btn, function (){toggleMenu();resize_map();},
                          {position: 'topright'}).addTo(Map.map);
     menu.button.style.width = '80px';
 
-    // Submit Button
+    // Submit 
     var btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
     var btn_submit = L.easyButton(btn,
 	                          function (btn){submit(btn);},
 	                          {id: 'submit',
 				   position: 'bottomright'});
-//.addTo(Map.map);
+
     btn_submit.button.style.width = '150px';
     var submit_group = L.easyBar([btn_submit],
 		                 {position: 'bottomright',
@@ -215,6 +216,28 @@ $(window).bind("load", function() {
     }
     
     /**
+     * BBOX - OPEN
+     * showBboxDialogTemplate
+     **/
+
+    document.getElementById("show-bbox").onclick = function() {
+
+        document.getElementById('showBboxDialogTemplate').style.display = "";
+    };
+    
+    /**
+    * BBOX - CLOSE 
+    * Cancels the rm HUC dialog
+    */
+    document.getElementById("show-bbox-close").onclick = function() {
+    
+        // clear and hide the dialog
+        document.getElementById('showBboxDialogTemplate').style.display = "none";
+    }
+
+
+    
+    /**
     * REMOVE - HUC TABLE - OPEN
     * Opens dialog for removing HUC from to table
     */
@@ -234,6 +257,7 @@ $(window).bind("load", function() {
       }
     };
 
+
     /**
     * REMOVE - HUC TABLE - CANCEL
     * Cancels the rm HUC dialog
@@ -250,7 +274,6 @@ $(window).bind("load", function() {
     */
     document.getElementById("rm-huc-submit").onclick = function() {
         
-        var hucs_to_remove = [];
         // remove items from table
         var table = document.getElementById("huc-table");
         var labels = $('#huc-table tbody tr label');
@@ -284,12 +307,13 @@ $(window).bind("load", function() {
     // validate the map
     box = validate_bbox_size()
     toggle_submit_button(box.is_valid);
-    
+
     // fix safari map sizing issue
     $(window).on("resize", function() {
 	resize_map();
     }).trigger("resize");
 });
+
 
 function resize_map() {
     var pheight = $('#map').parent().height();
@@ -312,6 +336,7 @@ function toggleMenu() {
     var panel = document.querySelector('#menu-panel');
     accordion.MaterialExtAccordion.command( {action: 'toggle', target: panel} );
 }
+
 function submit(e) {
     document.getElementById('form-submit').submit();
 }
@@ -353,7 +378,7 @@ function getGageInfo(e) {
     var gageURL = root + L.Util.getParamString(parameters);
 
     var gage_meta = {};
-    var ajax = $.ajax({
+    $.ajax({
         url: gageURL,
 	async: false,
         success: function (response) {
@@ -368,6 +393,8 @@ function getGageInfo(e) {
 	    }
 	},
 	error: function(response) {
+	    // todo:
+	    console.log(response);
 	}
     });
 
@@ -404,12 +431,12 @@ function mapClick(e) {
 	    Map.map.closePopup();
 	}
 
-	// create new popup
-	var popup = L.popup()
-		    .setLatLng([gage.y, gage.x])
-		    .setContent('<b>ID:</b> '+ gage.num + '<br>' 
-			      + '<b>Name</b>: ' + gage.name)
-		    .openOn(Map.map);
+	// create new popup containing gage info
+	L.popup().setLatLng([gage.y, gage.x])
+		 .setContent('<b>ID:</b> '+ gage.num + '<br>' 
+		             + '<b>Name</b>: ' + gage.name + '<br>')
+//		             + '<b>Select</b>: <a onClick=traceUpstream("'+gage.num+'")>upstream</a>')
+		 .openOn(Map.map);
 
 	// exit function without toggling HUC
 	return;
@@ -421,7 +448,6 @@ function mapClick(e) {
 
     // get the latitude and longitude of the click event.
     // use this data to query ArcGIS WFS for the selected HUC object.
-    var clickBounds = L.latLngBounds(e.latlng, e.latlng);
     var defaultParameters = {
         service : 'WFS',
         request : 'GetFeature',
@@ -435,10 +461,78 @@ function mapClick(e) {
     
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
+}
 
 
+function traceUpstream(usgs_gage) {
+
+    console.log('traceUpstream --> selected gage = ' + usgs_gage);
+	    
+    // clear any existing reaches from the map
+    if (Map.reaches.obj != null) {
+	Map.reaches.obj.clearLayers();
+    }
+    
+    // query the upstream reaches via NLDI
+    $.ajax({
+	url: '/nldi-trace',
+        type: 'GET',
+        contentType: "application/json",
+        data: {'site_provider': 'nwis',
+	       'site': usgs_gage},
+        success: function (response) {
 
 
+	    // add the reaches to the map and replace the global reaches
+	    // object with the newly selected reaches.
+	    var reaches = L.geoJSON(response.features, {style: {color: 'green'}});
+	    Map.reaches.start_id = reaches._leaflet_id;
+	    Map.reaches.count = response.features.length;
+	    Map.reaches.obj = reaches;
+	    reaches.addTo(Map.map);
+        
+    
+	    // a list to store a single coordinate for each reach
+	    let centroids = [];
+	    
+	    
+	    // generate a list of points for each of the reaches
+	    response.features.forEach(function (reach) {
+		
+		// select the middle geometry feature.
+		// This is a hack and should be replaced with something better
+		geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
+
+		geom_coord = reach.geometry.coordinates[geom_idx];
+		centroids.push(geom_coord);
+	    })
+    
+	    console.log('Number of reaches found = ' + centroids.length);
+
+	    // TODO: move this into a function since it's used in several places.
+	    // query the HUC geometry for each of the reach coordinate points
+	    // use this data to query ArcGIS WFS for the selected HUC object.
+	    centroids.forEach(function (coord) {
+	        var defaultParameters = {
+			service : 'WFS',
+	   	        request : 'GetFeature',
+	   	        bbox: coord[0]+','+coord[1]+','+coord[0]+','+coord[1],
+	   	        typeName : 'HUC_WBD:HUC12_US',
+	   	        SrsName : 'EPSG:4326'
+		};
+	    var root='https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+	    var parameters = L.Util.extend(defaultParameters);
+	    var URL = root + L.Util.getParamString(parameters);
+	   	    
+//	   	// load the map and table elements async
+		// todo: highlight the unique set of HUCs, do not toggle.
+//	   	toggleHucsAsync(URL, true, null);
+	    })
+        },
+        error: function(error) {
+            console.log('error querying NLDI upstream: ' + error);
+        }
+    });
 }
 
 
@@ -574,7 +668,7 @@ function clearSelection() {
 */
 function getLccBounds(hucs) {
 
-    var ajax = $.ajax({
+    $.ajax({
         url: '/wbd/gethucbbox/lcc',
         type: 'GET',
         contentType: "text/plain; charset=UTF-8",
@@ -589,7 +683,7 @@ function getLccBounds(hucs) {
 
         },
         error: function(error) {
-            console.log('error querying bounding box');
+            console.log('error querying bounding box: ' + error);
         }
     });
 
@@ -671,7 +765,7 @@ function addFeatureByHUC(hucid) {
 function toggleHucsAsync(url, remove_if_selected, remove) {
 
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
-    var ajax = $.ajax({
+    $.ajax({
         url: url,
         success: function (response) {
 
@@ -753,7 +847,7 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
 
 
         },
-        error: function (response) {
+        error: function () {
             // if there was an error calling the ArcGIS WFS,
             // add an error message in the table
             var row = getRowByName(hucid);
@@ -935,6 +1029,12 @@ function update_lcc_bounds(lcc_bbox) {
      $('#llat').val(lcc_bbox[1]);
      $('#ulon').val(lcc_bbox[2]);
      $('#ulat').val(lcc_bbox[3]);
+
+     // update bounding box in menu
+     $('#td-llon-val').html(parseFloat(lcc_bbox[0]).toFixed(5));
+     $('#td-llat-val').html(parseFloat(lcc_bbox[1]).toFixed(5));
+     $('#td-ulon-val').html(parseFloat(lcc_bbox[2]).toFixed(5));
+     $('#td-ulat-val').html(parseFloat(lcc_bbox[3]).toFixed(5));
 }
 
 function get_lcc_bounds() {

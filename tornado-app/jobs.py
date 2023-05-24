@@ -99,7 +99,6 @@ class BackgroundWorker(object, metaclass=Singleton):
                 item['state'] = 'finished'
                 self.jobs[uid] = item
                 self.output[uid] = res
-                
                 self.status[uid] = 'finished'
 
             except Exception as e:

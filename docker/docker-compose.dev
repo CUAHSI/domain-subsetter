@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   app:
-    image: cuahsi/subsetter-ubuntu:0.1
+    image: cuahsi/subsetter-ubuntu:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.ubuntu
@@ -22,6 +22,7 @@ services:
     volumes:
       - ./share:/share
       - ../tornado-app:/srv
+      - /Volumes/ColdStorage/subsetter/domain-data/nwm2.0-domain/data:/share/nwm.v2.0.0
     links:
       - redis_db
   redis_db:

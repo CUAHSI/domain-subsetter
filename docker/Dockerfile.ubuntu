@@ -1,79 +1,65 @@
 FROM r-base:4.1.1
 
+RUN apt update \
+ && apt remove -y binutils \
+ && apt install -y \
+ # Common dependencies
+ curl \
+ build-essential \ 
+ git \ 
+ gfortran \ 
+ cmake \
+ # R-WRFHYDRO dependencies
+ libcurl4 \
+ libssl-dev \
+ libxml2-dev \
+ libgdal-dev \
+ proj-bin \
+ netcdf-bin \
+ nco \
+ libharfbuzz-dev \
+ libfribidi-dev \
+ # PARFLOW dependencies 
+ libopenblas-dev \ 
+ liblapack-dev \ 
+ openssh-client \ 
+ openssh-server \ 
+ openmpi-bin \ 
+ libopenmpi-dev \ 
+ tcl-dev \ 
+ tk-dev \
+ gdal-bin \ 
+ && rm -rf /var/lib/apt/lists/*
+ 
+
+# libcurl4-openssl-dev
+ # might not need ^. try below
+
+#apt install -y libharfbuzz-dev  libfribidi-dev
+#install.r textshaping
+
 ##############
 # R-WRFHYDRO #
 ##############
 
-RUN apt update && \
-    apt install -y curl \
-    # libcurl4-openssl-dev
-    # might not need ^. try below
-    libcurl4 libssl-dev \
-    libxml2-dev libgdal-dev \
-    proj-bin netcdf-bin && \
-    # gdal-bin # this has not been installed
-    install.r remotes ncdf4 raster && \
-    # download rwrfhydro
-    curl -fsSL https://api.github.com/repos/NCAR/rwrfhydro/tarball/HEAD -o /tmp/rwrfhydro.tar.gz && \
-    # install rwrfhydro
-    R -e "remotes::install_local('/tmp/rwrfhydro.tar.gz', dependencies=T)" && \
+# install devtools
+RUN Rscript -e "install.packages('devtools', dependencies=TRUE)"
 
-    # clean up
-    # remove apt cache
-    rm -rf /var/lib/apt/lists/* && \
-    # remove package cache
-    rm -rf /tmp/downloaded_packages /tmp/rwrfhydro.tar.gz
+# install rwrfhydro
+RUN Rscript -e "devtools::install_github('NCAR/rwrfhydro')"
 
+# missing dependencies - rgdal
+RUN apt update && apt install -y \
+    libudunits2-dev \
+ && rm -rf /var/lib/apt/lists/*
+RUN Rscript -e "install.packages('rgdal', dependencies=TRUE)"
 
-##############
-# WEB SERVER #
-##############
-
-# install and configure miniconda in /opt/miniconda so that it's accessible
-# to all system users. 
-ENV CONDA_PATH=/opt/miniconda
-
-# needs to be declared separately from CONDA_PATH since it uses that
-# environment variable
-ENV PATH=$CONDA_PATH/bin:$CONDA_PATH/condabin:$PATH
-
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && sh Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_PATH \
- && rm -f Miniconda3-latest-Linux-x86_64.sh 
-# && conda init bash 
-
-WORKDIR /srv
-
-RUN conda install -y \
-    gdal \
-    aioredis \
-    matplotlib \
-    pyproj \
-    sqlite \
-    tornado \
-    xarray 
-
-RUN pip install \
-    hs_restclient==1.3.6 \
-    shapely \
-    multiprocessing-logging==0.3.0 \
-    python-cas==1.5.0 \
-    pyshp \
-    redis
-
-RUN apt update \
- && apt install -y \
-    nco \
- && rm -rf /var/lib/apt/lists/* 
-
-EXPOSE 80
-
-WORKDIR /srv
-ENTRYPOINT ["python", "app.py"]
 
 ###########
 # PARFLOW #
 ###########
+
+
 
 RUN mkdir -p /home/parflow 
 WORKDIR /home/parflow
@@ -81,23 +67,6 @@ WORKDIR /home/parflow
 ENV PARFLOW_DIR=/usr/local \
     PATH=$PATH:$PARFLOW_DIR/bin \
     PARFLOW_MPIEXEC_EXTRA_FLAGS="--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
-
-RUN apt-get update \
- && apt-get install -y \ 
-     build-essential \ 
-     #     curl \ # installed above
-     git \ 
-     gfortran \ 
-     libopenblas-dev \ 
-     liblapack-dev \ 
-     openssh-client \ 
-     openssh-server \ 
-     openmpi-bin \ 
-     libopenmpi-dev \ 
-     tcl-dev \ 
-     tk-dev \
-     cmake \
- && rm -rf /var/lib/apt/lists/* 
 
 # Hypre
 RUN wget -q https://github.com/hypre-space/hypre/archive/v2.17.0.tar.gz \
@@ -134,7 +103,59 @@ RUN git clone -b master --single-branch https://github.com/parflow/parflow.git p
  && make install \
  && cd .. && rm -fr parflow build
 
-RUN pip install pftools==0.0.6 numpy parflowio parflow_subsetter
+
+#############
+# MINICONDA #
+#############
+
+WORKDIR /tmp
+
+# install and configure miniconda in /opt/miniconda so that it's accessible
+# to all system users. 
+ENV CONDA_PATH=/opt/miniconda
+
+# needs to be declared separately from CONDA_PATH since it uses that
+# environment variable
+ENV PATH=$CONDA_PATH/bin:$CONDA_PATH/condabin:$PATH
+
+ENV CONDA_VERSION=Miniconda3-py37_22.11.1-1-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/${CONDA_VERSION} \
+ && bash ${CONDA_VERSION} -b -p $CONDA_PATH \
+ && rm -f ${CONDA_VERSION} 
+
+###############
+# PYTHON LIBS #
+###############
+
+RUN conda install -c conda-forge mamba -y
 
 
+# install gdal <3.2 from conda-forge. This version allows you to
+# 'import gdal' instead of 'from osgeo import gdal' which is required by pftools
+RUN mamba install -c conda-forge -y \
+    "gdal<3.2.0" \
+    "aioredis<2.0" \
+    matplotlib \
+    sqlite \
+    tornado \
+    geopandas \
+    xarray 
+
+RUN pip install \
+    hs_restclient==1.3.6 \
+    shapely \
+    multiprocessing-logging==0.3.0 \
+    python-cas==1.5.0 \
+    pyshp \
+    numpy \
+    redis \
+    pftools==0.0.6 \
+    parflowio \
+    parflow_subsetter
+###    #    geopandas \
+###    #    pyproj
+
+EXPOSE 80
 WORKDIR /srv
+ENTRYPOINT ["python", "app.py"]
+

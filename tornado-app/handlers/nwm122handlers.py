@@ -4,6 +4,7 @@ import tornado.auth
 import tornado.web
 import hashlib
 import environment as env
+from datetime import datetime
 from subsetting import nwm122
 from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
@@ -69,6 +70,16 @@ class SubsetNWM122(tornado.web.RequestHandler):
         app_log.debug('Checking if job exists')
         res = sql.get_job_by_guid(uid)
         app_log.debug(res)
+        
+        # check that the file still exists on the system
+        if len(res) > 0:
+
+            fpath = res[0][2]
+            if not os.path.exists(fpath):
+                app_log.debug(f'Could not find results from job: {uid}')
+
+                # clear the res array because this location must be processed again.
+                res = []
 
         # submit the job
         if len(res) == 0:
@@ -76,6 +87,11 @@ class SubsetNWM122(tornado.web.RequestHandler):
             # submit the subsetting job
             args = (uid, llat, llon, ulat, ulon, hucs)
             uid = executor.add(uid, nwm122.subset_nwm_122, *args)
+        else:
+
+            # save a record of this request even though it was retrieved from cache
+            t = datetime.now()
+            sql.save_job(uid, 'finished', fpath, t, t)
 
         # redirect to status page for this job
         app_log.debug('redirecting to status page')

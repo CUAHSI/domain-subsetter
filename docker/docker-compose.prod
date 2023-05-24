@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   app:
-    image: cuahsi/subsetter-ubuntu:0.1
+    image: cuahsi/subsetter-ubuntu:0.1a
     build:
       context: ..
       #dockerfile: docker/Dockerfile.subsetter
@@ -14,8 +14,8 @@ services:
       REDIS_URL: redis_db
       REDIS_PORT: 6379
       PF_EXE_DIR: /usr/local
-      SSL_CERT: /share/ssl/cuahsi_org_2021.cert
-      SSL_KEY: /share/ssl/cuahsi_org_2021.key
+      SSL_CERT: /share/ssl/cuahsi_org_2022.cert
+      SSL_KEY: /share/ssl/cuahsi_org_2022.key
       OAUTH_CLIENT_ID: "TjMr7rPA8AkjVvJgDohn0QEIZ2fKDoPNVjVLKYXz"
       OAUTH_CLIENT_SECRET: "Yy5FhCXJQ5C9HRpv467bCkLma8vq1nRk69gl4l0V8qcTOXONR4fO8KCdZv6V0MWsViK1iUK5TFMC0NrX8VaL1lOkejLjTUHdz8qa6QWY2JYa6wbHxZyNdncx5qyACuHR"
       OAUTH_CALLBACK_URL: "https://subset.cuahsi.org/authorize"

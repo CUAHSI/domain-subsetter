@@ -6,7 +6,7 @@
 {% end %}
 
 <div id="addContentDialogTemplate" style="display:none">
-  <div class="mdl-dialog__addContent mdl-shadow--2dp">
+  <div class="menu-dialog mdl-dialog__addContent mdl-shadow--2dp">
     <h3 class="mdl-dialog__title">Add HUC</h3>
     <div class="mdl-dialog__content">
       <div class="mdl-textfield mdl-js-textfield">
@@ -21,7 +21,7 @@
 </div>
 
 <div id="rmContentDialogTemplate" style="display:none">
-  <div class="mdl-dialog__addContent mdl-shadow--2dp">
+  <div class="menu-dialog mdl-dialog__addContent mdl-shadow--2dp">
     <div class="mdl-dialog__content">
       <div class="mdl-textfield mdl-js-textfield">
         <p> Are you sure that you want to remove the selected HUCs?</p>
@@ -34,22 +34,65 @@
   </div>
 </div>
 
+<div id="showBboxDialogTemplate" style="display:none">
+  <div class="menu-dialog mdl-dialog__addContent mdl-shadow--2dp">
+    <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield">
+ 
+	  <div class="mdl-data-tabledynamic__content">
+	   <table id='bbox-table' class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+	      <tbody>
+		  <tr>
+		      <td class="td-key">ULAT</td>
+		      <td class="td-value" id="td-ulat-val">---</td>
+		  </tr>
+		  <tr>
+		      <td class="td-key">LLAT</td>
+		      <td class="td-value" id="td-llat-val">---</td>
+		  </tr>
+		  <tr>
+		      <td class="td-key">ULON</td>
+		      <td class="td-value" id="td-ulon-val">---</td>
+		  </tr>
+		  <tr>
+		      <td class="td-key">LLON</td>
+		      <td class="td-value" id="td-llon-val">---</td>
+		  </tr>
+	      </tbody>
+	    </table>
+	</div>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button id='show-bbox-close' type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Close</button>
+    </div>
+  </div>
+</div>
 <!-- TABLE -->
 
  <div id="huc-table-div" class="mdl-data-tabledynamic">
    <div class="mdl-data-tabledynamic__title">
      <h2 class="mdl-data-tabledynamic__title-text">Selected HUCS</h2>
    </div>
+     <!-- Add HUC Button -->
      <div class="mdl-data-tabledynamic__actions">
        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row" id='add-huc'>
 	   <i class="fas fa-2x fa-plus"></i>
        </a>
+
+       <!-- Remove HUC Button -->
        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect remove-row mdl-button--disabled" id='rm-huc'>
 	   <i class="far fa-2x fa-trash-alt"></i>
+       </a>
+
+       <!-- Show BBOX -->
+       <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row" id='show-bbox'>
+	   <i class="far fa-2x fa-square"></i>
        </a>
      </div>
    </div>
 
+   <div style="height:67%">
  <div class="mdl-data-tabledynamic__content">
    <table id='huc-table' class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
 {# mdl-data-table--selectable #}
@@ -64,5 +107,6 @@
       <tbody>
       </tbody>
     </table>
+</div>
 </div>
 

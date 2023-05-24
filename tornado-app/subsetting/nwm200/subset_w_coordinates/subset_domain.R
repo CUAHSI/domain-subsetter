@@ -29,7 +29,7 @@ source("Utils_ReachFiles.R")
 
 subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_path) {
 
-    cat("hello world")
+#    cat("hello world")
 
     # guid: unique identifier used to name the output
     # Specify the clip bounding coordinates
@@ -113,8 +113,8 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     geoSpatialFile <-  paste0(domainPath, "/WRF_Hydro_NWM_geospatial_data_template_land_GIS.nc")
     
     # Path to the nudging param file
-    #fullNudgeParamFile <- NULL
-    fullNudgeParamFile <- paste0(domainPath, "/nudgingParams.nc")
+    fullNudgeParamFile <- NULL
+#    fullNudgeParamFile <- paste0(domainPath, "/nudgingParams.nc")
     
     
 
@@ -232,6 +232,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     
     # Geo Spatial File
     if (!is.null(geoSpatialFile)) {
+       print("Processing Geo Spatial File")
     
        if (!file.exists(geoSpatialFile)) stop(paste0("The geoSpatialFile :", geoSpatialFile, " does not exits"))
          cmd <- paste0("ncks -O -d x,", geo_w-1, ",", geo_e-1, " -d y,", geo_min-1, ",", geo_max-1, " ", geoSpatialFile, " ", subGeoSpatialFile)
@@ -251,6 +252,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     
     # ROUTING GRID
     if (!is.null(fullHydFile)) {
+       print("Processing Routing Grid")
     
        if  (!file.exists(fullHydFile)) stop(paste0("The fullHydFile : ", fullHydFile, " does not exits"))
        cmd <- paste0("ncks -O -d x,", hyd_w-1, ",", hyd_e-1, " -d y,", hyd_min-1, ",", hyd_max-1, " ", fullHydFile, " ", subHydFile)
@@ -271,6 +273,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     # GEO GRID
     
     # Dimension subsetting
+    print("Processing GeoGrid")
     cmd <- paste0("ncks -O -d west_east,", geo_w-1, ",", geo_e-1, " -d south_north,", geo_s-1, ",", geo_n-1, 
     	       " -d west_east_stag,", geo_w-1, ",", geo_e, " -d south_north_stag,",geo_s-1, ",", geo_n, " ",
     		fullGeoFile, " ", subGeoFile)
@@ -334,6 +337,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     
     #HYDRO_TBL_2D GRID
     if (!is.null(fullHydro2dFile)) {
+       print("Processing Hydro Table")
     
        if (!file.exists(fullHydro2dFile)) stop(paste0("The fullHydro2dFile : ", fullHydro2dFile, " does not exits"))
       
@@ -373,6 +377,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     # WRFINPUT GRID
     
     if (!is.null(fullWrfFile)) {
+      print("Processing WRF Input Grid")
     
       if (!file.exists(fullWrfFile)) stop(paste0("The fullWrfFile : ", fullWrfFile, " does not exits"))
     
@@ -410,6 +415,8 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     ################# SUBSET PARAMS
     
     if (!is.null(fullSpwtFile) & !is.null(fullRtlinkFile)) {
+      
+      print("Processing Parameters")
     
       if (!file.exists(fullSpwtFile)) stop(paste0("The fullSpwtFile : ", fullSpwtFile, " does not exits"))
       if (!file.exists(fullRtlinkFile)) stop(paste0("The fullRtlinkFile : ", fullRtlinkFile, " does not exits"))
@@ -454,6 +461,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     # GWBUCK PARAMETER
     
     if (!is.null(fullGwbuckFile)) {
+       print("Processing GW Bucket")
     
        if (is.null(fullSpwtFile) | is.null(fullRtlinkFile)) {
           stop("To subset the fullSpwtFile, you need fullSpwtFile and fullRtlinkFile")
@@ -470,6 +478,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     
     if (!is.null(fullSoilparmFile)) {
     
+       print("Processing Soil Parameters")
         if (!file.exists(fullSoilparmFile)) stop(paste0("the fullSoilparmFile : ", fullSoilparmFile, " does not exits"))
         cmd <- paste0("ncks -O -d west_east,", geo_w-1, ",", geo_e-1, " -d south_north,", geo_s-1, ",", geo_n-1, " ", fullSoilparmFile, " ", subSoilparmFile)
         system(cmd)
@@ -506,6 +515,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     # Make a copy of the LAKEPARM file, Read the subsetted Routlink file 
     # and finds out which lakes fall into the domain and keep only those in the LAKEPARM.nc file
     if (!is.null(fullLakeparmFile)) {
+       print("Processing Lake Parameters")
     
        if (is.null(fullSpwtFile) | is.null(fullRtlinkFile)) {
           stop("To subset the fullLakeparmFile, you need fullSpwtFile and fullRtlinkFile")
@@ -581,6 +591,7 @@ subsetBbox <- function(guid, y_south, y_north, x_west, x_east, domain_path, out_
     # Nudging PARAMETER FILE, not tested yet
     
     if (!is.null(fullNudgeParamFile)) {
+       print("Processing Nudging Parameters")
     
        if (is.null(fullSpwtFile) | is.null(fullRtlinkFile)) {
           stop("To subset the fullNudgeParamFile, you need fullSpwtFile and fullRtlinkFile")

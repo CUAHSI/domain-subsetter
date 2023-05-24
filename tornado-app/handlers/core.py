@@ -12,7 +12,7 @@ import hashlib
 from urllib.parse import urljoin
 from datetime import datetime
 import bbox
-import transform
+#import transform
 import urllib.parse
 import xml.etree.ElementTree as ET
 import environment as env
