@@ -4,25 +4,25 @@
 ## Running in Argo
 
 - Custom Workflow Parameters
-    - container: cuahsi/parflow-subset-argo:v1
-    - environment variables
-	- PFINPUT: /srv/input/pfconus.v1.0
-	- SHAPE: /srv/output/q1w2e3r4t5y6u7i8o9p0/watershed.shp
-	- OUTPUT: /srv/output/q1w2e3r4t5y6u7i8o9p0
-	- LABEL: test-subset
-    - volumes
-	- PFINPUT
-	    - endpoint: https://storage.googleapis.com
-	    - name: subsetter-static-input
-	    - mount dir: /srv/input
-	- OUTPUT
-	    - endpoint: https://storage.googleapis.com
-	    - name: subsetter-outputs
-	    - mount dir: /srv/output
+  - container: cuahsi/parflow-subset-argo:v1
+  - environment variables
+    - PFINPUT: /srv/input/pfconus.v1.0
+      - SHAPE: /srv/output/q1w2e3r4t5y6u7i8o9p0/watershed.shp
+      - OUTPUT: /srv/output/q1w2e3r4t5y6u7i8o9p0
+      - LABEL: test-subset
+  - volumes
+    - PFINPUT
+      - endpoint: https://storage.googleapis.com
+      - name: subsetter-static-input
+      - mount dir: /srv/input
+    - OUTPUT
+      - endpoint: https://storage.googleapis.com
+      - name: subsetter-outputs
+      - mount dir: /srv/output
   
-  service account: domain-subsetter@thredds.iam.gserviceaccount.com
-  access key: [SECRET]
-  secret: [SECRET]
+  - service account: domain-subsetter@thredds.iam.gserviceaccount.com  
+  - access key: [SECRET]  
+  - secret: [SECRET]  
 
 
 ## Data Storage
