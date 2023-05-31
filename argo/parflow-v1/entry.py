@@ -83,7 +83,6 @@ def subset(name: str,
     # shapefile attribute ids
     cmd.extend(ids)
     print(cmd)
-    import pdb; pdb.set_trace()
     # collect the environment vars for the subprocess
     environ = os.environ.copy()
     environ["PARFLOW_DIR"] = "/usr/local"
