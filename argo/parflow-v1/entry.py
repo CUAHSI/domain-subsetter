@@ -59,12 +59,13 @@ def subset(name: str,
 
     # run the subsetting functions
     shapefile_name_without_ext = ''.join(shape_boundary.name.split('.')[:-1])
+    tmp_output = Path('/tmp')
     cmd = [
         sys.executable,
         "-m",
         "pfsubset.subset.tools.subset_conus",
         "-i",
-        "/srv/shape",
+        str(shape_boundary.parent),
         "-s",
         shapefile_name_without_ext,
         "--conus_files",
@@ -95,11 +96,14 @@ def subset(name: str,
         stderr=subprocess.STDOUT,
         env=environ,
     )
-
+    
     # read stdout and log messages
     for line in iter(proc.stdout.readline, b""):
         sys.stdout.buffer.write(line)
     proc.stdout.close()
+    proc.wait()
+
+    print('Subsetting Operation Complete')
 
 
 #    # write metadata file
