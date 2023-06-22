@@ -1,8 +1,11 @@
 FROM cuahsi/parflow-subset:v1
 COPY argo-entry.py /srv/argo-entry.py
+COPY entry.py /srv/entry.py
 
 RUN apt update \
  && apt install -y tree
+
+RUN mkdir /output
 
 ENTRYPOINT ["/bin/bash", "-c", \
 	    "python -u argo-entry.py && tree /tmp"]

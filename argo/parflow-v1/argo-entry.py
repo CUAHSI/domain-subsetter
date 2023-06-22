@@ -29,10 +29,23 @@ if __name__ == '__main__':
         # show usage
         usage()
     else:
+        #print("Moving input files")
+        #import shutil
+        #print("Moving " + "conus1_inputs.tar.gz")
+        #shutil.copy(os.path.join(pfinput_dir, "conus1_inputs.tar.gz"), "/input")
+        #print("Done Moving input files")
+        print("Being extracting")
+        import tarfile
+        conus_tar = tarfile.open(os.path.join(pfinput_dir, "conus1_inputs.tar.gz"))
+        conus_tar.extractall("/input")
+        print("Done extracting")
+        file_names = os.listdir("/input")
+        for file_name in file_names:
+            print(file_name)
         # call the entry script
         entry.subset(output_name,
                      Path(shapefile_dir),
-                     Path(pfinput_dir),
+                     Path("/input"),
                      Path(output_dir))
 
 

@@ -71,7 +71,8 @@ def subset(name: str,
         "--conus_files",
         str(pfconus_data),
         "-o",
-        str(output_dir),
+        #str(output_dir),
+        "/output",
         "-v",
         "1",  # subset version
 #        "-w",  # write json, yaml, pfidb files
@@ -88,6 +89,8 @@ def subset(name: str,
     environ = os.environ.copy()
     environ["PARFLOW_DIR"] = "/usr/local"
 
+    print(" ".join(cmd))
+
     # run the job
     proc = subprocess.Popen(
         cmd,
@@ -98,13 +101,18 @@ def subset(name: str,
     )
     
     # read stdout and log messages
-    for line in iter(proc.stdout.readline, b""):
-        sys.stdout.buffer.write(line)
-    proc.stdout.close()
+    #for line in iter(proc.stdout.readline, b""):
+    #    sys.stdout.buffer.write(line)
+    #proc.stdout.close()
     proc.wait()
 
     print('Subsetting Operation Complete')
 
+    print("Moving output files")
+    import shutil
+    file_names = os.listdir("/output")
+    for file_name in file_names:
+        shutil.move(os.path.join("/output", file_name), output_dir)
 
 #    # write metadata file
 #    meta = {'date_processed': str(datetime.now(tz=timezone.utc)),
