@@ -11,7 +11,7 @@ else
 fi
 
 # define docker image and output directory
-IMAGE="cuahsi/ngen-subset:v1"
+IMAGE="igarousi/ngen-subset:v1"
 OUTPUT="$(pwd)/output"
 
 # run the docker
