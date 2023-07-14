@@ -1,0 +1,9 @@
+FROM igarousi/ngen-subset:v1
+
+COPY entry.argo.py /srv/entry.argo.py
+
+RUN apt update \
+ && apt install -y tree
+
+ENTRYPOINT ["/bin/bash", "-c", \
+	    "python -u entry.argo.py"]
