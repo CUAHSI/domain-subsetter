@@ -39,7 +39,7 @@ def subset_data(
     """
 
     print("Ngen Hydrofabric Subsetting Started.", flush=True)
-    print("Donwstream catchment id is: ", name)
+    print("Downstream catchment id is: ", name)
 
     # define path to the hydrofabric dataset on S3 bucket 
     s3_path = f'{hydrofabric_url}nextgen_{vpu}.gpkg'
