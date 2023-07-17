@@ -2,17 +2,19 @@
 
 PFVOL="/Volumes/ColdStorage/subsetter/domain-data/pfconus.v1.0"
 IMAGE="cuahsi/parflow-subset-argo:v1"
-OUTPUT="$(pwd)/shape"
+SHAPE="$(pwd)/shape"
+OUTPUT="$(pwd)/output"
 
 docker run --rm -ti \
 	--env PFINPUT=/srv/input \
-	--env SHAPE=/srv/output/watershed.shp \
+	--env SHAPE=/srv/shape/watershed.shp \
 	--env OUTPUT=/srv/output \
 	--env LABEL=my_job \
         -v $OUTPUT:/srv/output \
         -v $PFVOL:/srv/input \
-	--entrypoint=/bin/bash \
+        -v $SHAPE:/srv/shape \
        $IMAGE
+#     --entrypoint=/bin/bash \
 
 #docker run --rm \
 #        -v $OUTPUT:/srv/output \

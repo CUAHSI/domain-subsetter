@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-
 import os
 import sys
+import glob
 import typer
+import shutil
 import subprocess
 from pathlib import Path
 import shapefile
@@ -26,10 +27,9 @@ def main(
     subset(label, shape_boundary, pfconus_data, output_dir)
 
 
-def subset(name: str,
-           shape_boundary: Path,
-           pfconus_data: Path,
-           output_dir: Path) -> None:
+def subset(
+    name: str, shape_boundary: Path, pfconus_data: Path, output_dir: Path
+) -> None:
     """
     Subset the parflow hydrofabric for a given shape boundary
 
@@ -58,8 +58,8 @@ def subset(name: str,
             ids.append(str(record[0]))
 
     # run the subsetting functions
-    shapefile_name_without_ext = ''.join(shape_boundary.name.split('.')[:-1])
-    tmp_output = Path('/tmp')
+    shapefile_name_without_ext = "".join(shape_boundary.name.split(".")[:-1])
+    tmp_output = Path("/tmp/outputs")
     cmd = [
         sys.executable,
         "-m",
@@ -71,19 +71,21 @@ def subset(name: str,
         "--conus_files",
         str(pfconus_data),
         "-o",
-        str(output_dir),
+        str(tmp_output),
         "-v",
         "1",  # subset version
-#        "-w",  # write json, yaml, pfidb files
+        #        "-w",  # write json, yaml, pfidb files
         "-n",
         name,  # name for the output files
         "-e",
         "ID",  # shapefile attribute column name
         "-a",
-    ]  
+    ]
+
     # shapefile attribute ids
     cmd.extend(ids)
     print(cmd)
+
     # collect the environment vars for the subprocess
     environ = os.environ.copy()
     environ["PARFLOW_DIR"] = "/usr/local"
@@ -96,15 +98,35 @@ def subset(name: str,
         stderr=subprocess.STDOUT,
         env=environ,
     )
-    
+
     # read stdout and log messages
-    for line in iter(proc.stdout.readline, b""):
-        sys.stdout.buffer.write(line)
+    for line in iter(proc.stdout.readline, b''):
+        line = line.decode('utf-8').rstrip()
+        
+        # skip empty lines
+        if line == '':
+            continue
+
+        # this is a hack to deal with strings of byte-strings that the 
+        # subsetting library outputs.
+        if line[0:2] == "b'":
+            for l in line[2:-1].split('\\n'):
+                if l == '': continue
+                print(l)
+        else:
+            print(line)
+
     proc.stdout.close()
     proc.wait()
 
-    print('Subsetting Operation Complete')
+    print("Subsetting Operation Complete")
 
+    # results are not saved directly to the output directory so we
+    # can support cloud fuse mounting. Copying files into a fuse-mounted
+    # directory is substantially faster than saving them their directly. 
+    print("Moving results into output directory")
+    for filename in glob.glob(os.path.join(tmp_output, '*.*')):
+        shutil.copy(filename, output_dir)
 
 #    # write metadata file
 #    meta = {'date_processed': str(datetime.now(tz=timezone.utc)),

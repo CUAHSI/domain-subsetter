@@ -99,7 +99,7 @@ RUN git clone https://github.com/hydroframe/parflowio.git \
  && pip install parflow_subsetter
 
 # Make directories for input and output data
-RUN mkdir /srv/input /srv/output /srv/shape
+RUN mkdir /srv/input /srv/output /srv/shape /tmp/outputs
 COPY entry.py /srv/entry.py
 
 ENTRYPOINT ["python", \ 
