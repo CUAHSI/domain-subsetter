@@ -2,22 +2,12 @@
 
 import os
 import json
-import time
 import tornado.auth
 import tornado.web
-import uuid
 import shutil
-import subprocess
-import hashlib
-from urllib.parse import urljoin
 from datetime import datetime
 import bbox
-#import transform
-import urllib.parse
-import xml.etree.ElementTree as ET
 import environment as env
-
-import multiprocessing
 
 from tornado import gen 
 from tornado.httpclient import AsyncHTTPClient
@@ -34,8 +24,6 @@ import sqldata
 sql = sqldata.Connect(env.sqldb)
 sql.build()
 
-#import subset
-
 
 class RequestHandler(tornado.web.RequestHandler):
     errors = []
@@ -50,7 +38,7 @@ class RequestHandler(tornado.web.RequestHandler):
         arg = self.get_argument(argname, default=None, strip=strip)
         if arg is None:
             error = 'Could not find required parameter "%s"' % argname
-            self.render("index.html", header=header, args=args, error=error)
+            self.render("index.html", error=error)
         return arg
 
     def get_arg_value(self, argname, isrequired, strip=True):
@@ -74,27 +62,6 @@ class IndexNew(RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
         self.render("index_new.html", title="New Index Page")
 
-class Index(RequestHandler, tornado.auth.OAuth2Mixin):
-    def get(self):
-        self.render("index.html", title="NWM v1.2.2")
-
-    def post(self):
-        ulat = self.get_argument('ulat')
-        llat = self.get_argument('llat')
-        ulon = self.get_argument('ulon')
-        llon = self.get_argument('llon')
-        hucs = self.get_argument('hucs')
-
-        if '' in [ulat, ulon, llat, llon]:
-            self.render("index.html",
-                        title="CUAHSI Subsetter v0.1",
-                        msg='ERROR: Missing required input')
-
-        # build GET url for subsetting
-        query = f'llat={llat}&llon={llon}&ulat={ulat}&ulon={ulon}&hucs={hucs}'
-        self.redirect('nwm/v1_2_2/subset?%s' % query)
-
-
 class LccBBoxFromHUC(RequestHandler):
     """
     Get BBOX in Lambert Conformal Conic for given a HUC ID.
@@ -116,14 +83,6 @@ class LccBBoxFromHUC(RequestHandler):
 class Status(RequestHandler):
     @gen.coroutine
     def get(self): #, jobid=None):
-#        if jobid is None:
-#            http_client = AsyncHTTPClient()
-#            host_url = "{protocol}://{host}".format(**vars(self.request))
-#            url = host_url + '/jobs'
-#            response = yield http_client.fetch(url)
-#            data = json.loads(response.body)
-#            self.render('admin_status.html', jobs=data) 
-#        else:
         self.render('status.html')
 
 
@@ -240,17 +199,6 @@ class Results(RequestHandler):
                     jobid=jobid,
                     title='Results')
 
-
-#class Results(RequestHandler):
-#    @gen.coroutine
-#    def get(self, jobid):
-#        fname = f'{jobid}.tar.gz'
-#        host_url = "{protocol}://{host}".format(**vars(self.request))
-#        file_url = f'{host_url}/data/{fname}'
-#        self.render('results.html',
-#                    jobid=jobid,
-#                    title='Results')
-#
 
 class GetZip(RequestHandler):
     @gen.coroutine

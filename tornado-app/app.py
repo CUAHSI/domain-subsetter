@@ -25,7 +25,7 @@ class Application(web.Application):
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),
             (r"/jobs/([a-f0-9]{40})", core.Job),
-            #            (r"/admin/status", core.Status),
+#            (r"/admin/status", core.Status),
             (r"/status", core.Status),
             (r"/data/(.*)", web.StaticFileHandler, {"path": env.output_dir}),
             (r"/results", core.Results),
