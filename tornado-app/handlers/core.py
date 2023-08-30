@@ -10,9 +10,7 @@ import bbox
 import environment as env
 
 from tornado import gen 
-from tornado.httpclient import AsyncHTTPClient
 import tornado.auth
-from tornado.log import app_log, gen_log, access_log, LogFormatter
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
 
@@ -54,13 +52,9 @@ class RequestHandler(tornado.web.RequestHandler):
             response = dict(message="invalid arguments", status="fail")
         return response
 
-class MapTest(RequestHandler):
+class Index(RequestHandler, tornado.auth.OAuth2Mixin):
     def get(self):
-        self.render("maptest.html", title="Map Test")
-
-class IndexNew(RequestHandler, tornado.auth.OAuth2Mixin):
-    def get(self):
-        self.render("index_new.html", title="New Index Page")
+        self.render("index.html", title="New Index Page")
 
 class LccBBoxFromHUC(RequestHandler):
     """

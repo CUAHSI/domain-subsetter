@@ -19,8 +19,7 @@ from handlers import pf1handlers, nwm122handlers, nwm2handlers
 class Application(web.Application):
     def __init__(self):
         endpoints = [
-            (r"/", core.IndexNew),
-            (r"/maptest", core.MapTest),
+            (r"/", core.Index),
             # Utility Endpoints
             (r"/wbd/gethucbbox/lcc", core.LccBBoxFromHUC),
             (r"/jobs", core.Job),
