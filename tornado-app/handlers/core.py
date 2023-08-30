@@ -39,8 +39,8 @@ class RequestHandler(tornado.web.RequestHandler):
             self.render("index.html", error=error)
         return arg
 
-    def get_arg_value(self, argname, isrequired, strip=True):
-        arg = self.get_argument(argname, default=None, strip=strip)
+    def get_arg_value(self, argname, isrequired, default=None, strip=True):
+        arg = self.get_argument(argname, default=default, strip=strip)
         if arg is None and isrequired:
             error = 'Could not find required parameter "%s"' % argname
             self.errors.append(error)
@@ -62,7 +62,7 @@ class LccBBoxFromHUC(RequestHandler):
     """
 
     def get(self):
-        hucstring = self.get_arg_value('hucID', True)
+        hucstring = self.get_arg_value('hucID', True, default='', strip=True)
         hucs = hucstring.split(',')
         huclevels = [len(huc) for huc in hucs]
         box = bbox.get_bbox_from_hucs(huclevels, hucs)
