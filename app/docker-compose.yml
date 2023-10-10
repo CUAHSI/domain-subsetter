@@ -1,0 +1,52 @@
+version: '3'
+
+
+volumes:
+  mongo_data:
+    driver: local
+
+services:
+  nginx:
+    image: nginx:1.24.0
+    volumes:
+      - ./nginx/nginx-local-frontend-dev.conf:/etc/nginx/nginx.conf
+      - ./nginx/config:/etc/ssl
+    ports:
+      - 443:443
+    depends_on:
+      - api
+  
+  frontend:
+    image: frontend
+    build:
+      dockerfile: ./docker/frontend/Dockerfile
+    ports:
+      - 8080:5003
+    restart: unless-stopped
+    depends_on:
+      - api
+
+  api:
+    image: api
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    volumes:
+      - ./api:/api
+    build:
+      context: ./docker/api/
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password

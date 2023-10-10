@@ -1,0 +1,141 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: parflow-subset-v1-by-huc-minio
+  generateName: parflow-subset-v1-by-huc-minio-
+  namespace: workflows
+spec:
+  entrypoint: parflow-subset-huc
+  templateDefaults:
+    timeout: 600s  
+    retryStrategy:
+      limit: "2"
+  arguments:
+    parameters:
+    - name: pfinput
+      value: /srv/input
+    - name: shape
+      value: watershed.shp
+    - name: output
+      value: /srv/output
+    - name: label
+      value: pf-subset-job
+    - name: job-id
+      value: abc123-scott-no-folder
+    - name: hucs
+      value: 102600070103,102600070104,102600090205,102600050206,102600070102
+      
+  templates:
+  - name: parflow-subset-huc
+    steps:
+    - - name: huc-to-shp
+        template: huc-to-shp
+        arguments:
+          parameters:
+          - name: label
+            value: "{{workflow.parameters.label}}"
+          - name: job-id
+            value: "{{workflow.parameters.job-id}}"
+          - name: hucs
+            value: "{{workflow.parameters.hucs}}"
+    - - name: subset-parflow
+        template: parflow-subset-v1
+        arguments:
+          parameters:
+          - name: pfinput
+            value: "{{workflow.parameters.pfinput}}"
+          - name: output
+            value: "{{workflow.parameters.output}}"
+          - name: label
+            value: "{{workflow.parameters.label}}"
+          - name: job-id
+            value: "{{workflow.parameters.job-id}}"
+
+  - name: huc-to-shp
+    inputs:
+      parameters:
+        - name: label
+        - name: job-id
+        - name: hucs
+    outputs:
+      artifacts:
+        - archive:
+            none: {}
+          name: subset-results
+          path: /output
+          s3:
+            bucket: subsetter-outputs
+            key: "parflow/{{inputs.parameters.job-id}}/shape"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
+    container:
+      image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
+      args: ["{{inputs.parameters.hucs}}", "/output/watershed.shp"]
+
+  - name: parflow-subset-v1
+    inputs:
+      parameters:
+        - name: pfinput
+        - name: output
+        - name: label
+        - name: job-id
+      artifacts:
+        - name: pfinput-data
+          path: /srv/input
+          s3:
+            bucket: subsetter-static-input
+            key: pfconus.v1.0
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
+        - name: pfoutput-data
+          path: /srv/shape
+          s3:
+            bucket: subsetter-outputs
+            key: "parflow/{{inputs.parameters.job-id}}/shape"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
+    container:
+      image: cuahsi/parflow-subset-argo:v1
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: 1
+          ephemeral-storage: "1Gi"
+        limits:
+          memory: "1Gi"
+          cpu: 2
+          ephemeral-storage: "2Gi"
+      command: ["python", "-u", "entry.py"]
+      args: ["{{inputs.parameters.label}}",
+             "/srv/shape/watershed.shp",
+             "{{inputs.parameters.pfinput}}",
+             "{{inputs.parameters.output}}"]
+    outputs:
+      artifacts:
+        - name: subset-results
+          path: /srv/output
+          s3:
+            bucket: subsetter-outputs
+            key: "parflow/{{inputs.parameters.job-id}}/subset"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
