@@ -1,17 +1,9 @@
-
+from app.db import User, db
+from app.routers.argo import router as argo_router
+from app.schemas import UserCreate, UserRead, UserUpdate
+from app.users import SECRET, auth_backend, cuahsi_oauth_client, current_active_user, fastapi_users
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
-
-from app.db import User, db
-from app.schemas import UserCreate, UserRead, UserUpdate
-from app.users import (
-    SECRET,
-    auth_backend,
-    current_active_user,
-    fastapi_users,
-    cuahsi_oauth_client,
-)
-from app.routers.argo import router as argo_router
 
 app = FastAPI()
 
@@ -27,7 +19,7 @@ app.include_router(
 )
 app.include_router(
     argo_router,
-    #prefix="/auth/cuahsi",
+    # prefix="/auth/cuahsi",
     tags=["argo"],
 )
 

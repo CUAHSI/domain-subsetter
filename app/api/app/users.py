@@ -1,18 +1,13 @@
 import os
 from typing import Any, Dict, Optional, cast
 
+from app.db import User, get_user_db
 from beanie import PydanticObjectId
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
-from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
-)
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
 from httpx_oauth.oauth2 import OAuth2
-
-from app.db import User, get_user_db
 
 SECRET = "SECRET"
 
@@ -38,6 +33,7 @@ class CUAHSIOAuth2(OAuth2):
 
             return data["sub"], data["email"]
 
+
 cuahsi_oauth_client = CUAHSIOAuth2(
     os.getenv("OAUTH2_CLIENT_ID"),
     os.getenv("OAUTH2_CLIENT_SECRET"),
@@ -45,7 +41,7 @@ cuahsi_oauth_client = CUAHSIOAuth2(
     "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
     refresh_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
     revoke_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/revoke",
-    base_scopes=["openid"]
+    base_scopes=["openid"],
 )
 
 
@@ -56,14 +52,10 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
 
-    async def on_after_forgot_password(
-        self, user: User, token: str, request: Optional[Request] = None
-    ):
+    async def on_after_forgot_password(self, user: User, token: str, request: Optional[Request] = None):
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
-    async def on_after_request_verify(
-        self, user: User, token: str, request: Optional[Request] = None
-    ):
+    async def on_after_request_verify(self, user: User, token: str, request: Optional[Request] = None):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
@@ -75,7 +67,7 @@ bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=60*60*24*30) # one month
+    return JWTStrategy(secret=SECRET, lifetime_seconds=60 * 60 * 24 * 30)  # one month
 
 
 auth_backend = AuthenticationBackend(
