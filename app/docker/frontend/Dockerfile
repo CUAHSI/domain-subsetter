@@ -2,7 +2,7 @@ FROM node:20.7.0 as build-stage
 WORKDIR /app
 COPY package*.json ./
 COPY ./frontend .
-RUN npm install
+RUN npm update
 RUN npm run build
 
 FROM nginx:1.24.0 as production-stage
