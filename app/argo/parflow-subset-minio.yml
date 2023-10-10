@@ -12,16 +12,10 @@ spec:
       limit: "2"
   arguments:
     parameters:
-    - name: pfinput
-      value: /srv/input
-    - name: shape
-      value: watershed.shp
-    - name: output
-      value: /srv/output
     - name: label
       value: pf-subset-job
     - name: job-id
-      value: abc123-scott-no-folder
+      value: abc123
     - name: hucs
       value: 102600070103,102600070104,102600090205,102600050206,102600070102
       
@@ -32,8 +26,6 @@ spec:
         template: huc-to-shp
         arguments:
           parameters:
-          - name: label
-            value: "{{workflow.parameters.label}}"
           - name: job-id
             value: "{{workflow.parameters.job-id}}"
           - name: hucs
@@ -42,10 +34,6 @@ spec:
         template: parflow-subset-v1
         arguments:
           parameters:
-          - name: pfinput
-            value: "{{workflow.parameters.pfinput}}"
-          - name: output
-            value: "{{workflow.parameters.output}}"
           - name: label
             value: "{{workflow.parameters.label}}"
           - name: job-id
@@ -54,7 +42,6 @@ spec:
   - name: huc-to-shp
     inputs:
       parameters:
-        - name: label
         - name: job-id
         - name: hucs
     outputs:
@@ -80,8 +67,6 @@ spec:
   - name: parflow-subset-v1
     inputs:
       parameters:
-        - name: pfinput
-        - name: output
         - name: label
         - name: job-id
       artifacts:
@@ -123,8 +108,8 @@ spec:
       command: ["python", "-u", "entry.py"]
       args: ["{{inputs.parameters.label}}",
              "/srv/shape/watershed.shp",
-             "{{inputs.parameters.pfinput}}",
-             "{{inputs.parameters.output}}"]
+             "/srv/input",
+             "/srv/output"]
     outputs:
       artifacts:
         - name: subset-results
