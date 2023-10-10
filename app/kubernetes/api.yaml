@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  type: NodePort
+  selector:
+    app: api
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: us-central1-docker.pkg.dev/GOOGLE_PROJECT/api:latest
