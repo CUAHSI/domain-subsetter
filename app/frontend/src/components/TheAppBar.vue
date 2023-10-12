@@ -6,11 +6,13 @@
       </router-link>
       <div class="spacer"></div>
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
-        <v-btn color="white" v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
-          :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`" :elevation="0" active-class="primary"
-          :class="path.isActive?.() ? 'primary' : ''">
-          {{ path.label }}
-        </v-btn>
+        <nav>
+          <v-btn color="white" v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
+            :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`" :elevation="0" active-class="primary"
+            :class="path.isActive?.() ? 'primary' : ''">
+            {{ path.label }}
+          </v-btn>
+        </nav>
       </v-card>
 
       <template v-if="!mdAndDown">
@@ -44,18 +46,36 @@
 
       <v-app-bar-nav-icon @click.stop="showMobileNavigation = true" v-if="mdAndDown" />
     </v-container>
-    <nav>
-      <RouterLink to="/">Map</RouterLink>
-      <RouterLink to="/home">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-      <RouterLink to="/wire">Wire</RouterLink>
-    </nav>
   </v-app-bar>
 </template>
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
 const { mdAndDown } = useDisplay()
+
+const paths = [
+  {
+    attrs: { to: "/" },
+    label: "Map",
+    icon: "mdi-home",
+  },
+  {
+    attrs: { to: "/home" },
+    label: "Home",
+    icon: "mdi-magnify",
+  },
+  {
+    attrs: { to: "/about" },
+    label: "About",
+    icon: "mdi-book-multiple",
+  },
+  {
+    attrs: { to: "/wire" },
+    label: "Wire",
+    icon: "mdi-book-plus",
+  },
+];
+const isLoggedIn = true;
 </script>
 
 <style lang="scss" scoped>
