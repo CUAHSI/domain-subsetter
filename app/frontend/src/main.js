@@ -11,4 +11,11 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+
+const vuetify = createVuetify();
+app.use(vuetify)
+
 app.mount('#app')
