@@ -3,7 +3,7 @@
     <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
       <v-container class="d-flex align-end full-height pa-0 align-center">
         <router-link :to="{ path: `/` }" class="logo">
-          <img src="@/assets/logo.svg" alt="home" />
+          <img src="@/assets/logo.png" alt="home" />
         </router-link>
         <div class="spacer"></div>
         <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
