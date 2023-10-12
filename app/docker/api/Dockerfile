@@ -7,9 +7,9 @@ RUN pip install -r requirements.txt
 COPY requirements-dev.txt requirements-dev.txt
 RUN pip install -r requirements-dev.txt
 
-ENV PYTHONPATH "${PYTHONPATH}:/"
+ENV PYTHONPATH "${PYTHONPATH}:/api"
 
 EXPOSE 8000
 
 ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["python api/main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
