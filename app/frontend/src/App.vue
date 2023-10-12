@@ -1,25 +1,14 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
+import TheAppBar from './components/TheAppBar.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <v-app>
+    <TheAppBar />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Map</RouterLink>
-          <RouterLink to="/home">Home</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
-          <RouterLink to="/wire">Wire</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <RouterView />
+  </v-app>
 </template>
 
 <style scoped>
