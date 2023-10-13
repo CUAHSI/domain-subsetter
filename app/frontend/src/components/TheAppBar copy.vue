@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
+  <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
     <v-container class="d-flex align-end full-height pa-0 align-center">
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
@@ -7,7 +7,7 @@
       <div class="spacer"></div>
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
         <nav>
-          <v-btn v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
+          <v-btn color="white" v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
             :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`" :elevation="0" active-class="primary"
             :class="path.isActive?.() ? 'primary' : ''">
             {{ path.label }}
@@ -16,7 +16,7 @@
       </v-card>
 
       <template v-if="!mdAndDown">
-        <v-btn id="navbar-login" v-if="!isLoggedIn" rounded>Log In</v-btn>
+        <v-btn id="navbar-login" v-if="!isLoggedIn" @click="openLogInDialog()" rounded>Log In</v-btn>
         <template v-else>
           <v-menu bottom left offset-y>
             <template v-slot:activator="{ on, attrs }">
