@@ -4,7 +4,7 @@ from typing import List
 import motor.motor_asyncio
 from beanie import Document
 from fastapi_users.db import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 DATABASE_URL = os.getenv("MONGO_URL")
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
@@ -15,9 +15,13 @@ class OAuthAccount(BaseOAuthAccount):
     pass
 
 
+class WorkflowSubmission(BaseModel):
+    workflow_id: str
+
+
 class User(BeanieBaseUser, Document):
     oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
-    workflow_submissions: List[str] = Field(default_factory=list)
+    workflow_submissions: List[WorkflowSubmission] = Field(default_factory=list)
 
 
 async def get_user_db():
