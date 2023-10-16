@@ -4,7 +4,7 @@
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
       </router-link>
-      <div class="spacer"></div>
+      <v-spacer></v-spacer>
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
         <nav>
           <v-btn v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
