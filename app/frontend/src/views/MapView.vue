@@ -97,15 +97,6 @@ onMounted(() => {
       maxZoom: 18
     })
     .addTo(map)
-
-  // layer toggling
-  var mixed = {
-    'HUC 2': huc2,
-    'HUC 4': huc4,
-    'HUC 10': huc10,
-    'HUC 12': huc12,
-    'USGS Gages': gages
-  }
 })
 </script>
 

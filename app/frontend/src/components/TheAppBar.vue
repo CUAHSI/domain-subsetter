@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
-    <v-container class="d-flex align-end full-height pa-0 align-center">
+    <v-container class="d-flex align-end full-height pa-2 align-center">
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
       </router-link>
@@ -45,14 +45,12 @@
       </template>
 
       <v-app-bar-nav-icon @click.stop="showMobileNavigation = true" v-if="mdAndDown" />
-      <ThemeButton />
     </v-container>
   </v-app-bar>
 </template>
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
-import ThemeButton from './ThemeButton.vue';
 const { mdAndDown } = useDisplay()
 
 const paths = [
@@ -88,14 +86,6 @@ const isLoggedIn = true;
   img {
     height: 100%;
   }
-}
-
-#footer {
-  width: 100%;
-  margin: 0;
-  min-height: unset;
-  margin-top: 4rem;
-  box-shadow: none;
 }
 
 .v-toolbar.v-app-bar--is-scrolled>.v-toolbar__content>.container {

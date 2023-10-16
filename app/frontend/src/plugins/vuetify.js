@@ -6,13 +6,16 @@ import { createVuetify } from 'vuetify'
 const light = {
   dark: false,
   colors:{
-    primary: "#009688",
-    secondary: "#607D8B",
-    accent: "#2196F3",
-    error: "#FF1744",
-    success: "#00BFA5",
-    info: "#607D8B",
-    navbar: "#37474F",
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
+    primary: '#6200EE',
+    'primary-darken-1': '#3700B3',
+    secondary: '#03DAC6',
+    'secondary-darken-1': '#018786',
+    error: '#B00020',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FB8C00',
   }
 }
 
@@ -31,7 +34,7 @@ const dark = {
 
 export default createVuetify({
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'dark',
     themes: {
       light,
       dark,
