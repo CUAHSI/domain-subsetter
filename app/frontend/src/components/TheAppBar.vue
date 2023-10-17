@@ -54,15 +54,10 @@ import { useDisplay } from 'vuetify'
 const { mdAndDown } = useDisplay()
 
 const paths = [
-  {
+{
     attrs: { to: "/" },
     label: "Map",
-    icon: "mdi-home",
-  },
-  {
-    attrs: { to: "/home" },
-    label: "Home",
-    icon: "mdi-magnify",
+    icon: "mdi-map",
   },
   {
     attrs: { to: "/about" },
@@ -70,9 +65,19 @@ const paths = [
     icon: "mdi-book-multiple",
   },
   {
-    attrs: { to: "/wire" },
-    label: "Wire",
-    icon: "mdi-book-plus",
+    attrs: { to: "/api" },
+    label: "API",
+    icon: "mdi-laptop",
+  },
+  {
+    attrs: { to: "/help" },
+    label: "Help",
+    icon: "mdi-help-box",
+  },
+  {
+    attrs: { to: "/tasks" },
+    label: "Tasks",
+    icon: "mdi-tray-full",
   },
 ];
 const isLoggedIn = true;
