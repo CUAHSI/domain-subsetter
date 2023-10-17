@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 
 class WorkflowParams(BaseModel):
     workflow_id: str = Field(title="Workflow ID", description="The id of the workflow")
-    user: User
 
 
 async def workflow_params(
@@ -35,5 +34,5 @@ class UserSubmissionsResponseModel(BaseModel):
     submissions: list[WorkflowSubmission]
 
 
-class WorkflowSubmissionResponseModel(BaseModel):
+class WorkflowSubmissionResponseModel(WorkflowSubmission):
     workflow_id: str

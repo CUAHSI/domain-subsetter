@@ -7,7 +7,7 @@ from app.users import current_active_user
 from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends, Query
 
-from api.app.db import User
+from api.app.db import User, WorkflowSubmission
 from api.config import get_minio_client, get_settings
 
 from .models import (
@@ -82,9 +82,9 @@ async def submit_parflow(
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace, body=parflow_submission_body(hucs, workflow_id), _preload_content=False
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "parflow"})
-    await user.save()
-    return {"workflow_id": workflow_id}
+    submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="parflow")
+    user.workflow_submissions.append(submission)
+    return await upsert_submission(user, submission)
 
 
 @router.post('/submit/nwm1')
@@ -97,9 +97,8 @@ async def submit_nwm1(
         body=nwm1_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id),
         _preload_content=False,
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "nwm1"})
-    await user.save()
-    return {"workflow_id": workflow_id}
+    submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="nwm1")
+    return await upsert_submission(user, submission)
 
 
 @router.post('/submit/nwm2')
@@ -112,9 +111,38 @@ async def submit_nwm2(
         body=nwm2_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id),
         _preload_content=False,
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "nwm2"})
+    submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="nwm2")
+    return await upsert_submission(user, submission)
+
+
+async def upsert_submission(user: User, submission: WorkflowSubmission) -> WorkflowSubmission:
+    api_response = api_instance.get_workflow(
+        namespace=get_settings().argo_namespace, name=submission.workflow_id, _preload_content=False
+    )
+    status_json = api_response.json()["status"]
+    submission.phase = status_json["phase"]
+    submission.startedAt = status_json["startedAt"]
+    submission.finishedAt = status_json["finishedAt"]
+    submission.estimatedDuration = status_json["estimatedDuration"]
+    user.update_submission(submission)
     await user.save()
-    return {"workflow_id": workflow_id}
+    return submission
+
+
+@router.get('/refresh/{workflow_id}')
+async def refresh_workflow(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
+    submission = user.get_submission(workflow_params.workflow_id)
+    await upsert_submission(user, submission)
+    return submission
+
+
+'''
+    "phase": "Succeeded",
+    "startedAt": "2023-10-17T16:26:01Z",
+    "finishedAt": "2023-10-17T16:27:35Z",
+    "estimatedDuration": 97,
+    "progress": "2/2",
+'''
 
 
 def parse_logs(api_response):
@@ -127,10 +155,11 @@ def parse_logs(api_response):
 
 
 @router.get('/logs/{workflow_id}', description="logs for a workflow")
-async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
+async def logs(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> LogsResponseModel:
+    submission = user.get_submission(workflow_params.workflow_id)
     api_response = api_instance.workflow_logs(
         namespace=get_settings().argo_namespace,
-        name=workflow_params.workflow_id,
+        name=submission.workflow_id,
         _check_return_type=True,
         log_options_insecure_skip_tls_verify_backend=True,
         _check_input_type=True,
@@ -142,9 +171,7 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
 
 @router.get('/url/{workflow_id}', description="Create a download url")
 async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> UrlResponseModel:
-    submission = next(
-        submission for submission in user.workflow_submissions if submission.workflow_id == workflow_params.workflow_id
-    )
+    submission = user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
         "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/subset"
     )
