@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: nwm1-subset-minio
+  generateName: nwm1-subset-minio-
+  namespace: workflows
+spec:
+  entrypoint: nwm1-subset
+  templateDefaults:
+    timeout: 600s  
+    retryStrategy:
+      limit: "2"
+  arguments:
+    parameters:
+    - name: job-id
+      value: abc123
+    - name: bbox1
+      value: 382582.18746
+    - name: bbox2
+      value: 1720355.72762
+    - name: bbox3
+      value: 367584.87840
+    - name: bbox4
+      value: 1734488.45260
+      
+  templates:
+  - name: nwm1-subset-template
+    steps:
+    - - name: nwm1-subset
+        template: nwm1-subset
+        arguments:
+          parameters:
+          - name: job-id
+            value: "{{workflow.parameters.job-id}}"
+          - name: bbox1
+            value: "{{workflow.parameters.bbox1}}"
+          - name: bbox2
+            value: "{{workflow.parameters.bbox2}}"
+          - name: bbox3
+            value: "{{workflow.parameters.bbox3}}"
+          - name: bbox4
+            value: "{{workflow.parameters.bbox4}}"
+
+  - name: nwm1-subset
+    inputs:
+      parameters:
+        - name: bbox1
+        - name: bbox2
+        - name: bbox3
+        - name: bbox4
+        - name: job-id
+      artifacts:
+        - name: nwm1-input-data
+          path: /srv/domain
+          #s3:
+          #  bucket: subsetter-static-input
+          #  key: nwm.v1.2.4
+          #  endpoint: api.minio.cuahsi.io
+          #  accessKeySecret:
+          #    name: minio-credentials
+          #    key: accessKey
+          #  secretKeySecret:
+          #    name: minio-credentials
+          #    key: secretKey
+          gcs:
+            bucket: subsetter-static-input
+            key: nwm.v1.2.4
+            serviceAccountKeySecret:
+              name: my-gcs-creds
+              key: serviceAccountKey
+    container:
+      image: us-central1-docker.pkg.dev/apps-320517/subsetter/nwm1:0.0.1
+      command: ["python", "-u", "entry.py"]
+      args: ["{{inputs.parameters.bbox1}}",
+             "{{inputs.parameters.bbox2}}",
+             "{{inputs.parameters.bbox3}}",
+             "{{inputs.parameters.bbox4}}",
+             "/srv/domain",
+             "/srv/output"]
+    outputs:
+      artifacts:
+        - name: subset-results
+          path: /srv/output
+          s3:
+            bucket: subsetter-outputs
+            key: "nwm1/{{inputs.parameters.job-id}}/subset"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey

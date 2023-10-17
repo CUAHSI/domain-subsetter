@@ -29,25 +29,69 @@ api_client = argo_workflows.ApiClient(configuration)
 api_instance = workflow_service_api.WorkflowServiceApi(api_client)
 
 
-def parameters(hucs: list, workflow_name=str(uuid.uuid4())):
-    template_name = "parflow-subset-v1-by-huc-minio"
+def parflow_submission_body(hucs: list, workflow_name):
     return {
         "resourceKind": "WorkflowTemplate",
-        "resourceName": template_name,
+        "resourceName": "parflow-subset-v1-by-huc-minio",
         "submitOptions": {
             "name": workflow_name,
             "parameters": [f"job-id={workflow_name}", "hucs=" + ",".join(hucs)],
         },
     }
 
+def nwm1_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float, workflow_name: str):
+    return {
+        "resourceKind": "WorkflowTemplate",
+        "resourceName": "nwm1-subset-minio",
+        "submitOptions": {
+            "name": workflow_name,
+            "parameters": [f"job-id={workflow_name}", f"bbox1={bbox1}", f"bbox2={bbox2}", f"bbox3={bbox3}", f"bbox4={bbox4}", ],
+        },
+    }
 
-@router.get('/submit/parflow')
+def nwm2_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float, workflow_name: str):
+    return {
+        "resourceKind": "WorkflowTemplate",
+        "resourceName": "nwm2-subset-minio",
+        "submitOptions": {
+            "name": workflow_name,
+            "parameters": [f"job-id={workflow_name}", f"bbox1={bbox1}", f"bbox2={bbox2}", f"bbox3={bbox3}", f"bbox4={bbox4}", ],
+        },
+    }
+
+@router.post('/submit/parflow')
 async def submit_parflow(
     hucs: Annotated[list[str] | None, Query()], user: User = Depends(current_active_user)
 ) -> WorkflowSubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace, body=parameters(hucs, workflow_id), _preload_content=False
+        namespace=get_settings().argo_namespace, body=parflow_submission_body(hucs, workflow_id), _preload_content=False
+    )
+    user.workflow_submissions.append({"workflow_id": workflow_id})
+    await user.save()
+    return {"workflow_id": workflow_id}
+
+
+@router.post('/submit/nwm1')
+async def submit_nwm1(
+    bbox1: float, bbox2: float, bbox3: float, bbox4: float, user: User = Depends(current_active_user)
+) -> WorkflowSubmissionResponseModel:
+    workflow_id = str(uuid.uuid4())
+    api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace, body=nwm1_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id), _preload_content=False
+    )
+    user.workflow_submissions.append({"workflow_id": workflow_id})
+    await user.save()
+    return {"workflow_id": workflow_id}
+
+
+@router.post('/submit/nwm2')
+async def submit_nwm2(
+    bbox1: float, bbox2: float, bbox3: float, bbox4: float, user: User = Depends(current_active_user)
+) -> WorkflowSubmissionResponseModel:
+    workflow_id = str(uuid.uuid4())
+    api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace, body=nwm2_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id), _preload_content=False
     )
     user.workflow_submissions.append({"workflow_id": workflow_id})
     await user.save()
