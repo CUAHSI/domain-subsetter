@@ -88,7 +88,7 @@ spec:
           path: /srv/output
           s3:
             bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/subset"
+            key: "nwm2/{{inputs.parameters.job-id}}/subset"
             endpoint: api.minio.cuahsi.io
             accessKeySecret:
               name: minio-credentials

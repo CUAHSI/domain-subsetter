@@ -39,15 +39,23 @@ def parflow_submission_body(hucs: list, workflow_name):
         },
     }
 
+
 def nwm1_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float, workflow_name: str):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "nwm1-subset-minio",
         "submitOptions": {
             "name": workflow_name,
-            "parameters": [f"job-id={workflow_name}", f"bbox1={bbox1}", f"bbox2={bbox2}", f"bbox3={bbox3}", f"bbox4={bbox4}", ],
+            "parameters": [
+                f"job-id={workflow_name}",
+                f"bbox1={bbox1}",
+                f"bbox2={bbox2}",
+                f"bbox3={bbox3}",
+                f"bbox4={bbox4}",
+            ],
         },
     }
+
 
 def nwm2_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float, workflow_name: str):
     return {
@@ -55,9 +63,16 @@ def nwm2_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float,
         "resourceName": "nwm2-subset-minio",
         "submitOptions": {
             "name": workflow_name,
-            "parameters": [f"job-id={workflow_name}", f"bbox1={bbox1}", f"bbox2={bbox2}", f"bbox3={bbox3}", f"bbox4={bbox4}", ],
+            "parameters": [
+                f"job-id={workflow_name}",
+                f"bbox1={bbox1}",
+                f"bbox2={bbox2}",
+                f"bbox3={bbox3}",
+                f"bbox4={bbox4}",
+            ],
         },
     }
+
 
 @router.post('/submit/parflow')
 async def submit_parflow(
@@ -67,7 +82,7 @@ async def submit_parflow(
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace, body=parflow_submission_body(hucs, workflow_id), _preload_content=False
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id})
+    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "parflow"})
     await user.save()
     return {"workflow_id": workflow_id}
 
@@ -78,9 +93,11 @@ async def submit_nwm1(
 ) -> WorkflowSubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace, body=nwm1_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id), _preload_content=False
+        namespace=get_settings().argo_namespace,
+        body=nwm1_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id),
+        _preload_content=False,
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id})
+    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "nwm1"})
     await user.save()
     return {"workflow_id": workflow_id}
 
@@ -91,9 +108,11 @@ async def submit_nwm2(
 ) -> WorkflowSubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace, body=nwm2_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id), _preload_content=False
+        namespace=get_settings().argo_namespace,
+        body=nwm2_submission_body(bbox1, bbox2, bbox3, bbox4, workflow_id),
+        _preload_content=False,
     )
-    user.workflow_submissions.append({"workflow_id": workflow_id})
+    user.workflow_submissions.append({"workflow_id": workflow_id, "workflow_name": "nwm2"})
     await user.save()
     return {"workflow_id": workflow_id}
 
@@ -122,8 +141,13 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
 
 
 @router.get('/url/{workflow_id}', description="Create a download url")
-async def signed_url_minio(workflow_params: WorkflowDep) -> UrlResponseModel:
-    url = get_minio_client().presigned_get_object("subsetter-outputs", f"parflow/{workflow_params.workflow_id}/subset")
+async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> UrlResponseModel:
+    submission = next(
+        submission for submission in user.workflow_submissions if submission.workflow_id == workflow_params.workflow_id
+    )
+    url = get_minio_client().presigned_get_object(
+        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/subset"
+    )
     return {'url': url}
 
 

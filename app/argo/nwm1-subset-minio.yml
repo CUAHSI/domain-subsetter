@@ -50,7 +50,7 @@ spec:
         - name: bbox4
         - name: job-id
       artifacts:
-        - name: nwm1-input-data
+        - name: nwm1-input-data-new
           path: /srv/domain
           #s3:
           #  bucket: subsetter-static-input

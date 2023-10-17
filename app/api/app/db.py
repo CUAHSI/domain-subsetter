@@ -17,6 +17,7 @@ class OAuthAccount(BaseOAuthAccount):
 
 class WorkflowSubmission(BaseModel):
     workflow_id: str
+    workflow_name: str
 
 
 class User(BeanieBaseUser, Document):
