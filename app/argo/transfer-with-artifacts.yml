@@ -14,7 +14,7 @@ spec:
     script:
       image: mwendler/wget
       command: ["sh", "-c"]
-      args: ["mkdir /mnt/input && cd /mnt/input && wget --no-check-certificate -r -np -nH --cut-dirs=4 {{inputs.parameters.fileserver-url}}"]
+      args: ["mkdir /mnt/input && cd /mnt/input && wget --no-check-certificate -r -np -nH --cut-dirs=4 -R index.html {{inputs.parameters.fileserver-url}}"]
     outputs:
       artifacts:
         - archive:
