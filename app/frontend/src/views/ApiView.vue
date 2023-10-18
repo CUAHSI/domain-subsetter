@@ -1,15 +1,20 @@
 <template>
-  <div class="about">
-    <h1>This is an API page</h1>
-  </div>
+  <section>
+    <redoc :spec-url="`${ENDPOINTS.openapi}`"></redoc>
+  </section>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<script setup>
+import { ENDPOINTS } from "@/constants.js";
+import { onMounted } from 'vue'
+onMounted(() => {
+  const redocScript = document.createElement("script");
+  redocScript.setAttribute(
+    "src",
+    "https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"
+  );
+
+  document.head.appendChild(redocScript);
+});
+</script>
+
