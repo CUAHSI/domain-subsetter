@@ -10,6 +10,7 @@ export default defineConfig({
     vue(),
     vuetify(),
   ],
+  envDir: "../",
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
