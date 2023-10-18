@@ -19,8 +19,9 @@ class OAuthAccount(BaseOAuthAccount):
 class PhaseEnum(str, Enum):
     RUNNING = "Running"
     SUCCEEDED = "Succeeded"
-    # FAILED = "Failed"
-    # PENING = "Pending"
+    FAILED = "Failed"
+    PENDING = "Pending"
+    ERROR = "Error"
 
 
 class WorkflowSubmission(BaseModel):

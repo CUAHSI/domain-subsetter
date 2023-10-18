@@ -177,6 +177,12 @@ async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(cu
     )
     return {'url': url}
 
+@router.get('/argo/{workflow_id}')
+async def argo_metadata(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
+    api_response = api_instance.get_workflow(namespace=get_settings().argo_namespace, 
+                                             name=workflow_params.workflow_id, 
+                                             _preload_content=False)
+    return {"metadata": api_response.json()["metadata"], "status": api_response.json()["status"]}
 
 @router.get('/submissions')
 async def submissions(user: User = Depends(current_active_user)) -> UserSubmissionsResponseModel:
