@@ -1,20 +1,21 @@
 <template>
-  <section>
-    <redoc :spec-url="`${ENDPOINTS.openapi}`"></redoc>
-  </section>
+  <v-theme-provider theme="light">
+    <div class="swagger" id="swagger"></div>
+  </v-theme-provider>
 </template>
 
 <script setup>
 import { ENDPOINTS } from "@/constants.js";
 import { onMounted } from 'vue'
+import SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
+// const spec = import.meta.glob('@/../../spec/openapi.json')
+import json from '@/../../spec/openapi.json'
 onMounted(() => {
-  const redocScript = document.createElement("script");
-  redocScript.setAttribute(
-    "src",
-    "https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"
-  );
-
-  document.head.appendChild(redocScript);
+  SwaggerUI({
+    spec: json,
+    dom_id: '#swagger'
+  })
 });
 </script>
 
