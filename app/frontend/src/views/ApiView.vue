@@ -1,15 +1,18 @@
 <template>
-  <div class="about">
-    <h1>This is an API page</h1>
-  </div>
+  <!-- <redoc :spec-url="`${ENDPOINTS.openapi}`"></redoc> -->
+  <div class="swagger" id="swagger"></div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<script setup>
+import { ENDPOINTS } from "@/constants.js";
+import { onMounted } from 'vue'
+import SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
+onMounted(() => {
+  SwaggerUI({
+    url: ENDPOINTS.openapi,
+    dom_id: '#swagger'
+  })
+});
+</script>
+
