@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: wget-files-
+  namespace: workflows
+spec:
+  entrypoint: wget-files
+  templates:
+  - name: wget-files
+    inputs:
+      parameters:
+        - name: fileserver-url
+          value: https://www.nco.ncep.noaa.gov/pmb/codes/nwprod/nwm.v3.0.6/parm/domain_hawaii/
+    script:
+      image: mwendler/wget
+      command: ["sh", "-c"]
+      args: ["mkdir /mnt/input && cd /mnt/input && wget --no-check-certificate -r -np -nH --cut-dirs=4 {{inputs.parameters.fileserver-url}}"]
+    outputs:
+      artifacts:
+        - archive:
+            none: {}
+          name: nwm3-input-data
+          path: /mnt/input
+          gcs:
+            bucket: subsetter-static-input
+            key: "nwm.v3.0.6"
+            serviceAccountKeySecret:
+              name: my-gcs-creds
+              key: serviceAccountKey
