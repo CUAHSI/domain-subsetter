@@ -26,8 +26,8 @@ spec:
         template: huc-to-shp
         arguments:
           parameters:
-          - name: job-id
-            value: "{{workflow.parameters.job-id}}"
+          - name: artifact-path
+            value: 'parflow/{{workflow.parameters.job-id}}'
           - name: hucs
             value: "{{workflow.parameters.hucs}}"
     - - name: subset-parflow
@@ -36,23 +36,27 @@ spec:
           parameters:
           - name: label
             value: "{{workflow.parameters.label}}"
-          - name: job-id
-            value: "{{workflow.parameters.job-id}}"
+          - name: artifact-path
+            value: 'parflow/{{workflow.parameters.job-id}}'
+    - - name: metadata-extractor
+        template: metadata-extractor
+        arguments:
+          parameters:
+          - name: artifact-path
+            value: 'parflow/{{workflow.parameters.job-id}}'
 
   - name: huc-to-shp
     inputs:
       parameters:
-        - name: job-id
+        - name: artifact-path
         - name: hucs
     outputs:
       artifacts:
-        - archive:
-            none: {}
-          name: subset-results
+        - name: shape-results
           path: /output
           s3:
             bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/shape"
+            key: "{{inputs.parameters.artifact-path}}/shape.gz"
             endpoint: api.minio.cuahsi.io
             accessKeySecret:
               name: minio-credentials
@@ -68,7 +72,7 @@ spec:
     inputs:
       parameters:
         - name: label
-        - name: job-id
+        - name: artifact-path
       artifacts:
         - name: pfinput-data
           path: /srv/input
@@ -82,11 +86,11 @@ spec:
             secretKeySecret:
               name: minio-credentials
               key: secretKey
-        - name: pfoutput-data
+        - name: shape-input-data
           path: /srv/shape
           s3:
             bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/shape"
+            key: "{{inputs.parameters.artifact-path}}/shape.gz"
             endpoint: api.minio.cuahsi.io
             accessKeySecret:
               name: minio-credentials
@@ -109,14 +113,14 @@ spec:
       args: ["{{inputs.parameters.label}}",
              "/srv/shape/watershed.shp",
              "/srv/input",
-             "/srv/output"]
+             "/srv/shape"]
     outputs:
       artifacts:
         - name: subset-results
-          path: /srv/output
+          path: /srv/shape
           s3:
             bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/subset"
+            key: "{{inputs.parameters.artifact-path}}/subset.gz"
             endpoint: api.minio.cuahsi.io
             accessKeySecret:
               name: minio-credentials
@@ -124,3 +128,46 @@ spec:
             secretKeySecret:
               name: minio-credentials
               key: secretKey
+
+  - name: metadata-extractor
+    inputs:
+      parameters:
+        - name: artifact-path
+      artifacts:
+        - name: extractor-input
+          path: /tmp/subset-data
+          s3:
+            bucket: subsetter-outputs
+            key: "{{inputs.parameters.artifact-path}}/subset.gz"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
+    outputs:
+      artifacts:
+        - name: extractor-output
+          path: /tmp/subset-data
+          s3:
+            bucket: subsetter-outputs
+            key: "{{inputs.parameters.artifact-path}}/all.gz"
+            endpoint: api.minio.cuahsi.io
+            accessKeySecret:
+              name: minio-credentials
+              key: accessKey
+            secretKeySecret:
+              name: minio-credentials
+              key: secretKey
+    metadata: {}
+    container:
+      name: ''
+      image: scootna/hsextract:0.1
+      command:
+        - /bin/sh
+        - '-c'
+      args:
+        - >-
+          python3 hsextract/main.py extract /tmp/subset-data && mv /tmp/subset-data/.hs /tmp/subset-data/hs
+      resources: {}
