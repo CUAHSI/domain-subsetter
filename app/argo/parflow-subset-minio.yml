@@ -1,126 +1,204 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Workflow
 metadata:
   name: parflow-subset-v1-by-huc-minio
   generateName: parflow-subset-v1-by-huc-minio-
   namespace: workflows
+  uid: e11a1832-adff-42b1-99d7-7d20adb0ce0a
+  resourceVersion: '293388502'
+  generation: 15
+  creationTimestamp: '2023-10-10T15:00:11Z'
+  labels:
+    workflows.argoproj.io/creator: '116317613255759624565'
+  managedFields:
+    - manager: argo
+      operation: Update
+      apiVersion: argoproj.io/v1alpha1
+      time: '2023-10-19T22:11:02Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:workflows.argoproj.io/creator: {}
+        f:spec: {}
 spec:
+  templates:
+    - name: parflow-subset-huc
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: huc-to-shp
+            template: huc-to-shp
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: parflow/{{workflow.parameters.job-id}}
+                - name: hucs
+                  value: '{{workflow.parameters.hucs}}'
+        - - name: subset-parflow
+            template: parflow-subset-v1
+            arguments:
+              parameters:
+                - name: label
+                  value: '{{workflow.parameters.label}}'
+                - name: artifact-path
+                  value: parflow/{{workflow.parameters.job-id}}
+        - - name: metadata-extractor
+            template: metadata-extractor
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: parflow/{{workflow.parameters.job-id}}
+    - name: huc-to-shp
+      inputs:
+        parameters:
+          - name: artifact-path
+          - name: hucs
+      outputs:
+        artifacts:
+          - name: shape-results
+            path: /output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/shape.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
+        args:
+          - '{{inputs.parameters.hucs}}'
+          - /output/watershed.shp
+        resources: {}
+    - name: parflow-subset-v1
+      inputs:
+        parameters:
+          - name: label
+          - name: artifact-path
+        artifacts:
+          - name: pfinput-data
+            path: /srv/input
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-static-input
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: pfconus.v1.0.gz
+          - name: shape-input-data
+            path: /srv/shape
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/shape.gz'
+      outputs:
+        artifacts:
+          - name: subset-results
+            path: /srv/shape
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: cuahsi/parflow-subset-argo:v1
+        command:
+          - python
+          - '-u'
+          - entry.py
+        args:
+          - '{{inputs.parameters.label}}'
+          - /srv/shape/watershed.shp
+          - /srv/input
+          - /srv/shape
+        resources:
+          limits:
+            cpu: '2'
+            ephemeral-storage: 2Gi
+            memory: 1Gi
+          requests:
+            cpu: '1'
+            ephemeral-storage: 1Gi
+            memory: 1Gi
+    - name: metadata-extractor
+      inputs:
+        parameters:
+          - name: artifact-path
+        artifacts:
+          - name: extractor-input
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      outputs:
+        artifacts:
+          - name: extractor-output
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/all.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: scootna/hsextract:0.1
+        command:
+          - /bin/sh
+          - '-c'
+        args:
+          - >-
+            python3 hsextract/main.py extract /tmp/subset-data && mv
+            /tmp/subset-data/.hs /tmp/subset-data/hs
+        resources: {}
   entrypoint: parflow-subset-huc
-  templateDefaults:
-    timeout: 600s  
-    retryStrategy:
-      limit: "2"
   arguments:
     parameters:
-    - name: label
-      value: pf-subset-job
-    - name: job-id
-      value: abc123
-    - name: hucs
-      value: 102600070103,102600070104,102600090205,102600050206,102600070102
-      
-  templates:
-  - name: parflow-subset-huc
-    steps:
-    - - name: huc-to-shp
-        template: huc-to-shp
-        arguments:
-          parameters:
-          - name: job-id
-            value: "{{workflow.parameters.job-id}}"
-          - name: hucs
-            value: "{{workflow.parameters.hucs}}"
-    - - name: subset-parflow
-        template: parflow-subset-v1
-        arguments:
-          parameters:
-          - name: label
-            value: "{{workflow.parameters.label}}"
-          - name: job-id
-            value: "{{workflow.parameters.job-id}}"
-
-  - name: huc-to-shp
-    inputs:
-      parameters:
-        - name: job-id
-        - name: hucs
-    outputs:
-      artifacts:
-        - archive:
-            none: {}
-          name: subset-results
-          path: /output
-          s3:
-            bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/shape"
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
-    container:
-      image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
-      args: ["{{inputs.parameters.hucs}}", "/output/watershed.shp"]
-
-  - name: parflow-subset-v1
-    inputs:
-      parameters:
-        - name: label
-        - name: job-id
-      artifacts:
-        - name: pfinput-data
-          path: /srv/input
-          s3:
-            bucket: subsetter-static-input
-            key: pfconus.v1.0
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
-        - name: pfoutput-data
-          path: /srv/shape
-          s3:
-            bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/shape"
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
-    container:
-      image: cuahsi/parflow-subset-argo:v1
-      resources:
-        requests:
-          memory: "1Gi"
-          cpu: 1
-          ephemeral-storage: "1Gi"
-        limits:
-          memory: "1Gi"
-          cpu: 2
-          ephemeral-storage: "2Gi"
-      command: ["python", "-u", "entry.py"]
-      args: ["{{inputs.parameters.label}}",
-             "/srv/shape/watershed.shp",
-             "/srv/input",
-             "/srv/output"]
-    outputs:
-      artifacts:
-        - name: subset-results
-          path: /srv/output
-          s3:
-            bucket: subsetter-outputs
-            key: "parflow/{{inputs.parameters.job-id}}/subset"
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
+      - name: label
+        value: pf-subset-job
+      - name: job-id
+        value: abc123
+      - name: hucs
+        value: 102600070103,102600070104,102600090205,102600050206,102600070102
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
+    retryStrategy:
+      limit: '2'
+    timeout: 600s

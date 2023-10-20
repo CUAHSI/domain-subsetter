@@ -73,6 +73,20 @@ def nwm2_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float,
         },
     }
 
+def metadata_extraction_submission_body(bucket_key: str, path_key: str, workflow_name: str):
+    return {
+        "resourceKind": "WorkflowTemplate",
+        "resourceName": "metadata-extractor",
+        "submitOptions": {
+            "name": workflow_name,
+            "parameters": [
+                f"job-id={workflow_name}",
+                f"bucket={bucket_key}",
+                f"path={path_key}",
+            ],
+        },
+    }
+
 
 @router.post('/submit/parflow')
 async def submit_parflow(
@@ -112,6 +126,22 @@ async def submit_nwm2(
         _preload_content=False,
     )
     submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="nwm2")
+    return await upsert_submission(user, submission)
+
+
+@router.post('/extract/{workflow_id}')
+async def extract_workflow_artifact(workflow_params: WorkflowDep, user: User = Depends(current_active_user)
+) -> WorkflowSubmissionResponseModel:
+    workflow_id = str(uuid.uuid4())
+    bucket = "subsetter-outputs"
+    submission = user.get_submission(workflow_params.workflow_id)
+    path_key = f'{submission.workflow_name}/{submission.workflow_id}/subset.gz'
+    api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace,
+        body=metadata_extraction_submission_body(bucket, path_key, workflow_id),
+        _preload_content=False,
+    )
+    submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="extractMD")
     return await upsert_submission(user, submission)
 
 
@@ -173,7 +203,7 @@ async def logs(workflow_params: WorkflowDep, user: User = Depends(current_active
 async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> UrlResponseModel:
     submission = user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
-        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/subset"
+        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/all.gz"
     )
     return {'url': url}
 

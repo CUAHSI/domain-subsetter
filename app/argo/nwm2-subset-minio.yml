@@ -1,98 +1,169 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Workflow
 metadata:
   name: nwm2-subset-minio
   generateName: nwm2-subset-minio-
   namespace: workflows
+  uid: 482ae314-0f49-4cb7-a991-6c9c3546d092
+  resourceVersion: '293406895'
+  generation: 4
+  creationTimestamp: '2023-10-17T16:04:16Z'
+  labels:
+    workflows.argoproj.io/creator: '116317613255759624565'
+  managedFields:
+    - manager: argo
+      operation: Update
+      apiVersion: argoproj.io/v1alpha1
+      time: '2023-10-19T22:37:11Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:workflows.argoproj.io/creator: {}
+        f:spec: {}
 spec:
-  entrypoint: nwm2-subset
-  templateDefaults:
-    timeout: 600s  
-    retryStrategy:
-      limit: "2"
+  templates:
+    - name: nwm2-subset-with-extraction-template
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: nwm2-subset-step-name
+            template: nwm2-subset-template
+            arguments:
+              parameters:
+                - name: bbox1
+                  value: '{{workflow.parameters.bbox1}}'
+                - name: bbox2
+                  value: '{{workflow.parameters.bbox2}}'
+                - name: bbox3
+                  value: '{{workflow.parameters.bbox3}}'
+                - name: bbox4
+                  value: '{{workflow.parameters.bbox4}}'
+                - name: artifact-path
+                  value: parflow/{{workflow.parameters.job-id}}
+        - - name: metadata-extractor
+            template: metadata-extractor-template
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: parflow/{{workflow.parameters.job-id}}
+    - name: nwm2-subset-template
+      inputs:
+        parameters:
+          - name: bbox1
+          - name: bbox2
+          - name: bbox3
+          - name: bbox4
+          - name: artifact-path
+        artifacts:
+          - name: nwm2-input-data
+            path: /srv/domain
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-static-input
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: nwm.v2.0.0.gz
+      outputs:
+        artifacts:
+          - name: subset-results
+            path: /srv/output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/nwm2:0.0.1
+        command:
+          - python
+          - '-u'
+          - entry.py
+        args:
+          - '{{inputs.parameters.bbox1}}'
+          - '{{inputs.parameters.bbox2}}'
+          - '{{inputs.parameters.bbox3}}'
+          - '{{inputs.parameters.bbox4}}'
+          - /srv/domain
+          - /srv/output
+        resources:
+          requests:
+            cpu: '1'
+            ephemeral-storage: 2Gi
+            memory: 1Gi
+    - name: metadata-extractor-template
+      inputs:
+        parameters:
+          - name: artifact-path
+        artifacts:
+          - name: extractor-input
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      outputs:
+        artifacts:
+          - name: extractor-output
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/all.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: scootna/hsextract:0.1
+        command:
+          - /bin/sh
+          - '-c'
+        args:
+          - >-
+            python3 hsextract/main.py extract /tmp/subset-data && mv
+            /tmp/subset-data/.hs /tmp/subset-data/hs
+        resources:
+          requests:
+            cpu: '1'
+            ephemeral-storage: 2Gi
+            memory: 1Gi
+  entrypoint: nwm2-subset-with-extraction-template
   arguments:
     parameters:
-    - name: job-id
-      value: abc123
-    - name: bbox1
-      value: 382582.18746
-    - name: bbox2
-      value: 1720355.72762
-    - name: bbox3
-      value: 367584.87840
-    - name: bbox4
-      value: 1734488.45260
-      
-  templates:
-  - name: nwm2-subset-template
-    steps:
-    - - name: nwm2-subset
-        template: nwm2-subset
-        arguments:
-          parameters:
-          - name: bbox1
-            value: "{{workflow.parameters.bbox1}}"
-          - name: bbox2
-            value: "{{workflow.parameters.bbox2}}"
-          - name: bbox3
-            value: "{{workflow.parameters.bbox3}}"
-          - name: bbox4
-            value: "{{workflow.parameters.bbox4}}"
-          - name: job-id
-            value: "{{workflow.parameters.job-id}}"
-
-  - name: nwm2-subset
-    inputs:
-      parameters:
-        - name: bbox1
-        - name: bbox2
-        - name: bbox3
-        - name: bbox4
-        - name: job-id
-      artifacts:
-        - name: nwm2-input-data
-          path: /srv/domain
-          gcs:
-            bucket: subsetter-static-input
-            key: nwm.v2.0.0
-            serviceAccountKeySecret:
-              name: my-gcs-creds
-              key: serviceAccountKey
-          #s3:
-          #  bucket: subsetter-static-input
-          #  key: nwm.v2.0.0
-          #  endpoint: api.minio.cuahsi.io
-          #  accessKeySecret:
-          #    name: minio-credentials
-          #    key: accessKey
-          #  secretKeySecret:
-          #    name: minio-credentials
-          #    key: secretKey
-    container:
-      image: us-central1-docker.pkg.dev/apps-320517/subsetter/nwm2:0.0.1
-      resources:
-        requests:
-          memory: "1Gi"
-          cpu: 1
-          ephemeral-storage: "2Gi"
-      command: ["python", "-u", "entry.py"]
-      args: ["{{inputs.parameters.bbox1}}",
-             "{{inputs.parameters.bbox2}}",
-             "{{inputs.parameters.bbox3}}",
-             "{{inputs.parameters.bbox4}}",
-             "/srv/domain",
-             "/srv/output"]
-    outputs:
-      artifacts:
-        - name: subset-results
-          path: /srv/output
-          s3:
-            bucket: subsetter-outputs
-            key: "nwm2/{{inputs.parameters.job-id}}/subset"
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
+      - name: job-id
+        value: abc123
+      - name: bbox1
+        value: '382582.18746'
+      - name: bbox2
+        value: '1720355.72762'
+      - name: bbox3
+        value: '367584.8784'
+      - name: bbox4
+        value: '1734488.4526'
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
