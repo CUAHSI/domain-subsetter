@@ -94,7 +94,7 @@ spec:
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: pfconus.v1.0
+              key: pfconus.v1.0.gz
           - name: shape-input-data
             path: /srv/shape
             s3:

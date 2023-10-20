@@ -59,12 +59,16 @@ spec:
         artifacts:
           - name: nwm2-input-data
             path: /srv/domain
-            gcs:
+            s3:
+              endpoint: api.minio.cuahsi.io
               bucket: subsetter-static-input
-              serviceAccountKeySecret:
-                name: my-gcs-creds
-                key: serviceAccountKey
-              key: nwm.v2.0.0
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: nwm.v2.0.0.gz
       outputs:
         artifacts:
           - name: subset-results
@@ -163,6 +167,3 @@ spec:
     inputs: {}
     outputs: {}
     metadata: {}
-    retryStrategy:
-      limit: '2'
-    timeout: 600s
