@@ -27,19 +27,21 @@ const router = createRouter({
     {
       path: '/help',
       name: 'help',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: HomeView
     },
     {
       path: '/tasks',
       name: 'tasks',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/WireView.vue')
     },
+    {
+      path: '/auth-redirect',
+      name: 'auth-redirect',
+      component: () => import('../components/AuthRedirect.vue'),
+      meta: {
+        hideNavigation: true
+      }
+    }
   ]
 })
 

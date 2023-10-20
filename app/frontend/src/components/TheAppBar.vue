@@ -4,7 +4,9 @@
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
       </router-link>
+
       <v-spacer></v-spacer>
+
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
         <nav>
           <v-btn v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
@@ -14,73 +16,20 @@
           </v-btn>
         </nav>
       </v-card>
+      <UserLogin v-if="!mdAndDown" />
 
-      <template v-if="!mdAndDown">
-        <v-btn id="navbar-login" v-if="!isLoggedIn" rounded>Log In</v-btn>
-        <template v-else>
-          <v-menu bottom left offset-y>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn :color="$route.matched.some((p) => p.name === 'profile')
-                ? 'primary'
-                : ''
-                " elevation="2" rounded v-bind="attrs" v-on="on">
-                <v-icon>mdi-account-circle</v-icon>
-                <v-icon>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-
-            <v-list class="pa-0">
-              <v-list-item id="navbar-logout" @click="logOut()">
-                <v-list-item-icon class="mr-2">
-                  <v-icon>mdi-logout</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title>Log Out</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-      </template>
-
-      <v-app-bar-nav-icon @click.stop="showMobileNavigation = true" v-if="mdAndDown" />
+      <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else />
     </v-container>
   </v-app-bar>
 </template>
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import UserLogin from "@/components/UserLogin.vue";
+defineProps(['paths'])
+defineEmits(['toggleMobileNav'])
 const { mdAndDown } = useDisplay()
 
-const paths = [
-{
-    attrs: { to: "/" },
-    label: "Map",
-    icon: "mdi-map",
-  },
-  {
-    attrs: { to: "/about" },
-    label: "About",
-    icon: "mdi-book-multiple",
-  },
-  {
-    attrs: { to: "/api" },
-    label: "API",
-    icon: "mdi-laptop",
-  },
-  {
-    attrs: { to: "/help" },
-    label: "Help",
-    icon: "mdi-help-box",
-  },
-  {
-    attrs: { to: "/tasks" },
-    label: "Tasks",
-    icon: "mdi-tray-full",
-  },
-];
-const isLoggedIn = true;
 </script>
 
 <style lang="scss" scoped>
