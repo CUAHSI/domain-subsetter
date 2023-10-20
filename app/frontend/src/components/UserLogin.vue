@@ -27,7 +27,6 @@
                     <v-spacer></v-spacer>
                     <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
                     <v-btn id="orcid_login_continue" @click="openLogInDialog()" color="primary">
-                        <!-- <v-icon class="mr-2">fab fa-orcid</v-icon> -->
                         <span>Log In Using CUAHSI SSO</span>
                     </v-btn>
                 </v-card-actions>
@@ -38,14 +37,15 @@
   
 <script setup>
 defineProps(['mobile'])
-//   import User from "@/models/user.model";
+defineEmits(['loggedIn'])
+import { logIn } from '@/auth.js'
 async function openLogInDialog() {
-    // User.logIn(this.onLoggedIn);
+    logIn(onLoggedIn);
 }
 
-// function onLoggedIn() {
-//     this.$emit("logged-in");
-// }
+function onLoggedIn() {
+    this.$emit("logged-in");
+}
 </script>
   
 <style lang="scss" scoped>

@@ -1,11 +1,24 @@
+import os
+import json
 from app.db import User, db
 from app.routers.argo import router as argo_router
 from app.schemas import UserRead, UserUpdate
 from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = json.loads(os.environ['ALLOW_ORIGINS'])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app.include_router(
