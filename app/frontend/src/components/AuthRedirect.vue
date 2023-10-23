@@ -10,7 +10,7 @@
   
 <script setup>
 import { onMounted } from 'vue'
-import { VITE_APP_URL } from "@/constants";
+import { APP_URL } from "@/constants";
 onMounted(() => {
     alert('hi')
     // Get a dictionary of parameters in the redirect response URL
@@ -24,7 +24,7 @@ onMounted(() => {
     // window.opener references our original window from where the login popup was opened
     window.opener.postMessage(
         { accessToken: dict["#access_token"] || "" },
-        VITE_APP_URL // Important security measure: https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
+        APP_URL // Important security measure: https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
     );
     window.close();
 });
