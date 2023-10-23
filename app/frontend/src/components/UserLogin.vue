@@ -26,7 +26,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
-                    <v-btn id="orcid_login_continue" @click="openLogInDialog()" color="primary">
+                    <v-btn id="login_continue" @click="openLogInDialog()" color="primary">
                         <span>Log In Using CUAHSI SSO</span>
                     </v-btn>
                 </v-card-actions>
