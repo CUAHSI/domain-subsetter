@@ -1,8 +1,6 @@
 <template>
   <ModelSelectDrawer :models="models" :show="showModelSelect" @toggle="showModelSelect = !showModelSelect"/>
-  <section>
     <div id="mapContainer"></div>
-  </section>
 </template>
 <script setup>
 import 'leaflet/dist/leaflet.css'

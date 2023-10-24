@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import TheAppBar from './components/TheAppBar.vue'
 import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
 import TheFooter from './components/TheFooter.vue'
-import {ref} from 'vue'
+import { ref } from 'vue'
 let showMobileNavigation = ref(false)
 const paths = [
   {
@@ -33,19 +33,21 @@ const paths = [
   },
 ];
 
-function toggleMobileNav(){
+function toggleMobileNav() {
   showMobileNavigation.value = !showMobileNavigation.value
 }
 </script>
 
 <template>
   <v-app>
-    <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
-    <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths"/>
-    <RouterView />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
-    <TheFooter />
+    <v-main>
+      <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
+      <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
+      <RouterView />
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
+      <TheFooter />
+    </v-main>
   </v-app>
 </template>
 

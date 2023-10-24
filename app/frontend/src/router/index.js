@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 
@@ -27,7 +27,7 @@ const router = createRouter({
     {
       path: '/help',
       name: 'help',
-      component: HomeView
+      component: HelpView
     },
     {
       path: '/tasks',
