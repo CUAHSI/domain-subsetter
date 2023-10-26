@@ -32,8 +32,9 @@ class CUAHSIOAuth2(OAuth2):
                 raise GetIdEmailError(response.json())
 
             data = cast(Dict[str, Any], response.json())
+            print(data)
+            return data["preferred_username"], data["email"]
 
-            return data["sub"], data["email"]
     
     # https://github.com/frankie567/httpx-oauth/blob/v0.13.0/httpx_oauth/oauth2.py#L131
     async def get_access_token(
