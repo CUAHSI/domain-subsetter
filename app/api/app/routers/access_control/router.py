@@ -1,12 +1,11 @@
 import json
 from typing import Annotated
 
+from app.db import User, WorkflowSubmission
+from app.models import WorkflowDep
 from app.users import current_active_user
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
-
-from api.app.db import User, WorkflowSubmission
-from api.app.models import WorkflowDep
 
 from .policy_generation import minio_policy
 
@@ -40,6 +39,13 @@ async def unshare_workflow_with_user(share_params: ShareWorkflowBody, user: User
         return HTTPException(status_code=400)
 
 
-# @router.get('/policy')
-# async def generate_user_policy(user: User = Depends(current_active_user)):
-#    User.find({ "workflow_submissions": { "$elemMatch": {"view_users": {"$elemMatch"{ "$eq": "green" } } } )
+@router.get('/policy')
+async def generate_user_policy(user: User = Depends(current_active_user)):
+    users = await User.find({"workflow_submissions.view_users": user.email}).to_list()
+    # this should be rewritten to query all on the db, but I don't have time to figure that out now
+    matching_submissions = []
+    for u in users:
+        for submission in u.workflow_submissions:
+            if user.email in submission.view_users:
+                matching_submissions.append(submission)
+    return minio_policy(matching_submissions)
