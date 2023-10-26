@@ -145,7 +145,7 @@ async def upsert_submission(user: User, submission: Submission) -> Submission:
 @router.get('/refresh/{workflow_id}')
 async def refresh_workflow(workflow_params: WorkflowDep):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    await workflow_params.user.update_submission(submission)
+    await upsert_submission(workflow_params.user, submission)
     return submission
 
 
