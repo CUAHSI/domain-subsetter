@@ -130,12 +130,10 @@ async def submit_nwm2(
 
 
 @router.post('/extract/{workflow_id}')
-async def extract_workflow_artifact(
-    workflow_params: WorkflowDep, user: User = Depends(current_active_user)
-) -> WorkflowSubmissionResponseModel:
+async def extract_workflow_artifact(workflow_params: WorkflowDep) -> WorkflowSubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     bucket = "subsetter-outputs"
-    submission = user.get_submission(workflow_params.workflow_id)
+    submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     path_key = f'{submission.workflow_name}/{submission.workflow_id}/subset.gz'
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
@@ -143,7 +141,8 @@ async def extract_workflow_artifact(
         _preload_content=False,
     )
     submission = WorkflowSubmission(workflow_id=workflow_id, workflow_name="extractMD")
-    return await upsert_submission(user, submission)
+    await user.update_submission(submission)
+    return await submission
 
 
 async def upsert_submission(user: User, submission: WorkflowSubmission) -> WorkflowSubmission:
@@ -161,9 +160,9 @@ async def upsert_submission(user: User, submission: WorkflowSubmission) -> Workf
 
 
 @router.get('/refresh/{workflow_id}')
-async def refresh_workflow(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
-    submission = user.get_submission(workflow_params.workflow_id)
-    await upsert_submission(user, submission)
+async def refresh_workflow(workflow_params: WorkflowDep):
+    submission = workflow_params.user.get_submission(workflow_params.workflow_id)
+    await workflow_params.user.update_submission(submission)
     return submission
 
 
@@ -186,8 +185,8 @@ def parse_logs(api_response):
 
 
 @router.get('/logs/{workflow_id}', description="logs for a workflow")
-async def logs(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> LogsResponseModel:
-    submission = user.get_submission(workflow_params.workflow_id)
+async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
+    submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     api_response = api_instance.workflow_logs(
         namespace=get_settings().argo_namespace,
         name=submission.workflow_id,
@@ -201,8 +200,8 @@ async def logs(workflow_params: WorkflowDep, user: User = Depends(current_active
 
 
 @router.get('/url/{workflow_id}', description="Create a download url")
-async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(current_active_user)) -> UrlResponseModel:
-    submission = user.get_submission(workflow_params.workflow_id)
+async def signed_url_minio(workflow_params: WorkflowDep) -> UrlResponseModel:
+    submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
         "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/all.gz"
     )
@@ -210,7 +209,7 @@ async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(cu
 
 
 @router.get('/argo/{workflow_id}')
-async def argo_metadata(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
+async def argo_metadata(workflow_params: WorkflowDep):
     api_response = api_instance.get_workflow(
         namespace=get_settings().argo_namespace, name=workflow_params.workflow_id, _preload_content=False
     )

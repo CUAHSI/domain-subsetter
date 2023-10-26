@@ -30,8 +30,9 @@ class CUAHSIOAuth2(OAuth2):
                 raise GetIdEmailError(response.json())
 
             data = cast(Dict[str, Any], response.json())
+            print(data)
 
-            return data["sub"], data["email"]
+            return data["preferred_username"], data["email"]
 
 
 cuahsi_oauth_client = CUAHSIOAuth2(

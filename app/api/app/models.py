@@ -8,15 +8,16 @@ from pydantic import BaseModel, Field
 
 class WorkflowParams(BaseModel):
     workflow_id: str = Field(title="Workflow ID", description="The id of the workflow")
+    workflow_submission: WorkflowSubmission
+    user: User
 
 
 async def workflow_params(
     workflow_id: Annotated[str, Path(title="Workflow ID", description="The id of the workflow")],
-    workflow_submission: WorkflowSubmission,
     user: User = Depends(current_active_user),
 ):
     workflow_submission = user.get_submission(workflow_id)
-    if not workflow_submission:
+    if workflow_id not in [submission.workflow_id for submission in user.workflow_submissions]:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     return WorkflowParams(workflow_id=workflow_id, user=user, workflow_submission=workflow_submission)
 
