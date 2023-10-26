@@ -11,19 +11,13 @@
 <script setup>
 import { onMounted } from 'vue'
 import { APP_URL } from "@/constants";
+import { useRoute } from 'vue-router'
 onMounted(() => {
-    alert('hi')
     // Get a dictionary of parameters in the redirect response URL
-    const dict = {};
-    this.$route.hash.split("&").reduce((acc, curr) => {
-        const [key, val] = curr.split("=");
-        acc[key] = val;
-        return acc;
-    }, dict);
-
+    const route = useRoute();
     // window.opener references our original window from where the login popup was opened
     window.opener.postMessage(
-        { accessToken: dict["#access_token"] || "" },
+        route.query,
         APP_URL // Important security measure: https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
     );
     window.close();
