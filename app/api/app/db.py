@@ -31,6 +31,14 @@ class WorkflowSubmission(BaseModel):
     startedAt: Optional[str] = None
     finishedAt: Optional[str] = None
     estimatedDuration: Optional[int] = None
+    view_users: Optional[List[str]] = []
+
+    def add_user(self, username: str):
+        self.view_users.append(username)
+        self.view_users = list(set(self.view_users))
+
+    def remove_user(self, username: str):
+        self.view_users.remove(username)
 
 
 class User(BeanieBaseUser, Document):
@@ -43,13 +51,14 @@ class User(BeanieBaseUser, Document):
         except:
             return None
 
-    def update_submission(self, submission: WorkflowSubmission) -> None:
+    async def update_submission(self, submission: WorkflowSubmission) -> None:
         if self.get_submission(submission.workflow_id):
             self.workflow_submissions = [
                 submission if submission.workflow_id == ws.workflow_id else ws for ws in self.workflow_submissions
             ]
         else:
             self.workflow_submissions.append(submission)
+        await self.save()
 
 
 async def get_user_db():

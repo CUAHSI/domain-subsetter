@@ -1,4 +1,3 @@
-
 '''
 def admin_policy_attach(target, name):
     arguments = ['mc', '--config-dir', '/hydroshare/', 'admin', 'policy', 'attach', target, name, '--user', name]
@@ -45,40 +44,32 @@ def refresh_minio_policy(user):
 '''
 
 import copy
+
 import requests
 
-def bucket_owner(resource_id: str):
-    #raccess = ResourceAccess.objects.filter(resource__short_id=resource_id).first()
-    #return raccess.owners.first().username
+
+def bucket_name(resource_id: str):
+    # raccess = ResourceAccess.objects.filter(resource__short_id=resource_id).first()
+    # return raccess.owners.first().username
     return "subsetter-outputs"
 
+
 def create_view_statements(resource_ids: list[str]) -> list:
-    view_statement_template_get = \
-    {
+    view_statement_template_get = {
         "Effect": "Allow",
-        "Action": [
-            "s3:GetBucketLocation",
-            "s3:GetObject"
-        ],
-        "Resource": []
-    }
-    view_statement_template_listing = \
-    {
-        "Effect": "Allow",
-        "Action": [
-            "s3:ListBucket"
-        ],
+        "Action": ["s3:GetBucketLocation", "s3:GetObject"],
         "Resource": [],
-        "Condition": {
-            "StringLike": {
-                "s3:prefix": []
-            }
-        }
+    }
+    view_statement_template_listing = {
+        "Effect": "Allow",
+        "Action": ["s3:ListBucket"],
+        "Resource": [],
+        "Condition": {"StringLike": {"s3:prefix": []}},
     }
     get_resources = []
     list_statements = []
     for resource_id in resource_ids:
-        owner = bucket_owner(resource_id)
+        owner = bucket_name(resource_id)
         get_resources.append(f"arn:aws:s3:::{owner}/hydroshare/{resource_id}/*")
         view_statement = copy.deepcopy(view_statement_template_listing)
         view_statement["Resource"] = [f"arn:aws:s3:::{owner}"]
@@ -89,15 +80,10 @@ def create_view_statements(resource_ids: list[str]) -> list:
 
 
 def create_edit_owner_statements(resource_ids: list[str]) -> list:
-    edit_statement_template = \
-    {
-        "Effect": "Allow",
-        "Action": [
-            "s3:*"
-        ],
-        "Resource": []
-    }
-    edit_statement_template["Resource"] = [f"arn:aws:s3:::{bucket_owner(resource_id)}/hydroshare/{resource_id}/*" for resource_id in resource_ids]
+    edit_statement_template = {"Effect": "Allow", "Action": ["s3:*"], "Resource": []}
+    edit_statement_template["Resource"] = [
+        f"arn:aws:s3:::{bucket_name(resource_id)}/hydroshare/{resource_id}/*" for resource_id in resource_ids
+    ]
     return [edit_statement_template]
 
 
@@ -106,14 +92,13 @@ def minio_policy(user):
     view_statements = []
     edit_statements = []
     if user_privileges["view"] or user_privileges["edit"] or user_privileges["owner"]:
-        view_statements = create_view_statements(user_privileges["view"] + user_privileges["edit"] + user_privileges["owner"])
+        view_statements = create_view_statements(
+            user_privileges["view"] + user_privileges["edit"] + user_privileges["owner"]
+        )
     if user_privileges["edit"] or user_privileges["owner"]:
         edit_statements = create_edit_owner_statements(user_privileges["edit"] + user_privileges["owner"])
-    return \
-    {
-        "Version": "2012-10-17",
-        "Statement": view_statements + edit_statements
-    }
+    return {"Version": "2012-10-17", "Statement": view_statements + edit_statements}
+
 
 def retrieve_user_resource_privileges(user: str) -> dict:
     response = requests.get(f'https://cuahsi-dev-2.hydroshare.org/hsapi/useraccess/{user}/')

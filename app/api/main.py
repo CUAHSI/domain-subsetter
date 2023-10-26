@@ -1,6 +1,7 @@
 from app.db import User, db
-from app.routers.argo import router as argo_router
 from app.routers.access_control import router as access_control_router
+from app.routers.argo import router as argo_router
+from app.routers.storage import router as storage_router
 from app.schemas import UserRead, UserUpdate
 from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from beanie import init_beanie
@@ -17,6 +18,12 @@ app.include_router(
 
 app.include_router(
     access_control_router,
+    # prefix="/auth/cuahsi",
+    tags=["minio"],
+)
+
+app.include_router(
+    storage_router,
     # prefix="/auth/cuahsi",
     tags=["minio"],
 )

@@ -8,15 +8,14 @@ from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends, Query
 
 from api.app.db import User, WorkflowSubmission
-from api.config import get_minio_client, get_settings
-
-from .models import (
+from api.app.models import (
     LogsResponseModel,
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
     WorkflowSubmissionResponseModel,
 )
+from api.config import get_minio_client, get_settings
 
 router = APIRouter()
 
@@ -72,6 +71,7 @@ def nwm2_submission_body(bbox1: float, bbox2: float, bbox3: float, bbox4: float,
             ],
         },
     }
+
 
 def metadata_extraction_submission_body(bucket_key: str, path_key: str, workflow_name: str):
     return {
@@ -130,7 +130,8 @@ async def submit_nwm2(
 
 
 @router.post('/extract/{workflow_id}')
-async def extract_workflow_artifact(workflow_params: WorkflowDep, user: User = Depends(current_active_user)
+async def extract_workflow_artifact(
+    workflow_params: WorkflowDep, user: User = Depends(current_active_user)
 ) -> WorkflowSubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     bucket = "subsetter-outputs"
@@ -207,12 +208,14 @@ async def signed_url_minio(workflow_params: WorkflowDep, user: User = Depends(cu
     )
     return {'url': url}
 
+
 @router.get('/argo/{workflow_id}')
 async def argo_metadata(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
-    api_response = api_instance.get_workflow(namespace=get_settings().argo_namespace, 
-                                             name=workflow_params.workflow_id, 
-                                             _preload_content=False)
+    api_response = api_instance.get_workflow(
+        namespace=get_settings().argo_namespace, name=workflow_params.workflow_id, _preload_content=False
+    )
     return {"metadata": api_response.json()["metadata"], "status": api_response.json()["status"]}
+
 
 @router.get('/submissions')
 async def submissions(user: User = Depends(current_active_user)) -> UserSubmissionsResponseModel:
