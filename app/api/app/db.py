@@ -24,7 +24,7 @@ class PhaseEnum(str, Enum):
     ERROR = "Error"
 
 
-class WorkflowSubmission(BaseModel):
+class Submission(BaseModel):
     workflow_id: str
     workflow_name: str
     phase: Optional[PhaseEnum] = None
@@ -43,21 +43,21 @@ class WorkflowSubmission(BaseModel):
 
 class User(BeanieBaseUser, Document):
     oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
-    workflow_submissions: List[WorkflowSubmission] = Field(default_factory=list)
+    submissions: List[Submission] = Field(default_factory=list)
 
-    def get_submission(self, workflow_id: str) -> WorkflowSubmission:
+    def get_submission(self, workflow_id: str) -> Submission:
         try:
-            return next(submission for submission in self.workflow_submissions if submission.workflow_id == workflow_id)
+            return next(submission for submission in self.submissions if submission.workflow_id == workflow_id)
         except:
             return None
 
-    async def update_submission(self, submission: WorkflowSubmission) -> None:
+    async def update_submission(self, submission: Submission) -> None:
         if self.get_submission(submission.workflow_id):
-            self.workflow_submissions = [
-                submission if submission.workflow_id == ws.workflow_id else ws for ws in self.workflow_submissions
+            self.submissions = [
+                submission if submission.workflow_id == ws.workflow_id else ws for ws in self.submissions
             ]
         else:
-            self.workflow_submissions.append(submission)
+            self.submissions.append(submission)
         await self.save()
 
 

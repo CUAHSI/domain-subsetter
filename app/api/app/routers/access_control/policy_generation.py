@@ -45,7 +45,7 @@ def refresh_minio_policy(user):
 
 import copy
 
-from app.db import WorkflowSubmission
+from app.db import Submission
 
 
 def bucket_name(resource_id: str):
@@ -54,7 +54,7 @@ def bucket_name(resource_id: str):
     return "subsetter-outputs"
 
 
-def create_view_statements(submissions: list[WorkflowSubmission]) -> list:
+def create_view_statements(submissions: list[Submission]) -> list:
     view_statement_template_get = {
         "Effect": "Allow",
         "Action": ["s3:GetBucketLocation", "s3:GetObject"],
