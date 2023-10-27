@@ -194,7 +194,7 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
 async def signed_url_minio(workflow_params: WorkflowDep) -> UrlResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
-        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/all.gz"
+        "subsetter-outputs", f"{workflow_params.user.username}/{submission.workflow_id}/all.gz"
     )
     return {'url': url}
 
