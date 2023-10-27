@@ -1,4 +1,4 @@
-import { ENDPOINTS, APP_URL } from '@/constants'
+import { ENDPOINTS, APP_URL, API_BASE } from '@/constants'
 // import { Notifications } from '@cznethub/cznet-vue-core'
 // function openLogInDialog(redirectTo) {
 //     this.logInDialog$.next(redirectTo);
@@ -24,14 +24,11 @@ export async function logIn(callback) {
 
     if (event.data.state) {
       const params = new URLSearchParams(event.data)
-      const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
+      const url = `${API_BASE}/front-callback?${params}`
       // const url = `${originalRedirect}?${params}`
-      const resp =  await fetch(url, {
-        method: "GET",
-        // mode: "no-cors",
-      })
+      const resp =  await fetch(url)
       const json = await resp.json()
-      console.log(json)
+      alert(`HERE IS YOUR TOKEN: ${JSON.stringify(json)}`)
 
       // TODO: JWT to object store
       // await User.commit((state) => {
@@ -45,32 +42,4 @@ export async function logIn(callback) {
       alert('failed')
     }
   })
-
-
-  function decodeToken(str) {
-    str = str.split('.')[1]
-
-    str = str.replace('/-/g', '+')
-    str = str.replace('/_/g', '/')
-    switch (str.length % 4) {
-      case 0:
-        break
-      case 2:
-        str += '=='
-        break
-      case 3:
-        str += '='
-        break
-      default:
-        throw 'Invalid token'
-    }
-
-    str = (str + '===').slice(0, str.length + (str.length % 4))
-    str = str.replace(/-/g, '+').replace(/_/g, '/')
-
-    str = decodeURIComponent(escape(atob(str)))
-
-    str = JSON.parse(str)
-    return str
-  }
 }

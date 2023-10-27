@@ -36,7 +36,7 @@
 </template>
   
 <script setup>
-defineProps(['mobile'])
+defineProps(['mobile', 'isLoggedIn'])
 const emit = defineEmits(['loggedIn'])
 import { logIn } from '@/auth.js'
 async function openLogInDialog() {
@@ -44,7 +44,7 @@ async function openLogInDialog() {
 }
 
 function onLoggedIn() {
-    emit("logged-in");
+    emit("loggedIn");
     alert("login callback")
 }
 </script>

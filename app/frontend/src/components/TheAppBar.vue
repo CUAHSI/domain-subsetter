@@ -16,7 +16,7 @@
           </v-btn>
         </nav>
       </v-card>
-      <UserLogin v-if="!mdAndDown" />
+      <UserLogin @logged-in="login" v-if="!mdAndDown" :is-logged-in="isLoggedIn.value"/>
 
       <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else />
     </v-container>
@@ -25,10 +25,17 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import { ref } from 'vue'
 import UserLogin from "@/components/UserLogin.vue";
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
+const isLoggedIn = ref(false)
 const { mdAndDown } = useDisplay()
+
+function login(){
+  alert("logged in")
+  isLoggedIn.value = true
+}
 
 </script>
 

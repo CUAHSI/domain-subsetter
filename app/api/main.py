@@ -9,6 +9,8 @@ from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from httpx_oauth.integrations.fastapi import OAuth2AuthorizeCallback
+from app.users import front_oauth_client
 
 app = FastAPI()
 
@@ -46,6 +48,15 @@ app.include_router(
     prefix="/auth/cuahsi",
     tags=["auth"],
 )
+
+# TODO: move this into a separate router
+oauth2_authorize_callback = OAuth2AuthorizeCallback(front_oauth_client, "front-callback")
+
+
+@app.get("/front-callback", name="front-callback")
+async def oauth_callback(access_token_state=Depends(oauth2_authorize_callback)):
+    token, state = access_token_state
+    return {"token": token}
 
 app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),

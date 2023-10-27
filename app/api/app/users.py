@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Optional, cast, TypeVar
+from typing import Any, Dict, Optional, cast
 
 from app.db import User, get_user_db
 from beanie import PydanticObjectId
@@ -16,8 +16,6 @@ from typing import Any, Dict, Tuple, cast
 import httpx
 from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
-from urllib.parse import urlencode
-from httpx_oauth.errors import HTTPXOAuthError
 
 
 class CUAHSIOAuth2(OAuth2):
@@ -35,7 +33,8 @@ class CUAHSIOAuth2(OAuth2):
             print(data)
             return data["preferred_username"], data["email"]
 
-    
+
+class FrontOAuth2(CUAHSIOAuth2):
     # https://github.com/frankie567/httpx-oauth/blob/v0.13.0/httpx_oauth/oauth2.py#L131
     async def get_access_token(
         self, code: str, redirect_uri: str, code_verifier: Optional[str] = None
@@ -66,15 +65,18 @@ class CUAHSIOAuth2(OAuth2):
             return OAuth2Token(data)
 
 
-cuahsi_oauth_client = CUAHSIOAuth2(
-    os.getenv("OAUTH2_CLIENT_ID"),
-    os.getenv("OAUTH2_CLIENT_SECRET"),
-    "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/auth",
-    "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
+client_params = dict(
+    client_id=os.getenv("OAUTH2_CLIENT_ID"),
+    client_secret=os.getenv("OAUTH2_CLIENT_SECRET"),
+    authorize_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/auth",
+    access_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
     refresh_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
     revoke_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/revoke",
     base_scopes=["openid"],
 )
+
+front_oauth_client = FrontOAuth2(**client_params)
+cuahsi_oauth_client = CUAHSIOAuth2(**client_params)
 
 
 class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
