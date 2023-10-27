@@ -32,14 +32,14 @@ spec:
             template: nwm2-subset-template
             arguments:
               parameters:
-                - name: bbox1
-                  value: '{{workflow.parameters.bbox1}}'
-                - name: bbox2
-                  value: '{{workflow.parameters.bbox2}}'
-                - name: bbox3
-                  value: '{{workflow.parameters.bbox3}}'
-                - name: bbox4
-                  value: '{{workflow.parameters.bbox4}}'
+                - name: y_south
+                  value: '{{workflow.parameters.y_south}}'
+                - name: x_west
+                  value: '{{workflow.parameters.x_west}}'
+                - name: y_north
+                  value: '{{workflow.parameters.y_north}}'
+                - name: x_east
+                  value: '{{workflow.parameters.x_east}}'
                 - name: artifact-path
                   value: nwm2/{{workflow.parameters.job-id}}
         - - name: metadata-extractor
@@ -51,10 +51,10 @@ spec:
     - name: nwm2-subset-template
       inputs:
         parameters:
-          - name: bbox1
-          - name: bbox2
-          - name: bbox3
-          - name: bbox4
+          - name: y_south
+          - name: x_west
+          - name: y_north
+          - name: x_east
           - name: artifact-path
         artifacts:
           - name: nwm2-input-data
@@ -92,10 +92,10 @@ spec:
           - '-u'
           - entry.py
         args:
-          - '{{inputs.parameters.bbox1}}'
-          - '{{inputs.parameters.bbox2}}'
-          - '{{inputs.parameters.bbox3}}'
-          - '{{inputs.parameters.bbox4}}'
+          - '{{inputs.parameters.y_south}}'
+          - '{{inputs.parameters.x_west}}'
+          - '{{inputs.parameters.y_north}}'
+          - '{{inputs.parameters.x_east}}'
           - /srv/domain
           - /srv/output
         resources:
@@ -155,13 +155,13 @@ spec:
     parameters:
       - name: job-id
         value: abc123
-      - name: bbox1
+      - name: y_south
         value: '382582.18746'
-      - name: bbox2
+      - name: x_west
         value: '1720355.72762'
-      - name: bbox3
+      - name: y_north
         value: '367584.8784'
-      - name: bbox4
+      - name: x_east
         value: '1734488.4526'
   templateDefaults:
     inputs: {}
