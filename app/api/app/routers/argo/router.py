@@ -28,25 +28,28 @@ api_client = argo_workflows.ApiClient(configuration)
 api_instance = workflow_service_api.WorkflowServiceApi(api_client)
 
 
-def parflow_submission_body(hucs: list, workflow_name):
+def parflow_submission_body(hucs: list, username: str, workflow_name: str):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "parflow-subset-v1-by-huc-minio",
         "submitOptions": {
             "name": workflow_name,
-            "parameters": [f"job-id={workflow_name}", "hucs=" + ",".join(hucs)],
+            "parameters": [f"path_guid={workflow_name}", f"username={username}", "hucs=" + ",".join(hucs)],
         },
     }
 
 
-def nwm1_submission_body(y_south: float, x_west: float, y_north: float, x_east: float, workflow_name: str):
+def nwm1_submission_body(
+    y_south: float, x_west: float, y_north: float, x_east: float, username: str, workflow_name: str
+):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "nwm1-subset-minio",
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"job-id={workflow_name}",
+                f"path_guid={workflow_name}",
+                f"username={username}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -56,14 +59,17 @@ def nwm1_submission_body(y_south: float, x_west: float, y_north: float, x_east: 
     }
 
 
-def nwm2_submission_body(y_south: float, x_west: float, y_north: float, x_east: float, workflow_name: str):
+def nwm2_submission_body(
+    y_south: float, x_west: float, y_north: float, x_east: float, username: str, workflow_name: str
+):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "nwm2-subset-minio",
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"job-id={workflow_name}",
+                f"path_guid={workflow_name}",
+                f"username={username}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -94,7 +100,9 @@ async def submit_parflow(
 ) -> SubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace, body=parflow_submission_body(hucs, workflow_id), _preload_content=False
+        namespace=get_settings().argo_namespace,
+        body=parflow_submission_body(hucs, user.username, workflow_id),
+        _preload_content=False,
     )
     submission = Submission(workflow_id=workflow_id, workflow_name="parflow")
     # user.submissions.append(submission)
@@ -108,7 +116,7 @@ async def submit_nwm1(
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=nwm1_submission_body(y_south, x_west, y_north, x_east, workflow_id),
+        body=nwm1_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
         _preload_content=False,
     )
     submission = Submission(workflow_id=workflow_id, workflow_name="nwm1")
@@ -122,7 +130,7 @@ async def submit_nwm2(
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=nwm2_submission_body(y_south, x_west, y_north, x_east, workflow_id),
+        body=nwm2_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
         _preload_content=False,
     )
     submission = Submission(workflow_id=workflow_id, workflow_name="nwm2")

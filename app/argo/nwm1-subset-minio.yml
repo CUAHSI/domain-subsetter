@@ -33,7 +33,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: nwm1/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
                 - name: y_south
                   value: '{{workflow.parameters.y_south}}'
                 - name: x_west
@@ -47,7 +47,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: nwm1/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
     - name: nwm1-subset-template
       inputs:
         parameters:
@@ -143,4 +143,17 @@ spec:
             /tmp/subset-data/.hs /tmp/subset-data/hs
         resources: {}
   entrypoint: nwm1-subset-with-extraction-template
-  arguments: {}
+  arguments:
+    parameters:
+      - name: username
+        value: abc123
+      - name: path_guid
+        value: abc123
+      - name: y_south
+        value: '382582.18746'
+      - name: x_west
+        value: '1720355.72762'
+      - name: y_north
+        value: '367584.8784'
+      - name: x_east
+        value: '1734488.4526'

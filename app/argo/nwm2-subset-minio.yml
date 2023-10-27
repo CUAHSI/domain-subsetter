@@ -41,13 +41,13 @@ spec:
                 - name: x_east
                   value: '{{workflow.parameters.x_east}}'
                 - name: artifact-path
-                  value: nwm2/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
         - - name: metadata-extractor
             template: metadata-extractor-template
             arguments:
               parameters:
                 - name: artifact-path
-                  value: nwm2/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
     - name: nwm2-subset-template
       inputs:
         parameters:
@@ -153,7 +153,9 @@ spec:
   entrypoint: nwm2-subset-with-extraction-template
   arguments:
     parameters:
-      - name: job-id
+      - name: username
+        value: abc123
+      - name: path_guid
         value: abc123
       - name: y_south
         value: '382582.18746'
