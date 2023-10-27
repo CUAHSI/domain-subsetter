@@ -33,7 +33,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: nwm1/{{workflow.parameters.job-id}}
                 - name: bbox1
                   value: '{{workflow.parameters.bbox1}}'
                 - name: bbox2
@@ -47,7 +47,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: nwm1/{{workflow.parameters.job-id}}
     - name: nwm1-subset-template
       inputs:
         parameters:

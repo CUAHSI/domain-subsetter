@@ -41,13 +41,13 @@ spec:
                 - name: bbox4
                   value: '{{workflow.parameters.bbox4}}'
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: nwm2/{{workflow.parameters.job-id}}
         - - name: metadata-extractor
             template: metadata-extractor-template
             arguments:
               parameters:
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: nwm2/{{workflow.parameters.job-id}}
     - name: nwm2-subset-template
       inputs:
         parameters:
