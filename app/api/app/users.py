@@ -5,7 +5,7 @@ from app.db import User, get_user_db
 from beanie import PydanticObjectId
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
-from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
+from fastapi_users.authentication import AuthenticationBackend, JWTStrategy, CookieTransport, BearerTransport
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
 from httpx_oauth.oauth2 import OAuth2, GetAccessTokenError, OAuth2Token
 
@@ -97,6 +97,7 @@ async def get_user_manager(user_db: BeanieUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)
 
 
+cookie_transport = CookieTransport(cookie_max_age=60 * 60 * 24 * 30, cookie_httponly=False, cookie_secure=False)
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
@@ -104,12 +105,18 @@ def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(secret=SECRET, lifetime_seconds=60 * 60 * 24 * 30)  # one month
 
 
+cookie_backend = AuthenticationBackend(
+    name="cookie",
+    transport=cookie_transport,
+    get_strategy=get_jwt_strategy,
+)
+
 auth_backend = AuthenticationBackend(
     name="jwt",
     transport=bearer_transport,
     get_strategy=get_jwt_strategy,
 )
 
-fastapi_users = FastAPIUsers[User, PydanticObjectId](get_user_manager, [auth_backend])
+fastapi_users = FastAPIUsers[User, PydanticObjectId](get_user_manager, [cookie_backend, auth_backend])
 
 current_active_user = fastapi_users.current_user(active=True)
