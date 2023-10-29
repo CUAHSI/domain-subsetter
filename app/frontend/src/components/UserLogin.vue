@@ -45,7 +45,7 @@ async function openLogInDialog() {
 
 function onLoggedIn() {
     emit("loggedIn");
-    alert("login callback")
+    console.log("logged in user callback")
 }
 </script>
   

@@ -33,7 +33,7 @@ const isLoggedIn = ref(false)
 const { mdAndDown } = useDisplay()
 
 function login(){
-  alert("logged in")
+  console.log("logged in--app bar")
   isLoggedIn.value = true
 }
 

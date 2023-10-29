@@ -1,4 +1,4 @@
-import { ENDPOINTS, APP_URL, API_BASE } from '@/constants'
+import { ENDPOINTS, APP_URL } from '@/constants'
 // import { Notifications } from '@cznethub/cznet-vue-core'
 // function openLogInDialog(redirectTo) {
 //     this.logInDialog$.next(redirectTo);
@@ -18,28 +18,27 @@ export async function logIn(callback) {
     'location=1, status=1, scrollbars=1, width=800, height=800'
   )
   window.addEventListener('message', async (event) => {
-    if (event.origin !== APP_URL || !event.data.hasOwnProperty('state')) {
+    if (event.origin !== APP_URL) {
       return
     }
 
-    if (event.data.state) {
-      const params = new URLSearchParams(event.data)
-      const url = `${API_BASE}/front-callback?${params}`
-      // const url = `${originalRedirect}?${params}`
-      const resp =  await fetch(url)
-      const json = await resp.json()
-      alert(`HERE IS YOUR TOKEN: ${JSON.stringify(json)}`)
-
-      // TODO: JWT to object store
-      // await User.commit((state) => {
-      //   state.isLoggedIn = true;
-      //   state.accessToken = event.data.accessToken;
-      // });
-      // this.loggedIn$.next();
-      // this.isLoginListenerSet = false;
-      callback?.()
-    } else {
-      alert('failed')
+    const params = new URLSearchParams(event.data)
+    const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
+    console.log(url)
+    try{
+      await fetch(url, {credentials: 'include', mode: 'cors'})
+    }catch(error){
+      // TODO: still CORS errors...
+      console.log(error)
     }
+    
+    const res = await fetch(`${ENDPOINTS.userInfo}`, {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors'
+    })
+    console.log(res)
+    
+    callback?.()
   })
 }

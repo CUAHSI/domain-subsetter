@@ -97,7 +97,13 @@ async def get_user_manager(user_db: BeanieUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)
 
 
-cookie_transport = CookieTransport(cookie_max_age=60 * 60 * 24 * 30, cookie_httponly=False, cookie_secure=False)
+cookie_transport = CookieTransport(
+    cookie_max_age=60 * 60 * 24 * 30,
+    cookie_domain=os.getenv("VITE_APP_API_HOST"),
+    cookie_secure=True,
+    cookie_httponly=True,
+    cookie_samesite="lax",
+)
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
