@@ -33,7 +33,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
                 - name: hucs
                   value: '{{workflow.parameters.hucs}}'
         - - name: subset-parflow
@@ -43,13 +43,13 @@ spec:
                 - name: label
                   value: '{{workflow.parameters.label}}'
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
         - - name: metadata-extractor
             template: metadata-extractor
             arguments:
               parameters:
                 - name: artifact-path
-                  value: parflow/{{workflow.parameters.job-id}}
+                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
     - name: huc-to-shp
       inputs:
         parameters:
@@ -191,7 +191,9 @@ spec:
     parameters:
       - name: label
         value: pf-subset-job
-      - name: job-id
+      - name: username
+        value: abc123
+      - name: path_guid
         value: abc123
       - name: hucs
         value: 102600070103,102600070104,102600090205,102600050206,102600070102

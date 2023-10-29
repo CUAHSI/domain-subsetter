@@ -1,7 +1,8 @@
 import os
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
+import httpx
 import motor.motor_asyncio
 from beanie import Document
 from fastapi_users.db import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
@@ -44,6 +45,27 @@ class Submission(BaseModel):
 class User(BeanieBaseUser, Document):
     oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
     submissions: List[Submission] = Field(default_factory=list)
+    name: Optional[str] = None
+    username: Optional[str] = None
+    given_name: Optional[str] = None
+    family_name: Optional[str] = None
+
+    async def update_profile(self):
+        async def get_profile(token: str) -> Tuple[str, str]:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/userinfo",
+                    headers={"Authorization": f"Bearer {token}"},
+                )
+
+                return response.json()
+
+        profile = await get_profile(self.oauth_accounts[0].access_token)
+        self.name = profile['name']
+        self.username = profile['preferred_username']
+        self.given_name = profile['given_name']
+        self.family_name = profile['family_name']
+        await self.save()
 
     def get_submission(self, workflow_id: str) -> Submission:
         try:

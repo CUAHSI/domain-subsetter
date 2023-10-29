@@ -30,8 +30,8 @@ class CUAHSIOAuth2(OAuth2):
                 raise GetIdEmailError(response.json())
 
             data = cast(Dict[str, Any], response.json())
-            print(data)
-            return data["preferred_username"], data["email"]
+
+            return data["sub"], data["email"]
 
 
 class FrontOAuth2(CUAHSIOAuth2):
@@ -84,6 +84,7 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
     verification_token_secret = SECRET
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
+        await user.update_profile()
         print(f"User {user.id} has registered.")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Optional[Request] = None):
