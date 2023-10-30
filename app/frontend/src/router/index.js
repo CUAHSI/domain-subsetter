@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth';
 import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
@@ -44,5 +45,17 @@ const router = createRouter({
     }
   ]
 })
+
+// router.beforeEach(async (to) => {
+//   // redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ['/'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const auth = useAuthStore();
+
+//   if (authRequired && !auth.user) {
+//       auth.returnUrl = to.fullPath;
+//       return '/';
+//   }
+// });
 
 export default router

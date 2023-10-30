@@ -1,4 +1,5 @@
 import { ENDPOINTS, APP_URL } from '@/constants'
+import { useAuthStore } from '@/stores/auth'
 // import { Notifications } from '@cznethub/cznet-vue-core'
 // function openLogInDialog(redirectTo) {
 //     this.logInDialog$.next(redirectTo);
@@ -24,15 +25,17 @@ export async function logIn(callback) {
 
     const params = new URLSearchParams(event.data)
     const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
-    console.log(url)
     await fetch(url, {credentials: 'include', mode: 'cors'})
     
-    const res = await fetch(`${ENDPOINTS.userInfo}`, {
+    let userInfo = await fetch(`${ENDPOINTS.userInfo}`, {
       method: 'GET',
       credentials: 'include',
       mode: 'cors'
     })
-    res.json().then((json) => {alert(`Hello ${json.email}`)})
+    userInfo = await userInfo.json()
+
+    const authStore = useAuthStore();
+    authStore.login(userInfo)
     callback?.()
   })
 }

@@ -3,14 +3,16 @@
         <template v-slot:activator="{ props }">
             <template v-if="mobile">
                 <v-list-item-group class="text-body-1">
-                    <v-list-item id="drawer-nav-login" v-if="!isLoggedIn" v-bind="props">
+                    <v-list-item id="drawer-nav-login" v-if="!auth.isLoggedIn" v-bind="props">
                         <v-icon class="mr-2">mdi-login</v-icon>
-                        <span>Log In</span>
+                        <span v-if="!auth.isLoggedIn">Log In</span>
+                        <span v-else>Hello {{ auth.user.email }}!</span>
                     </v-list-item>
                 </v-list-item-group>
             </template>
             <template v-else>
-                <v-btn v-bind="props" id="navbar-login" v-if="!isLoggedIn" rounded>Log In</v-btn>
+                <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" rounded>Log In</v-btn>
+                <span v-else>Welcome {{ auth.user.email }}</span>
             </template>
         </template>
         <template v-slot:default="{ isActive }">
@@ -36,15 +38,22 @@
 </template>
   
 <script setup>
-defineProps(['mobile', 'isLoggedIn'])
-const emit = defineEmits(['loggedIn'])
+import { useAuthStore } from '../stores/auth';
 import { logIn } from '@/auth.js'
+// import { ref } from 'vue'
+defineProps(['mobile'])
+const emit = defineEmits(['loggedIn'])
+
+const auth = useAuthStore();
+// const isActive = ref(false)
+
 async function openLogInDialog() {
     logIn(onLoggedIn);
 }
 
 function onLoggedIn() {
     emit("loggedIn");
+    // TODO: isactive close dialog
     console.log("logged in user callback")
 }
 </script>
