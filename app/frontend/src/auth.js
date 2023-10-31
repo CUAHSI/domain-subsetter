@@ -25,20 +25,14 @@ export async function logIn(callback) {
     const params = new URLSearchParams(event.data)
     const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
     console.log(url)
-    try{
-      await fetch(url, {credentials: 'include', mode: 'cors'})
-    }catch(error){
-      // TODO: still CORS errors...
-      console.log(error)
-    }
+    await fetch(url, {credentials: 'include', mode: 'cors'})
     
     const res = await fetch(`${ENDPOINTS.userInfo}`, {
       method: 'GET',
       credentials: 'include',
       mode: 'cors'
     })
-    console.log(res)
-    
+    res.json().then((json) => {alert(`Hello ${json.email}`)})
     callback?.()
   })
 }
