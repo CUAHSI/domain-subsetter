@@ -1,27 +1,22 @@
 import { defineStore } from 'pinia';
+import { useStorage } from '@vueuse/core'
 
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
         // initialize state from local storage to enable user to stay logged in
-        user: JSON.parse(localStorage.getItem('user')),
+        user: useStorage('user', {}),
         returnUrl: null,
-        isLoggedIn: false
+        isLoggedIn: useStorage('isLoggedIn', false)
     }),
     actions: {
-        async login(user) {
-            // update pinia state
-            this.user = user;
+        async login(loginUser) {
             this.isLoggedIn = true;
-
-            // store user details and jwt in local storage to keep user logged in between page refreshes
-            // TODO: use https://github.com/prazdevs/pinia-plugin-persistedstate
-            localStorage.setItem('user', JSON.stringify(user));
+            this.user = loginUser;
         },
-        logout() {
-            this.user = null;
+        async logout() {
             this.isLoggedIn = false;
-            localStorage.removeItem('user');
+            this.user = {};
         }
     }
 });

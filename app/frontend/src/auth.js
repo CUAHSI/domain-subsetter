@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth'
 //   }
 
 export async function logIn(callback) {
+  const authStore = useAuthStore();
   const response = await fetch(ENDPOINTS.authCuahsiAuthorize)
   const json = await response.json()
 
@@ -34,8 +35,13 @@ export async function logIn(callback) {
     })
     userInfo = await userInfo.json()
 
-    const authStore = useAuthStore();
     authStore.login(userInfo)
     callback?.()
   })
+}
+
+export async function logOut(callback) {
+  const authStore = useAuthStore();
+  authStore.logout()
+  callback?.()
 }

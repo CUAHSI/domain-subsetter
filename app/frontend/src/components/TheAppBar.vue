@@ -35,7 +35,7 @@ const { mdAndDown } = useDisplay()
 
 function login(){
   console.log("logged in--app bar")
-  isLoggedIn.value = true
+  auth.isLoggedIn = true
 }
 
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <v-dialog width="500">
+    <v-dialog v-if="!auth.isLoggedIn" width="500">
         <template v-slot:activator="{ props }">
             <template v-if="mobile">
                 <v-list-item-group class="text-body-1">
@@ -12,7 +12,6 @@
             </template>
             <template v-else>
                 <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" rounded>Log In</v-btn>
-                <span v-else>Welcome {{ auth.user.email }}</span>
             </template>
         </template>
         <template v-slot:default="{ isActive }">
@@ -35,26 +34,35 @@
             </v-card>
         </template>
     </v-dialog>
+    <div v-else>
+        <span>Welcome {{ auth.user.email }}</span>
+        <v-btn @click="logOutUser" rounded>Log Out</v-btn>
+    </div>
 </template>
   
 <script setup>
 import { useAuthStore } from '../stores/auth';
-import { logIn } from '@/auth.js'
-// import { ref } from 'vue'
+import { logIn, logOut } from '@/auth.js'
 defineProps(['mobile'])
-const emit = defineEmits(['loggedIn'])
+const emit = defineEmits(['loggedIn', 'loggedOut'])
 
 const auth = useAuthStore();
-// const isActive = ref(false)
 
 async function openLogInDialog() {
     logIn(onLoggedIn);
 }
 
+async function logOutUser() {
+    logOut(onLogOut);
+}
+
 function onLoggedIn() {
     emit("loggedIn");
-    // TODO: isactive close dialog
     console.log("logged in user callback")
+}
+function onLogOut() {
+    emit("loggedOut");
+    console.log("logged out user callback")
 }
 </script>
   
