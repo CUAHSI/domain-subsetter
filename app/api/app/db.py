@@ -73,6 +73,9 @@ class User(BeanieBaseUser, Document):
         except:
             return None
 
+    def running_submissions(self) -> list[Submission]:
+        return [submission for submission in self.submissions if submission.phase == PhaseEnum.RUNNING]
+
     async def update_submission(self, submission: Submission) -> None:
         if self.get_submission(submission.workflow_id):
             self.submissions = [

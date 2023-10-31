@@ -154,6 +154,14 @@ async def refresh_workflow(workflow_params: WorkflowDep):
     return submission
 
 
+@router.get('/refresh')
+async def refresh_workflow(user: User = Depends(current_active_user)):
+    submissions = user.running_submissions()
+    for submission in submissions:
+        await upsert_submission(user, submission)
+    return submissions
+
+
 '''
     "phase": "Succeeded",
     "startedAt": "2023-10-17T16:26:01Z",
@@ -191,7 +199,8 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
 async def signed_url_minio(workflow_params: WorkflowDep) -> UrlResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
-        "subsetter-outputs", f"{workflow_params.user.username}/{submission.workflow_id}/all.gz"
+        "subsetter-outputs",
+        f"{workflow_params.user.username}/{submission.workflow_name}/{submission.workflow_id}/all.gz",
     )
     return {'url': url}
 
