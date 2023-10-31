@@ -34,7 +34,7 @@ def parflow_submission_body(hucs: list, username: str, workflow_name: str):
         "resourceName": "parflow-subset-v1-by-huc-minio",
         "submitOptions": {
             "name": workflow_name,
-            "parameters": [f"output_path={username}/{workflow_name}", "hucs=" + ",".join(hucs)],
+            "parameters": [f"output_path={username}/parflow/{workflow_name}", "hucs=" + ",".join(hucs)],
         },
     }
 
@@ -48,7 +48,7 @@ def nwm1_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output_path={username}/{workflow_name}",
+                f"output_path={username}/nwm1/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -67,7 +67,7 @@ def nwm2_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output_path={username}/{workflow_name}",
+                f"output_path={username}/nwm2/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -99,7 +99,7 @@ async def submit_parflow(
     workflow_id = str(uuid.uuid4())
     api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=parflow_submission_body(hucs, f"{user.username}/parflow", workflow_id),
+        body=parflow_submission_body(hucs, user.username, workflow_id),
         _preload_content=False,
     )
     submission = Submission(workflow_id=workflow_id, workflow_name="parflow")
