@@ -33,7 +33,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
+                  value: '{{workflow.parameters.output_path}}'
                 - name: y_south
                   value: '{{workflow.parameters.y_south}}'
                 - name: x_west
@@ -47,7 +47,7 @@ spec:
             arguments:
               parameters:
                 - name: artifact-path
-                  value: '{{workflow.parameters.username}}/{{workflow.parameters.path_guid}}'
+                  value: '{{workflow.parameters.output_path}}'
     - name: nwm1-subset-template
       inputs:
         parameters:
