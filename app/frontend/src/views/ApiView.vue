@@ -7,11 +7,12 @@
 <script setup>
 import { onMounted } from 'vue'
 import SwaggerUI from 'swagger-ui';
+import { ENDPOINTS } from '@/constants'
 import 'swagger-ui/dist/swagger-ui.css';
-import json from '@/../../spec/openapi.json'
+
 onMounted(() => {
   SwaggerUI({
-    spec: json,
+    url: ENDPOINTS.openapi,
     dom_id: '#swagger'
   })
 });

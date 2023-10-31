@@ -10,9 +10,18 @@ from beanie import init_beanie
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from httpx_oauth.integrations.fastapi import OAuth2AuthorizeCallback
-from app.users import front_oauth_client
 
-app = FastAPI()
+# TODO: get oauth working with swagger/redoc
+# Setting the base url for swagger docs
+# https://github.com/tiangolo/fastapi/pull/1547
+# https://swagger.io/docs/specification/api-host-and-base-path/
+# https://fastapi.tiangolo.com/how-to/configure-swagger-ui/
+# https://github.com/tiangolo/fastapi/pull/499
+swagger_params = {"withCredentials": True,
+                  "oauth2RedirectUrl": front_oauth_client.authorize_endpoint,
+                  "swagger_ui_client_id": front_oauth_client.client_id}
+
+app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
 
 origins = json.loads(os.environ['ALLOW_ORIGINS'])
 
