@@ -14,11 +14,11 @@ from app.users import front_oauth_client
 
 app = FastAPI()
 
-# origins = json.loads(os.environ['ALLOW_ORIGINS'])
+origins = json.loads(os.environ['ALLOW_ORIGINS'])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex="http://localhost:.*",
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
