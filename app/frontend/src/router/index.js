@@ -33,7 +33,7 @@ const router = createRouter({
     {
       path: '/submissions',
       name: 'submissions',
-      component: () => import('../views/WireView.vue')
+      component: () => import('../views/SubmissionsView.vue')
     },
     {
       path: '/auth-redirect',

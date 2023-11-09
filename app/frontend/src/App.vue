@@ -12,9 +12,9 @@ const paths = [
     icon: "mdi-map",
   },
   {
-    attrs: { to: "/about" },
-    label: "About",
-    icon: "mdi-book-multiple",
+    attrs: { to: "/submissions" },
+    label: "Submissions",
+    icon: "mdi-tray-full",
   },
   {
     attrs: { to: "/api" },
@@ -22,14 +22,14 @@ const paths = [
     icon: "mdi-laptop",
   },
   {
+    attrs: { to: "/about" },
+    label: "About",
+    icon: "mdi-book-multiple",
+  },
+  {
     attrs: { to: "/help" },
     label: "Help",
     icon: "mdi-help-box",
-  },
-  {
-    attrs: { to: "/submissions" },
-    label: "Submissions",
-    icon: "mdi-tray-full",
   },
 ];
 

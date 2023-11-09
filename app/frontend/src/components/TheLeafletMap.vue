@@ -788,7 +788,10 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
             method: "POST",
             credentials: 'include',
             mode: 'cors'})
-        console.log(parResp)
+        const parJson = await parResp.json()
+        // TODO: notification
+        alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+
 
         for (let i = 0; i < selected_hucs.length; i++) {
             try {
