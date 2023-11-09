@@ -457,7 +457,7 @@ function mapClick(e) {
     let defaultParameters = {
         service: 'WFS',
         request: 'GetFeature',
-        bbox: e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat,
+        bbox: e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng,
         typeName: 'HUC_WBD:HUC12_US',
         SrsName: 'EPSG:4326'
     };
@@ -467,7 +467,8 @@ function mapClick(e) {
 
     console.log("map click params", defaultParameters)
     // load the map and table elements async
-    toggleHucsAsync(URL, true, null);
+    // toggleHucsAsync(URL, true, null);
+    
 }
 
 
