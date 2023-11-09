@@ -3,6 +3,7 @@
 </template>
   
 <script setup>
+import { ENDPOINTS } from '@/constants'
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet'
 import { onMounted } from 'vue'
@@ -467,7 +468,7 @@ function mapClick(e) {
 
     console.log("map click params", defaultParameters)
     // load the map and table elements async
-    // toggleHucsAsync(URL, true, null);
+    toggleHucsAsync(URL, true, null);
     
 }
 
@@ -782,7 +783,12 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
         // select a single map element at a time.
 
         let selected_hucs = parseWfsXML(data);
-        console.log("selected hucs from xml", selected_hucs)
+        console.log("selected hucs from xml", selected_hucs[0].hucid)
+        const parResp = await fetch(`${ENDPOINTS.submitParflow}?hucs=${selected_hucs[0].hucid}`, {
+            method: "POST",
+            credentials: 'include',
+            mode: 'cors'})
+        console.log(parResp)
 
         for (let i = 0; i < selected_hucs.length; i++) {
             try {
