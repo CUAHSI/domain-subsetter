@@ -7,9 +7,8 @@ from app.routers.storage import router as storage_router
 from app.schemas import UserRead, UserUpdate
 from app.users import SECRET, auth_backend, cookie_backend, cuahsi_oauth_client, front_oauth_client, fastapi_users
 from beanie import init_beanie
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from httpx_oauth.integrations.fastapi import OAuth2AuthorizeCallback
 
 # TODO: get oauth working with swagger/redoc
 # Setting the base url for swagger docs
@@ -65,9 +64,9 @@ app.include_router(
 )
 
 app.include_router(
-    fastapi_users.get_oauth_router(front_oauth_client, auth_backend, SECRET),
+    fastapi_users.get_auth_router(cookie_backend),
     prefix="/auth/cookie",
-    tags=["auth"],
+    tags=["auth"]
 )
 
 app.include_router(

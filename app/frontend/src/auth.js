@@ -43,5 +43,6 @@ export async function logIn(callback) {
 export async function logOut(callback) {
   const authStore = useAuthStore();
   authStore.logout()
+  await fetch(ENDPOINTS.logout, {method: 'POST', credentials: 'include', mode: 'cors'})
   callback?.()
 }

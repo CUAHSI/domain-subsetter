@@ -6,12 +6,13 @@ export const API_BASE = import.meta.env.VITE_APP_API_URL || "";
 export const ENDPOINTS = {
   openapi: `${API_BASE}/openapi.json`,
   authCuahsiAuthorize: `${API_BASE}/auth/cookie/authorize`,
-  submitParflow: `${API_BASE}/submit/parflow`,
   authCuahsiCallback: `${API_BASE}/auth/cookie/callback`,
+  authenticatedRoute: `${API_BASE}/authenticated-route`,
+  logout: `${API_BASE}/auth/cookie/logout`,
+  userInfo: `${API_BASE}/users/me`,
+  submitParflow: `${API_BASE}/submit/parflow`,
   submit: `${API_BASE}/submit`,
   logs: `${API_BASE}/logs`,
   url: `${API_BASE}/url`,
-  submissions: `${API_BASE}/submission`,
-  authenticatedRoute: `${API_BASE}/authenticated-route`,
-  userInfo: `${API_BASE}/users/me`
+  submissions: `${API_BASE}/submissions`,
 };
