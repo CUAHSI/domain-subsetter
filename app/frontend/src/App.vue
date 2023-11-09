@@ -27,8 +27,8 @@ const paths = [
     icon: "mdi-help-box",
   },
   {
-    attrs: { to: "/tasks" },
-    label: "Tasks",
+    attrs: { to: "/submissions" },
+    label: "Submissions",
     icon: "mdi-tray-full",
   },
 ];

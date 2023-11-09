@@ -31,8 +31,8 @@ const router = createRouter({
       component: HelpView
     },
     {
-      path: '/tasks',
-      name: 'tasks',
+      path: '/submissions',
+      name: 'submissions',
       component: () => import('../views/WireView.vue')
     },
     {
