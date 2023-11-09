@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   app:
-    image: cuahsi/subsetter-ubuntu:latest
+    image: cuahsi/subsetter-ubuntu:2023.01.05
     build:
       context: ..
       dockerfile: docker/Dockerfile.ubuntu
