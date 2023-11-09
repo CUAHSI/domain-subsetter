@@ -465,6 +465,7 @@ function mapClick(e) {
     let parameters = L.Util.extend(defaultParameters);
     let URL = root + L.Util.getParamString(parameters);
 
+    console.log("map click params", defaultParameters)
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
 }
@@ -675,24 +676,24 @@ function clearSelection() {
 */
 function getLccBounds(hucs) {
 
-    $.ajax({
-        url: '/wbd/gethucbbox/lcc',
-        type: 'GET',
-        contentType: "text/plain; charset=UTF-8",
-        data: { 'hucID': hucs.join(",") },
-        success: function (response) {
+    // $.ajax({
+    //     url: '/wbd/gethucbbox/lcc',
+    //     type: 'GET',
+    //     contentType: "text/plain; charset=UTF-8",
+    //     data: { 'hucID': hucs.join(",") },
+    //     success: function (response) {
 
-            // save the calculated bbox in LCC coordinates
-            let lcc_bbox = JSON.parse(response).bbox;
+    //         // save the calculated bbox in LCC coordinates
+    //         let lcc_bbox = JSON.parse(response).bbox;
 
-            // update the global lcc bbox that will be used to submit the subsetting job
-            // update_lcc_bounds(lcc_bbox);
+    //         // update the global lcc bbox that will be used to submit the subsetting job
+    //         // update_lcc_bounds(lcc_bbox);
 
-        },
-        error: function (error) {
-            console.log('error querying bounding box: ' + error);
-        }
-    });
+    //     },
+    //     error: function (error) {
+    //         console.log('error querying bounding box: ' + error);
+    //     }
+    // });
 
 }
 
@@ -768,99 +769,99 @@ function addFeatureByHUC(hucid) {
 
 }
 
-function toggleHucsAsync(url, remove_if_selected, remove) {
+async function toggleHucsAsync(url, remove_if_selected, remove) {
 
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
-    // $.ajax({
-    //     url: url,
-    //     success: function (response) {
+    const response = await fetch(url)
+    if (response.ok) {
+        const text = await response.text()
+        const data = await new window.DOMParser().parseFromString(text, "text/xml")
+        // extract the HUC ID and Boundary from the WFS XML response.
+        // only process the first element of the response since the user can only
+        // select a single map element at a time.
 
-    //         // extract the HUC ID and Boundary from the WFS XML response.
-    //         // only process the first element of the response since the user can only
-    //         // select a single map element at a time.
-    //         selected_hucs = parseWfsXML(response);
+        let selected_hucs = parseWfsXML(data);
+        console.log("selected hucs from xml", selected_hucs)
 
-    //         for (i = 0; i < selected_hucs.length; i++) {
-    //             try {
-    //                 let res = selected_hucs[i];
+        for (let i = 0; i < selected_hucs.length; i++) {
+            try {
+                let res = selected_hucs[i];
 
-    //                 // toggle bounding box using the following rules:
-    //                 // 1. if the object is already selected, remove it from the 
-    //                 //    map and the table.
-    //                 // 2. if the object is not selected, add it to the map and
-    //                 //    add it to the table.
+                // toggle bounding box using the following rules:
+                // 1. if the object is already selected, remove it from the 
+                //    map and the table.
+                // 2. if the object is not selected, add it to the map and
+                //    add it to the table.
 
-    //                 if (res.hucid in Map.hucbounds) {
-    //                     // remove only if explicitly specified to.
-    //                     // this is because the "ADD" dialog should never
-    //                     // remove features, unlike the map click event.
-    //                     if (remove_if_selected) {
-    //                         delete Map.hucbounds[res.hucid];
-    //                         let row_id = getRowIdByName(res.hucid)
-    //                         rmHucRow(row_id);
-    //                         togglePolygon(res.hucid, res.geom);
-    //                     }
-    //                 }
-    //                 else {
-    //                     Map.hucbounds[res.hucid] = res.bbox;
-    //                     addHucRow(res.hucid);
-    //                     togglePolygon(res.hucid, res.geom);
+                if (res.hucid in Map.hucbounds) {
+                    // remove only if explicitly specified to.
+                    // this is because the "ADD" dialog should never
+                    // remove features, unlike the map click event.
+                    if (remove_if_selected) {
+                        delete Map.hucbounds[res.hucid];
+                        let row_id = getRowIdByName(res.hucid)
+                        rmHucRow(row_id);
+                        togglePolygon(res.hucid, res.geom);
+                    }
+                }
+                else {
+                    Map.hucbounds[res.hucid] = res.bbox;
+                    addHucRow(res.hucid);
+                    togglePolygon(res.hucid, res.geom);
 
-    //                     // add a 'success' message for this table entry
-    //                     let row = getRowByName(res.hucid);
-    //                     let elem = row.getElementsByTagName('td')[2]
-    //                     elem.innerText = 'Loaded';
-    //                     elem.style.color = 'green';
-    //                 }
-    //             } catch (err) {
-    //                 // if there was an error adding the HUC,
-    //                 // add an error message in the table
-    //                 let row = getRowByName(hucid);
-    //                 let elem = row.getElementsByTagName('td')[2]
-    //                 elem.innerText = 'Error';
-    //                 elem.style.color = 'red';
-    //             }
-    //             // refresh page
-    //             document.getElementById('huc-table-div').hide().show(0);
-    //             document.getElementById('map').hide().show(0);
-    //         }
+                    // add a 'success' message for this table entry
+                    let row = getRowByName(res.hucid);
+                    let elem = row.getElementsByTagName('td')[2]
+                    elem.innerText = 'Loaded';
+                    elem.style.color = 'green';
+                }
+            } catch (err) {
+                // if there was an error adding the HUC,
+                // add an error message in the table
+                let row = getRowByName(hucid);
+                let elem = row.getElementsByTagName('td')[2]
+                elem.innerText = 'Error';
+                elem.style.color = 'red';
+            }
+            // refresh page
+            document.getElementById('huc-table-div').hide().show(0);
+            document.getElementById('map').hide().show(0);
+        }
 
-    //         // update the boundaries of the global bbox.
-    //         // this is all that we really care about when the
-    //         // subset job is submitted.
-    //         // retrieve the LCC coordinate for this bounding box
-    //         hucs = [];
-    //         updateMapBBox();
-    //         for (key in Map.hucbounds) {
-    //             hucs.push(key);
-    //         }
-    //         getLccBounds(hucs);
+        // update the boundaries of the global bbox.
+        // this is all that we really care about when the
+        // subset job is submitted.
+        // retrieve the LCC coordinate for this bounding box
+        let hucs = [];
+        updateMapBBox();
+        for (let key in Map.hucbounds) {
+            hucs.push(key);
+        }
+        console.log(hucs)
+        getLccBounds(hucs);
 
-    //         // update the hucs list 
-    //         // this is used to create a shapefile
-    //         // that is exported along with the subset
-    //         update_huc_ids(hucs);
-
-
-    //         // remove the specified id
-    //         if (remove != null) {
-    //             let rid = getRowIdByName(remove);
-    //             if (rid != -999) {
-    //                 rmHucRow(rid);
-    //             }
-    //         }
+        // update the hucs list 
+        // this is used to create a shapefile
+        // that is exported along with the subset
+        update_huc_ids(hucs);
 
 
-    //     },
-    //     error: function () {
-    //         // if there was an error calling the ArcGIS WFS,
-    //         // add an error message in the table
-    //         let row = getRowByName(hucid);
-    //         let elem = row.getElementsByTagName('td')[2]
-    //         elem.innerText = 'Server Error';
-    //         elem.style.color = 'red';
-    //     }
-    // });
+        // remove the specified id
+        if (remove != null) {
+            let rid = getRowIdByName(remove);
+            if (rid != -999) {
+                rmHucRow(rid);
+            }
+        }
+
+    } else {
+        // if there was an error calling the ArcGIS WFS,
+        // add an error message in the table
+        let row = getRowByName(hucid);
+        let elem = row.getElementsByTagName('td')[2]
+        elem.innerText = 'Server Error';
+        elem.style.color = 'red';
+    }
 }
 
 
@@ -870,12 +871,12 @@ function toggleHucsAsync(url, remove_if_selected, remove) {
 function updateMapBBox() {
 
     // calculate global boundary
-    xmin = 9999999;
-    ymin = 9999999;
-    xmax = -9999999;
-    ymax = -9999999;
+    let xmin = 9999999;
+    let ymin = 9999999;
+    let xmax = -9999999;
+    let ymax = -9999999;
     for (let key in Map.hucbounds) {
-        bounds = Map.hucbounds[key].getBounds();
+        let bounds = Map.hucbounds[key].getBounds();
         if (bounds.getWest() < xmin) {
             xmin = bounds.getWest();
         }
@@ -914,7 +915,7 @@ function updateMapBBox() {
 
     // todo: add function to validate bbox and return back styling
     // check bbox area bounds
-    bbox = validate_bbox_size();
+    let bbox = validate_bbox_size();
 
     // todo: create bbox validation function
     toggle_submit_button(bbox.is_valid)
@@ -978,7 +979,7 @@ function parseWfsXML(xml) {
     let ulat = -100000;
     let llon = 100000;
     let ulon = -100000;
-    for (hid = 0; hid < hucs.length; hid++) {
+    for (let hid = 0; hid < hucs.length; hid++) {
 
         let data = hucs[hid];
 
@@ -989,7 +990,7 @@ function parseWfsXML(xml) {
 
         // calculate bounding box
         for (let i = 1; i < ptlist.length; i += 2) {
-            lat = ptlist[i];
+            let lat = ptlist[i];
             if (lat > ulat) {
                 ulat = lat;
             }
@@ -998,7 +999,7 @@ function parseWfsXML(xml) {
             }
         }
         for (let i = 0; i < ptlist.length; i += 2) {
-            lon = ptlist[i];
+            let lon = ptlist[i];
             if (lon > ulon) {
                 ulon = lon;
             }
@@ -1013,6 +1014,7 @@ function parseWfsXML(xml) {
         r['geom'] = ptlist;
         response.push(r);
     }
+    console.log("parse wfs", response)
     return response;
 }
 
@@ -1023,7 +1025,8 @@ function update_huc_ids(huclist) {
 
     // set the #hucs hidden field in the html template
     // using jquery
-    document.getElementById('hucs').val(hucs);
+    console.log("hucids", hucs)
+    // document.getElementById('hucs').val(hucs);
 
 }
 
@@ -1043,7 +1046,7 @@ function update_huc_ids(huclist) {
 // }
 
 function get_lcc_bounds() {
-    bnds = [document.getElementById('llon').val(),
+    let bnds = [document.getElementById('llon').val(),
     document.getElementById('llat').val(),
     document.getElementById('ulon').val(),
     document.getElementById('ulat').val()];
