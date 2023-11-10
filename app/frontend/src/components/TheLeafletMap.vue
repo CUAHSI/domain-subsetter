@@ -7,6 +7,16 @@ import { ENDPOINTS } from '@/constants'
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet'
 import { onMounted } from 'vue'
+async function submitParflow(selected_hucs) {
+    const parResp = await fetch(`${ENDPOINTS.submitParflow}?hucs=${selected_hucs[0].hucid}`, {
+        method: "POST",
+        credentials: 'include',
+        mode: 'cors'
+    })
+    const parJson = await parResp.json()
+    alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+}
+
 let Map = {}
 
 onMounted(() => {
