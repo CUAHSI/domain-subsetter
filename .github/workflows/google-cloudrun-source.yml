@@ -51,7 +51,7 @@ on:
 env:
   PROJECT_ID: apps-320517
   GAR_LOCATION: us-central1
-  SERVICE: subsetter 
+  SERVICE: subsetter-api 
   REGION: us-central1 
 
 jobs:
