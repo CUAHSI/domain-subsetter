@@ -13,7 +13,8 @@ import 'swagger-ui/dist/swagger-ui.css';
 onMounted(() => {
   SwaggerUI({
     url: ENDPOINTS.openapi,
-    dom_id: '#swagger'
+    dom_id: '#swagger',
+    withCredentials: true,
   })
 });
 </script>
