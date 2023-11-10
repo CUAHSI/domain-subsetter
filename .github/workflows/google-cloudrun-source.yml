@@ -50,7 +50,7 @@ on:
 
 env:
   PROJECT_ID: apps-320517
-  GAR_LOCATION: subsetter-api # TODO: update Artifact Registry location
+  GAR_LOCATION: us-central1
   SERVICE: subsetter-api 
   REGION: us-central1 
 
