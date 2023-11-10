@@ -5,6 +5,7 @@
       workflow_id: {{ submission.workflow_id }}
       startedAt: {{ submission.startedAt }}
       estimatedDuration: {{submission.estimatedDuration }}
+      <a :href="`${downloadEndpoint}/${submission.workflow_id}`">Download</a>
   </v-card>
   <v-container>
     <a href="https://workflows.argo.cuahsi.io/workflows">argo.cuahsi.io</a>
@@ -13,7 +14,9 @@
 
 <script setup>
 import { useSubmissionsStore } from '@/stores/submissions'
+import { ENDPOINTS } from '@/constants'
 
+const downloadEndpoint = ENDPOINTS.download
 const submissionStore = useSubmissionsStore();
 submissionStore.getSubmissions()
 

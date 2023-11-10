@@ -12,6 +12,7 @@ export const ENDPOINTS = {
   userInfo: `${API_BASE}/users/me`,
   submitParflow: `${API_BASE}/submit/parflow`,
   submit: `${API_BASE}/submit`,
+  download: `${API_BASE}/url`,
   logs: `${API_BASE}/logs`,
   url: `${API_BASE}/url`,
   submissions: `${API_BASE}/submissions`,
