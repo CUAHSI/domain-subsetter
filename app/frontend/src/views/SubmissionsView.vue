@@ -15,6 +15,6 @@
 import { useSubmissionsStore } from '@/stores/submissions'
 
 const submissionStore = useSubmissionsStore();
-submissionStore.updateSubmissions()
+submissionStore.getSubmissions()
 
 </script>
