@@ -479,7 +479,7 @@ function mapClick(e) {
     console.log("map click params", defaultParameters)
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
-    
+
 }
 
 
@@ -794,13 +794,6 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
 
         let selected_hucs = parseWfsXML(data);
         console.log("selected hucs from xml", selected_hucs[0].hucid)
-        const parResp = await fetch(`${ENDPOINTS.submitParflow}?hucs=${selected_hucs[0].hucid}`, {
-            method: "POST",
-            credentials: 'include',
-            mode: 'cors'})
-        const parJson = await parResp.json()
-        // TODO: notification
-        alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
 
 
         for (let i = 0; i < selected_hucs.length; i++) {
@@ -826,7 +819,7 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                 }
                 else {
                     Map.hucbounds[res.hucid] = res.bbox;
-                    addHucRow(res.hucid);
+                    // addHucRow(res.hucid);
                     togglePolygon(res.hucid, res.geom);
 
                     // add a 'success' message for this table entry
@@ -966,6 +959,7 @@ function togglePolygon(hucID, ptlist) {
     else {
         // create polygon overlay
         let coords = [];
+        let c = 0
         for (c = 0; c <= ptlist.length - 1; c += 2) {
             coords.push([parseFloat(ptlist[c]),
             parseFloat(ptlist[c + 1])
