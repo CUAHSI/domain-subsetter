@@ -10,7 +10,6 @@ export const ENDPOINTS = {
   authenticatedRoute: `${API_BASE}/authenticated-route`,
   logout: `${API_BASE}/auth/cookie/logout`,
   userInfo: `${API_BASE}/users/me`,
-  submitParflow: `${API_BASE}/submit/parflow`,
   submit: `${API_BASE}/submit`,
   download: `${API_BASE}/url`,
   logs: `${API_BASE}/logs`,

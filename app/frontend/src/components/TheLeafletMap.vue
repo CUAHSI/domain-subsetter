@@ -3,7 +3,6 @@
 </template>
   
 <script setup>
-import { ENDPOINTS } from '@/constants'
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet'
 import { onMounted } from 'vue'
@@ -11,16 +10,6 @@ import { useMapStore } from '@/stores/map'
 
 const mapStore = useMapStore()
 const Map = mapStore.mapObject
-
-async function submitParflow(selected_hucs) {
-    const parResp = await fetch(`${ENDPOINTS.submitParflow}?hucs=${selected_hucs[0].hucid}`, {
-        method: "POST",
-        credentials: 'include',
-        mode: 'cors'
-    })
-    const parJson = await parResp.json()
-    alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
-}
 
 onMounted(() => {
     let map = L.map('mapContainer').setView([38.2, -96], 5);
@@ -30,6 +19,7 @@ onMounted(() => {
     Map.buffer = 20;
     Map.hucselected = false;
     Map.huclayers = [];
+    Map.selected_hucs = [];
     Map.reaches = {};
     Map.huc2_min = 0;
     Map.huc2_max = 7;
@@ -797,6 +787,9 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
 
         let selected_hucs = parseWfsXML(data);
         console.log("selected hucs from xml", selected_hucs[0].hucid)
+        // TODO: use control logic below to either push or remove
+        Map.selected_hucs.push(selected_hucs[0])
+        // Map.huclayers.push(selected_hucs)
 
 
         for (let i = 0; i < selected_hucs.length; i++) {
