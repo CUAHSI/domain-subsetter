@@ -1,22 +1,20 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core'
 
-export const useAuthStore = defineStore({
-    id: 'auth',
-    state: () => ({
-        // initialize state from local storage to enable user to stay logged in
-        user: useStorage('user', {}),
-        returnUrl: null,
-        isLoggedIn: useStorage('isLoggedIn', false)
-    }),
-    actions: {
-        async login(loginUser) {
-            this.isLoggedIn = true;
-            this.user = loginUser;
-        },
-        async logout() {
-            this.isLoggedIn = false;
-            this.user = {};
-        }
+export const useModelsStore = defineStore('auth', () => {
+    const user = useStorage('user', {})
+    // const returnUrl = null
+    const isLoggedIn = useStorage('isLoggedIn', false)
+
+    async function login(loginUser) {
+        this.isLoggedIn = true;
+        this.user = loginUser;
     }
-});
+
+    async function logout() {
+        this.isLoggedIn = false;
+        this.user = {};
+    }
+  
+    return { isLoggedIn, user, login, logout }
+  })
