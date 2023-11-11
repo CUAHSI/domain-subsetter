@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core'
 
-export const useModelsStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('auth', () => {
     const user = useStorage('user', {})
     // const returnUrl = null
     const isLoggedIn = useStorage('isLoggedIn', false)
