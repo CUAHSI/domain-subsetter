@@ -1,3 +1,16 @@
+<template>
+  <v-app>
+    <v-main>
+      <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
+      <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
+      <RouterView />
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
+      <TheFooter />
+    </v-main>
+  </v-app>
+</template>
+
 <script setup>
 import { RouterView } from 'vue-router'
 import TheAppBar from './components/TheAppBar.vue'
@@ -37,19 +50,6 @@ function toggleMobileNav() {
   showMobileNavigation.value = !showMobileNavigation.value
 }
 </script>
-
-<template>
-  <v-app>
-    <v-main>
-      <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
-      <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
-      <RouterView />
-      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
-      <TheFooter />
-    </v-main>
-  </v-app>
-</template>
 
 <style scoped>
 header {
