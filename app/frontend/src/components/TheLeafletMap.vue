@@ -7,6 +7,11 @@ import { ENDPOINTS } from '@/constants'
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet'
 import { onMounted } from 'vue'
+import { useMapStore } from '@/stores/map'
+
+const mapStore = useMapStore()
+const Map = mapStore.mapObject
+
 async function submitParflow(selected_hucs) {
     const parResp = await fetch(`${ENDPOINTS.submitParflow}?hucs=${selected_hucs[0].hucid}`, {
         method: "POST",
@@ -16,8 +21,6 @@ async function submitParflow(selected_hucs) {
     const parJson = await parResp.json()
     alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
 }
-
-let Map = {}
 
 onMounted(() => {
     let map = L.map('mapContainer').setView([38.2, -96], 5);
