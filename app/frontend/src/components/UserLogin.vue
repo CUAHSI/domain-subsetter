@@ -2,13 +2,13 @@
     <v-dialog v-if="!auth.isLoggedIn" width="500">
         <template v-slot:activator="{ props }">
             <template v-if="mobile">
-                <v-list-item-group class="text-body-1">
+                <v-list class="text-body-1">
                     <v-list-item id="drawer-nav-login" v-if="!auth.isLoggedIn" v-bind="props">
                         <v-icon class="mr-2">mdi-login</v-icon>
                         <span v-if="!auth.isLoggedIn">Log In</span>
                         <span v-else>Hello {{ auth.user.email }}!</span>
                     </v-list-item>
-                </v-list-item-group>
+                </v-list>
             </template>
             <template v-else>
                 <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" rounded>Log In</v-btn>
