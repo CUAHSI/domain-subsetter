@@ -6,6 +6,7 @@
       <RouterView />
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
       <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
+      <SnackBar />
       <TheFooter />
     </v-main>
   </v-app>
@@ -15,6 +16,7 @@
 import { RouterView } from 'vue-router'
 import TheAppBar from './components/TheAppBar.vue'
 import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
+import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
 let showMobileNavigation = ref(false)
