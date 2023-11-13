@@ -54,7 +54,7 @@ def bucket_name(resource_id: str):
     return "subsetter-outputs"
 
 
-def create_view_statements(submissions: list[Submission]) -> list:
+def create_view_statements(owner, submissions) -> list:
     view_statement_template_get = {
         "Effect": "Allow",
         "Action": ["s3:GetBucketLocation", "s3:GetObject"],
@@ -66,15 +66,21 @@ def create_view_statements(submissions: list[Submission]) -> list:
         "Resource": [],
         "Condition": {"StringLike": {"s3:prefix": []}},
     }
-    get_resources = []
-    list_statements = []
-    for submission in submissions:
-        owner = bucket_name(submission.workflow_id)
-        get_resources.append(f"arn:aws:s3:::{owner}/{submission.workflow_name}/{submission.workflow_id}/*")
+    bucketname = bucket_name("blah")
+    get_resources = [f"arn:aws:s3:::{bucketname}/{owner.username}/*"]
+    view_statement = copy.deepcopy(view_statement_template_listing)
+    view_statement["Resource"] = [f"arn:aws:s3:::{bucketname}"]
+    view_statement["Condition"]["StringLike"]["s3:prefix"] = [f"{owner.username}/*"]
+    list_statements = [view_statement]
+    for user, submission in submissions:
+        bucketname = bucket_name(submission.workflow_id)
+        get_resources.append(
+            f"arn:aws:s3:::{bucketname}/{user.username}/{submission.workflow_name}/{submission.workflow_id}/*"
+        )
         view_statement = copy.deepcopy(view_statement_template_listing)
-        view_statement["Resource"] = [f"arn:aws:s3:::{owner}"]
+        view_statement["Resource"] = [f"arn:aws:s3:::{bucketname}"]
         view_statement["Condition"]["StringLike"]["s3:prefix"] = [
-            f"{submission.workflow_name}/{submission.workflow_id}/*"
+            f"{user.username}/{submission.workflow_name}/{submission.workflow_id}/*"
         ]
         list_statements.append(view_statement)
     view_statement_template_get["Resource"] = get_resources
@@ -89,6 +95,6 @@ def create_view_statements(submissions: list[Submission]) -> list:
 #    return [edit_statement_template]
 
 
-def minio_policy(view_submissions):
-    view_statements = create_view_statements(view_submissions)
+def minio_policy(user, view_submissions):
+    view_statements = create_view_statements(user, view_submissions)
     return {"Version": "2012-10-17", "Statement": view_statements}
