@@ -2,6 +2,7 @@
   <v-app>
     <v-main>
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
+      <AlertPopup v-for="alert in alerts" v-bind="alert" v-bind:key="alert.text"></AlertPopup>
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
       <RouterView />
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
@@ -16,9 +17,12 @@
 import { RouterView } from 'vue-router'
 import TheAppBar from './components/TheAppBar.vue'
 import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
+import AlertPopup from './components/AlertPopup.vue'
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
+// TODO push alerts
+// let alerts = [{text: "example", type: "success", closable: "true"}]
 let showMobileNavigation = ref(false)
 const paths = [
   {
