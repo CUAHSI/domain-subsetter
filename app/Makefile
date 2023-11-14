@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
-isort = isort /api
-black = black -S -l 120 --target-version py38 /api
+isort = isort /subsetter
+black = black -S -l 120 --target-version py310 /subsetter
 
 .PHONY: up
 up:
@@ -24,5 +24,5 @@ test:
 
 .PHONY: format
 format:
-	docker-compose run api "$(isort)"
-	docker-compose run api "$(black)"
+	docker-compose run api $(isort)
+	docker-compose run api $(black)

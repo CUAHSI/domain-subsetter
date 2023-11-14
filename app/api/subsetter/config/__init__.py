@@ -18,13 +18,13 @@ class Settings(BaseSettings):
 
     oauth2_client_id: str
     oauth2_client_secret: str
+    oauth2_redirect_url: str
 
     minio_access_key: str
     minio_secret_key: str
     minio_api_url: str
 
-    class Config:
-        env_file = ".env"
+    cloud_run: bool = False
 
 
 @lru_cache()
