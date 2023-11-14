@@ -13,8 +13,6 @@ RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod +x mc
 RUN mv mc /usr/local/bin/mc
 
-RUN mc alias set cuahsi https://api.minio.cuahsi.io I7GKG576Xle9bsQZeUjY UyY08NY2GZ2ICAy5SC8TWb9KV80l8yCwfr8Dx58n
-
 COPY ./subsetter /subsetter
 
 ENV PYTHONPATH "/subsetter/:${PYTHONPATH}"

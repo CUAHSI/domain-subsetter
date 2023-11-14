@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 from app.db import User, db
 from app.routers.access_control import router as access_control_router
 from app.routers.argo import router as argo_router
@@ -31,7 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.include_router(
     argo_router,
@@ -86,3 +86,8 @@ async def on_startup():
             User,
         ],
     )
+    arguments = ['mc', 'alias', 'set', 'cuahsi', f"https://{get_settings().minio_api_url}", get_settings().minio_access_key, get_settings().minio_secret_key]
+    try:
+        _output = subprocess.check_output(arguments)
+    except subprocess.CalledProcessError as e:
+        raise
