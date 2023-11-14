@@ -1,21 +1,18 @@
 import os
-from typing import Any, Dict, Optional, cast
+from typing import Any, Dict, Optional, Tuple, cast
 
-from app.db import User, get_user_db
+import httpx
 from beanie import PydanticObjectId
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
-from httpx_oauth.oauth2 import OAuth2
-
-SECRET = "SECRET"
-
-from typing import Any, Dict, Tuple, cast
-
-import httpx
 from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
+
+from subsetter.app.db import User, get_user_db
+
+SECRET = "SECRET"
 
 
 class CUAHSIOAuth2(OAuth2):

@@ -1,10 +1,14 @@
-from app.db import Submission, User
-from app.models import WorkflowDep
-from app.users import current_active_user
-from fastapi import APIRouter, Depends, HTTPException, Query
+import json
+import os
+import subprocess
+import tempfile
+
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from .policy_generation import minio_policy
+from subsetter.app.db import Submission, User
+from subsetter.app.routers.access_control.policy_generation import minio_policy
+from subsetter.app.users import current_active_user
 
 router = APIRouter()
 
@@ -52,12 +56,6 @@ async def generate_user_policy(user: User = Depends(current_active_user)):
 async def refresh_profile(user: User = Depends(current_active_user)):
     await user.update_profile()
     return user
-
-
-import json
-import os
-import subprocess
-import tempfile
 
 
 def admin_policy_create(name, policy, target="cuahsi"):

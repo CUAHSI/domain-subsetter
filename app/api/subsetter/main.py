@@ -1,13 +1,13 @@
-from app.db import User, db
-from app.routers.access_control import router as access_control_router
-from app.routers.argo import router as argo_router
-from app.routers.storage import router as storage_router
-from app.schemas import UserRead, UserUpdate
-from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from beanie import init_beanie
 from fastapi import Depends, FastAPI
 
-from .config import get_settings
+from subsetter.app.db import User, db
+from subsetter.app.routers.access_control import router as access_control_router
+from subsetter.app.routers.argo import router as argo_router
+from subsetter.app.routers.storage import router as storage_router
+from subsetter.app.schemas import UserRead, UserUpdate
+from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
+from subsetter.config import get_settings
 
 app = FastAPI()
 

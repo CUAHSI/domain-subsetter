@@ -33,12 +33,12 @@ services:
       #- 5678:5678
     restart: unless-stopped
     volumes:
-      - ./api:/api
+      - ./api/subsetter:/subsetter
     build:
-      context: ./docker/api/
+      context: ./api/
       dockerfile: Dockerfile
     #command: ["pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn api.main:app --host 0.0.0.0 --port 8000"]
-    command: ["uvicorn api.main:app --host 0.0.0.0 --port 8000"]
+    #command: ["uvicorn subsetter.main:app --host 0.0.0.0 --port 8000"]
     env_file:
       - .env
     depends_on:

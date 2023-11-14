@@ -5,22 +5,23 @@ from typing import Annotated
 
 import argo_workflows
 import google.cloud.logging as logging
-from app.users import current_active_user
 from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends, Query
 
-from api.app.db import Submission, User
-from api.app.models import (
+from subsetter.app.db import Submission, User
+from subsetter.app.models import (
     LogsResponseModel,
     SubmissionResponseModel,
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
 )
-from api.config import get_minio_client, get_settings
+from subsetter.app.users import current_active_user
+from subsetter.config import get_minio_client, get_settings
 
-logging_client = logging.Client()
-logging_client.setup_logging()
+if get_settings().cloud_run:
+    logging_client = logging.Client()
+    logging_client.setup_logging()
 
 router = APIRouter()
 

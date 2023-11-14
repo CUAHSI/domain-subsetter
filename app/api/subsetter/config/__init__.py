@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     minio_secret_key: str
     minio_api_url: str
 
+    cloud_run: bool = False
+
 
 @lru_cache()
 def get_settings() -> Settings:
