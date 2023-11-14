@@ -1,21 +1,27 @@
 import json
+import logging as log
 import uuid
 from typing import Annotated
 
 import argo_workflows
-from app.users import current_active_user
+import google.cloud.logging as logging
 from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends, Query
 
-from api.app.db import Submission, User
-from api.app.models import (
+from subsetter.app.db import Submission, User
+from subsetter.app.models import (
     LogsResponseModel,
     SubmissionResponseModel,
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
 )
-from api.config import get_minio_client, get_settings
+from subsetter.app.users import current_active_user
+from subsetter.config import get_minio_client, get_settings
+
+if get_settings().cloud_run:
+    logging_client = logging.Client()
+    logging_client.setup_logging()
 
 router = APIRouter()
 
@@ -97,11 +103,12 @@ async def submit_parflow(
     hucs: Annotated[list[str] | None, Query()], user: User = Depends(current_active_user)
 ) -> SubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
-    api_instance.submit_workflow(
+    api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=parflow_submission_body(hucs, user.username, workflow_id),
         _preload_content=False,
     )
+    log.info(api_response.json())
     submission = Submission(workflow_id=workflow_id, workflow_name="parflow")
     return await upsert_submission(user, submission)
 
@@ -111,11 +118,12 @@ async def submit_nwm1(
     y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
 ) -> SubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
-    api_instance.submit_workflow(
+    api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=nwm1_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
         _preload_content=False,
     )
+    log.info(api_response.json())
     submission = Submission(workflow_id=workflow_id, workflow_name="nwm1")
     return await upsert_submission(user, submission)
 
@@ -125,11 +133,12 @@ async def submit_nwm2(
     y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
 ) -> SubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
-    api_instance.submit_workflow(
+    api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=nwm2_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
         _preload_content=False,
     )
+    log.info(api_response.json())
     submission = Submission(workflow_id=workflow_id, workflow_name="nwm2")
     return await upsert_submission(user, submission)
 
@@ -138,11 +147,14 @@ async def upsert_submission(user: User, submission: Submission) -> Submission:
     api_response = api_instance.get_workflow(
         namespace=get_settings().argo_namespace, name=submission.workflow_id, _preload_content=False
     )
+    log.info(api_response.json())
     status_json = api_response.json()["status"]
-    submission.phase = status_json["phase"]
+    if "phase" in status_json:
+        submission.phase = status_json["phase"]
+    if "estimatedDuration" in status_json:
+        submission.estimatedDuration = status_json["estimatedDuration"]
     submission.startedAt = status_json["startedAt"]
     submission.finishedAt = status_json["finishedAt"]
-    submission.estimatedDuration = status_json["estimatedDuration"]
     await user.update_submission(submission)
     return submission
 
@@ -192,6 +204,7 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
         log_options_container="main",
         _preload_content=False,
     )
+    log.info(api_response.json())
     return {"logs": parse_logs(api_response)}
 
 
@@ -210,6 +223,7 @@ async def argo_metadata(workflow_params: WorkflowDep):
     api_response = api_instance.get_workflow(
         namespace=get_settings().argo_namespace, name=workflow_params.workflow_id, _preload_content=False
     )
+    log.info(api_response.json())
     return {"metadata": api_response.json()["metadata"], "status": api_response.json()["status"]}
 
 

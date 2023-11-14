@@ -52,7 +52,9 @@ app.include_router(
 )
 
 app.include_router(
-    fastapi_users.get_oauth_router(cuahsi_oauth_client, auth_backend, SECRET),
+    fastapi_users.get_oauth_router(
+        cuahsi_oauth_client, auth_backend, SECRET, redirect_url=get_settings().oauth2_redirect_url
+    ),
     prefix="/auth/cuahsi",
     tags=["auth"],
 )

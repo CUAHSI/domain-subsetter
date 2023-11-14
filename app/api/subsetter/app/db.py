@@ -1,4 +1,3 @@
-import os
 from enum import Enum
 from typing import List, Optional, Tuple
 
@@ -8,9 +7,11 @@ from beanie import Document
 from fastapi_users.db import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
 from pydantic import BaseModel, Field
 
-DATABASE_URL = os.getenv("MONGO_URL")
+from subsetter.config import get_settings
+
+DATABASE_URL = get_settings().mongo_url
 client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
-db = client[os.getenv("MONGO_DATABASE")]
+db = client[get_settings().mongo_database]
 
 
 class OAuthAccount(BaseOAuthAccount):

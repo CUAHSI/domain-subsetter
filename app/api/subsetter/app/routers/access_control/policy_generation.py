@@ -45,8 +45,6 @@ def refresh_minio_policy(user):
 
 import copy
 
-from app.db import Submission
-
 
 def bucket_name(resource_id: str):
     # raccess = ResourceAccess.objects.filter(resource__short_id=resource_id).first()
