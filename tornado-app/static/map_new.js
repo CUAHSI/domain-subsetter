@@ -451,7 +451,7 @@ function mapClick(e) {
     var defaultParameters = {
         service : 'WFS',
         request : 'GetFeature',
-        bbox: e.latlng.lng+','+e.latlng.lat+','+e.latlng.lng+','+e.latlng.lat,
+        bbox: e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng,
         typeName : 'HUC_WBD:HUC12_US',
         SrsName : 'EPSG:4326'
     };
@@ -516,7 +516,7 @@ function traceUpstream(usgs_gage) {
 	        var defaultParameters = {
 			service : 'WFS',
 	   	        request : 'GetFeature',
-	   	        bbox: coord[0]+','+coord[1]+','+coord[0]+','+coord[1],
+                bbox: coord[1]+','+coord[0]+','+coord[1]+','+coord[0],
 	   	        typeName : 'HUC_WBD:HUC12_US',
 	   	        SrsName : 'EPSG:4326'
 		};
