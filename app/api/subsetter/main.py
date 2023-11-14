@@ -35,7 +35,7 @@ swagger_params = {
 
 app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
 
-origins = json.loads(os.environ['ALLOW_ORIGINS'])
+origins = [os.environ['ALLOW_ORIGINS']]
 
 app.add_middleware(
     CORSMiddleware,
