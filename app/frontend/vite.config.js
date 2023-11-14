@@ -10,6 +10,8 @@ export default defineConfig({
     vue(),
     vuetify(),
   ],
+  root: "./",
+  base: "/domain-subsetter/",
   envDir: "../",
   resolve: {
     alias: {
