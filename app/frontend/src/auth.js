@@ -20,10 +20,10 @@ export async function logIn(callback) {
     'location=1, status=1, scrollbars=1, width=800, height=800'
   )
   window.addEventListener('message', async (event) => {
-    if (event.origin !== APP_URL) {
+    if ( !APP_URL.includes(event.origin)) {
       return
     }
-
+    
     const params = new URLSearchParams(event.data)
     const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
     await fetch(url, {credentials: 'include', mode: 'cors'})
