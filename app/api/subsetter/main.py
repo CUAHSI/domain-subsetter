@@ -10,7 +10,7 @@ from subsetter.app.routers.access_control import router as access_control_router
 from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.storage import router as storage_router
 from subsetter.app.schemas import UserRead, UserUpdate
-from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, front_oauth_client, fastapi_users
+from subsetter.app.users import SECRET, auth_backend, cookie_backend, cuahsi_oauth_client, front_oauth_client, fastapi_users
 from subsetter.config import get_settings
 
 # TODO: get oauth working with swagger/redoc
