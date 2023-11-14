@@ -1,5 +1,7 @@
+import subprocess
+
 from beanie import init_beanie
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
 from subsetter.app.db import User, db
 from subsetter.app.routers.access_control import router as access_control_router
@@ -53,3 +55,8 @@ async def on_startup():
             User,
         ],
     )
+    arguments = ['mc', 'alias', 'set', 'cuahsi', f"https://{get_settings().minio_api_url}", get_settings().minio_access_key, get_settings().minio_secret_key]
+    try:
+        _output = subprocess.check_output(arguments)
+    except subprocess.CalledProcessError as e:
+        raise
