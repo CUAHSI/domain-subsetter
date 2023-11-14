@@ -72,7 +72,7 @@ app.include_router(
 )
 
 app.include_router(
-    fastapi_users.get_oauth_router(front_oauth_client, cookie_backend, SECRET),
+    fastapi_users.get_oauth_router(front_oauth_client, cookie_backend, SECRET, get_settings().oauth2_cookie_redirect_url),
     prefix="/auth/cookie",
     tags=["auth"],
 )
