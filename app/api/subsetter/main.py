@@ -10,7 +10,7 @@ from subsetter.app.routers.access_control import router as access_control_router
 from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.storage import router as storage_router
 from subsetter.app.schemas import UserRead, UserUpdate
-from subsetter.app.users import SECRET, auth_backend, cookie_backend, cuahsi_oauth_client, front_oauth_client, fastapi_users
+from subsetter.app.users import SECRET, auth_backend, cookie_backend, cuahsi_oauth_client, fastapi_users
 from subsetter.config import get_settings
 
 # TODO: get oauth working with swagger/redoc
@@ -21,8 +21,8 @@ from subsetter.config import get_settings
 # https://github.com/tiangolo/fastapi/pull/499
 swagger_params = {
     "withCredentials": True,
-    "oauth2RedirectUrl": front_oauth_client.authorize_endpoint,
-    "swagger_ui_client_id": front_oauth_client.client_id,
+    "oauth2RedirectUrl": cuahsi_oauth_client.authorize_endpoint,
+    "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
 app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
@@ -65,7 +65,7 @@ app.include_router(
 
 app.include_router(
     fastapi_users.get_oauth_router(
-        front_oauth_client,
+        cuahsi_oauth_client,
         cookie_backend,
         SECRET,
         redirect_url=get_settings().oauth2_cookie_redirect_url

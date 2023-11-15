@@ -30,35 +30,6 @@ class CUAHSIOAuth2(OAuth2):
             return data["sub"], data["email"]
 
 
-class FrontOAuth2(CUAHSIOAuth2):
-    # https://github.com/frankie567/httpx-oauth/blob/v0.13.0/httpx_oauth/oauth2.py#L131
-    async def get_access_token(self, code: str, redirect_uri: str, code_verifier: Optional[str] = None):
-        async with self.get_httpx_client() as client:
-            data = {
-                "grant_type": "authorization_code",
-                "code": code,
-                "redirect_uri": f"{os.getenv('VITE_APP_URL')}/auth-redirect",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-            }
-
-            if code_verifier:
-                data.update({"code_verifier": code_verifier})
-
-            response = await client.post(
-                self.access_token_endpoint,
-                data=data,
-                headers=self.request_headers,
-            )
-
-            data = cast(Dict[str, Any], response.json())
-
-            if response.status_code >= 400:
-                raise GetAccessTokenError(data)
-
-            return OAuth2Token(data)
-
-
 client_params = dict(
     client_id=os.getenv("OAUTH2_CLIENT_ID"),
     client_secret=os.getenv("OAUTH2_CLIENT_SECRET"),
@@ -69,7 +40,6 @@ client_params = dict(
     base_scopes=["openid"],
 )
 
-front_oauth_client = FrontOAuth2(**client_params)
 cuahsi_oauth_client = CUAHSIOAuth2(**client_params)
 
 
