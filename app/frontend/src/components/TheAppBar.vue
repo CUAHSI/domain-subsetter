@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
+  <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
     <v-container class="d-flex align-end full-height pa-2 align-center">
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
