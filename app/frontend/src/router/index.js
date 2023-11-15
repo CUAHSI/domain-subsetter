@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth';
 import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory("/domain-subsetter/"),
   routes: [
     {
       path: '/',
