@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: '/auth-redirect',
       name: 'auth-redirect',
-      component: () => import('../components/AuthRedirect.vue'),
+      component: () => import('../views/AuthRedirectView.vue'),
       meta: {
         hideNavigation: true
       }
