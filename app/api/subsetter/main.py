@@ -19,9 +19,11 @@ from subsetter.config import get_settings
 # https://swagger.io/docs/specification/api-host-and-base-path/
 # https://fastapi.tiangolo.com/how-to/configure-swagger-ui/
 # https://github.com/tiangolo/fastapi/pull/499
-swagger_params = {"withCredentials": True,
-                  "oauth2RedirectUrl": front_oauth_client.authorize_endpoint,
-                  "swagger_ui_client_id": front_oauth_client.client_id}
+swagger_params = {
+    "withCredentials": True,
+    "oauth2RedirectUrl": front_oauth_client.authorize_endpoint,
+    "swagger_ui_client_id": front_oauth_client.client_id,
+}
 
 app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
 
@@ -62,7 +64,12 @@ app.include_router(
 )
 
 app.include_router(
-    fastapi_users.get_oauth_router(front_oauth_client, cookie_backend, SECRET),
+    fastapi_users.get_oauth_router(
+        front_oauth_client,
+        cookie_backend,
+        SECRET,
+        redirect_url=get_settings().oauth2_cookie_redirect_url
+    ),
     prefix="/auth/cookie",
     tags=["auth"],
 )
@@ -82,7 +89,15 @@ async def on_startup():
             User,
         ],
     )
-    arguments = ['mc', 'alias', 'set', 'cuahsi', f"https://{get_settings().minio_api_url}", get_settings().minio_access_key, get_settings().minio_secret_key]
+    arguments = [
+        'mc',
+        'alias',
+        'set',
+        'cuahsi',
+        f"https://{get_settings().minio_api_url}",
+        get_settings().minio_access_key,
+        get_settings().minio_secret_key,
+    ]
     try:
         _output = subprocess.check_output(arguments)
     except subprocess.CalledProcessError as e:

@@ -5,10 +5,10 @@ import httpx
 from beanie import PydanticObjectId
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
-from fastapi_users.authentication import AuthenticationBackend, JWTStrategy, CookieTransport, BearerTransport
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport, CookieTransport, JWTStrategy
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
-from httpx_oauth.oauth2 import OAuth2, GetAccessTokenError, OAuth2Token
 from httpx_oauth.errors import GetIdEmailError
+from httpx_oauth.oauth2 import OAuth2, GetAccessTokenError, OAuth2Token
 from subsetter.app.db import User, get_user_db
 
 SECRET = "SECRET"
@@ -32,9 +32,7 @@ class CUAHSIOAuth2(OAuth2):
 
 class FrontOAuth2(CUAHSIOAuth2):
     # https://github.com/frankie567/httpx-oauth/blob/v0.13.0/httpx_oauth/oauth2.py#L131
-    async def get_access_token(
-        self, code: str, redirect_uri: str, code_verifier: Optional[str] = None
-    ):
+    async def get_access_token(self, code: str, redirect_uri: str, code_verifier: Optional[str] = None):
         async with self.get_httpx_client() as client:
             data = {
                 "grant_type": "authorization_code",
