@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 
 const router = createRouter({
-  history: createWebHistory("/domain-subsetter/"),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
