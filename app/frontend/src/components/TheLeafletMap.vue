@@ -4,7 +4,9 @@
   
 <script setup>
 import "leaflet/dist/leaflet.css";
+import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
+import "leaflet-easybutton/src/easy-button";
 import { onMounted } from 'vue'
 import { useMapStore } from '@/stores/map'
 
@@ -127,10 +129,10 @@ onMounted(() => {
     //  * LEAFLET BUTTONS
     //  */
 
-    // // Erase
-    // L.easyButton('fa-eraser',
-    //     function () { clearSelection(); },
-    //     'clear selected features').addTo(map);
+    // Erase
+    L.easyButton('fa-eraser',
+        function () { clearSelection(); },
+        'clear selected features').addTo(map);
 
     // // Help 
     // //    let btn = '<span id=help-btn class="material-icons">info-outline</i>'
@@ -336,33 +338,33 @@ function resize_map() {
  * LEAFLET HANDLERS 
  */
 
-function toggleHelpDialog() {
-    // $('dialog')[0].style.display = '';
-    // $('dialog')[0].open = true;
-}
+// function toggleHelpDialog() {
+//     $('dialog')[0].style.display = '';
+//     $('dialog')[0].open = true;
+// }
 
-function toggleMenu() {
-    let accordion = document.querySelector('#accordion');
-    let panel = document.querySelector('#menu-panel');
-    accordion.MaterialExtAccordion.command({ action: 'toggle', target: panel });
-}
+// function toggleMenu() {
+//     let accordion = document.querySelector('#accordion');
+//     let panel = document.querySelector('#menu-panel');
+//     accordion.MaterialExtAccordion.command({ action: 'toggle', target: panel });
+// }
 
-function submit() {
-    document.getElementById('form-submit').submit();
-}
+// function submit() {
+//     document.getElementById('form-submit').submit();
+// }
 
-function clearHucTable() {
-    // Removes all rows from the HUC table
+// function clearHucTable() {
+//     // Removes all rows from the HUC table
 
-    let table = document.getElementById("huc-table");
-    let rows = document.getElementById('huc-table tbody tr');
-    for (let i = rows.length - 1; i >= 0; i--) {
-        table.deleteRow(i);
-    }
+//     let table = document.getElementById("huc-table");
+//     let rows = document.getElementById('huc-table tbody tr');
+//     for (let i = rows.length - 1; i >= 0; i--) {
+//         table.deleteRow(i);
+//     }
 
-    // toggle the delete button
-    toggle_delete_button();
-}
+//     // toggle the delete button
+//     toggle_delete_button();
+// }
 
 function getGageInfo(e) {
 
@@ -469,7 +471,6 @@ function mapClick(e) {
     let parameters = L.Util.extend(defaultParameters);
     let URL = root + L.Util.getParamString(parameters);
 
-    console.log("map click params", defaultParameters)
     // load the map and table elements async
     toggleHucsAsync(URL, true, null);
 
@@ -660,17 +661,18 @@ function clearSelection() {
         // clear the hucs in the html template
 
     }
+    Map.selected_hucs = []
 
     // clear the HUC table
-    clearHucTable();
+    // clearHucTable();
 
     // update the map
     updateMapBBox();
     getLccBounds([]);
 
-    // clear and update the HUC textbox
-    document.querySelector('.mdl-textfield').MaterialTextfield.change('');
 
+    // clear and update the HUC textbox
+    // document.querySelector('.mdl-textfield').MaterialTextfield.change('');
 }
 
 
@@ -785,56 +787,53 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
         // only process the first element of the response since the user can only
         // select a single map element at a time.
 
-        let selected_hucs = parseWfsXML(data);
-        console.log("selected hucs from xml", selected_hucs[0].hucid)
-        // TODO: use control logic below to either push or remove
-        Map.selected_hucs.push(selected_hucs[0])
-        // Map.huclayers.push(selected_hucs)
+        let clicked_hucs = parseWfsXML(data);
 
-
-        for (let i = 0; i < selected_hucs.length; i++) {
+        for (let huc of clicked_hucs) {
             try {
-                let res = selected_hucs[i];
-
                 // toggle bounding box using the following rules:
                 // 1. if the object is already selected, remove it from the 
                 //    map and the table.
                 // 2. if the object is not selected, add it to the map and
                 //    add it to the table.
 
-                if (res.hucid in Map.hucbounds) {
+                if (huc.hucid in Map.hucbounds) {
                     // remove only if explicitly specified to.
                     // this is because the "ADD" dialog should never
                     // remove features, unlike the map click event.
                     if (remove_if_selected) {
-                        delete Map.hucbounds[res.hucid];
-                        let row_id = getRowIdByName(res.hucid)
-                        rmHucRow(row_id);
-                        togglePolygon(res.hucid, res.geom);
+                        // delete Map.selected_hucs[huc]
+                        Map.selected_hucs = Map.selected_hucs.filter((h)=>{ return h.hucid != huc.hucid})
+                        delete Map.hucbounds[huc.hucid];
+                        // let row_id = getRowIdByName(huc.hucid)
+                        // rmHucRow(row_id);
+                        togglePolygon(huc.hucid, huc.geom);
                     }
                 }
                 else {
-                    Map.hucbounds[res.hucid] = res.bbox;
-                    // addHucRow(res.hucid);
-                    togglePolygon(res.hucid, res.geom);
+                    Map.selected_hucs.push(huc)
+                    Map.hucbounds[huc.hucid] = huc.bbox;
+                    // addHucRow(huc.hucid);
+                    togglePolygon(huc.hucid, huc.geom);
 
                     // add a 'success' message for this table entry
-                    let row = getRowByName(res.hucid);
-                    let elem = row.getElementsByTagName('td')[2]
-                    elem.innerText = 'Loaded';
-                    elem.style.color = 'green';
+                    // let row = getRowByName(huc.hucid);
+                    // let elem = row.getElementsByTagName('td')[2]
+                    // elem.innerText = 'Loaded';
+                    // elem.style.color = 'green';
                 }
             } catch (err) {
                 // if there was an error adding the HUC,
                 // add an error message in the table
-                let row = getRowByName(hucid);
-                let elem = row.getElementsByTagName('td')[2]
-                elem.innerText = 'Error';
-                elem.style.color = 'red';
+                // let row = getRowByName(huc.hucid);
+                // let elem = row.getElementsByTagName('td')[2]
+                // elem.innerText = 'Error';
+                // elem.style.color = 'red';
+                console.log("Error during toggle huc", err)
             }
             // refresh page
-            document.getElementById('huc-table-div').hide().show(0);
-            document.getElementById('map').hide().show(0);
+            // document.getElementById('huc-table-div').hide().show(0);
+            // document.getElementById('mapContainer').hide().show(0);
         }
 
         // update the boundaries of the global bbox.
@@ -846,7 +845,6 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
         for (let key in Map.hucbounds) {
             hucs.push(key);
         }
-        console.log(hucs)
         getLccBounds(hucs);
 
         // update the hucs list 
@@ -1018,13 +1016,12 @@ function parseWfsXML(xml) {
             }
         }
         let bounds = L.rectangle([[ulat, ulon], [llat, llon]]);
-        let r = [];
+        let r = {};
         r['hucid'] = hucID;
         r['bbox'] = bounds;
         r['geom'] = ptlist;
         response.push(r);
     }
-    console.log("parse wfs", response)
     return response;
 }
 
@@ -1035,7 +1032,6 @@ function update_huc_ids(huclist) {
 
     // set the #hucs hidden field in the html template
     // using jquery
-    console.log("hucids", hucs)
     // document.getElementById('hucs').val(hucs);
 
 }
@@ -1138,6 +1134,6 @@ function notify(message) {
 <style scoped>
 #mapContainer {
     width: 100%;
-    height: 100vh;
+    height: 100%;
 }
 </style>

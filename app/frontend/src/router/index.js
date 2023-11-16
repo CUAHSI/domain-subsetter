@@ -1,11 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth';
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -38,7 +37,7 @@ const router = createRouter({
     {
       path: '/auth-redirect',
       name: 'auth-redirect',
-      component: () => import('../components/AuthRedirect.vue'),
+      component: () => import('../views/AuthRedirectView.vue'),
       meta: {
         hideNavigation: true
       }

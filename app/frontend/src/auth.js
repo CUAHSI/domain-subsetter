@@ -13,7 +13,7 @@ export async function logIn(callback) {
   // alter redirect uri
   const authUrl = new URL(json.authorization_url)
   // const originalRedirect = authUrl.searchParams.get('redirect_uri')
-  authUrl.searchParams.set('redirect_uri', `${APP_URL}/auth-redirect`)
+  authUrl.searchParams.set('redirect_uri', `${APP_URL}/#/auth-redirect`)
   window.open(
     authUrl.toString(),
     '_blank',
@@ -24,8 +24,8 @@ export async function logIn(callback) {
       return
     }
     
-    const params = new URLSearchParams(event.data)
-    const url = `${ENDPOINTS.authCuahsiCallback}?${params}`
+    const params = event.data
+    const url = `${ENDPOINTS.authCuahsiCallback}${params}`
     await fetch(url, {credentials: 'include', mode: 'cors'})
     
     let userInfo = await fetch(`${ENDPOINTS.userInfo}`, {
@@ -33,10 +33,12 @@ export async function logIn(callback) {
       credentials: 'include',
       mode: 'cors'
     })
-    userInfo = await userInfo.json()
-
-    authStore.login(userInfo)
-    callback?.()
+    if (userInfo.ok){
+      userInfo = await userInfo.json()
+      authStore.login(userInfo)
+      event.source.close()
+      callback?.()
+    }
   })
 }
 
