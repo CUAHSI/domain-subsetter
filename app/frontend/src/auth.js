@@ -33,10 +33,12 @@ export async function logIn(callback) {
       credentials: 'include',
       mode: 'cors'
     })
-    userInfo = await userInfo.json()
-
-    authStore.login(userInfo)
-    callback?.()
+    if (userInfo.ok){
+      userInfo = await userInfo.json()
+      authStore.login(userInfo)
+      event.source.close()
+      callback?.()
+    }
   })
 }
 
