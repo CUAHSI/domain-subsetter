@@ -1,0 +1,159 @@
+metadata:
+  name: nwm1-subset-minio
+  generateName: nwm1-subset-minio-
+  namespace: workflows
+  uid: 8ee7d517-e73b-4464-a0ba-7032794819f5
+  resourceVersion: '293417038'
+  generation: 4
+  creationTimestamp: '2023-10-17T15:43:02Z'
+  labels:
+    workflows.argoproj.io/creator: '116317613255759624565'
+  managedFields:
+    - manager: argo
+      operation: Update
+      apiVersion: argoproj.io/v1alpha1
+      time: '2023-10-19T22:51:38Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:generateName: {}
+          f:labels:
+            .: {}
+            f:workflows.argoproj.io/creator: {}
+        f:spec: {}
+spec:
+  templates:
+    - name: nwm1-subset-with-extraction-template
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: nwm1-subset-step-name
+            template: nwm1-subset-template
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: '{{workflow.parameters.output_path}}'
+                - name: y_south
+                  value: '{{workflow.parameters.y_south}}'
+                - name: x_west
+                  value: '{{workflow.parameters.x_west}}'
+                - name: y_north
+                  value: '{{workflow.parameters.y_north}}'
+                - name: x_east
+                  value: '{{workflow.parameters.x_east}}'
+        - - name: metadata-extractor
+            template: metadata-extractor-template
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: '{{workflow.parameters.output_path}}'
+    - name: nwm1-subset-template
+      inputs:
+        parameters:
+          - name: y_south
+          - name: x_west
+          - name: y_north
+          - name: x_east
+          - name: artifact-path
+        artifacts:
+          - name: nwm1-input-data-new
+            path: /srv/domain
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-static-input
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: nwm.v1.2.4.gz
+      outputs:
+        artifacts:
+          - name: subset-results
+            path: /srv/output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/nwm1:0.0.1
+        command:
+          - python
+          - '-u'
+          - entry.py
+        args:
+          - '{{inputs.parameters.y_south}}'
+          - '{{inputs.parameters.x_west}}'
+          - '{{inputs.parameters.y_north}}'
+          - '{{inputs.parameters.x_east}}'
+          - /srv/domain
+          - /srv/output
+        resources: {}
+    - name: metadata-extractor-template
+      inputs:
+        parameters:
+          - name: artifact-path
+        artifacts:
+          - name: extractor-input
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+      outputs:
+        artifacts:
+          - name: extractor-output
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/all.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: scootna/hsextract:0.1
+        command:
+          - /bin/sh
+          - '-c'
+        args:
+          - >-
+            python3 hsextract/main.py extract /tmp/subset-data && mv
+            /tmp/subset-data/.hs /tmp/subset-data/hs
+        resources: {}
+  entrypoint: nwm1-subset-with-extraction-template
+  arguments:
+    parameters:
+      - name: username
+        value: abc123
+      - name: path_guid
+        value: abc123
+      - name: y_south
+        value: '382582.18746'
+      - name: x_west
+        value: '1720355.72762'
+      - name: y_north
+        value: '367584.8784'
+      - name: x_east
+        value: '1734488.4526'
