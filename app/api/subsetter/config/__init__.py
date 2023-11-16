@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     oauth2_client_id: str
     oauth2_client_secret: str
     oauth2_redirect_url: str
-    oauth2_cookie_redirect_url: str
+    vite_oauth2_redirect_url: str
 
     minio_access_key: str
     minio_secret_key: str
