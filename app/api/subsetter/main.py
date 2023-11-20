@@ -25,9 +25,9 @@ swagger_params = {
     "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
-app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
+app = FastAPI(servers=[{"url": os.path.expandvars(os.environ['VITE_APP_API_URL'])}], swagger_ui_parameters=swagger_params)
 
-origins = [os.environ['ALLOW_ORIGINS']]
+origins = [os.path.expandvars(os.environ['ALLOW_ORIGINS'])]
 
 app.add_middleware(
     CORSMiddleware,
