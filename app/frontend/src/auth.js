@@ -1,4 +1,4 @@
-import { ENDPOINTS, APP_URL, OAUTH2_REDIRECT_URL } from '@/constants'
+import { ENDPOINTS, APP_URL } from '@/constants'
 import { useAuthStore } from '@/stores/auth'
 // import { fetchWrapper } from '@/_helpers/fetch-wrapper';
 // function openLogInDialog(redirectTo) {
@@ -11,7 +11,7 @@ export async function logIn(callback) {
 
   // alter redirect uri
   const authUrl = new URL(json.authorization_url)
-  authUrl.searchParams.set('redirect_uri', OAUTH2_REDIRECT_URL)
+  authUrl.searchParams.set('redirect_uri', `${APP_URL}/#/auth-redirect`)
   window.open(
     authUrl.toString(),
     '_blank',
