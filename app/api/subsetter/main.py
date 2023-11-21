@@ -10,7 +10,7 @@ from subsetter.app.routers.access_control import router as access_control_router
 from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.storage import router as storage_router
 from subsetter.app.schemas import UserRead, UserUpdate
-from subsetter.app.users import SECRET, auth_backend, cookie_backend, cuahsi_oauth_client, fastapi_users
+from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from subsetter.config import get_settings
 
 # TODO: get oauth working with swagger/redoc
@@ -25,9 +25,9 @@ swagger_params = {
     "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
-app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
+app = FastAPI(servers=[{"url": os.path.expandvars(os.environ['VITE_APP_API_URL'])}], swagger_ui_parameters=swagger_params)
 
-origins = [os.environ['ALLOW_ORIGINS']]
+origins = [os.path.expandvars(os.environ['ALLOW_ORIGINS'])]
 
 app.add_middleware(
     CORSMiddleware,
@@ -66,19 +66,12 @@ app.include_router(
 app.include_router(
     fastapi_users.get_oauth_router(
         cuahsi_oauth_client,
-        cookie_backend,
+        auth_backend,
         SECRET,
-        redirect_url=get_settings().oauth2_cookie_redirect_url
+        redirect_url=get_settings().vite_oauth2_redirect_url
     ),
-    prefix="/auth/cookie",
+    prefix="/auth/front",
     tags=["auth"],
-)
-
-# This router provides the /auth/cookie/logout endpoint
-app.include_router(
-    fastapi_users.get_auth_router(cookie_backend),
-    prefix="/auth/cookie",
-    tags=["auth"]
 )
 
 app.include_router(
