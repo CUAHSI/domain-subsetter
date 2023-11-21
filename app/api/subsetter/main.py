@@ -25,7 +25,7 @@ swagger_params = {
     "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
-app = FastAPI(servers=[{"url": get_settings().vite_oauth2_redirect_url}], swagger_ui_parameters=swagger_params)
+app = FastAPI(servers=[{"url": get_settings().vite_app_api_url}], swagger_ui_parameters=swagger_params)
 
 origins = [get_settings().allow_origins]
 

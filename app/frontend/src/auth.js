@@ -13,7 +13,7 @@ export async function logIn(callback) {
   const authUrl = new URL(json.authorization_url)
   // TODO: use an env var for auth redirect instead of hard-coding
   // "#" hash routing was not passed from github env secret so had to hard code here.
-  authUrl.searchParams.set('redirect_uri', `${APP_URL}/#/auth-redirect`)
+  authUrl.searchParams.set('redirect_uri', `${APP_URL}#/auth-redirect`)
   window.open(
     authUrl.toString(),
     '_blank',
