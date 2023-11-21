@@ -1,7 +1,6 @@
 export const APP_NAME = import.meta.env.VITE_APP_NAME || "";
 export const APP_URL = import.meta.env.VITE_APP_URL || "";
 export const APP_BASE = import.meta.env.VITE_APP_BASE || "";
-export const OAUTH2_REDIRECT_URL = import.meta.env.VITE_OAUTH2_REDIRECT_URL || "";
 
 export const API_BASE = import.meta.env.VITE_APP_API_URL || "";
 export const ENDPOINTS = {
