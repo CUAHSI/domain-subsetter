@@ -26,6 +26,8 @@ spec:
                   value: '{{workflow.parameters.end-date}}'
                 - name: artifact-path
                   value: '{{workflow.parameters.output_path}}'
+                - name: aorc-secret
+                  value: '{{workflow.parameters.aorc-secret}}'
         - - name: metadata-extractor
             template: metadata-extractor
             arguments:
@@ -66,6 +68,7 @@ spec:
           - name: start-date
           - name: end-date
           - name: artifact-path
+          - name: aorc-secret
         artifacts:
           - name: shapefile-input
             path: /srv/shp-data
@@ -81,8 +84,8 @@ spec:
               key: '{{inputs.parameters.artifact-path}}/shape.gz'
       outputs:
         artifacts:
-          - name: aorc-output
-            path: /srv/output
+          - name: aorc-output-artifact
+            path: /output
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: subsetter-outputs
@@ -95,18 +98,32 @@ spec:
               key: '{{inputs.parameters.artifact-path}}/aorc_output.gz'
       metadata: {}
       container:
-        name: ''
-        image: cuahsi/aorc:latest
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/aorc:0.0.2
+        env:
+          - name: KEY
+            value: AKIATL6IACWUADAFYDMC
+          - name: SECRET
+            value: '{{inputs.parameters.aorc-secret}}'
+          - name: BUCKET_URL
+            value: s3://aorc-v1.1-zarr-1-year/
+          - name: SHAPE_FILE
+            value: /srv/shp-data/watershed.shp
+          - name: START_DATE
+            value: '{{inputs.parameters.start-date}}'
+          - name: END_DATE
+            value: '{{inputs.parameters.end-date}}'
+          - name: OUTPUT_FILE
+            value: /output/results.nc
+          - name: N_WORKERS
+            value: '2'
+          - name: MEMORY_LIMIT
+            value: 4GB
         command:
-          - python
-          - '-u'
-          - entry.py
+          - /bin/sh
+          - '-c'
         args:
-          - '{{inputs.parameters.start-date}}'
-          - '{{inputs.parameters.end-date}}'
-          - /srv/shp-data/watershed.shp
-          - /srv/output
-          - '--verbose'
+          - >-
+            python /app/collect-aorc-forcing-v1.1.py
         ports:
           - containerPort: 8787
         resources:
@@ -161,13 +178,15 @@ spec:
   arguments:
     parameters:
       - name: start-date
-        value: '2010-01-01 00:00:00'
+        value: '2020-01-01'
       - name: end-date
-        value: '2010-01-01 01:00:00'
+        value: '2020-01-2'
       - name: output_path
         value: qwerty
       - name: hucs
         value: 102600070103,102600070104,102600090205,102600050206,102600070102
+      - name: aorc-secret
+        value: changethis
   templateDefaults:
     inputs: {}
     outputs: {}
