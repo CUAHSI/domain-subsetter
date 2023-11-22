@@ -6,7 +6,6 @@ services:
     volumes:
       - ./output:/output
       - ./shape:/shape
-      - ./collect-aorc-forcing-v1.1.py:/app/collect-aorc-forcing-v1.1.py
     build:
       context: ./
       dockerfile: Dockerfile
