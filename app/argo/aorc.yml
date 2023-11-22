@@ -1,0 +1,178 @@
+metadata:
+  generateName: collect-aorc-forcing-v1-
+  namespace: workflows
+spec:
+  templates:
+    - name: aorc-subset-huc
+      inputs: {}
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: huc-to-shp
+            template: huc-to-shp
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: '{{workflow.parameters.output_path}}'
+                - name: hucs
+                  value: '{{workflow.parameters.hucs}}'
+        - - name: collect-aorc
+            template: collect-aorc
+            arguments:
+              parameters:
+                - name: start-date
+                  value: '{{workflow.parameters.start-date}}'
+                - name: end-date
+                  value: '{{workflow.parameters.end-date}}'
+                - name: artifact-path
+                  value: '{{workflow.parameters.output_path}}'
+        - - name: metadata-extractor
+            template: metadata-extractor
+            arguments:
+              parameters:
+                - name: artifact-path
+                  value: '{{workflow.parameters.output_path}}'
+    - name: huc-to-shp
+      inputs:
+        parameters:
+          - name: artifact-path
+          - name: hucs
+      outputs:
+        artifacts:
+          - name: shape-results
+            path: /output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/shape.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
+        args:
+          - '{{inputs.parameters.hucs}}'
+          - /output/watershed.shp
+        resources: {}
+
+    - name: collect-aorc
+      inputs:
+        parameters:
+          - name: start-date
+          - name: end-date
+          - name: artifact-path
+        artifacts:
+          - name: shapefile-input
+            path: /srv/shp-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/shape.gz'
+      outputs:
+        artifacts:
+          - name: aorc-output
+            path: /srv/output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/aorc_output.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: cuahsi/aorc:latest
+        command:
+          - python
+          - '-u'
+          - entry.py
+        args:
+          - '{{inputs.parameters.start-date}}'
+          - '{{inputs.parameters.end-date}}'
+          - /srv/shp-data/watershed.shp
+          - /srv/output
+          - '--verbose'
+        ports:
+          - containerPort: 8787
+        resources:
+          requests:
+            cpu: '2'
+            ephemeral-storage: 10Gi
+            memory: 16Gi
+    - name: metadata-extractor
+      inputs:
+        parameters:
+          - name: artifact-path
+        artifacts:
+          - name: extractor-input
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/aorc_output.gz'
+      outputs:
+        artifacts:
+          - name: extractor-output
+            path: /tmp/subset-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: subsetter-outputs
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.artifact-path}}/all.gz'
+      metadata: {}
+      container:
+        name: ''
+        image: scootna/hsextract:0.1
+        command:
+          - /bin/sh
+          - '-c'
+        args:
+          - >-
+            python3 hsextract/main.py extract /tmp/subset-data && mv
+            /tmp/subset-data/.hs /tmp/subset-data/hs
+        resources: {}
+  entrypoint: aorc-subset-huc
+  arguments:
+    parameters:
+      - name: start-date
+        value: '2010-01-01 00:00:00'
+      - name: end-date
+        value: '2010-01-01 01:00:00'
+      - name: output_path
+        value: qwerty
+      - name: hucs
+        value: 102600070103,102600070104,102600090205,102600050206,102600070102
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
+    retryStrategy:
+      limit: '0'
+    timeout: 600s
+
