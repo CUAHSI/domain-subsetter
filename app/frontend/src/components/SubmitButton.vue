@@ -16,7 +16,6 @@ function submit() {
   const model = modelsStore.selectedModel
   const hucsArray = Map.selected_hucs
   submitHucs(hucsArray, model.shortName)
-  modelsStore.selectedModel
 }
 async function submitHucs(selected_hucs, model) {
   selected_hucs = selected_hucs.map(a => a.hucid);

@@ -30,5 +30,9 @@ export const useModelsStore = defineStore('models', () => {
   ])
   const selectedModel = ref({})
 
-  return { models, selectedModel }
+  function updateModel(model) {
+    this.selectedModel = model
+}
+
+  return { models, selectedModel, updateModel }
 })

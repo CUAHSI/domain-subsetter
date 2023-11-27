@@ -53,7 +53,8 @@ const modelsStore = useModelsStore();
 const models = modelsStore.models
 
 function selectModel(model, toggle) {
-  modelsStore.selectedModel = model
+  // modelsStore.selectedModel = model
+  modelsStore.updateModel(model)
   toggle()
 }
 

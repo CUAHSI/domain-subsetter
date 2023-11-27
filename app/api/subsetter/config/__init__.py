@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     oauth2_client_secret: str
     oauth2_redirect_url: str
     vite_oauth2_redirect_url: str
+    vite_app_api_url: str
+    allow_origins: str
 
     minio_access_key: str
     minio_secret_key: str

@@ -9,8 +9,42 @@ import L from 'leaflet'
 import "leaflet-easybutton/src/easy-button";
 import { onMounted } from 'vue'
 import { useMapStore } from '@/stores/map'
+import { useModelsStore } from '@/stores/models'
 
 const mapStore = useMapStore()
+const modelsStore = useModelsStore();
+
+const modelAction = modelsStore.$onAction(
+  ({
+    name, // name of the action
+    store, // store instance, same as `someStore`
+    args, // array of parameters passed to the action
+    after, // hook after the action returns or resolves
+    onError, // hook if the action throws or rejects
+  }) => {
+    // this will trigger if the action succeeds and after it has fully run.
+    // it waits for any returned promised
+    after((result) => {
+        console.log(store.selectedModel.input)
+        if( store.selectedModel.input != "bbox" ){
+            removeBbox()
+        }else{
+            updateMapBBox()
+        }
+    })
+
+    // this will trigger if the action throws or returns a promise that rejects
+    onError((error) => {
+      console.warn(
+        `Failed "${name}" after ${Date.now() - startTime}ms.\nError: ${error}.`
+      )
+    })
+  }
+)
+
+// manually remove the listener
+// modelAction()
+
 const Map = mapStore.mapObject
 
 onMounted(() => {
@@ -902,12 +936,7 @@ function updateMapBBox() {
     Map.bbox = [xmin, ymin, xmax, ymax];
 
 
-    // remove the bbox layer if it exists
-    if ('BBOX' in Map.huclayers) {
-        // remove the polygon overlay 
-        Map.huclayers['BBOX'].clearLayers();
-        delete Map.huclayers['BBOX'];
-    }
+    removeBbox()
 
     // redraw the bbox layer with new coordinates
     let coords = [[[xmin, ymin],
@@ -932,9 +961,20 @@ function updateMapBBox() {
     // save the layer
     Map.huclayers['BBOX'] = json_polygon;
 
-    json_polygon.addTo(Map.map);
+    if (modelsStore.selectedModel.input == "bbox"){
+        json_polygon.addTo(Map.map);
+    }
 
     return bbox.is_valid
+}
+
+function removeBbox(){
+        // remove the bbox layer if it exists
+        if ('BBOX' in Map.huclayers) {
+        // remove the polygon overlay 
+        Map.huclayers['BBOX'].clearLayers();
+        delete Map.huclayers['BBOX'];
+    }
 }
 
 
