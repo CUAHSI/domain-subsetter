@@ -1,22 +1,14 @@
 import { defineStore } from 'pinia'
 import { ENDPOINTS } from '../constants'
 import { ref } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { fetchWrapper } from '@/_helpers/fetchWrapper';
 
-const authStore = useAuthStore();
-const jwt = authStore.getToken()
 
 export const useSubmissionsStore = defineStore('submissions', () => {
   const submissions = ref([])
 
   async function getSubmissions() {
-    const submissionResp = await fetch(`${ENDPOINTS.submissions}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      }
-    })
-    const submissionsObj = await submissionResp.json()
+    const submissionsObj = await fetchWrapper.get(`${ENDPOINTS.submissions}`)
     let submissions = submissionsObj.submissions
     this.submissions = submissions
   }

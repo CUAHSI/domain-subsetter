@@ -17,7 +17,7 @@ function request(method) {
             requestOptions.headers['Content-Type'] = 'application/json';
             requestOptions.body = JSON.stringify(body);
         }
-        console.log("url", url, "optoins", requestOptions)
+        console.log("url", url, "options", requestOptions)
         return fetch(url, requestOptions).then(handleResponse);
     }
 }
@@ -26,13 +26,14 @@ function request(method) {
 
 function authHeader(url) {
     // return auth header with jwt if user is logged in and request is to the api url
-    const { token } = useAuthStore();
-    const isLoggedIn = !!token?.token;
+    const authStore = useAuthStore();
+    const jwt = authStore.getToken()
+    const isLoggedIn = !!jwt;
     const isApiUrl = url.startsWith(import.meta.env.VITE_APP_API_URL);
-    alert(`Isapi:${isApiUrl} isloggedin:${isLoggedIn}`)
     if (isLoggedIn && isApiUrl) {
-        return { Authorization: `Bearer ${token.token}` };
+        return { Authorization: `Bearer ${jwt}` };
     } else {
+        console.log(`Isapi:${isApiUrl} isloggedin:${isLoggedIn}`)
         return {};
     }
 }
