@@ -1,6 +1,6 @@
 import { ENDPOINTS, APP_URL } from '@/constants'
 import { useAuthStore } from '@/stores/auth'
-// import { fetchWrapper } from '@/_helpers/fetch-wrapper';
+// import { fetchWrapper } from '@/_helpers/fetchWrapper';
 // function openLogInDialog(redirectTo) {
 //     this.logInDialog$.next(redirectTo);
 //   }
