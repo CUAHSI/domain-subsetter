@@ -4,6 +4,7 @@
 
 <script setup>
 import { useModelsStore } from '@/stores/models'
+import { useAuthStore } from '@/stores/auth'
 import { ENDPOINTS } from '@/constants'
 import { useMapStore } from '@/stores/map'
 
@@ -11,6 +12,7 @@ const mapStore = useMapStore()
 const Map = mapStore.mapObject
 
 const modelsStore = useModelsStore();
+const authStore = useAuthStore();
 
 function submit() {
   const model = modelsStore.selectedModel
@@ -19,16 +21,18 @@ function submit() {
 }
 async function submitHucs(selected_hucs, model) {
   selected_hucs = selected_hucs.map(a => a.hucid);
-  console.log(selected_hucs)
   const hucs = selected_hucs.join(",")
-  
+
+  const jwt = authStore.getToken()
   alert(`Submitting hucs: ${hucs} for ${model} subsetting`)
-    const parResp = await fetch(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`, {
-        method: "POST",
-        credentials: 'include',
-        mode: 'cors'
-    })
-    const parJson = await parResp.json()
-    alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+  const parResp = await fetch(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    }
+  })
+  const parJson = await parResp.json()
+  alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
 }
 </script>

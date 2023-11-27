@@ -5,18 +5,21 @@ export const useAuthStore = defineStore('auth', () => {
     const user = useStorage('user', {})
     const isLoggedIn = useStorage('isLoggedIn', false)
 
-    let storeToken = useStorage('storeToken', {})
+    const storeToken = useStorage('storeToken', {})
 
     async function login(token) {
-        // update pinia state
-        this.storeToken = token;
+        storeToken.value = token;
     }
 
     async function logout() {
-        this.user = {}
-        this.isLoggedIn = false;
-        this.storeToken = {};
+        user.value = {}
+        isLoggedIn.value = false;
+        storeToken.value = {};
+    }
+
+    function getToken(){
+        return storeToken.value.access_token
     }
   
-    return { isLoggedIn, user, login, logout }
+    return { isLoggedIn, user, login, logout, getToken, storeToken}
   })
