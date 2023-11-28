@@ -14,4 +14,5 @@ export const ENDPOINTS = {
   logs: `${API_BASE}/logs`,
   url: `${API_BASE}/url`,
   submissions: `${API_BASE}/submissions`,
+  refresh: `${API_BASE}/refresh`,
 };

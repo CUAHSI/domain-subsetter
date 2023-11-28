@@ -12,5 +12,10 @@ export const useSubmissionsStore = defineStore('submissions', () => {
     let submissions = submissionsObj.submissions
     this.submissions = submissions
   }
-  return { submissions, getSubmissions}
+
+  async function refreshWorkflows() {
+    return fetchWrapper.get(`${ENDPOINTS.refresh}`)
+  }
+
+  return { submissions, getSubmissions, refreshWorkflows}
 })

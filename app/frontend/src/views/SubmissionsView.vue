@@ -1,11 +1,13 @@
 <template>
   <div>SUBMISSIONS</div>
     <v-card class="ma-10" v-for="submission in submissionStore.submissions" :key="submission.id" width="400">
-      workflow_name: {{ submission.workflow_name }}
-      workflow_id: {{ submission.workflow_id }}
-      startedAt: {{ submission.startedAt }}
-      estimatedDuration: {{submission.estimatedDuration }}
-      <a :href="`${downloadEndpoint}/${submission.workflow_id}`">Download</a>
+      <div>workflow_name: {{ submission.workflow_name }}</div>
+      <div>workflow_id: {{ submission.workflow_id }}</div>
+      <div>startedAt: {{ submission.startedAt }}</div>
+      <div>estimatedDuration: {{submission.estimatedDuration }}</div>
+      <div>phase: {{ submission.phase }}</div>
+      <v-btn v-if="submission.phase == 'Succeeded'"><a :href="`${downloadEndpoint}/${submission.workflow_id}`" target="_blank">Download</a></v-btn>
+      <v-btn><a :href="`${refreshEndpoint}/${submission.workflow_id}`" target="_blank">Refresh</a></v-btn>
   </v-card>
   <v-container>
     <a href="https://workflows.argo.cuahsi.io/workflows">argo.cuahsi.io</a>
@@ -17,7 +19,9 @@ import { useSubmissionsStore } from '@/stores/submissions'
 import { ENDPOINTS } from '@/constants'
 
 const downloadEndpoint = ENDPOINTS.download
+const refreshEndpoint = ENDPOINTS.refresh
 const submissionStore = useSubmissionsStore();
+submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
 
 </script>
