@@ -1,5 +1,6 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
+import '@mdi/font/css/materialdesignicons.css'
 // import colors from 'vuetify/lib/util/colors'
 
 // https://vuetifyjs.com/en/features/theme/#javascript
