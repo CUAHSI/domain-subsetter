@@ -67,8 +67,9 @@ function onLogOut() {
 </script>
   
 <style lang="scss" scoped>
-::v-deep .v-card__text img {
+/* ::v-deep .v-card__text img {
     max-width: 12rem;
 }
+*/
 </style>
   

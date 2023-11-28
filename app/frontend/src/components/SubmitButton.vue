@@ -15,8 +15,13 @@ const modelsStore = useModelsStore();
 
 function submit() {
   const model = modelsStore.selectedModel
-  const hucsArray = Map.selected_hucs
-  submitHucs(hucsArray, model.shortName)
+  if (model.input === "hucs") {
+    const hucsArray = Map.selected_hucs
+    submitHucs(hucsArray, model.shortName)
+  } else {
+    const bbox = Map.bbox
+    submitBbox(bbox, model.shortName)
+  }
 }
 async function submitHucs(selected_hucs, model) {
   selected_hucs = selected_hucs.map(a => a.hucid);
@@ -25,6 +30,15 @@ async function submitHucs(selected_hucs, model) {
   alert(`Submitting hucs: ${hucs} for ${model} subsetting`)
 
   const parJson = await fetchWrapper.post(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`)
+  alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+}
+
+async function submitBbox(bbox, model) {
+  const [xmin, ymin, xmax, ymax] = bbox
+  const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmin}&x_east=${xmax}`
+  alert(`Submitting bbox: ${bbox} for ${model} subsetting`)
+
+  const parJson = await fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
   alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
 }
 </script>
