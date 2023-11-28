@@ -6,7 +6,6 @@
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
       <RouterView />
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
-      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
       <SnackBar />
       <TheFooter />
     </v-main>
@@ -21,7 +20,7 @@ import AlertPopup from './components/AlertPopup.vue'
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
-// TODO push alerts
+// TODO push alerts!
 // let alerts = [{text: "example", type: "success", closable: "true"}]
 let showMobileNavigation = ref(false)
 const paths = [
