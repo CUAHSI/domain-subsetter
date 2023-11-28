@@ -12,7 +12,6 @@
 </template>
   
 <script setup>
-import { defineProps } from 'vue';
 const props = defineProps({ message: { type: String, default: "" }, show: { default: true }, timeout: { type: Number, default: 2000 } })
 
 </script>
