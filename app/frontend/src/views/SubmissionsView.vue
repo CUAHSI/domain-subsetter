@@ -7,7 +7,7 @@
       <div>estimatedDuration: {{submission.estimatedDuration }}</div>
       <div>phase: {{ submission.phase }}</div>
       <v-btn v-if="submission.phase == 'Succeeded'"><a @click="downloadArtifact(submission)" target="_blank">Download</a></v-btn>
-      <v-btn><a :href="`${refreshEndpoint}/${submission.workflow_id}`" target="_blank">Refresh</a></v-btn>
+      <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
   </v-card>
   <v-container>
     <a href="https://workflows.argo.cuahsi.io/workflows">argo.cuahsi.io</a>
@@ -19,20 +19,23 @@ import { useSubmissionsStore } from '@/stores/submissions'
 import { ENDPOINTS } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
 
-const downloadEndpoint = ENDPOINTS.download
-const refreshEndpoint = ENDPOINTS.refresh
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
 
 async function downloadArtifact(submission){
+  const downloadEndpoint = ENDPOINTS.download
   const downloadUrl = `${downloadEndpoint}/${submission.workflow_id}`
-  let response = await fetchWrapper.get(downloadUrl)
+  const response = await fetchWrapper.get(downloadUrl)
   const link = document.createElement('a')
   link.href = response.url
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link);
+}
+
+async function refreshSubmission(submission){
+  submissionStore.refreshSubmission(submission)
 }
 
 </script>
