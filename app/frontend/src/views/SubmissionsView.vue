@@ -1,17 +1,40 @@
 <template>
-  <div>SUBMISSIONS</div>
-    <v-card class="ma-10" v-for="submission in submissionStore.submissions" :key="submission.id" width="400">
-      <div>workflow_name: {{ submission.workflow_name }}</div>
-      <div>workflow_id: {{ submission.workflow_id }}</div>
-      <div>startedAt: {{ submission.startedAt }}</div>
-      <div>estimatedDuration: {{submission.estimatedDuration }}</div>
-      <div>phase: {{ submission.phase }}</div>
-      <v-btn v-if="submission.phase == 'Succeeded'"><a @click="downloadArtifact(submission)" target="_blank">Download</a></v-btn>
-      <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
-      <v-btn><a @click="showArgo(submission)">Argo Metadata</a></v-btn>
-  </v-card>
+  <h2 class="ma-2 text-center">Submissions</h2>
   <v-container>
-    <a href="https://workflows.argo.cuahsi.io/workflows">argo.cuahsi.io</a>
+    <v-row align="center" justify="center">
+      <v-col
+        v-for="(submission, i) in submissionStore.submissions"
+        :key="i"
+        cols="auto"
+      >
+        <v-card
+          class="mx-auto"
+          variant="elevated"
+        >
+          <v-card-item>
+            <div>
+              <div class="text-overline mb-1">
+                {{ variant }}
+              </div>
+              <v-card-title> {{ submission.workflow_name }}</v-card-title>
+              <v-card-subtitle>{{ submission.workflow_id }}</v-card-subtitle>
+            </div>
+          </v-card-item>
+
+          <v-card-text>
+            <div>Submitted: {{ submission.startedAt }}</div>
+            <div>Estimated Duration: {{submission.estimatedDuration }}</div>
+            <div>Status: {{ submission.phase }}</div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn v-if="submission.phase == 'Succeeded'"><a @click="downloadArtifact(submission)">Download</a></v-btn>
+            <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
+            <v-btn><a @click="showArgo(submission)">Argo Metadata</a></v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
