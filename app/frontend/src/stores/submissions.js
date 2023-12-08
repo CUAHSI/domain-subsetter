@@ -17,5 +17,16 @@ export const useSubmissionsStore = defineStore('submissions', () => {
     return fetchWrapper.get(`${ENDPOINTS.refresh}`)
   }
 
-  return { submissions, getSubmissions, refreshWorkflows}
+  async function refreshSubmission (submission) {
+    const refreshEndpoint = ENDPOINTS.refresh
+    const refreshUrl = `${refreshEndpoint}/${submission.workflow_id}`
+    const response = await fetchWrapper.get(refreshUrl)
+    const objIndex = this.submissions.findIndex(s => s.workflow_id === submission.workflow_id);
+    if (objIndex > -1) {
+      this.submissions[objIndex]=response;
+    }
+    console.log(response)
+  }
+
+  return { submissions, getSubmissions, refreshWorkflows, refreshSubmission}
 })
