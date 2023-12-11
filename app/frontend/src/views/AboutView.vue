@@ -1,7 +1,7 @@
 <template>
+  <h2 class="ma-2 text-center">About</h2>
   <v-container class="about">
-    <h1 class="text-center">About</h1>
-    <v-sheet class="mb-4">
+    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" color="#141518" max-width="1200" rounded>
       <h5 id="background">Background</h5>
       <p>Large scale surface water and groundwater models are essential tools for improving our understanding of the
         dynamic
@@ -17,7 +17,7 @@
         input
         data.</p>
     </v-sheet>
-    <v-sheet class="mb-4">
+    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" color="#141518" max-width="1200" rounded>
       <h5 id="purpose">Purpose</h5>
       <p>The purpose of this application is to introduce a collaborative effort for preparing, publishing, and sharing
         subsets of the NOAA National Water Model and ParFlow-CONUS input data at watershed scales. Our hope is that these
@@ -32,7 +32,8 @@
         input data. We anticipate the CUAHSI Domain Subsetter will eventually become integrated into the larger <a
           href="https://www.hydroframe.org/"><em>HydroFrame</em></a> infrastructure.</p>
     </v-sheet>
-    <v-sheet class="mb-4">
+
+    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" color="#141518" max-width="1200" rounded>
       <h5 id="contributors">Contributors</h5>
       <p>Currently, this work is a collaborative effort between CUAHSI, Colorado School of Mines, NCAR, and the NWS/OWP.
         If
@@ -40,22 +41,23 @@
     </v-sheet>
   </v-container>
 
+  <h2 class="ma-2 text-center">Our Team</h2>
   <v-container>
-    <h2 class="text-center">Our Team</h2>
     <v-row>
-      <template v-for="(image, imgIdx) in imageLayout" :key="imgIdx">
-        <v-col :cols="image.cols">
-          <v-img :src="`https://www.cuahsi.org/uploads/team/img/_headshot/black-scott.jpg?image=${image.cols * 20}`" cover height="100%"></v-img>
-        </v-col>
-
-        <v-col v-if="image.children" cols="6" class="d-flex flex-column">
-          <v-row>
-            <v-col v-for="(children, childIdx) in image.children" :key="childIdx" :cols="children.cols">
-              <v-img :src="`https://www.cuahsi.org/uploads/team/img/_headshot/Devin-Cowan.jpg?image=${children.cols + childIdx}`" cover height="100%"></v-img>
-            </v-col>
-          </v-row>
-        </v-col>
-      </template>
+      <v-col v-for="member in members" :key="member.name" class="d-flex child-flex" cols="2">
+        <v-card>
+          <v-img :src="`${member.image}`" :width="400" aspect-ratio="1" cover>
+          </v-img>
+          <v-card-title class="text-h6">
+            {{ member.name }}
+          </v-card-title>
+          <v-card-subtitle>
+            {{ member.position }}
+            <v-divider></v-divider>
+            {{ member.org }}
+          </v-card-subtitle>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -69,16 +71,25 @@
 </style>
 
 <script setup>
-const imageLayout = [
-  { cols: 4 },
+
+const members = [
   {
-    cols: 8,
-    children: [{ cols: 12 }, { cols: 12 }],
+    name: 'Scott Black',
+    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/black-scott.jpg',
+    position: 'Senior Software Specialist',
+    org: 'CUAHSI'
   },
-  { cols: 6 },
-  { cols: 3 },
-  { cols: 9 },
-  { cols: 4 },
-  { cols: 8 },
+  {
+    name: 'Devin Cowan',
+    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Devin-Cowan.jpg',
+    position: 'Research Programmer',
+    org: 'CUAHSI'
+  },
+  {
+    name: 'Tony Castronova',
+    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/TCastronova.jpg',
+    position: 'Senior Research Hydrologist',
+    org: 'CUAHSI'
+  }
 ]
 </script>
