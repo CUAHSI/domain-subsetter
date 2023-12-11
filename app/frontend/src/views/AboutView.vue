@@ -43,8 +43,8 @@
 
   <h2 class="ma-2 text-center">Our Team</h2>
   <v-container>
-    <v-row>
-      <v-col v-for="member in members" :key="member.name" class="d-flex child-flex" cols="2">
+    <v-row align="center" justify="center">
+      <v-col v-for="member in members" :key="member.name" cols="auto">
         <v-card>
           <v-img :src="`${member.image}`" :width="400" aspect-ratio="1" cover
             lazy-src="https://www.hydroshare.org/static/static/img/home-page/carousel/bg3.jpg">
@@ -102,6 +102,12 @@ const members = [
     image: 'https://avatars.githubusercontent.com/u/42181890?v=4',
     position: 'PhD Candidate',
     org: 'Princeton University'
+  },
+  {
+    name: 'Irene Garousi-Nejad',
+    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Irene_headshot03.jpg',
+    position: 'Research Scientist',
+    org: 'CUAHSI'
   }
 ]
 </script>
