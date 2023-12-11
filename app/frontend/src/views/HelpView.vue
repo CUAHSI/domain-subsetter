@@ -3,7 +3,7 @@
   <v-container>
     <v-expansion-panels variant="inset" class="my-4">
       <v-expansion-panel>
-        <v-expansion-panel-title>National Water Model</v-expansion-panel-title>
+        <v-expansion-panel-title><h3>National Water Model</h3></v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-list>
             <v-list-item>
@@ -20,7 +20,7 @@
               </p>
             </v-list-item>
           </v-list>
-          <h3>General Resources</h3>
+          <h4>General Resources</h4>
           <p>It should be noted that we do not fully outline how to set up a WRF-Hydro model here and this page intended
             to
             give only general advice on the build process in reference to using WRF-Hydro with the CUAHSI NWM subsetting
@@ -68,8 +68,8 @@
               </p>
             </v-list-item>
           </v-list>
-          <h3>Basic Model Set-Up (i.e. How to use your
-            subsetted domain):</h3>
+          <h4>Basic Model Set-Up (i.e. How to use your
+            subsetted domain):</h4>
           <ol style="list-style-type: decimal">
             <v-list-item>Reference the following documents:
               <v-list>
@@ -102,9 +102,9 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-title>ParFlow</v-expansion-panel-title>
+        <v-expansion-panel-title><h3>ParFlow</h3></v-expansion-panel-title>
         <v-expansion-panel-text>
-          <h3 id="general-resources-1">General Resources</h3>
+          <h4 id="general-resources-1">General Resources</h4>
           <p><em>ParFlow CONUS:</em></p>
           <v-list>
             <v-list-item>Maxwell, R. M., Condon, L. E., &amp; Kollet, S. J. (2015). <a
@@ -149,7 +149,7 @@
                 groundwater dynamics on land surface processes using an integrated, distributed watershed model.</a> Water
               Resources Research, 44(2), W02402, doi:10.1029/2007WR006004</v-list-item>
           </v-list>
-          <h3 id="code-download">Code Download</h3>
+          <h4 id="code-download">Code Download</h4>
           <p>ParFlow is available on GitHub <a
               href="https://github.com/parflow/parflow">https://github.com/parflow/parflow</a>, including the newest and
             older versions. At the time of writing this documentation, the latest stable release is <a
@@ -175,7 +175,7 @@
                 GitHub <a href="https://github.com/parflow/docker">https://github.com/parflow/docker</a>.</p>
             </v-list-item>
           </v-list>
-          <h3 id="visualization">Visualization</h3>
+          <h4 id="visualization">Visualization</h4>
           <p>Both <em>VisIt</em> <a
               href="https://wci.llnl.gov/simulation/computer-codes/visit/executables">https://wci.llnl.gov/simulation/computer-codes/visit/executables</a>
             and <em>ParaView</em> <a href="https://www.paraview.org/download/">https://www.paraview.org/download/</a>
@@ -183,19 +183,19 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-title>Additional Resources</v-expansion-panel-title>
+        <v-expansion-panel-title><h3>Additional Resources</h3></v-expansion-panel-title>
         <v-expansion-panel-text>
-          <h3>NLDAS-2 Meteorological Forcing</h3>
+          <h4>NLDAS-2 Meteorological Forcing</h4>
           <p>The North American Land Data Assimilation System is a quality-controlled, spatially and temporally consistent
             meteorological dataset with many uses. It is one product that can be used to force subsetted NWM and PF-CONUS
             domains, after it has been regridded to the model domain. For NWM, [regridding tools] (<a
               href="https://ral.ucar.edu/projects/wrf_hydro/regridding-scripts">https://ral.ucar.edu/projects/wrf_hydro/regridding-scripts</a>)
             are available on the WRF-Hydro website. <a
               href="http://ldas.gsfc.nasa.gov/nldas/">http://ldas.gsfc.nasa.gov/nldas/</a></p>
-          <h3>Hydrologic Unit Code (HUC)</h3>
+          <h4>Hydrologic Unit Code (HUC)</h4>
           <p>Find HUC of interest using the USGS <em>Science in Your Watershed</em> website <a
               href="https://water.usgs.gov/wsc/map_index.html">https://water.usgs.gov/wsc/map_index.html</a></p>
-          <h3>NHDPlus High Resolution</h3>
+          <h4>NHDPlus High Resolution</h4>
           <p>The NHDPlus catchments and vector stream network are used directly in the NWM, as well as to inform
             development
             of a new PF-CONUS domain that extends to the coastlines (still to be released). <a
@@ -204,7 +204,7 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-title>Contact</v-expansion-panel-title>
+        <v-expansion-panel-title><h3>Contact</h3></v-expansion-panel-title>
         <v-expansion-panel-text>
           <p><strong><em>CUAHSI Subsetting Tool questions</em></strong><br />Contact Tony Castronova</p>
           <p><strong><em>WRF-Hydro specific questions</em></strong><br />Visit the <a

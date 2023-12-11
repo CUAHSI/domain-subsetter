@@ -2,7 +2,7 @@
   <h2 class="ma-2 text-center">About</h2>
   <v-container class="about">
     <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
-      <h5 id="background">Background</h5>
+      <h3 id="background">Background</h3>
       <p>Large scale surface water and groundwater models are essential tools for improving our understanding of the
         dynamic
         interaction between the water cycle and human activity. This is especially true when investigating human impacts,
@@ -18,7 +18,7 @@
         data.</p>
     </v-sheet>
     <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
-      <h5 id="purpose">Purpose</h5>
+      <h3 id="purpose">Purpose</h3>
       <p>The purpose of this application is to introduce a collaborative effort for preparing, publishing, and sharing
         subsets of the NOAA National Water Model and ParFlow-CONUS input data at watershed scales. Our hope is that these
         efforts will lower the barrier of entry for using and applying these models, as well as engage a variety of
@@ -34,7 +34,7 @@
     </v-sheet>
 
     <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
-      <h5 id="contributors">Contributors</h5>
+      <h3 id="contributors">Contributors</h3>
       <p>Currently, this work is a collaborative effort between CUAHSI, Colorado School of Mines, NCAR, and the NWS/OWP.
         If
         you are interested in collaborating with us on a similar project, please contact Tony Castronova</p>
@@ -46,7 +46,13 @@
     <v-row>
       <v-col v-for="member in members" :key="member.name" class="d-flex child-flex" cols="2">
         <v-card>
-          <v-img :src="`${member.image}`" :width="400" aspect-ratio="1" cover>
+          <v-img :src="`${member.image}`" :width="400" aspect-ratio="1" cover
+            lazy-src="https://www.hydroshare.org/static/static/img/home-page/carousel/bg3.jpg">
+            <template v-slot:placeholder>
+              <div class="d-flex align-center justify-center fill-height">
+                <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+              </div>
+            </template>
           </v-img>
           <v-card-title class="text-h6">
             {{ member.name }}
@@ -90,6 +96,12 @@ const members = [
     image: 'https://www.cuahsi.org/uploads/team/img/_headshot/TCastronova.jpg',
     position: 'Senior Research Hydrologist',
     org: 'CUAHSI'
+  },
+  {
+    name: 'Danielle Tijerina-Kreuzer',
+    image: 'https://avatars.githubusercontent.com/u/42181890?v=4',
+    position: 'PhD Candidate',
+    org: 'Princeton University'
   }
 ]
 </script>
