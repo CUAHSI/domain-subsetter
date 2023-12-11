@@ -16,6 +16,7 @@
           </v-btn>
         </nav>
       </v-card>
+      <v-spacer></v-spacer>
       <UserLogin @logged-in="login" v-if="!mdAndDown" :is-logged-in="auth.isLoggedIn"/>
 
       <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else />

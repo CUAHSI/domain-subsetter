@@ -4,14 +4,17 @@
             <template v-if="mobile">
                 <v-list class="text-body-1">
                     <v-list-item id="drawer-nav-login" v-if="!auth.isLoggedIn" v-bind="props">
-                        <v-icon class="mr-2">mdi-login</v-icon>
                         <span v-if="!auth.isLoggedIn">Log In</span>
                         <span v-else>Hello {{ auth.user.email }}!</span>
                     </v-list-item>
                 </v-list>
             </template>
             <template v-else>
-                <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" rounded>Log In</v-btn>
+                <v-card :elevation="2" v-if="!mdAndDown">
+                    <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" :prepend-icon="mdiAccount">
+                    Log In
+                    </v-btn>
+                </v-card>
             </template>
         </template>
         <template v-slot:default="{ isActive }">
@@ -35,12 +38,16 @@
         </template>
     </v-dialog>
     <div v-else>
-        <span>Welcome {{ auth.user.email }}</span>
-        <v-btn @click="logOutUser" rounded>Log Out</v-btn>
+        <v-card class="pa-2" :elevation="2" v-if="!mdAndDown">
+            <v-icon size="x-small" :icon="mdiAccountKey" />
+            <span class="pr-4">{{ auth.user.email }}</span>
+            <v-btn @click="logOutUser" rounded>Log Out</v-btn>
+                </v-card>
     </div>
 </template>
   
 <script setup>
+import { mdiAccount, mdiAccountKey } from '@mdi/js'
 import { useAuthStore } from '../stores/auth';
 import { logIn, logOut } from '@/auth.js'
 defineProps(['mobile'])
