@@ -10,7 +10,7 @@
         <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
         <span v-else>Select subset bounds</span>
       </div>
-      <div v-if="modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid">Revise bounding box</div>
+      <div v-if="bboxValid">Revise bounding box</div>
     </v-card-text>
   </v-card>
 </template>
@@ -31,7 +31,17 @@ const modelsStore = useModelsStore();
 const Map = mapStore.mapObject
 
 let canSubmit = computed(() => {
+  if (
+    modelsStore.selectedModel.input == 'bbox' &&
+    !mapStore.boxIsValid &&
+    mapStore.hucsAreSelected) {
+    return false
+  }
   return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null && authStore.isLoggedIn
+})
+
+let bboxValid = computed(() => {
+  return modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid && mapStore.hucsAreSelected
 })
 
 function submit() {

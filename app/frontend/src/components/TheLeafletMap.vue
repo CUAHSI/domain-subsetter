@@ -354,7 +354,6 @@ onMounted(() => {
     // validate the map
     let box = validate_bbox_size()
     toggle_submit_button(box.is_valid);
-    mapStore.boxIsValid = box.is_valid;
 
     // fix safari map sizing issue
     // $(window).on("resize", function () {
@@ -697,6 +696,7 @@ function clearSelection() {
 
     }
     Map.selected_hucs = []
+    mapStore.hucsAreSelected = false
 
     // clear the HUC table
     // clearHucTable();
@@ -953,7 +953,6 @@ function updateMapBBox() {
     // todo: add function to validate bbox and return back styling
     // check bbox area bounds
     let bbox = validate_bbox_size();
-    mapStore.boxIsValid = bbox.is_valid;
 
     // todo: create bbox validation function
     toggle_submit_button(bbox.is_valid)
@@ -1162,6 +1161,7 @@ function validate_bbox_size() {
         };
         valid = false;
     }
+    mapStore.boxIsValid = valid;
     return { style: style, is_valid: valid }
 }
 
