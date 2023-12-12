@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer location="left" width="auto" :model-value="props.show" temporary @update:modelValue="$emit('toggle')">
     <v-btn v-if="!props.show" color="primary" class="ma-0 pa-2 drawer-handle" @click="$emit('toggle')">
-      <v-icon>mdi-globe-model</v-icon>
+      <v-icon :icon="mdiGlobeModel"></v-icon>
       <span v-if="isModelSelected">{{ modelsStore.selectedModel.shortName }}</span>
       <span v-else>Select Model</span>
       </v-btn>
@@ -12,7 +12,7 @@
           v-slot="{ isSelected, toggle, selectedClass }">
           <v-card color="grey-lighten-1" :class="['ma-4', selectedClass]" height="200" width="100"
             @click="selectModel(hydroModel, toggle)">
-            <v-icon v-if="isSelected" icon="mdi-checkbox-marked"></v-icon>
+            <v-icon v-if="isSelected" :icon="mdiCheckboxMarked"></v-icon>
             <div class="d-flex fill-height align-center justify-center">
               <v-scale-transition>
                 <div class="pa-4">
@@ -32,7 +32,7 @@
           <section class="text-right">
             <v-btn v-if="isModelSelected" class="ma-2" color="primary" @click="$emit('toggle')">
               <span>Continue with {{ modelsStore.selectedModel.name }}</span>
-              <v-icon class="ma-2">mdi-arrow-right-bold-box-outline</v-icon>
+              <v-icon class="ma-2" :icon="mdiArrowRightBoldBoxOutline"></v-icon>
             </v-btn>
           </section>
         </v-sheet>
@@ -45,6 +45,7 @@
 import { useDisplay } from 'vuetify'
 import { useModelsStore } from '@/stores/models'
 import { computed } from 'vue';
+import { mdiGlobeModel, mdiCheckboxMarked, mdiArrowRightBoldBoxOutline } from '@mdi/js'
 
 const props = defineProps(['show'])
 defineEmits(['selectModel', 'toggle'])
