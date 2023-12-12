@@ -10,7 +10,7 @@
         <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
         <span v-else>Select subset bounds</span>
       </div>
-      <div v-if="modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid">Revise bounding box</div>
+      <div v-if="bboxValid">Revise bounding box</div>
     </v-card-text>
   </v-card>
 </template>
@@ -18,6 +18,7 @@
 <script setup>
 import { useModelsStore } from '@/stores/models'
 import { useAuthStore } from '../stores/auth';
+import { useAlertStore } from '../stores/alerts'
 import { ENDPOINTS } from '@/constants'
 import { useMapStore } from '@/stores/map'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
@@ -27,40 +28,47 @@ import { computed } from 'vue';
 const mapStore = useMapStore()
 const authStore = useAuthStore()
 const modelsStore = useModelsStore();
+const alertStore = useAlertStore()
 
 const Map = mapStore.mapObject
 
 let canSubmit = computed(() => {
+  if (
+    modelsStore.selectedModel.input == 'bbox' &&
+    !mapStore.boxIsValid &&
+    mapStore.hucsAreSelected) {
+    return false
+  }
   return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null && authStore.isLoggedIn
 })
 
-function submit() {
+let bboxValid = computed(() => {
+  return modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid && mapStore.hucsAreSelected
+})
+
+async function submit() {
   const model = modelsStore.selectedModel
   if (model.input === "hucs") {
     const hucsArray = Map.selected_hucs
-    submitHucs(hucsArray, model.shortName)
+    await submitHucs(hucsArray, model.shortName)
   } else {
     const bbox = Map.bbox
-    submitBbox(bbox, model.shortName)
+    await submitBbox(bbox, model.shortName)
   }
+  const message = "Your selection was submitted for subsetting"
+  alertStore.displayAlert({ title: "Submitted!", text: message, type: "success", closable: true, duration: 3 })
 }
 async function submitHucs(selected_hucs, model) {
   selected_hucs = selected_hucs.map(a => a.hucid);
   const hucs = selected_hucs.join(",")
-
-  alert(`Submitting hucs: ${hucs} for ${model} subsetting`)
-
-  const parJson = await fetchWrapper.post(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`)
-  alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+  fetchWrapper.post(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`)
 }
 
 async function submitBbox(bbox, model) {
   const [xmin, ymin, xmax, ymax] = bbox
   const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmin}&x_east=${xmax}`
-  alert(`Submitting bbox: ${bbox} for ${model} subsetting`)
 
-  const parJson = await fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
-  alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
+  fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
 }
 </script>
 

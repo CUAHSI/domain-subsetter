@@ -9,7 +9,7 @@
                 </v-list>
             </template>
             <template v-else>
-                <v-card :elevation="2">
+                <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
                     <v-btn v-bind="props" id="navbar-login" :prepend-icon="mdiAccount">
                         Log In
                     </v-btn>
@@ -37,11 +37,18 @@
         </template>
     </v-dialog>
     <div v-else>
-        <v-card class="pa-2" :elevation="2">
-            <v-icon size="x-small" :icon="mdiAccountKey" />
-            <span class="pr-4">{{ auth.user.email }}</span>
-            <v-btn @click="logOutUser" rounded>Log Out</v-btn>
+        <template v-if="mobile">
+            <v-list class="text-body-1">
+                <v-list-item @click="logOutUser">
+                    <span>Log out</span>
+                </v-list-item>
+            </v-list>
+        </template>
+        <template v-else>
+            <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
+            <v-btn @click="logOutUser" :prepend-icon="mdiAccountKey" :elevation="0">Log Out {{ auth.user.email }}</v-btn>
         </v-card>
+        </template>
     </div>
 </template>
   
@@ -76,9 +83,15 @@ function onLogOut() {
 </script>
   
 <style lang="scss" scoped>
-/* ::v-deep .v-card__text img {
-    max-width: 12rem;
+.nav-items {
+    border-radius: 2rem !important;
+    overflow: hidden;
+
+    .v-btn {
+        margin: 0;
+        border-radius: 0;
+        height: 39px !important;
+    }
 }
-*/
 </style>
   

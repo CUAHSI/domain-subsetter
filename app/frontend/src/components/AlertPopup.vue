@@ -1,9 +1,9 @@
 <template>
-  <v-alert class="zlert" :title="props.title" :text="props.text" closeable></v-alert>
+  <v-alert v-show="props.text != ''" class="zlert" :title="props.title" :text="props.text" :closeable="props.closeable"></v-alert>
 </template>
   
 <script setup>
-const props = defineProps({ text: { type: String, default: "" }, title: { default: "Alert" } })
+const props = defineProps({ text: { type: String, default: "" }, title: { default: "Alert" }, closeable: { default: true } })
 </script>
   
 <style scoped>
