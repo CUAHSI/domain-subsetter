@@ -1,44 +1,55 @@
 <template>
   <h2 class="ma-2 text-center">Submissions</h2>
-  <v-container>
-    <v-row align="center" justify="center">
-      <v-col v-for="(submission, i) in submissionStore.submissions" :key="i" cols="auto">
-        <v-card class="mx-auto" variant="elevated">
-          <v-card-item>
-            <div>
-              <div class="text-overline mb-1">
-                {{ variant }}
-              </div>
-              <v-card-title> {{ submission.workflow_name }}</v-card-title>
-              <v-card-subtitle>{{ submission.workflow_id }}</v-card-subtitle>
-            </div>
-          </v-card-item>
+  <v-container v-if="submissionStore.submissions.length > 0">
+    <v-tabs v-model="tab" align-tabs="center">
+      <v-tab :value="1">Table View</v-tab>
+      <v-tab :value="2">Cluster View</v-tab>
+    </v-tabs>
+    <v-window v-model="tab">
+      <v-window-item :value="1" :key="1">
+        <v-data-table :items="submissionStore.submissions"></v-data-table>
+      </v-window-item>
+      <v-window-item :value="2" :key="2">
+        <v-row align="center" justify="center">
+          <v-col v-for="(submission, i) in submissionStore.submissions" :key="i" cols="auto">
+            <v-card class="mx-auto" variant="elevated">
+              <v-card-item>
+                <div>
+                  <div class="text-overline mb-1">
+                    {{ variant }}
+                  </div>
+                  <v-card-title> {{ submission.workflow_name }}</v-card-title>
+                  <v-card-subtitle>{{ submission.workflow_id }}</v-card-subtitle>
+                </div>
+              </v-card-item>
 
-          <v-card-text>
-            <div>Submitted: {{ submission.startedAt }}</div>
-            <div>Estimated Duration: {{ submission.estimatedDuration }}</div>
-            <div>Status: {{ submission.phase }}</div>
-          </v-card-text>
+              <v-card-text>
+                <div>Submitted: {{ submission.startedAt }}</div>
+                <div>Estimated Duration: {{ submission.estimatedDuration }}</div>
+                <div>Status: {{ submission.phase }}</div>
+              </v-card-text>
 
-          <v-card-actions>
-            <v-btn v-if="submission.phase == 'Succeeded'"><a @click="downloadArtifact(submission)">Download</a></v-btn>
-            <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
-            <v-btn><a @click="showArgo(submission)">Argo Metadata</a></v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+              <v-card-actions>
+                <v-btn v-if="submission.phase == 'Succeeded'"><a
+                    @click="downloadArtifact(submission)">Download</a></v-btn>
+                <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
+                <v-btn><a @click="showArgo(submission)">Argo Metadata</a></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-window-item>
+    </v-window>
+  </v-container>
 
-    <v-container v-if="submissionStore.submissions.length == 0">
-      <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
-        <span v-if="!authStore.isLoggedIn">Please login to view your submissions.</span>
-        <span v-else>
-          You don't have any submissions yet.
-          Use the <router-link :to="{ path: `/` }">Subsetter Map</router-link> to create a submission.
-        </span>
-      </v-sheet>
-    </v-container>
-
+  <v-container v-if="submissionStore.submissions.length == 0">
+    <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
+      <span v-if="!authStore.isLoggedIn">Please login to view your submissions.</span>
+      <span v-else>
+        You don't have any submissions yet.
+        Use the <router-link :to="{ path: `/` }">Subsetter Map</router-link> to create a submission.
+      </span>
+    </v-sheet>
   </v-container>
 </template>
 
@@ -48,11 +59,14 @@ import { ENDPOINTS } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
 import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
+import { ref } from 'vue'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
+
+let tab = ref(1)
 
 async function downloadArtifact(submission) {
   const downloadEndpoint = ENDPOINTS.download
