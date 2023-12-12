@@ -35,7 +35,6 @@ const auth = useAuthStore();
 const { mdAndDown } = useDisplay()
 
 function login(){
-  console.log("logged in--app bar")
   auth.isLoggedIn = true
 }
 
