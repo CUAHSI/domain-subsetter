@@ -10,9 +10,11 @@ import "leaflet-easybutton/src/easy-button";
 import { onMounted } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
+import { useAlertStore } from '@/stores/alerts'
 
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
+const alertStore = useAlertStore();
 
 const modelAction = modelsStore.$onAction(
   ({
@@ -708,6 +710,13 @@ function clearSelection() {
 
     // clear and update the HUC textbox
     // document.querySelector('.mdl-textfield').MaterialTextfield.change('');
+    alertStore.displayAlert({
+        title: 'Cleared',
+        text: 'Your map selection was cleared',
+        type: 'info',
+        closable: true,
+        duration: 1
+      })
 }
 
 
