@@ -6,7 +6,10 @@
     <v-card-text>
       <div v-if="!authStore.isLoggedIn">Log in</div>
       <div v-if="modelsStore.selectedModel.value == null">Choose a model</div>
-      <div v-if="!mapStore.hucsAreSelected">Select {{ modelsStore.selectedModel.input }}</div>
+      <div v-if="!mapStore.hucsAreSelected">
+        <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
+        <span v-else>Select subset bounds</span>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -27,7 +30,7 @@ const modelsStore = useModelsStore();
 const Map = mapStore.mapObject
 
 let canSubmit = computed(() => {
-  return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null
+  return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null && authStore.isLoggedIn
 })
 
 function submit() {
