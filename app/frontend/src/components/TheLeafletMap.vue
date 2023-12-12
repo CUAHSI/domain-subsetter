@@ -17,31 +17,31 @@ const modelsStore = useModelsStore();
 const alertStore = useAlertStore();
 
 const modelAction = modelsStore.$onAction(
-  ({
-    name, // name of the action
-    store, // store instance, same as `someStore`
-    args, // array of parameters passed to the action
-    after, // hook after the action returns or resolves
-    onError, // hook if the action throws or rejects
-  }) => {
-    // this will trigger if the action succeeds and after it has fully run.
-    // it waits for any returned promised
-    after((result) => {
-        console.log(store.selectedModel.input)
-        if( store.selectedModel.input != "bbox" ){
-            removeBbox()
-        }else{
-            updateMapBBox()
-        }
-    })
+    ({
+        name, // name of the action
+        store, // store instance, same as `someStore`
+        args, // array of parameters passed to the action
+        after, // hook after the action returns or resolves
+        onError, // hook if the action throws or rejects
+    }) => {
+        // this will trigger if the action succeeds and after it has fully run.
+        // it waits for any returned promised
+        after((result) => {
+            console.log(store.selectedModel.input)
+            if (store.selectedModel.input != "bbox") {
+                removeBbox()
+            } else {
+                updateMapBBox()
+            }
+        })
 
-    // this will trigger if the action throws or returns a promise that rejects
-    onError((error) => {
-      console.warn(
-        `Failed "${name}" after ${Date.now() - startTime}ms.\nError: ${error}.`
-      )
-    })
-  }
+        // this will trigger if the action throws or returns a promise that rejects
+        onError((error) => {
+            console.warn(
+                `Failed "${name}" after ${Date.now() - startTime}ms.\nError: ${error}.`
+            )
+        })
+    }
 )
 
 // manually remove the listener
@@ -402,17 +402,17 @@ function resize_map() {
 //     toggle_delete_button();
 // }
 
-function getGageInfo(e) {
+async function getGageInfo(e) {
 
     // TESTING GAGE INFO BOX
     // quick and dirty buffer around cursor
     // bbox = lon_min, lat_min, lon_max, lat_max
     let buf = 0.001;
 
-    let buffered_bbox = (e.latlng.lng - buf) + ','
-        + (e.latlng.lat - buf) + ','
-        + (e.latlng.lng + buf) + ','
-        + (e.latlng.lat + buf);
+    let buffered_bbox = (e.latlng.lat - buf) + ','
+        + (e.latlng.lng - buf) + ','
+        + (e.latlng.lat + buf) + ','
+        + (e.latlng.lng + buf);
     let defaultParameters = {
         service: 'WFS',
         request: 'GetFeature',
@@ -426,31 +426,28 @@ function getGageInfo(e) {
     let gageURL = root + L.Util.getParamString(parameters);
 
     let gage_meta = {};
-    // $.ajax({
-    //     url: gageURL,
-    // async: false,
-    //     success: function (response) {
-    //     // check that a point was found
-    //     if (response.features.length > 0) {
-    // 	let atts = response.features[0].attributes;
-    // 	let geom = response.features[0].geometry;
-    // 	gage_meta.name = atts.STATION_NM;
-    // 	gage_meta.num = atts.SITE_NO;
-    // 	gage_meta.x = geom.x;
-    // 	gage_meta.y = geom.y;
-    //     }
-    // },
-    // error: function(response) {
-    //     // todo:
-    //     console.log(response);
-    // }
-    // });
-
+    console.log(gageURL)
+    let resp = await fetch(gageURL)
+    if (resp.ok) {
+        try {
+            let response = await resp.json()
+            if (response.features.length > 0) {
+                let atts = response.features[0].attributes;
+                let geom = response.features[0].geometry;
+                gage_meta.name = atts.STATION_NM;
+                gage_meta.num = atts.SITE_NO;
+                gage_meta.x = geom.x;
+                gage_meta.y = geom.y;
+            }
+        } catch (e) {
+            console.error("Error attempting json parse", e)
+        }
+    }
     return gage_meta;
 
 }
 
-function mapClick(e) {
+async function mapClick(e) {
 
     /*
     * The event handler for map click events
@@ -467,7 +464,7 @@ function mapClick(e) {
 
 
     // check if gage was clicked
-    let gage = getGageInfo(e);
+    let gage = await getGageInfo(e);
 
     // if a gage was selected, create a pop up and exit early.
     // we don't want to toggle HUC selection if a gage was clicked
@@ -716,7 +713,7 @@ function clearSelection() {
         type: 'info',
         closable: true,
         duration: 1
-      })
+    })
 }
 
 
@@ -847,7 +844,7 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                     // remove features, unlike the map click event.
                     if (remove_if_selected) {
                         // delete Map.selected_hucs[huc]
-                        Map.selected_hucs = Map.selected_hucs.filter((h)=>{ return h.hucid != huc.hucid})
+                        Map.selected_hucs = Map.selected_hucs.filter((h) => { return h.hucid != huc.hucid })
                         delete Map.hucbounds[huc.hucid];
                         // let row_id = getRowIdByName(huc.hucid)
                         // rmHucRow(row_id);
@@ -971,16 +968,16 @@ function updateMapBBox() {
     // save the layer
     Map.huclayers['BBOX'] = json_polygon;
 
-    if (modelsStore.selectedModel.input == "bbox"){
+    if (modelsStore.selectedModel.input == "bbox") {
         json_polygon.addTo(Map.map);
     }
 
     return bbox.is_valid
 }
 
-function removeBbox(){
-        // remove the bbox layer if it exists
-        if ('BBOX' in Map.huclayers) {
+function removeBbox() {
+    // remove the bbox layer if it exists
+    if ('BBOX' in Map.huclayers) {
         // remove the polygon overlay 
         Map.huclayers['BBOX'].clearLayers();
         delete Map.huclayers['BBOX'];
@@ -1080,7 +1077,7 @@ function update_huc_ids(huclist) {
     // convert huc array into csv string
     let hucs = huclist.join(",");
 
-    if (hucs == ""){
+    if (hucs == "") {
         mapStore.hucsAreSelected = false
     }
 
