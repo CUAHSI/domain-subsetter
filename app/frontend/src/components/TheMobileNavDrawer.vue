@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :model-value="props.show" class="mobile-nav-items" temporary app>
+  <v-navigation-drawer v-if="mdAndDown" :model-value="props.show" class="mobile-nav-items" temporary app>
     <v-list nav dense class="nav-items">
       <v-list class="text-body-1">
         <v-list-item v-for="path of paths" @click="$emit('toggleMobileNav')"
@@ -13,14 +13,25 @@
       <v-divider class="my-4"></v-divider>
 
       <v-list class="text-body-1">
-        <UserLogin mobile="true" />
+        <UserLogin @logged-in="login" mobile="true" />
       </v-list>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script setup>
+import UserLogin from '@/components/UserLogin.vue'
+import { useAuthStore } from '../stores/auth';
+import { useDisplay } from 'vuetify'
+
 const props = defineProps(['show', 'paths'])
 defineEmits(['toggleMobileNav'])
-import UserLogin from '@/components/UserLogin.vue'
+
+const auth = useAuthStore();
+const { mdAndDown } = useDisplay()
+
+function login(){
+  console.log("logged in--app bar")
+  auth.isLoggedIn = true
+}
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer location="left" width="auto" :model-value="props.show" temporary @update:modelValue="$emit('toggle')">
-    <v-btn v-if="!props.show" color="primary" class="ma-0 pa-2 drawer-handle" @click="$emit('toggle')">
+    <v-btn v-if="!props.show" size="large" color="primary" class="ma-0 pa-2 drawer-handle" @click="$emit('toggle')">
       <v-icon :icon="mdiGlobeModel"></v-icon>
       <span v-if="isModelSelected">{{ modelsStore.selectedModel.shortName }}</span>
       <span v-else>Select Model</span>
