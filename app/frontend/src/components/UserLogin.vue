@@ -3,16 +3,15 @@
         <template v-slot:activator="{ props }">
             <template v-if="mobile">
                 <v-list class="text-body-1">
-                    <v-list-item id="drawer-nav-login" v-if="!auth.isLoggedIn" v-bind="props">
-                        <span v-if="!auth.isLoggedIn">Log In</span>
-                        <span v-else>Hello {{ auth.user.email }}!</span>
+                    <v-list-item id="drawer-nav-login" v-bind="props">
+                        <span>Log In</span>
                     </v-list-item>
                 </v-list>
             </template>
             <template v-else>
-                <v-card :elevation="2" v-if="!mdAndDown">
-                    <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" :prepend-icon="mdiAccount">
-                    Log In
+                <v-card :elevation="2">
+                    <v-btn v-bind="props" id="navbar-login" :prepend-icon="mdiAccount">
+                        Log In
                     </v-btn>
                 </v-card>
             </template>
@@ -38,11 +37,11 @@
         </template>
     </v-dialog>
     <div v-else>
-        <v-card class="pa-2" :elevation="2" v-if="!mdAndDown">
+        <v-card class="pa-2" :elevation="2">
             <v-icon size="x-small" :icon="mdiAccountKey" />
             <span class="pr-4">{{ auth.user.email }}</span>
             <v-btn @click="logOutUser" rounded>Log Out</v-btn>
-                </v-card>
+        </v-card>
     </div>
 </template>
   
