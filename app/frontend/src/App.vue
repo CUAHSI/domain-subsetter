@@ -19,14 +19,10 @@ import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
 import AlertPopup from './components/AlertPopup.vue'
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
-import { ref, computed} from 'vue'
+import { ref } from 'vue'
 import { useAlertStore } from './stores/alerts'
 
 const alertStore = useAlertStore()
-
-const showAlert = computed(() => {
-  return alertStore.displayed != null && alertStore.displayed != {}
-})
 
 let showMobileNavigation = ref(false)
 const paths = [
