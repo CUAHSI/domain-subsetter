@@ -10,6 +10,7 @@
         <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
         <span v-else>Select subset bounds</span>
       </div>
+      <div v-if="modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid">Revise bounding box</div>
     </v-card-text>
   </v-card>
 </template>
