@@ -7,14 +7,12 @@
       </div>
 
       <v-spacer></v-spacer>
-      <SubmitButton />
     </div>
   </v-footer>
 </template>
 
 <script setup>
 import ThemeButton from './ThemeButton.vue';
-import SubmitButton from './SubmitButton.vue';
 </script>
 
 <style lang="scss" scoped></style>

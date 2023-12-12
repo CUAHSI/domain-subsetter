@@ -1,5 +1,13 @@
 <template>
-  <v-btn v-if="canSubmit" :prepend-icon="mdiSend" @click="submit">submit</v-btn>
+  <v-btn v-if="canSubmit" :prepend-icon="mdiSend" @click="submit" size="large" color="primary"
+    class="drawer-handle">submit</v-btn>
+  <v-card v-if="!canSubmit" color="primary" class="drawer-handle" max-width="300">
+    <v-card-title>Submit after:</v-card-title>
+    <v-card-text>
+      <div v-if="modelsStore.selectedModel.value == null">Choosing a model</div>
+      <div v-if="!mapStore.hucsAreSelected">Selecting {{ modelsStore.selectedModel.input }}</div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>
@@ -48,3 +56,12 @@ async function submitBbox(bbox, model) {
   alert(`Submitted ${parJson.workflow_name} workflow. Workflow_id: ${parJson.workflow_id}`)
 }
 </script>
+
+<style scoped>
+.drawer-handle {
+  position: absolute;
+  bottom: 30%;
+  right: 0%;
+  z-index: 9999;
+}
+</style>
