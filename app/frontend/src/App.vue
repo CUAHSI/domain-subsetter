@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
-      <AlertPopup v-for="alert in alerts" v-bind="alert" v-bind:key="alert.text"></AlertPopup>
+      <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
       <RouterView />
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
@@ -19,9 +19,15 @@ import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
 import AlertPopup from './components/AlertPopup.vue'
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
-import { ref } from 'vue'
-// TODO push alerts!
-// let alerts = [{text: "example", type: "success", closable: "true"}]
+import { ref, computed} from 'vue'
+import { useAlertStore } from './stores/alerts'
+
+const alertStore = useAlertStore()
+
+const showAlert = computed(() => {
+  return alertStore.displayed != null && alertStore.displayed != {}
+})
+
 let showMobileNavigation = ref(false)
 const paths = [
   {
