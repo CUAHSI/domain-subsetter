@@ -1,5 +1,5 @@
 <template>
-  <v-footer app color="navbar" class="d-flex flex-column">
+  <v-footer v-if="!$route.meta.hideNavigation" app color="navbar" class="d-flex flex-column">
     <div class="d-flex w-100 align-center">
       <ThemeButton/>
       <div class="text-center w-100">

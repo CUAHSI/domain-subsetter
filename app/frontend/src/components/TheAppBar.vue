@@ -1,6 +1,6 @@
 <template>
   <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
-    <v-container class="d-flex align-end full-height pa-2 align-center">
+    <div class="d-flex align-end full-height pa-2 align-center w-100">
       <router-link :to="{ path: `/` }" class="logo">
         <img src="@/assets/logo.png" alt="home" />
       </router-link>
@@ -20,7 +20,7 @@
       <UserLogin @logged-in="login" v-if="!mdAndDown" :is-logged-in="auth.isLoggedIn"/>
 
       <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else />
-    </v-container>
+    </div>
   </v-app-bar>
 </template>
 <script setup>
