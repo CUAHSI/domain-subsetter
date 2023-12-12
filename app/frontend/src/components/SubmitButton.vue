@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="submit">submit</v-btn>
+  <v-btn v-if="canSubmit" :prepend-icon="mdiSend" @click="submit">submit</v-btn>
 </template>
 
 <script setup>
@@ -7,11 +7,17 @@ import { useModelsStore } from '@/stores/models'
 import { ENDPOINTS } from '@/constants'
 import { useMapStore } from '@/stores/map'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
+import { mdiSend } from '@mdi/js'
+import { computed } from 'vue';
 
 const mapStore = useMapStore()
 const Map = mapStore.mapObject
 
 const modelsStore = useModelsStore();
+
+let canSubmit = computed(() => {
+  return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null
+})
 
 function submit() {
   const model = modelsStore.selectedModel
