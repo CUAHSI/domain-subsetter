@@ -1,7 +1,7 @@
 <template>
   <h2 class="ma-2 text-center">About</h2>
   <v-container class="about">
-    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
+    <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
       <h3 id="background">Background</h3>
       <p>Large scale surface water and groundwater models are essential tools for improving our understanding of the
         dynamic
@@ -17,7 +17,7 @@
         input
         data.</p>
     </v-sheet>
-    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
+    <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
       <h3 id="purpose">Purpose</h3>
       <p>The purpose of this application is to introduce a collaborative effort for preparing, publishing, and sharing
         subsets of the NOAA National Water Model and ParFlow-CONUS input data at watershed scales. Our hope is that these
@@ -33,7 +33,7 @@
           href="https://www.hydroframe.org/"><em>HydroFrame</em></a> infrastructure.</p>
     </v-sheet>
 
-    <v-sheet border="md" class="pa-6 text-white mx-auto ma-4" max-width="1200" rounded>
+    <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
       <h3 id="contributors">Contributors</h3>
       <p>Currently, this work is a collaborative effort between CUAHSI, Colorado School of Mines, NCAR, and the NWS/OWP.
         If

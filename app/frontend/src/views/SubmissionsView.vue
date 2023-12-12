@@ -35,6 +35,17 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-container v-if="submissionStore.submissions.length == 0">
+      <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
+          <span v-if="!authStore.isLoggedIn">Please login to view your submissions.</span>
+          <span v-else>
+            You don't have any submissions yet.
+            Use the <router-link :to="{ path: `/` }">Subsetter Map</router-link> to create a submission.
+          </span>
+      </v-sheet>
+  </v-container>
+
   </v-container>
 </template>
 
@@ -42,7 +53,10 @@
 import { useSubmissionsStore } from '@/stores/submissions'
 import { ENDPOINTS } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
+import { useAuthStore } from '@/stores/auth'
+import { RouterLink } from 'vue-router';
 
+const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
