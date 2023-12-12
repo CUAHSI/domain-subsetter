@@ -1,6 +1,6 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import '@mdi/font/css/materialdesignicons.css'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 // import colors from 'vuetify/lib/util/colors'
 
 // https://vuetifyjs.com/en/features/theme/#javascript
@@ -40,5 +40,12 @@ export default createVuetify({
       light,
       dark,
     }
-  }
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    },
+  },
 })

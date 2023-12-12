@@ -27,27 +27,22 @@ const paths = [
   {
     attrs: { to: "/" },
     label: "Map",
-    icon: "mdi-map",
   },
   {
     attrs: { to: "/submissions" },
     label: "Submissions",
-    icon: "mdi-tray-full",
   },
   {
     attrs: { to: "/api" },
     label: "API",
-    icon: "mdi-laptop",
   },
   {
     attrs: { to: "/about" },
     label: "About",
-    icon: "mdi-book-multiple",
   },
   {
     attrs: { to: "/help" },
     label: "Help",
-    icon: "mdi-help-box",
   },
 ];
 

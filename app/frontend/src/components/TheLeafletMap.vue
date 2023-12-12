@@ -53,7 +53,7 @@ onMounted(() => {
     Map.hucbounds = [];
     Map.popups = [];
     Map.buffer = 20;
-    Map.hucselected = false;
+    mapStore.hucsAreSelected = false;
     Map.huclayers = [];
     Map.selected_hucs = [];
     Map.reaches = {};
@@ -490,7 +490,7 @@ function mapClick(e) {
 
     // mark the huc as selected.
     // this will allow the bbox to be drawn.
-    Map.hucselected = true;
+    mapStore.hucsAreSelected = true;
 
     // get the latitude and longitude of the click event.
     // use this data to query ArcGIS WFS for the selected HUC object.
@@ -1069,6 +1069,10 @@ function update_huc_ids(huclist) {
 
     // convert huc array into csv string
     let hucs = huclist.join(",");
+
+    if (hucs == ""){
+        mapStore.hucsAreSelected = false
+    }
 
     // set the #hucs hidden field in the html template
     // using jquery
