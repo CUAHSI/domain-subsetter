@@ -7,12 +7,25 @@
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item :value="1" :key="1">
-        <v-data-table :items="submissionStore.submissions"></v-data-table>
+        <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy" multi-sort>
+          <template v-slot:item.phase="{ value }">
+            <v-chip :color="getColor(value)">
+              {{ value }}
+            </v-chip>
+          </template>
+
+          <template v-slot:item.actions="{ item }">
+            <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
+            <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
+            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'" @click="downloadArtifact(item)"></v-btn>
+          </template>
+
+        </v-data-table>
       </v-window-item>
       <v-window-item :value="2" :key="2">
         <v-row align="center" justify="center">
           <v-col v-for="(submission, i) in submissionStore.submissions" :key="i" cols="auto">
-            <v-card class="mx-auto" variant="elevated">
+            <v-card class="mx-auto" variant="elevated" outlined>
               <v-card-item>
                 <div>
                   <div class="text-overline mb-1">
@@ -26,7 +39,11 @@
               <v-card-text>
                 <div>Submitted: {{ submission.startedAt }}</div>
                 <div>Estimated Duration: {{ submission.estimatedDuration }}</div>
-                <div>Status: {{ submission.phase }}</div>
+                <div>Status:
+                  <v-chip :color="getColor(submission.phase)">
+                    {{ submission.phase }}
+                  </v-chip>
+                </div>
               </v-card-text>
 
               <v-card-actions>
@@ -60,6 +77,7 @@ import { fetchWrapper } from '@/_helpers/fetchWrapper';
 import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
+import { mdiRefresh, mdiDownload } from '@mdi/js'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
@@ -67,6 +85,24 @@ submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
 
 let tab = ref(1)
+let refreshing = ref({})
+
+function getColor(phase) {
+  if (phase === 'Succeeded') return 'green'
+  else if (phase === 'Failed') return 'red'
+  else return 'orange'
+}
+
+const headers = [
+  { title: 'ID', key: 'workflow_id' },
+  { title: 'Model', key: 'workflow_name' },
+  { title: 'Status', key: 'phase' },
+  { title: 'Started', key: 'startedAt' },
+  { title: 'Finished', key: 'finishedAt' },
+  { title: 'Estimated time', key: 'estimatedDuration' },
+  { title: 'Actions', key: 'actions', sortable: false },
+]
+const sortBy = [{ key: 'startedAt', order: 'desc' }]
 
 async function downloadArtifact(submission) {
   const downloadEndpoint = ENDPOINTS.download
@@ -94,7 +130,9 @@ async function showArgo(submission) {
 }
 
 async function refreshSubmission(submission) {
-  submissionStore.refreshSubmission(submission)
+  refreshing.value = submission
+  await submissionStore.refreshSubmission(submission)
+  refreshing.value = {}
 }
 
 </script>
