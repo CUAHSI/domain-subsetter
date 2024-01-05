@@ -25,9 +25,9 @@ swagger_params = {
     "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
-app = FastAPI(servers=[{"url": os.environ['VITE_APP_API_URL']}], swagger_ui_parameters=swagger_params)
+app = FastAPI(servers=[{"url": get_settings().vite_app_api_url}], swagger_ui_parameters=swagger_params)
 
-origins = [os.environ['ALLOW_ORIGINS']]
+origins = [get_settings().allow_origins]
 
 app.add_middleware(
     CORSMiddleware,
@@ -65,21 +65,14 @@ app.include_router(
 
 app.include_router(
     fastapi_users.get_oauth_router(
-        cuahsi_oauth_client,
-        cookie_backend,
-        SECRET,
-        redirect_url=get_settings().oauth2_cookie_redirect_url
+        cuahsi_oauth_client, cookie_backend, SECRET, redirect_url=get_settings().oauth2_cookie_redirect_url
     ),
     prefix="/auth/cookie",
     tags=["auth"],
 )
 
 # This router provides the /auth/cookie/logout endpoint
-app.include_router(
-    fastapi_users.get_auth_router(cookie_backend),
-    prefix="/auth/cookie",
-    tags=["auth"]
-)
+app.include_router(fastapi_users.get_auth_router(cookie_backend), prefix="/auth/cookie", tags=["auth"])
 
 app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),

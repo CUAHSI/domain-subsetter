@@ -8,8 +8,10 @@ from fastapi_users import BaseUserManager, FastAPIUsers
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, CookieTransport, JWTStrategy
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
 from httpx_oauth.errors import GetIdEmailError
-from httpx_oauth.oauth2 import OAuth2, GetAccessTokenError, OAuth2Token
+from httpx_oauth.oauth2 import OAuth2
+
 from subsetter.app.db import User, get_user_db
+from subsetter.config import get_settings
 
 SECRET = "SECRET"
 
@@ -18,7 +20,7 @@ class CUAHSIOAuth2(OAuth2):
     async def get_id_email(self, token: str) -> Tuple[str, str]:
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/userinfo",
+                get_settings().user_info_endpoint,
                 headers={"Authorization": f"Bearer {token}"},
             )
 
@@ -33,11 +35,11 @@ class CUAHSIOAuth2(OAuth2):
 client_params = dict(
     client_id=os.getenv("OAUTH2_CLIENT_ID"),
     client_secret=os.getenv("OAUTH2_CLIENT_SECRET"),
-    authorize_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/auth",
-    access_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
-    refresh_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/token",
-    revoke_token_endpoint="https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/revoke",
-    base_scopes=["openid"],
+    authorize_endpoint=get_settings().authorize_endpoint,
+    access_token_endpoint=get_settings().access_token_endpoint,
+    refresh_token_endpoint=get_settings().refresh_token_endpoint,
+    revoke_token_endpoint=get_settings().revoke_token_endpoint,
+    base_scopes=["openid", "profile"],
 )
 
 cuahsi_oauth_client = CUAHSIOAuth2(**client_params)
@@ -90,4 +92,10 @@ auth_backend = AuthenticationBackend(
 
 fastapi_users = FastAPIUsers[User, PydanticObjectId](get_user_manager, [cookie_backend, auth_backend])
 
-current_active_user = fastapi_users.current_user(active=True)
+current_active_fastapi_user = fastapi_users.current_user(active=True)
+
+
+async def current_active_user(user: User = Depends(current_active_fastapi_user)) -> User:
+    if user.username is None:
+        await user.update_profile()
+    return user
