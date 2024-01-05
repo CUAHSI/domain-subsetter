@@ -1,0 +1,62 @@
+metadata:
+  name: metadata-extractor
+  namespace: workflows
+spec:
+  templates:
+    - name: metadata-extractor
+      inputs:
+        parameters:
+          - name: bucket
+            value: '{{workflow.parameters.bucket}}'
+          - name: path
+            value: '{{workflow.parameters.path}}'        
+        artifacts:
+          - name: input-data
+            path: /tmp/input-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: '{{inputs.parameters.bucket}}'
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.path}}'
+      outputs:
+        artifacts:
+          - name: output-metadata
+            path: /tmp/input-data
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: '{{inputs.parameters.bucket}}'
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.path}}'
+      metadata: {}
+      container:
+        name: ''
+        image: scootna/hsextract:0.1
+        command:
+          - /bin/sh
+          - '-c'
+        args:
+          - >-
+            python3 hsextract/main.py extract /tmp/input-data
+        resources: {}
+  entrypoint: metadata-extractor
+  arguments:
+    parameters:
+      - name: bucket
+      - name: path
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
+    retryStrategy:
+      limit: '0'
+    timeout: 600s

@@ -55,10 +55,9 @@ class User(BeanieBaseUser, Document):
         async def get_profile(token: str) -> Tuple[str, str]:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/userinfo",
+                    get_settings().user_info_endpoint,
                     headers={"Authorization": f"Bearer {token}"},
                 )
-
                 return response.json()
 
         profile = await get_profile(self.oauth_accounts[0].access_token)

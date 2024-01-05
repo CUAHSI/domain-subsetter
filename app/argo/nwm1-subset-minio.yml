@@ -1,26 +1,6 @@
 metadata:
   name: nwm1-subset-minio
-  generateName: nwm1-subset-minio-
   namespace: workflows
-  uid: 8ee7d517-e73b-4464-a0ba-7032794819f5
-  resourceVersion: '293417038'
-  generation: 4
-  creationTimestamp: '2023-10-17T15:43:02Z'
-  labels:
-    workflows.argoproj.io/creator: '116317613255759624565'
-  managedFields:
-    - manager: argo
-      operation: Update
-      apiVersion: argoproj.io/v1alpha1
-      time: '2023-10-19T22:51:38Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:generateName: {}
-          f:labels:
-            .: {}
-            f:workflows.argoproj.io/creator: {}
-        f:spec: {}
 spec:
   templates:
     - name: nwm1-subset-with-extraction-template
@@ -32,8 +12,8 @@ spec:
             template: nwm1-subset-template
             arguments:
               parameters:
-                - name: artifact-path
-                  value: '{{workflow.parameters.output_path}}'
+                - name: output-path
+                  value: '{{workflow.parameters.output-path}}'
                 - name: y_south
                   value: '{{workflow.parameters.y_south}}'
                 - name: x_west
@@ -42,12 +22,16 @@ spec:
                   value: '{{workflow.parameters.y_north}}'
                 - name: x_east
                   value: '{{workflow.parameters.x_east}}'
+                - name: output-bucket
+                  value: '{{workflow.parameters.output-bucket}}'
         - - name: metadata-extractor
             template: metadata-extractor-template
             arguments:
               parameters:
-                - name: artifact-path
-                  value: '{{workflow.parameters.output_path}}'
+                - name: output-path
+                  value: '{{workflow.parameters.output-path}}'
+                - name: output-bucket
+                  value: '{{workflow.parameters.output-bucket}}'
     - name: nwm1-subset-template
       inputs:
         parameters:
@@ -55,7 +39,8 @@ spec:
           - name: x_west
           - name: y_north
           - name: x_east
-          - name: artifact-path
+          - name: output-path
+          - name: output-bucket
         artifacts:
           - name: nwm1-input-data-new
             path: /srv/domain
@@ -75,14 +60,14 @@ spec:
             path: /srv/output
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+              key: '{{inputs.parameters.output-path}}/subset.gz'
       metadata: {}
       container:
         name: ''
@@ -102,34 +87,35 @@ spec:
     - name: metadata-extractor-template
       inputs:
         parameters:
-          - name: artifact-path
+          - name: output-path
+          - name: output-bucket
         artifacts:
           - name: extractor-input
             path: /tmp/subset-data
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+              key: '{{inputs.parameters.output-path}}/subset.gz'
       outputs:
         artifacts:
           - name: extractor-output
             path: /tmp/subset-data
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/all.gz'
+              key: '{{inputs.parameters.output-path}}/all.gz'
       metadata: {}
       container:
         name: ''
@@ -145,10 +131,6 @@ spec:
   entrypoint: nwm1-subset-with-extraction-template
   arguments:
     parameters:
-      - name: username
-        value: abc123
-      - name: path_guid
-        value: abc123
       - name: y_south
         value: '382582.18746'
       - name: x_west
@@ -157,3 +139,7 @@ spec:
         value: '367584.8784'
       - name: x_east
         value: '1734488.4526'
+      - name: output-path
+        value: asdf
+      - name: output-bucket
+        value: 'subsetter-outputs'

@@ -28,6 +28,31 @@ class Settings(BaseSettings):
     minio_api_url: str
 
     cloud_run: bool = False
+    vite_app_api_url: str
+    allow_origins: str
+
+    OIDC_BASE_URL: str
+
+    @property
+    def user_info_endpoint(self):
+        return self.OIDC_BASE_URL + "userinfo"
+
+    @property
+    def authorize_endpoint(self):
+        return self.OIDC_BASE_URL + "auth"
+
+    @property
+    def access_token_endpoint(self):
+        return self.OIDC_BASE_URL + "token"
+
+    @property
+    def refresh_token_endpoint(self):
+        # TODO look up refresh token endpoint
+        return self.OIDC_BASE_URL + "token"
+
+    @property
+    def revoke_token_endpoint(self):
+        return self.OIDC_BASE_URL + "revoke"
 
 
 @lru_cache()
