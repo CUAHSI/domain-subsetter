@@ -11,7 +11,7 @@ from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
 from subsetter.app.db import User, get_user_db
-from subsetter.config import get_settings
+from subsetter.config import get_settings, get_minio_client
 
 SECRET = "SECRET"
 
@@ -51,6 +51,8 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         await user.update_profile()
+        if not get_minio_client().bucket_exists(user.username):
+            get_minio_client().make_bucket(user.username)
         print(f"User {user.id} has registered.")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Optional[Request] = None):
