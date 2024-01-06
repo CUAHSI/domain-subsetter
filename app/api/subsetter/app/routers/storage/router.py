@@ -1,29 +1,27 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from subsetter.app.db import Submission, User
 from subsetter.app.models import WorkflowDep
-from subsetter.app.users import current_active_user
 from subsetter.config import get_minio_client
 
 router = APIRouter()
 
 
-@router.get('/presigned/put', description="Create a download url")
+@router.get('/presigned/get/{workflow_id}', description="Create a download url")
 async def presigned_put_minio(workflow_params: WorkflowDep):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    url = get_minio_client().presigned_put_object(
-        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/all.gz"
+    url = get_minio_client().presigned_get_object(
+        workflow_params.user.username, f"argo_workflows/{submission.workflow_name}/{submission.workflow_id}/all.gz"
     )
     return {'url': url}
 
 
+'''
 @router.post('/bucket/create')
 async def create_user_bucket(
     user: User = Depends(current_active_user), description="Creates a bucket named with the username"
 ):
     if not get_minio_client().bucket_exists(user.username):
         get_minio_client().make_bucket(user.username)
-
 
 @router.get('/upload/{user_name}/workflow/{workflow_id}')
 async def share_workflow_with_user(
@@ -43,7 +41,7 @@ async def share_workflow_with_user(
     submission.remove_user(user_name)
     await user.update_submission(submission)
     return User.get(document_id=user.document_id)
-
+'''
 
 # @router.post('/extract/{workflow_id}')
 # async def extract_workflow_artifact(workflow_params: WorkflowDep) -> SubmissionResponseModel:

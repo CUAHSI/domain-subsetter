@@ -33,14 +33,6 @@ class Submission(BaseModel):
     startedAt: Optional[str] = None
     finishedAt: Optional[str] = None
     estimatedDuration: Optional[int] = None
-    view_users: Optional[List[str]] = []
-
-    def add_user(self, username: str):
-        self.view_users.append(username)
-        self.view_users = list(set(self.view_users))
-
-    def remove_user(self, username: str):
-        self.view_users.remove(username)
 
 
 class User(BeanieBaseUser, Document):
