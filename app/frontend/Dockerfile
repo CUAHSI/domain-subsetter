@@ -1,6 +1,6 @@
 FROM node:20.9.0 as build-stage
 WORKDIR /app
-COPY env.template ../.env
+COPY .env ../.env
 COPY ./frontend .
 RUN npm update
 RUN npm run build
