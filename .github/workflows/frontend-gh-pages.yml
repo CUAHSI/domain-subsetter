@@ -44,6 +44,7 @@ jobs:
           echo VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }} >> .env
           echo VITE_APP_URL=${{ secrets.VITE_APP_URL }} >> .env
           echo VITE_OAUTH2_REDIRECT_URL=${{ secrets.VITE_OAUTH2_REDIRECT_URL }} >> .env
+          echo VITE_APP_BASE=${{ secrets.VITE_APP_BASE }} >> .env
           cp .env ../.env
       - name: Install dependencies
         run: npm install
