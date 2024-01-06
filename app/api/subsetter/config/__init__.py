@@ -28,8 +28,6 @@ class Settings(BaseSettings):
     minio_api_url: str
 
     cloud_run: bool = False
-    vite_app_api_url: str
-    allow_origins: str
 
     OIDC_BASE_URL: str
 
