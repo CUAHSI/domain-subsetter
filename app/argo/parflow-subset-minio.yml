@@ -9,7 +9,9 @@ spec:
       metadata: {}
       steps:
         - - name: huc-to-shp
-            template: huc-to-shp
+            templateRef:
+              name: huc-to-shp
+              template: huc-to-shp
             arguments:
               parameters:
                 - name: output-path
@@ -40,36 +42,6 @@ spec:
                   value: '{{workflow.parameters.output-path}}'
                 - name: output-path
                   value: '{{workflow.parameters.output-path}}'
-    - name: huc-to-shp
-      inputs:
-        parameters:
-          - name: output-path
-          - name: output-bucket
-          - name: hucs
-      outputs:
-        artifacts:
-          - name: shape-results
-            path: /output
-            archive:
-              none: {}
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: '{{inputs.parameters.output-bucket}}'
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.output-path}}'
-      metadata: {}
-      container:
-        name: ''
-        image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
-        args:
-          - '{{inputs.parameters.hucs}}'
-          - /output/watershed.shp
-        resources: {}
     - name: parflow-subset-v1
       inputs:
         parameters:
@@ -105,8 +77,6 @@ spec:
         artifacts:
           - name: subset-results
             path: /srv/shape
-            archive:
-              none: {}
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.output-bucket}}'

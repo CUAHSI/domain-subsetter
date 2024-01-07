@@ -14,7 +14,7 @@ spec:
             value: '{{workflow.parameters.output-path}}'
         artifacts:
           - name: input-data
-            path: /tmp/input-data
+            path: /tmp/resource
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.bucket}}'
@@ -28,9 +28,7 @@ spec:
       outputs:
         artifacts:
           - name: output-metadata
-            path: /tmp/input-data
-            archive:
-              none: {}
+            path: /tmp/resource
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.bucket}}'
@@ -50,7 +48,7 @@ spec:
           - '-c'
         args:
           - >-
-            python3 hsextract/main.py extract /tmp/input-data
+            python3 hsextract/main.py extract /tmp/resource
         resources: {}
   entrypoint: metadata-extractor
   arguments:

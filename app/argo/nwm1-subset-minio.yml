@@ -62,8 +62,6 @@ spec:
         artifacts:
           - name: subset-results
             path: /srv/output
-            archive:
-              none: {}
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.output-bucket}}'
