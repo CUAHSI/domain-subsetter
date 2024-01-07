@@ -2,54 +2,72 @@ import json
 import os
 import subprocess
 import tempfile
+from typing import Dict
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from subsetter.app.db import Submission, User
+from subsetter.app.db import User, get_hydroshare_access_db
 from subsetter.app.routers.access_control.policy_generation import minio_policy
 from subsetter.app.users import current_active_user
 
 router = APIRouter()
 
 
-class ShareWorkflowBody(BaseModel):
+class UserAccess(BaseModel):
+    owner: list[str]
+    edit: list[str]
+    view: list[str]
+
+
+class MinioUserResourceAccess(BaseModel):
+    owners: list[str]
+    resource_id: str
+    minio_resource_url: str
+
+
+class MinioUserAccess(BaseModel):
+    owner: list[MinioUserResourceAccess]
+    edit: list[MinioUserResourceAccess]
+    view: list[MinioUserResourceAccess]
+
+
+class UserPrivilege(BaseModel):
     username: str
-    workflow_id: str
+    all: UserAccess
+    minio: MinioUserAccess
 
 
-@router.post('/policy/add')
-async def share_workflow_with_user(share_params: ShareWorkflowBody, user: User = Depends(current_active_user)):
-    submission: Submission = user.get_submission(share_params.workflow_id)
-    if submission:
-        submission.add_user(share_params.username)
-        await user.update_submission(submission)
-        return user
-    else:
-        return HTTPException(status_code=400)
+def check_owners_in_bucket_path(resource_access: MinioUserResourceAccess):
+    for owner in resource_access.owners:
+        if f"/browser/{owner}/" in resource_access.minio_resource_url:
+            return owner
+    return None
 
 
-@router.delete('/policy/remove')
-async def unshare_workflow_with_user(share_params: ShareWorkflowBody, user: User = Depends(current_active_user)):
-    submission: Submission = user.get_submission(share_params.workflow_id)
-    if submission:
-        submission.remove_user(share_params.username)
-        await user.update_submission(submission)
-        return user
-    else:
-        return HTTPException(status_code=400)
+def sort_privileges(user_accesses: list[MinioUserResourceAccess]):
+    authorized_users = {}
+    for user_access in user_accesses:
+        bucket_owner = check_owners_in_bucket_path(user_access)
+        if bucket_owner:
+            resource_path = user_access.minio_resource_url.split(f"{bucket_owner}/", 1)[-1]
+            authorized_users.setdefault(bucket_owner, []).append(resource_path)
+    return authorized_users
 
 
 @router.get('/policy')
 async def generate_user_policy(user: User = Depends(current_active_user)):
-    users = await User.find({"submissions.view_users": user.username}).to_list()
-    # this should be rewritten to query all on the db, but I don't have time to figure that out now
-    matching_submissions = []
-    for u in users:
-        for submission in u.submissions:
-            if user.username in submission.view_users:
-                matching_submissions.append((u, submission))
-    return minio_policy(user, matching_submissions)
+    hydroshare_access_db = get_hydroshare_access_db()
+    user_privilege = await hydroshare_access_db.userprivileges.find_one({"username": user.username})
+    user_privilege: UserPrivilege = UserPrivilege(**user_privilege)
+
+    # Check Authorization
+    minio_user_access: MinioUserAccess = user_privilege.minio
+    authorized_owners: Dict[str, list[str]] = sort_privileges(minio_user_access.owner)
+    authorized_edits: Dict[str, list[str]] = sort_privileges(minio_user_access.edit)
+    authorized_views: Dict[str, list[str]] = sort_privileges(minio_user_access.view)
+
+    return minio_policy(user, authorized_owners, authorized_edits, authorized_views)
 
 
 @router.get('/profile')

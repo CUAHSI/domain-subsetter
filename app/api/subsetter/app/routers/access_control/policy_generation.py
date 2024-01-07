@@ -44,6 +44,7 @@ def refresh_minio_policy(user):
 '''
 
 import copy
+from typing import Dict
 
 
 def bucket_name(resource_id: str):
@@ -52,7 +53,7 @@ def bucket_name(resource_id: str):
     return "subsetter-outputs"
 
 
-def create_view_statements(owner, submissions) -> list:
+def create_view_statements(user, views: Dict[str, list[str]]) -> list:
     view_statement_template_get = {
         "Effect": "Allow",
         "Action": ["s3:GetBucketLocation", "s3:GetObject"],
@@ -64,35 +65,36 @@ def create_view_statements(owner, submissions) -> list:
         "Resource": [],
         "Condition": {"StringLike": {"s3:prefix": []}},
     }
-    bucketname = bucket_name("blah")
-    get_resources = [f"arn:aws:s3:::{bucketname}/{owner.username}/*"]
+
+    get_resources = [f"arn:aws:s3:::{user.username}/*"]
     view_statement = copy.deepcopy(view_statement_template_listing)
-    view_statement["Resource"] = [f"arn:aws:s3:::{bucketname}"]
-    view_statement["Condition"]["StringLike"]["s3:prefix"] = [f"{owner.username}/*"]
+    view_statement["Resource"] = [f"arn:aws:s3:::{user.username}"]
+    del view_statement["Condition"]
     list_statements = [view_statement]
-    for user, submission in submissions:
-        bucketname = bucket_name(submission.workflow_id)
-        get_resources.append(
-            f"arn:aws:s3:::{bucketname}/{user.username}/{submission.workflow_name}/{submission.workflow_id}/*"
-        )
+    for bucket_owner, resource_paths in views.items():
+        get_resources = get_resources + [
+            f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths
+        ]
         view_statement = copy.deepcopy(view_statement_template_listing)
-        view_statement["Resource"] = [f"arn:aws:s3:::{bucketname}"]
+        view_statement["Resource"] = [f"arn:aws:s3:::{bucket_owner}"]
         view_statement["Condition"]["StringLike"]["s3:prefix"] = [
-            f"{user.username}/{submission.workflow_name}/{submission.workflow_id}/*"
+            f"{resource_path}/*" for resource_path in resource_paths
         ]
         list_statements.append(view_statement)
     view_statement_template_get["Resource"] = get_resources
     return list_statements + [view_statement_template_get]
 
 
-# def create_edit_owner_statements(resource_ids: list[str]) -> list:
-#    edit_statement_template = {"Effect": "Allow", "Action": ["s3:*"], "Resource": []}
-#    edit_statement_template["Resource"] = [
-#        f"arn:aws:s3:::{bucket_name(resource_id)}/hydroshare/{resource_id}/*" for resource_id in resource_ids
-#    ]
-#    return [edit_statement_template]
+def create_edit_statements(user, edits: Dict[str, list[str]]) -> list:
+    edit_statement_template = {"Effect": "Allow", "Action": ["s3:*"], "Resource": []}
+    resources = []
+    for bucket_owner, resource_paths in edits.items():
+        resources = resources + [f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths]
+    edit_statement_template["Resource"] = resources
+    return [edit_statement_template]
 
 
-def minio_policy(user, view_submissions):
-    view_statements = create_view_statements(user, view_submissions)
-    return {"Version": "2012-10-17", "Statement": view_statements}
+def minio_policy(user, owners: Dict[str, list[str]], edits: Dict[str, list[str]], views: Dict[str, list[str]]):
+    statements = create_view_statements(user, views)
+    statements = statements + create_edit_statements(user, edits)
+    return {"Version": "2012-10-17", "Statement": statements}
