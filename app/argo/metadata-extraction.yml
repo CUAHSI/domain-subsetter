@@ -44,7 +44,7 @@ spec:
       metadata: {}
       container:
         name: ''
-        image: scootna/hsextract:0.3
+        image: scootna/hsextract:0.4.1
         command:
           - /bin/sh
           - '-c'
