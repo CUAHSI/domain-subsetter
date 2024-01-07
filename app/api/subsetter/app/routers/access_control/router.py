@@ -11,6 +11,8 @@ from subsetter.app.db import User, get_hydroshare_access_db
 from subsetter.app.routers.access_control.policy_generation import minio_policy
 from subsetter.app.users import current_active_user
 
+from .policy_generation import refresh_minio_policy
+
 router = APIRouter()
 
 
@@ -76,22 +78,7 @@ async def refresh_profile(user: User = Depends(current_active_user)):
     return user
 
 
-def admin_policy_create(name, policy, target="cuahsi"):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        print(policy)
-        filepath = os.path.join(tmpdirname, "metadata.json")
-        fp = open(filepath, "w")
-        fp.write(json.dumps(policy))
-        fp.close()
-        arguments = ['mc', '--json', 'admin', 'policy', 'create', target, name, filepath]
-        try:
-            _output = subprocess.check_output(arguments)
-        except subprocess.CalledProcessError as e:
-            raise
-
-
 @router.get('/policy/minio/cuahsi')
 async def generate_and_save_user_policy(user: User = Depends(current_active_user)):
     user_policy = await generate_user_policy(user)
-    admin_policy_create(user.username, user_policy)
-    return user_policy
+    return refresh_minio_policy(user, user_policy)
