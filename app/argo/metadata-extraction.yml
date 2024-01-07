@@ -8,8 +8,10 @@ spec:
         parameters:
           - name: bucket
             value: '{{workflow.parameters.bucket}}'
-          - name: path
-            value: '{{workflow.parameters.path}}'        
+          - name: input-path
+            value: '{{workflow.parameters.input-path}}'
+          - name: output-path
+            value: '{{workflow.parameters.output-path}}'
         artifacts:
           - name: input-data
             path: /tmp/input-data
@@ -22,11 +24,13 @@ spec:
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.path}}'
+              key: '{{inputs.parameters.input-path}}'
       outputs:
         artifacts:
           - name: output-metadata
             path: /tmp/input-data
+            archive:
+              none: {}
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.bucket}}'
@@ -36,11 +40,11 @@ spec:
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.path}}'
+              key: '{{inputs.parameters.output-path}}'
       metadata: {}
       container:
         name: ''
-        image: scootna/hsextract:0.1
+        image: scootna/hsextract:0.3
         command:
           - /bin/sh
           - '-c'
@@ -52,7 +56,8 @@ spec:
   arguments:
     parameters:
       - name: bucket
-      - name: path
+      - name: input-path
+      - name: output-path
   templateDefaults:
     inputs: {}
     outputs: {}
