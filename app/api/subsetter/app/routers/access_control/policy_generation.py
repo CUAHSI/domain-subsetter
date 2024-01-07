@@ -39,9 +39,14 @@ def refresh_minio_policy(user, policy):
 
 
 def create_view_statements(user, views: Dict[str, list[str]]) -> list:
-    view_statement_template_get = {
+    view_statement_template_get_object = {
         "Effect": "Allow",
-        "Action": ["s3:GetBucketLocation", "s3:GetObject"],
+        "Action": ["s3:GetObject"],
+        "Resource": [],
+    }
+    view_statement_template_get_bucket = {
+        "Effect": "Allow",
+        "Action": ["s3:GetBucketLocation"],
         "Resource": [],
     }
     view_statement_template_listing = {
@@ -51,25 +56,28 @@ def create_view_statements(user, views: Dict[str, list[str]]) -> list:
         "Condition": {"StringLike": {"s3:prefix": []}},
     }
 
-    get_resources = [f"arn:aws:s3:::{user.username}/*"]
+    get_objectt_resources = []
+    get_bucket_resources = []
     list_statements = []
     for bucket_owner, resource_paths in views.items():
-        get_resources = get_resources + [
+        get_objectt_resources = get_objectt_resources + [
             f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths
         ]
+        get_bucket_resources.append(f"arn:aws:s3:::{bucket_owner}")
         view_statement = copy.deepcopy(view_statement_template_listing)
         view_statement["Resource"] = [f"arn:aws:s3:::{bucket_owner}"]
         view_statement["Condition"]["StringLike"]["s3:prefix"] = [
             f"{resource_path}/*" for resource_path in resource_paths
         ]
         list_statements.append(view_statement)
-    view_statement_template_get["Resource"] = get_resources
-    return list_statements + [view_statement_template_get]
+    view_statement_template_get_object["Resource"] = get_objectt_resources
+    view_statement_template_get_bucket["Resource"] = get_bucket_resources
+    return list_statements + [view_statement_template_get_object]
 
 
 def create_edit_statements(user, edits: Dict[str, list[str]]) -> list:
     edit_statement_template = {"Effect": "Allow", "Action": ["s3:*"], "Resource": []}
-    resources = []
+    resources = [f"arn:aws:s3:::{user.username}/*"]
     for bucket_owner, resource_paths in edits.items():
         resources = resources + [f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths]
     if resources:
@@ -80,7 +88,6 @@ def create_edit_statements(user, edits: Dict[str, list[str]]) -> list:
 
 
 def minio_policy(user, owners: Dict[str, list[str]], edits: Dict[str, list[str]], views: Dict[str, list[str]]):
-    statements = [{"Effect": "Allow", "Action": ["s3:ListBucket"], "Resource": [f"arn:aws:s3:::{user.username}"]}]
-    statements = statements + create_view_statements(user, views)
+    statements = create_view_statements(user, views)
     statements = statements + create_edit_statements(user, edits)
     return {"Version": "2012-10-17", "Statement": statements}
