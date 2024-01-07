@@ -39,6 +39,8 @@ def refresh_minio_policy(user, policy):
 
 
 def create_view_statements(user, views: Dict[str, list[str]]) -> list:
+    if not views:
+        return []
     view_statement_template_get_object = {
         "Effect": "Allow",
         "Action": ["s3:GetObject"],
@@ -76,15 +78,29 @@ def create_view_statements(user, views: Dict[str, list[str]]) -> list:
 
 
 def create_edit_statements(user, edits: Dict[str, list[str]]) -> list:
-    edit_statement_template = {"Effect": "Allow", "Action": ["s3:*"], "Resource": []}
-    resources = [f"arn:aws:s3:::{user.username}/*"]
+    edit_all_statement = {
+        "Effect": "Allow",
+        "Action": ["s3:*"],
+        "Resource": [f"arn:aws:s3:::{user.username}"],
+    }
+    edit_paths_resources = []
     for bucket_owner, resource_paths in edits.items():
-        resources = resources + [f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths]
-    if resources:
-        edit_statement_template["Resource"] = resources
-        return [edit_statement_template]
-    else:
-        return []
+        edit_paths_resources = edit_paths_resources + [
+            f"arn:aws:s3:::{bucket_owner}/{resource_path}/*" for resource_path in resource_paths
+        ]
+
+    edit_paths_statement = {
+        "Effect": "Allow",
+        "Action": ["s3:*Object"],
+        "Resource": edit_paths_resources,
+    }
+    list_bucket_statement = {
+        "Effect": "Allow",
+        "Action": ["s3:ListBucket"],
+        "Resource": [f"arn:aws:s3:::{bucket_owner}" for bucket_owner, _ in edits.items()],
+    }
+    statements = [edit_all_statement, edit_paths_statement, list_bucket_statement]
+    return [statement for statement in statements if statement]
 
 
 def minio_policy(user, owners: Dict[str, list[str]], edits: Dict[str, list[str]], views: Dict[str, list[str]]):
