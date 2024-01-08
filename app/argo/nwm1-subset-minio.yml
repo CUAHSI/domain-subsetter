@@ -24,14 +24,18 @@ spec:
                   value: '{{workflow.parameters.x_east}}'
                 - name: output-bucket
                   value: '{{workflow.parameters.output-bucket}}'
-        - - name: metadata-extractor
-            template: metadata-extractor-template
+        - - name: metadata-extraction
+            templateRef:
+              name: metadata-extractor
+              template: metadata-extractor
             arguments:
               parameters:
+                - name: bucket
+                  value: '{{workflow.parameters.output-bucket}}'
+                - name: input-path
+                  value: '{{workflow.parameters.output-path}}'
                 - name: output-path
                   value: '{{workflow.parameters.output-path}}'
-                - name: output-bucket
-                  value: '{{workflow.parameters.output-bucket}}'
     - name: nwm1-subset-template
       inputs:
         parameters:
@@ -67,7 +71,7 @@ spec:
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.output-path}}/subset.gz'
+              key: '{{inputs.parameters.output-path}}'
       metadata: {}
       container:
         name: ''
@@ -83,50 +87,6 @@ spec:
           - '{{inputs.parameters.x_east}}'
           - /srv/domain
           - /srv/output
-        resources: {}
-    - name: metadata-extractor-template
-      inputs:
-        parameters:
-          - name: output-path
-          - name: output-bucket
-        artifacts:
-          - name: extractor-input
-            path: /tmp/subset-data
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: '{{inputs.parameters.output-bucket}}'
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.output-path}}/subset.gz'
-      outputs:
-        artifacts:
-          - name: extractor-output
-            path: /tmp/subset-data
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: '{{inputs.parameters.output-bucket}}'
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.output-path}}/all.gz'
-      metadata: {}
-      container:
-        name: ''
-        image: scootna/hsextract:0.1
-        command:
-          - /bin/sh
-          - '-c'
-        args:
-          - >-
-            python3 hsextract/main.py extract /tmp/subset-data && mv
-            /tmp/subset-data/.hs /tmp/subset-data/hs
         resources: {}
   entrypoint: nwm1-subset-with-extraction-template
   arguments:

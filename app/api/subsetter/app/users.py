@@ -11,7 +11,7 @@ from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
 from subsetter.app.db import User, get_user_db
-from subsetter.config import get_settings, get_minio_client
+from subsetter.config import get_minio_client, get_settings
 
 SECRET = "SECRET"
 

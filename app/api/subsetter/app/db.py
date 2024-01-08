@@ -1,4 +1,5 @@
 from enum import Enum
+from functools import lru_cache
 from typing import List, Optional, Tuple
 
 import httpx
@@ -9,9 +10,13 @@ from pydantic import BaseModel, Field
 
 from subsetter.config import get_settings
 
-DATABASE_URL = get_settings().mongo_url
-client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
+client = motor.motor_asyncio.AsyncIOMotorClient(get_settings().mongo_url, uuidRepresentation="standard")
 db = client[get_settings().mongo_database]
+
+client_hydroshare = motor.motor_asyncio.AsyncIOMotorClient(
+    get_settings().hydroshare_mongo_url, uuidRepresentation="standard"
+)
+db_hydroshare = client_hydroshare[get_settings().hydroshare_mongo_database]
 
 
 class OAuthAccount(BaseOAuthAccount):
@@ -80,3 +85,8 @@ class User(BeanieBaseUser, Document):
 
 async def get_user_db():
     yield BeanieUserDatabase(User, OAuthAccount)
+
+
+@lru_cache
+def get_hydroshare_access_db():
+    return db_hydroshare
