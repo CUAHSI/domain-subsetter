@@ -18,8 +18,11 @@ services:
   
   frontend:
     image: frontend
+    env_file:
+      - .env
     build:
       dockerfile: ./frontend/Dockerfile
+      context: ./
     ports:
       - 8080:5003
     restart: unless-stopped
