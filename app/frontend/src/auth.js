@@ -66,7 +66,8 @@ export async function logOut(callback) {
   const authStore = useAuthStore()
   const alertStore = useAlertStore()
   authStore.logout()
-  await fetch(ENDPOINTS.logout, { method: 'POST', credentials: 'include', mode: 'cors' })
+  // TODO: logout endpoint
+  // await fetch(ENDPOINTS.logout, { method: 'POST', credentials: 'include', mode: 'cors' })
   alertStore.displayAlert({
     title: 'Logged out',
     text: 'You have successfully logged out',
