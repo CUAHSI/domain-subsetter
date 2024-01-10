@@ -49,7 +49,14 @@ export async function logIn(callback) {
       })
       callback?.()
     } else {
-      alert('error logging in')
+      console.log(userinfo.status, userinfo.statusText)
+      alertStore.displayAlert({
+        title: 'Error Logging In',
+        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
+        type: 'success',
+        closable: true,
+        duration: 3
+      })
     }
     event.source.close()
   })
