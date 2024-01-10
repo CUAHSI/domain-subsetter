@@ -7,7 +7,7 @@
     </v-tabs>
     <v-window v-model="tab">
       <v-window-item :value="1" :key="1">
-        <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy" multi-sort>
+        <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy">
           <template v-slot:item.phase="{ value }">
             <v-chip :color="getColor(value)">
               {{ value }}
