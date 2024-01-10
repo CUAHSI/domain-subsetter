@@ -57,7 +57,11 @@ app.include_router(
 
 app.include_router(
     fastapi_users.get_oauth_router(
-        cuahsi_oauth_client, auth_backend, SECRET, redirect_url=get_settings().oauth2_redirect_url
+        cuahsi_oauth_client,
+        auth_backend,
+        SECRET,
+        redirect_url=get_settings().oauth2_redirect_url,
+        associate_by_email=True,
     ),
     prefix="/auth/cuahsi",
     tags=["auth"],
@@ -68,7 +72,8 @@ app.include_router(
         cuahsi_oauth_client,
         auth_backend,
         SECRET,
-        redirect_url=get_settings().vite_oauth2_redirect_url
+        redirect_url=get_settings().vite_oauth2_redirect_url,
+        associate_by_email=True,
     ),
     prefix="/auth/front",
     tags=["auth"],
