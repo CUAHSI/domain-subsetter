@@ -51,8 +51,9 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         await user.update_profile()
-        if not get_minio_client().bucket_exists(user.username):
-            get_minio_client().make_bucket(user.username)
+        if not get_minio_client().bucket_exists(user.bucket_name):
+            get_minio_client().make_bucket(user.bucket_name)
+            print(f"created bucket: {user.bucket_name}")
         print(f"User {user.id} has registered.")
 
     async def on_after_forgot_password(self, user: User, token: str, request: Optional[Request] = None):

@@ -36,7 +36,7 @@ api_client = argo_workflows.ApiClient(configuration)
 api_instance = workflow_service_api.WorkflowServiceApi(api_client)
 
 
-def parflow_submission_body(hucs: list, username: str, workflow_name: str):
+def parflow_submission_body(hucs: list, bucket_name: str, workflow_name: str):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "parflow-subset-v1-by-huc-minio",
@@ -44,7 +44,7 @@ def parflow_submission_body(hucs: list, username: str, workflow_name: str):
             "name": workflow_name,
             "parameters": [
                 f"output-path=argo_workflows/parflow/{workflow_name}",
-                f"output-bucket={username}",
+                f"output-bucket={bucket_name}",
                 "hucs=" + ",".join(hucs),
             ],
         },
@@ -52,7 +52,7 @@ def parflow_submission_body(hucs: list, username: str, workflow_name: str):
 
 
 def nwm1_submission_body(
-    y_south: float, x_west: float, y_north: float, x_east: float, username: str, workflow_name: str
+    y_south: float, x_west: float, y_north: float, x_east: float, bucket_name: str, workflow_name: str
 ):
     return {
         "resourceKind": "WorkflowTemplate",
@@ -60,7 +60,7 @@ def nwm1_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output-bucket={username}",
+                f"output-bucket={bucket_name}",
                 f"output-path=argo_workflows/nwm1/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
@@ -72,7 +72,7 @@ def nwm1_submission_body(
 
 
 def nwm2_submission_body(
-    y_south: float, x_west: float, y_north: float, x_east: float, username: str, workflow_name: str
+    y_south: float, x_west: float, y_north: float, x_east: float, bucket_name: str, workflow_name: str
 ):
     return {
         "resourceKind": "WorkflowTemplate",
@@ -80,7 +80,7 @@ def nwm2_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output-bucket={username}",
+                f"output-bucket={bucket_name}",
                 f"output-path=argo_workflows/nwm2/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
@@ -113,7 +113,7 @@ async def submit_parflow(
     workflow_id = str(uuid.uuid4())
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=parflow_submission_body(hucs, user.username, workflow_id),
+        body=parflow_submission_body(hucs, user.bucket_name, workflow_id),
         _preload_content=False,
     )
     log.info(api_response.json())
@@ -129,7 +129,7 @@ async def submit_nwm1(
     workflow_id = str(uuid.uuid4())
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=nwm1_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
+        body=nwm1_submission_body(y_south, x_west, y_north, x_east, user.bucket_name, workflow_id),
         _preload_content=False,
     )
     log.info(api_response.json())
@@ -145,7 +145,7 @@ async def submit_nwm2(
     workflow_id = str(uuid.uuid4())
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=nwm2_submission_body(y_south, x_west, y_north, x_east, user.username, workflow_id),
+        body=nwm2_submission_body(y_south, x_west, y_north, x_east, user.bucket_name, workflow_id),
         _preload_content=False,
     )
     log.info(api_response.json())
@@ -223,7 +223,7 @@ async def signed_url_minio(workflow_params: WorkflowDep) -> UrlResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
         "subsetter-outputs",
-        f"{workflow_params.user.username}/{submission.workflow_name}/{submission.workflow_id}/all.gz",
+        f"{workflow_params.user.bucket_name}/{submission.workflow_name}/{submission.workflow_id}/all.gz",
     )
     return {'url': url}
 

@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from functools import lru_cache
 from typing import List, Optional, Tuple
@@ -47,6 +48,10 @@ class User(BeanieBaseUser, Document):
     username: Optional[str] = None
     given_name: Optional[str] = None
     family_name: Optional[str] = None
+
+    @property
+    def bucket_name(self):
+        return re.sub("[^A-Za-z0-9\.-]", "", re.sub("[@]", ".at.", self.username.lower()))
 
     async def update_profile(self):
         async def get_profile(token: str) -> Tuple[str, str]:
