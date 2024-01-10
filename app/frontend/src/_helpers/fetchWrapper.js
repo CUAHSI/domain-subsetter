@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/stores/auth';
+import { API_BASE } from '@/constants'
 
 export const fetchWrapper = {
     get: request('GET'),
@@ -29,7 +30,7 @@ function authHeader(url) {
     const authStore = useAuthStore();
     const jwt = authStore.getToken()
     const isLoggedIn = !!jwt;
-    const isApiUrl = url.startsWith(import.meta.env.VITE_APP_API_URL);
+    const isApiUrl = url.startsWith(API_BASE);
     if (isLoggedIn && isApiUrl) {
         return { Authorization: `Bearer ${jwt}` };
     } else {

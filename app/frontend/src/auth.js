@@ -27,10 +27,21 @@ export async function logIn(callback) {
 
     const url = `${ENDPOINTS.authCuahsiCallback}${params}`
     const resp = await fetch(url)
+
+    if (!resp.ok) {
+      console.log(resp.status, resp.statusText)
+      alertStore.displayAlert({
+        title: 'Error Logging In',
+        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
+        type: 'success',
+        closable: true,
+        duration: 3
+      })
+    }
+
     const json = await resp.json()
     authStore.login(json)
 
-    // const userInfo = awaitw
     const userinfo = await fetch(ENDPOINTS.userInfo, {
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +60,14 @@ export async function logIn(callback) {
       })
       callback?.()
     } else {
-      alert('error logging in')
+      console.log(userinfo.status, userinfo.statusText)
+      alertStore.displayAlert({
+        title: 'Error Logging In',
+        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
+        type: 'success',
+        closable: true,
+        duration: 3
+      })
     }
     event.source.close()
   })
@@ -59,7 +77,8 @@ export async function logOut(callback) {
   const authStore = useAuthStore()
   const alertStore = useAlertStore()
   authStore.logout()
-  await fetch(ENDPOINTS.logout, { method: 'POST', credentials: 'include', mode: 'cors' })
+  // TODO: logout endpoint
+  // await fetch(ENDPOINTS.logout, { method: 'POST', credentials: 'include', mode: 'cors' })
   alertStore.displayAlert({
     title: 'Logged out',
     text: 'You have successfully logged out',

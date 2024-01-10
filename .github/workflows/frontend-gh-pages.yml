@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - develop_v2
+      - subsetter_front
   workflow_dispatch:
 
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
