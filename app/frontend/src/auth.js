@@ -27,10 +27,21 @@ export async function logIn(callback) {
 
     const url = `${ENDPOINTS.authCuahsiCallback}${params}`
     const resp = await fetch(url)
+
+    if (!resp.ok) {
+      console.log(resp.status, resp.statusText)
+      alertStore.displayAlert({
+        title: 'Error Logging In',
+        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
+        type: 'success',
+        closable: true,
+        duration: 3
+      })
+    }
+
     const json = await resp.json()
     authStore.login(json)
 
-    // const userInfo = awaitw
     const userinfo = await fetch(ENDPOINTS.userInfo, {
       headers: {
         'Content-Type': 'application/json',
