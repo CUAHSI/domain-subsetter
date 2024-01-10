@@ -78,12 +78,12 @@ async function submitBbox(bbox, model) {
   // https://epsg.io/3082
   // const transform = transformation('EPSG:4326', '3082') // WGS 84 to LCC
   
-  // var secondProjection = '+proj=lcc +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs';
+  let firstProjection = proj4('EPSG:3857')
   let secondProjection = '+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40.0000076293945 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs'
   
-  const lccLowerLeft = proj4(secondProjection, lowerLeft)
+  const lccLowerLeft = proj4(firstProjection, secondProjection, lowerLeft)
   // const lccUpperLeft = proj4(secondProjection, upperLeft)
-  const lccUpperRight = proj4(secondProjection, upperRight)
+  const lccUpperRight = proj4(firstProjection, secondProjection, upperRight)
   // const lccLowerRight = proj4(secondProjection, lowerRight)
 
   ymin = lccLowerLeft[1]
@@ -91,7 +91,7 @@ async function submitBbox(bbox, model) {
   xmax = lccUpperRight[0]
   ymax = lccUpperRight[1]
 
-  const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmin}&x_east=${xmax}`
+  const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmax}&x_east=${xmin}`
 
   fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
 }
