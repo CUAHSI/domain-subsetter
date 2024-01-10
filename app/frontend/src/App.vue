@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
-      <AlertPopup v-for="alert in alerts" v-bind="alert" v-bind:key="alert.text"></AlertPopup>
+      <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
       <RouterView />
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
@@ -20,34 +20,31 @@ import AlertPopup from './components/AlertPopup.vue'
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
-// TODO push alerts!
-// let alerts = [{text: "example", type: "success", closable: "true"}]
+import { useAlertStore } from './stores/alerts'
+
+const alertStore = useAlertStore()
+
 let showMobileNavigation = ref(false)
 const paths = [
   {
     attrs: { to: "/" },
     label: "Map",
-    icon: "mdi-map",
   },
   {
     attrs: { to: "/submissions" },
     label: "Submissions",
-    icon: "mdi-tray-full",
   },
   {
     attrs: { to: "/api" },
     label: "API",
-    icon: "mdi-laptop",
   },
   {
     attrs: { to: "/about" },
     label: "About",
-    icon: "mdi-book-multiple",
   },
   {
     attrs: { to: "/help" },
     label: "Help",
-    icon: "mdi-help-box",
   },
 ];
 

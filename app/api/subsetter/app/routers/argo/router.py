@@ -19,6 +19,8 @@ from subsetter.app.models import (
 from subsetter.app.users import current_active_user
 from subsetter.config import get_minio_client, get_settings
 
+from .transformer import transform_latlon
+
 if get_settings().cloud_run:
     logging_client = logging.Client()
     logging_client.setup_logging()
@@ -40,7 +42,11 @@ def parflow_submission_body(hucs: list, username: str, workflow_name: str):
         "resourceName": "parflow-subset-v1-by-huc-minio",
         "submitOptions": {
             "name": workflow_name,
-            "parameters": [f"output_path={username}/parflow/{workflow_name}", "hucs=" + ",".join(hucs)],
+            "parameters": [
+                f"output-path=argo_workflows/parflow/{workflow_name}",
+                f"output-bucket={username}",
+                "hucs=" + ",".join(hucs),
+            ],
         },
     }
 
@@ -54,7 +60,8 @@ def nwm1_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output_path={username}/nwm1/{workflow_name}",
+                f"output-bucket={username}",
+                f"output-path=argo_workflows/nwm1/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -73,7 +80,8 @@ def nwm2_submission_body(
         "submitOptions": {
             "name": workflow_name,
             "parameters": [
-                f"output_path={username}/nwm2/{workflow_name}",
+                f"output-bucket={username}",
+                f"output-path=argo_workflows/nwm2/{workflow_name}",
                 f"y_south={y_south}",
                 f"x_west={x_west}",
                 f"y_north={y_north}",
@@ -117,6 +125,7 @@ async def submit_parflow(
 async def submit_nwm1(
     y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
 ) -> SubmissionResponseModel:
+    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
     workflow_id = str(uuid.uuid4())
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
@@ -132,6 +141,7 @@ async def submit_nwm1(
 async def submit_nwm2(
     y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
 ) -> SubmissionResponseModel:
+    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
     workflow_id = str(uuid.uuid4())
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,

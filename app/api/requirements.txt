@@ -9,3 +9,5 @@ httpx_oauth
 minio
 pydantic-settings
 google-cloud-logging
+pyproj
+wget

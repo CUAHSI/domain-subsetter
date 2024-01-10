@@ -1,4 +1,5 @@
 from enum import Enum
+from functools import lru_cache
 from typing import List, Optional, Tuple
 
 import httpx
@@ -9,9 +10,13 @@ from pydantic import BaseModel, Field
 
 from subsetter.config import get_settings
 
-DATABASE_URL = get_settings().mongo_url
-client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
+client = motor.motor_asyncio.AsyncIOMotorClient(get_settings().mongo_url, uuidRepresentation="standard")
 db = client[get_settings().mongo_database]
+
+client_hydroshare = motor.motor_asyncio.AsyncIOMotorClient(
+    get_settings().hydroshare_mongo_url, uuidRepresentation="standard"
+)
+db_hydroshare = client_hydroshare[get_settings().hydroshare_mongo_database]
 
 
 class OAuthAccount(BaseOAuthAccount):
@@ -33,14 +38,6 @@ class Submission(BaseModel):
     startedAt: Optional[str] = None
     finishedAt: Optional[str] = None
     estimatedDuration: Optional[int] = None
-    view_users: Optional[List[str]] = []
-
-    def add_user(self, username: str):
-        self.view_users.append(username)
-        self.view_users = list(set(self.view_users))
-
-    def remove_user(self, username: str):
-        self.view_users.remove(username)
 
 
 class User(BeanieBaseUser, Document):
@@ -55,10 +52,9 @@ class User(BeanieBaseUser, Document):
         async def get_profile(token: str) -> Tuple[str, str]:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    "https://auth.cuahsi.io/realms/CUAHSI/protocol/openid-connect/userinfo",
+                    get_settings().user_info_endpoint,
                     headers={"Authorization": f"Bearer {token}"},
                 )
-
                 return response.json()
 
         profile = await get_profile(self.oauth_accounts[0].access_token)
@@ -89,3 +85,8 @@ class User(BeanieBaseUser, Document):
 
 async def get_user_db():
     yield BeanieUserDatabase(User, OAuthAccount)
+
+
+@lru_cache
+def get_hydroshare_access_db():
+    return db_hydroshare

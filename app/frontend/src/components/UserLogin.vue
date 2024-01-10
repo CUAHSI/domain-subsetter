@@ -3,15 +3,17 @@
         <template v-slot:activator="{ props }">
             <template v-if="mobile">
                 <v-list class="text-body-1">
-                    <v-list-item id="drawer-nav-login" v-if="!auth.isLoggedIn" v-bind="props">
-                        <v-icon class="mr-2">mdi-login</v-icon>
-                        <span v-if="!auth.isLoggedIn">Log In</span>
-                        <span v-else>Hello {{ auth.user.email }}!</span>
+                    <v-list-item id="drawer-nav-login" v-bind="props">
+                        <span>Log In</span>
                     </v-list-item>
                 </v-list>
             </template>
             <template v-else>
-                <v-btn v-bind="props" id="navbar-login" v-if="!auth.isLoggedIn" rounded>Log In</v-btn>
+                <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
+                    <v-btn v-bind="props" id="navbar-login" :prepend-icon="mdiAccount">
+                        Log In
+                    </v-btn>
+                </v-card>
             </template>
         </template>
         <template v-slot:default="{ isActive }">
@@ -35,17 +37,30 @@
         </template>
     </v-dialog>
     <div v-else>
-        <span>Welcome {{ auth.user.email }}</span>
-        <v-btn @click="logOutUser" rounded>Log Out</v-btn>
+        <template v-if="mobile">
+            <v-list class="text-body-1">
+                <v-list-item @click="logOutUser">
+                    <span>Log out</span>
+                </v-list-item>
+            </v-list>
+        </template>
+        <template v-else>
+            <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
+            <v-btn @click="logOutUser" :prepend-icon="mdiAccountKey" :elevation="0">Log Out {{ auth.user.email }}</v-btn>
+        </v-card>
+        </template>
     </div>
 </template>
   
 <script setup>
+import { mdiAccount, mdiAccountKey } from '@mdi/js'
 import { useAuthStore } from '../stores/auth';
+import { useSubmissionsStore } from '../stores/submissions';
 import { logIn, logOut } from '@/auth.js'
 defineProps(['mobile'])
 const emit = defineEmits(['loggedIn', 'loggedOut'])
 
+const submissionStore = useSubmissionsStore();
 const auth = useAuthStore();
 
 async function openLogInDialog() {
@@ -58,18 +73,25 @@ async function logOutUser() {
 
 function onLoggedIn() {
     emit("loggedIn");
-    console.log("logged in user callback")
+    // submissionStore.refreshWorkflows()
+    submissionStore.getSubmissions()
 }
 function onLogOut() {
     emit("loggedOut");
-    console.log("logged out user callback")
+    submissionStore.submissions = []
 }
 </script>
   
 <style lang="scss" scoped>
-/* ::v-deep .v-card__text img {
-    max-width: 12rem;
+.nav-items {
+    border-radius: 2rem !important;
+    overflow: hidden;
+
+    .v-btn {
+        margin: 0;
+        border-radius: 0;
+        height: 39px !important;
+    }
 }
-*/
 </style>
   

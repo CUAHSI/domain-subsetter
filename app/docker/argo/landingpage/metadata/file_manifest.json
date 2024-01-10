@@ -1,0 +1,32 @@
+[
+  {
+    "path": "results.nc",
+    "size": 2621705,
+    "checksum": "47f542fced04edc88d0ffef735019648",
+    "mime_type": "application/x-netcdf"
+  },
+  {
+    "path": "watershed.dbf",
+    "size": 548,
+    "checksum": "dddec9243a2141adf1c27a815112d403",
+    "mime_type": null
+  },
+  {
+    "path": "watershed.prj",
+    "size": 145,
+    "checksum": "c742bee3d4edfc2948a2ad08de1790a5",
+    "mime_type": null
+  },
+  {
+    "path": "watershed.shp",
+    "size": 299500,
+    "checksum": "137b64f29a46af4ed5ff81ec76504712",
+    "mime_type": "application/x-qgis"
+  },
+  {
+    "path": "watershed.shx",
+    "size": 140,
+    "checksum": "20a11680ac9a8a63b9d2612c2427a451",
+    "mime_type": "application/x-qgis"
+  }
+]

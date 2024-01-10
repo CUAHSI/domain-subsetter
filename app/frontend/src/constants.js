@@ -1,8 +1,7 @@
-export const APP_NAME = import.meta.env.VITE_APP_NAME || "";
-export const APP_URL = import.meta.env.VITE_APP_URL || "";
-export const APP_BASE = import.meta.env.VITE_APP_BASE || "";
+export const APP_URL = import.meta.env.VITE_APP_FULL_URL || "VITE_APP_FULL_URL_PLACEHOLDER";
+export const APP_BASE = import.meta.env.VITE_APP_BASE || "VITE_APP_BASE_PLACEHOLDER";
 
-export const API_BASE = import.meta.env.VITE_APP_API_URL || "";
+export const API_BASE = import.meta.env.VITE_APP_API_URL || "VITE_APP_API_URL_PLACEHOLDER";
 export const ENDPOINTS = {
   openapi: `${API_BASE}/openapi.json`,
   authCuahsiAuthorize: `${API_BASE}/auth/front/authorize`,
@@ -12,6 +11,7 @@ export const ENDPOINTS = {
   submit: `${API_BASE}/submit`,
   download: `${API_BASE}/url`,
   logs: `${API_BASE}/logs`,
+  argo: `${API_BASE}/argo`,
   url: `${API_BASE}/url`,
   submissions: `${API_BASE}/submissions`,
   refresh: `${API_BASE}/refresh`,

@@ -16,15 +16,18 @@ services:
     depends_on:
       - api
   
-  # frontend:
-  #   image: frontend
-  #   build:
-  #     dockerfile: ./docker/frontend/Dockerfile
-  #   ports:
-  #     - 8080:5003
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - api
+  frontend:
+    image: frontend
+    env_file:
+      - .env
+    build:
+      dockerfile: ./frontend/Dockerfile
+      context: ./
+    ports:
+      - 8080:5003
+    restart: unless-stopped
+    depends_on:
+      - api
 
   api:
     image: api

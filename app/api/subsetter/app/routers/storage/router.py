@@ -1,40 +1,24 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from subsetter.app.db import Submission, User
 from subsetter.app.models import WorkflowDep
-from subsetter.app.users import current_active_user
 from subsetter.config import get_minio_client
 
 router = APIRouter()
 
 
-@router.get('/presigned/put', description="Create a download url")
-async def presigned_put_minio(workflow_params: WorkflowDep):
+@router.get('/presigned/get/{workflow_id}', description="Create a download url")
+async def presigned_get_minio(workflow_params: WorkflowDep):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    url = get_minio_client().presigned_put_object(
-        "subsetter-outputs", f"{submission.workflow_name}/{submission.workflow_id}/all.gz"
+    url = get_minio_client().presigned_get_object(
+        workflow_params.user.username, f"argo_workflows/{submission.workflow_name}/{submission.workflow_id}"
     )
     return {'url': url}
 
 
-@router.get('/upload/{user_name}/workflow/{workflow_id}')
-async def share_workflow_with_user(
-    user_name: str, workflow_params: WorkflowDep, user: User = Depends(current_active_user)
-):
-    submission: Submission = workflow_params.submission
-    submission.add_user(user_name)
-    await user.update_submission(submission)
-    return User.get(user.document_id)
-
-
-@router.get('/remove/{user_name}/workflow/{workflow_id}')
-async def share_workflow_with_user(
-    user_name: str, workflow_params: WorkflowDep, user: User = Depends(current_active_user)
-):
-    submission: Submission = workflow_params.submission
-    submission.remove_user(user_name)
-    await user.update_submission(submission)
-    return User.get(document_id=user.document_id)
+@router.get('/presigned/put/{bucket}', description="Create a PUT file presigned url")
+async def presigned_put_minio(bucket: str, path: str):
+    url = get_minio_client().presigned_put_object(bucket, path)
+    return {'url': url}
 
 
 # @router.post('/extract/{workflow_id}')

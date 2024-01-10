@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  landingpage:
+    image: landingpage
+    volumes:
+      - ./metadata:/metadata

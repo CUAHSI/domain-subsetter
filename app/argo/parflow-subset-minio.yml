@@ -1,26 +1,6 @@
 metadata:
   name: parflow-subset-v1-by-huc-minio
-  generateName: parflow-subset-v1-by-huc-minio-
   namespace: workflows
-  uid: e11a1832-adff-42b1-99d7-7d20adb0ce0a
-  resourceVersion: '293388502'
-  generation: 15
-  creationTimestamp: '2023-10-10T15:00:11Z'
-  labels:
-    workflows.argoproj.io/creator: '116317613255759624565'
-  managedFields:
-    - manager: argo
-      operation: Update
-      apiVersion: argoproj.io/v1alpha1
-      time: '2023-10-19T22:11:02Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:generateName: {}
-          f:labels:
-            .: {}
-            f:workflows.argoproj.io/creator: {}
-        f:spec: {}
 spec:
   templates:
     - name: parflow-subset-huc
@@ -29,11 +9,15 @@ spec:
       metadata: {}
       steps:
         - - name: huc-to-shp
-            template: huc-to-shp
+            templateRef:
+              name: huc-to-shp
+              template: huc-to-shp
             arguments:
               parameters:
-                - name: artifact-path
-                  value: '{{workflow.parameters.output_path}}'
+                - name: output-path
+                  value: '{{workflow.parameters.output-path}}'
+                - name: output-bucket
+                  value: '{{workflow.parameters.output-bucket}}'
                 - name: hucs
                   value: '{{workflow.parameters.hucs}}'
         - - name: subset-parflow
@@ -42,46 +26,28 @@ spec:
               parameters:
                 - name: label
                   value: '{{workflow.parameters.label}}'
-                - name: artifact-path
-                  value: '{{workflow.parameters.output_path}}'
-        - - name: metadata-extractor
-            template: metadata-extractor
+                - name: output-path
+                  value: '{{workflow.parameters.output-path}}'
+                - name: output-bucket
+                  value: '{{workflow.parameters.output-bucket}}'
+        - - name: metadata-extraction
+            templateRef:
+              name: metadata-extractor
+              template: metadata-extractor
             arguments:
               parameters:
-                - name: artifact-path
-                  value: '{{workflow.parameters.output_path}}'
-    - name: huc-to-shp
-      inputs:
-        parameters:
-          - name: artifact-path
-          - name: hucs
-      outputs:
-        artifacts:
-          - name: shape-results
-            path: /output
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/shape.gz'
-      metadata: {}
-      container:
-        name: ''
-        image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
-        args:
-          - '{{inputs.parameters.hucs}}'
-          - /output/watershed.shp
-        resources: {}
+                - name: bucket
+                  value: '{{workflow.parameters.output-bucket}}'
+                - name: input-path
+                  value: '{{workflow.parameters.output-path}}'
+                - name: output-path
+                  value: '{{workflow.parameters.output-path}}'
     - name: parflow-subset-v1
       inputs:
         parameters:
           - name: label
-          - name: artifact-path
+          - name: output-path
+          - name: output-bucket
         artifacts:
           - name: pfinput-data
             path: /srv/input
@@ -99,28 +65,28 @@ spec:
             path: /srv/shape
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/shape.gz'
+              key: '{{inputs.parameters.output-path}}'
       outputs:
         artifacts:
           - name: subset-results
             path: /srv/shape
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/subset.gz'
+              key: '{{inputs.parameters.output-path}}'
       metadata: {}
       container:
         name: ''
@@ -143,56 +109,15 @@ spec:
             cpu: '1'
             ephemeral-storage: 1Gi
             memory: 1Gi
-    - name: metadata-extractor
-      inputs:
-        parameters:
-          - name: artifact-path
-        artifacts:
-          - name: extractor-input
-            path: /tmp/subset-data
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/subset.gz'
-      outputs:
-        artifacts:
-          - name: extractor-output
-            path: /tmp/subset-data
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: '{{inputs.parameters.artifact-path}}/all.gz'
-      metadata: {}
-      container:
-        name: ''
-        image: scootna/hsextract:0.1
-        command:
-          - /bin/sh
-          - '-c'
-        args:
-          - >-
-            python3 hsextract/main.py extract /tmp/subset-data && mv
-            /tmp/subset-data/.hs /tmp/subset-data/hs
-        resources: {}
   entrypoint: parflow-subset-huc
   arguments:
     parameters:
       - name: label
         value: pf-subset-job
-      - name: output_path
+      - name: output-path
         value: abc123
+      - name: output-bucket
+        value: subsetter-outputs
       - name: hucs
         value: 102600070103,102600070104,102600090205,102600050206,102600070102
   templateDefaults:

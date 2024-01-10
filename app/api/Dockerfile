@@ -7,9 +7,7 @@ RUN pip install -r requirements.txt
 COPY requirements-dev.txt requirements-dev.txt
 RUN pip install -r requirements-dev.txt
 
-RUN apt-get update
-RUN apt-get install -y wget
-RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc
+RUN python -m wget https://dl.min.io/client/mc/release/linux-amd64/mc
 RUN chmod +x mc
 RUN mv mc /usr/local/bin/mc
 
