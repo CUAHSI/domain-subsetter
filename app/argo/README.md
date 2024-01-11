@@ -39,3 +39,4 @@ outputs:
 2. Save the key/secret as a secret in kubernetes in the `workflows` namespace
 `kubectl create secret generic minio-credentials --namespace workflows --from-literal=accessKey='<key>' --from-literal=secretKey='<secret>`
 
+These workflows should eventually be setup to automatically sync to https://workflows.argo.cuahsi.io
