@@ -1,0 +1,53 @@
+metadata:
+  name: huc-to-shp
+  namespace: workflows
+spec:
+  templates:
+    - name: huc-to-shp
+      inputs:
+        parameters:
+        - name: output-bucket
+          value: '{{workflow.parameters.output-bucket}}'
+        - name: output-path
+          value: '{{workflow.parameters.output-path}}'
+        - name: hucs
+          value: '{{workflow.parameters.hucs}}'
+      outputs:
+        artifacts:
+          - name: shape-results
+            path: /output
+            s3:
+              endpoint: api.minio.cuahsi.io
+              bucket: '{{inputs.parameters.output-bucket}}'
+              accessKeySecret:
+                name: minio-credentials
+                key: accessKey
+              secretKeySecret:
+                name: minio-credentials
+                key: secretKey
+              key: '{{inputs.parameters.output-path}}'
+      metadata: {}
+      container:
+        name: ''
+        image: us-central1-docker.pkg.dev/apps-320517/subsetter/huc-to-shp:0.0.4
+        args:
+          - '{{inputs.parameters.hucs}}'
+          - /output/watershed.shp
+        resources: {}
+  entrypoint: huc-to-shp
+  arguments:
+    parameters:
+      - name: output-path
+        value: qwerty
+      - name: output-bucket
+        value: subsetter-outputs
+      - name: hucs
+        value: 102600070103,102600070104,102600090205,102600050206,102600070102
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
+    retryStrategy:
+      limit: '0'
+    timeout: 600s
+
