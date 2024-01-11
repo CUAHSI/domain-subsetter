@@ -13,7 +13,7 @@ spec:
           path: /mnt/input
           gcs:
             bucket: subsetter-static-input
-            key: "nwm.v2.0.0"
+            key: "nwm.v1.2.4"
             serviceAccountKeySecret:
               name: my-gcs-creds
               key: serviceAccountKey
@@ -25,13 +25,9 @@ spec:
       artifacts:
         - name: pfconus-data-compressed
           path: /mnt/input
-          s3:
+          gcs:
             bucket: subsetter-static-input
-            key: "nwm.v2.0.0.gz"
-            endpoint: api.minio.cuahsi.io
-            accessKeySecret:
-              name: minio-credentials
-              key: accessKey
-            secretKeySecret:
-              name: minio-credentials
-              key: secretKey
+            key: "nwm.v1.2.4.gz"
+            serviceAccountKeySecret:
+              name: my-gcs-creds
+              key: serviceAccountKey
