@@ -24,7 +24,7 @@ services:
       dockerfile: ./frontend/Dockerfile
       context: ./
     ports:
-      - 8080:5003
+      - 8080:8080
     restart: unless-stopped
     depends_on:
       - api

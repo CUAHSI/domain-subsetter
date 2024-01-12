@@ -1,5 +1,5 @@
 #!/bin/sh
-ROOT_DIR=/app
+ROOT_DIR=/srv
 # Replace env vars in files served by NGINX
 for file in $ROOT_DIR/assets/*.js $ROOT_DIR/index.html;
 do
@@ -10,5 +10,4 @@ do
     sed -i 's|VITE_APP_BASE_PLACEHOLDER|'${VITE_APP_BASE}'|g' $file
 done
 
-echo "Starting Nginx"
-nginx -g 'daemon off;'
+exec "$@"
