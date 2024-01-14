@@ -1,6 +1,5 @@
 # todo:
-- map store persist
+- submissions refresh and sorting
+- select gauge
 - argo metadata view
-- NWM LCC projection
 - redoc
-- other moqups
