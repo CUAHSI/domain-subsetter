@@ -28,7 +28,7 @@ spec:
       outputs:
         artifacts:
           - name: output-metadata
-            path: /tmp/resource
+            path: /tmp/resource/.hs
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.bucket}}'
@@ -42,7 +42,7 @@ spec:
       metadata: {}
       container:
         name: ''
-        image: scootna/hsextract:0.4.1
+        image: scootna/hsextract:0.4.3
         command:
           - /bin/sh
           - '-c'
@@ -62,4 +62,4 @@ spec:
     metadata: {}
     retryStrategy:
       limit: '0'
-    timeout: 600s
+    timeout: 3600s

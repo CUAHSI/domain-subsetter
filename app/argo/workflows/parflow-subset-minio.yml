@@ -87,6 +87,8 @@ spec:
                 name: minio-credentials
                 key: secretKey
               key: '{{inputs.parameters.output-path}}'
+            archive:
+              none: {}
       metadata: {}
       container:
         name: ''
