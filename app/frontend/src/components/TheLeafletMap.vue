@@ -1,5 +1,5 @@
 <template>
-    <div id="mapContainer"></div>
+    <div v-show="$route.meta.showMap" id="mapContainer"></div>
 </template>
   
 <script setup>
@@ -7,7 +7,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
 import "leaflet-easybutton/src/easy-button";
-import { onMounted } from 'vue'
+import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useAlertStore } from '@/stores/alerts'
@@ -49,6 +49,9 @@ const modelAction = modelsStore.$onAction(
 
 const Map = mapStore.mapObject
 
+onUpdated(() =>{
+    Map.map.invalidateSize()
+})
 onMounted(() => {
     let map = L.map('mapContainer').setView([38.2, -96], 5);
     Map.map = map;
