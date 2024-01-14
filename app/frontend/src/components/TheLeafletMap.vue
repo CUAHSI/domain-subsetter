@@ -27,7 +27,6 @@ const modelAction = modelsStore.$onAction(
         // this will trigger if the action succeeds and after it has fully run.
         // it waits for any returned promised
         after((result) => {
-            console.log(store.selectedModel.input)
             if (store.selectedModel.input != "bbox") {
                 removeBbox()
             } else {
@@ -49,7 +48,7 @@ const modelAction = modelsStore.$onAction(
 
 const Map = mapStore.mapObject
 
-onUpdated(() =>{
+onUpdated(() => {
     Map.map.invalidateSize()
 })
 onMounted(() => {
@@ -873,7 +872,14 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                 // let elem = row.getElementsByTagName('td')[2]
                 // elem.innerText = 'Error';
                 // elem.style.color = 'red';
-                console.log("Error during toggle huc", err)
+                console.error("Error during toggle huc", err)
+                alertStore.displayAlert({
+                    title: 'Error',
+                    text: `Error selecting huc: ${err}`,
+                    type: 'error',
+                    closable: true,
+                    duration: 1
+                })
             }
             // refresh page
             // document.getElementById('huc-table-div').hide().show(0);

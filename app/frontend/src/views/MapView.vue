@@ -5,8 +5,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 import ModelSelectDrawer from '../components/ModelSelectDrawer.vue';
 import SubmitButton from '../components/SubmitButton.vue';
-const showModelSelect = ref(true)
+import { useModelsStore } from '@/stores/models'
+const modelsStore = useModelsStore();
+const showModelSelect = ref(modelsStore.selectedModel.value == null)
 </script>
