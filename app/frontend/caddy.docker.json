@@ -1,0 +1,58 @@
+{
+    "apps":
+    {
+        "http":
+        {
+            "servers":
+            {
+                "web":
+                {
+                    "automatic_https":
+                    {
+                        "disable": true
+                    },
+                    "listen":
+                    [
+                        ":8080"
+                    ],
+                    "routes":
+                    [
+                        {
+                            "handle":
+                            [
+                                {
+                                    "handler": "file_server",
+                                    "root": "/srv"
+                                }
+                            ],
+                            "match":
+                            [
+                                {
+                                    "path_regexp":
+                                    {
+                                        "name": "asset",
+                                        "pattern": "\\.(br|css|gz|ico|jpg|js|mp3|mp4|png|svg)$"
+                                    }
+                                }
+                            ],
+                            "terminal": true
+                        },
+                        {
+                            "handle":
+                            [
+                                {
+                                    "handler": "rewrite",
+                                    "uri": "/index.html"
+                                },
+                                {
+                                    "handler": "file_server",
+                                    "root": "/srv"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

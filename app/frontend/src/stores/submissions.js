@@ -25,7 +25,6 @@ export const useSubmissionsStore = defineStore('submissions', () => {
     if (objIndex > -1) {
       this.submissions[objIndex]=response;
     }
-    console.log(response)
   }
 
   return { submissions, getSubmissions, refreshWorkflows, refreshSubmission}
