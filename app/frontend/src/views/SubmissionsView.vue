@@ -69,6 +69,9 @@
       </span>
     </v-sheet>
   </v-container>
+
+  <BottomSheet :text="sheetText"/>
+
 </template>
 
 <script setup>
@@ -79,11 +82,14 @@ import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { mdiRefresh, mdiDownload, mdiNoteSearch } from '@mdi/js'
+import BottomSheet from '../components/BottomSheet.vue'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
+
+let sheetText = ref("")
 
 let tab = ref(1)
 let refreshing = ref({})
@@ -121,14 +127,15 @@ async function showLogs(submission) {
   const logsUrl = `${logsEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(logsUrl)
   console.log(response)
-  alert(JSON.stringify(response))
+  sheetText.value = JSON.stringify(response)
 }
 
 async function showArgo(submission) {
   const argoEndpoint = ENDPOINTS.argo
   const argoUrl = `${argoEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(argoUrl)
-  alert(JSON.stringify(response))
+  console.log(JSON.stringify(response))
+  sheetText.value = JSON.stringify(response)
 }
 
 async function refreshSubmission(submission) {
