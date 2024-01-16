@@ -32,6 +32,7 @@ function request(method) {
         closable: true,
         duration: 6
       })
+      console.error(e)
     }
   }
 }
