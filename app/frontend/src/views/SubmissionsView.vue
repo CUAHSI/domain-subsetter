@@ -17,7 +17,8 @@
           <template v-slot:item.actions="{ item }">
             <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
             <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
-            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'" @click="downloadArtifact(item)"></v-btn>
+            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
+              @click="downloadArtifact(item)"></v-btn>
             <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
           </template>
 
@@ -70,8 +71,22 @@
     </v-sheet>
   </v-container>
 
-  <BottomSheet :text="sheetText"/>
+    <v-bottom-sheet v-model="sheetText" inset>
+      <v-card class="text-center" height="100%">
+        <v-card-text>
+          <v-btn @click="sheetText = null">
+            close
+          </v-btn>
 
+          <br>
+          <br>
+
+          <div>
+            {{ sheetText }}
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
 </template>
 
 <script setup>
@@ -82,14 +97,13 @@ import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { mdiRefresh, mdiDownload, mdiNoteSearch } from '@mdi/js'
-import BottomSheet from '../components/BottomSheet.vue'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
 
-let sheetText = ref("")
+let sheetText = ref(null)
 
 let tab = ref(1)
 let refreshing = ref({})
