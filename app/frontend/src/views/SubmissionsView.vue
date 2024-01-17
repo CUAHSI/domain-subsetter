@@ -17,7 +17,9 @@
           <template v-slot:item.actions="{ item }">
             <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
             <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
-            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'" @click="downloadArtifact(item)"></v-btn>
+            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
+              @click="downloadArtifact(item)"></v-btn>
+            <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
           </template>
 
         </v-data-table>
@@ -68,6 +70,23 @@
       </span>
     </v-sheet>
   </v-container>
+
+    <v-bottom-sheet v-model="sheetText" inset>
+      <v-card class="text-center" height="100%">
+        <v-card-text>
+          <v-btn @click="sheetText = null">
+            close
+          </v-btn>
+
+          <br>
+          <br>
+
+          <div>
+            {{ sheetText }}
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-bottom-sheet>
 </template>
 
 <script setup>
@@ -77,12 +96,14 @@ import { fetchWrapper } from '@/_helpers/fetchWrapper';
 import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
-import { mdiRefresh, mdiDownload } from '@mdi/js'
+import { mdiRefresh, mdiDownload, mdiNoteSearch } from '@mdi/js'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
 submissionStore.refreshWorkflows()
 submissionStore.getSubmissions()
+
+let sheetText = ref(null)
 
 let tab = ref(1)
 let refreshing = ref({})
@@ -120,13 +141,15 @@ async function showLogs(submission) {
   const logsUrl = `${logsEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(logsUrl)
   console.log(response)
+  sheetText.value = JSON.stringify(response)
 }
 
 async function showArgo(submission) {
   const argoEndpoint = ENDPOINTS.argo
   const argoUrl = `${argoEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(argoUrl)
-  alert(JSON.stringify(response))
+  console.log(JSON.stringify(response))
+  sheetText.value = JSON.stringify(response)
 }
 
 async function refreshSubmission(submission) {
