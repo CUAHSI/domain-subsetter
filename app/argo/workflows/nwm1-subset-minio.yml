@@ -8,34 +8,34 @@ spec:
       outputs: {}
       metadata: {}
       steps:
-        - - name: nwm1-subset-step-name
-            template: nwm1-subset-template
-            arguments:
-              parameters:
-                - name: output-path
-                  value: '{{workflow.parameters.output-path}}'
-                - name: y_south
-                  value: '{{workflow.parameters.y_south}}'
-                - name: x_west
-                  value: '{{workflow.parameters.x_west}}'
-                - name: y_north
-                  value: '{{workflow.parameters.y_north}}'
-                - name: x_east
-                  value: '{{workflow.parameters.x_east}}'
-                - name: output-bucket
-                  value: '{{workflow.parameters.output-bucket}}'
-        - - name: metadata-extraction
-            templateRef:
-              name: metadata-extractor
-              template: metadata-extractor
-            arguments:
-              parameters:
-                - name: bucket
-                  value: '{{workflow.parameters.output-bucket}}'
-                - name: input-path
-                  value: '{{workflow.parameters.output-path}}'
-                - name: output-path
-                  value: '{{workflow.parameters.output-path}}'
+      - - name: nwm1-subset-step-name
+          template: nwm1-subset-template
+          arguments:
+            parameters:
+            - name: output-path
+              value: '{{workflow.parameters.output-path}}'
+            - name: y_south
+              value: '{{workflow.parameters.y_south}}'
+            - name: x_west
+              value: '{{workflow.parameters.x_west}}'
+            - name: y_north
+              value: '{{workflow.parameters.y_north}}'
+            - name: x_east
+              value: '{{workflow.parameters.x_east}}'
+            - name: output-bucket
+              value: '{{workflow.parameters.output-bucket}}'
+      - - name: metadata-extraction
+          templateRef:
+            name: metadata-extractor
+            template: metadata-extractor
+          arguments:
+            parameters:
+              - name: bucket
+                value: '{{workflow.parameters.output-bucket}}'
+              - name: input-path
+                value: '{{workflow.parameters.output-path}}'
+              - name: output-path
+                value: '{{workflow.parameters.output-path}}_metadata.tgz'
     - name: nwm1-subset-template
       inputs:
         parameters:
@@ -45,19 +45,6 @@ spec:
           - name: x_east
           - name: output-path
           - name: output-bucket
-        artifacts:
-          - name: nwm1-input-data-new
-            path: /srv/domain
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-static-input
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: nwm.v1.2.4.gz
       outputs:
         artifacts:
           - name: subset-results
@@ -72,6 +59,8 @@ spec:
                 name: minio-credentials
                 key: secretKey
               key: '{{inputs.parameters.output-path}}'
+            archive:
+              none: {}
       metadata: {}
       container:
         name: ''
@@ -85,9 +74,12 @@ spec:
           - '{{inputs.parameters.x_west}}'
           - '{{inputs.parameters.y_north}}'
           - '{{inputs.parameters.x_east}}'
-          - /srv/domain
+          - /srv/domain/nwm.v1.2.4/input
           - /srv/output
         resources: {}
+        volumeMounts:
+        - name: subsetter-data-volume
+          mountPath: /srv/domain
   entrypoint: nwm1-subset-with-extraction-template
   arguments:
     parameters:
@@ -103,3 +95,7 @@ spec:
         value: asdf
       - name: output-bucket
         value: 'subsetter-outputs'
+  volumes:
+  - name: subsetter-data-volume
+    persistentVolumeClaim:
+      claimName: subset-accelerator

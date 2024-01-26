@@ -181,7 +181,7 @@ async def extract_metadata(metadata_request: ExtractMetadataRequestBody, user: U
         body=metadata_extraction_submission_body(
             user.bucket_name,
             submission.output_path(OUTPUT_BASE_PATH),
-            f"{submission.output_path(OUTPUT_BASE_PATH)}/hs_metadata.tgz",
+            f"{submission.output_path(OUTPUT_BASE_PATH)}_hs_metadata.tgz",
         ),
         _preload_content=False,
     )
@@ -248,7 +248,6 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
         log_options_container="main",
         _preload_content=False,
     )
-    log.info(api_response.json())
     return {"logs": parse_logs(api_response)}
 
 

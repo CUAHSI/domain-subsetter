@@ -1,5 +1,5 @@
 metadata:
-  name: metadata-extractor
+  name: metadata-extractor-path
   namespace: workflows
 spec:
   templates:
@@ -12,6 +12,8 @@ spec:
             value: '{{workflow.parameters.input-path}}'
           - name: output-path
             value: '{{workflow.parameters.output-path}}'
+          - name: base-url
+            value: '{{workflow.parameters.base-url}}'
         artifacts:
           - name: input-data
             path: /tmp/resource
@@ -39,16 +41,18 @@ spec:
                 name: minio-credentials
                 key: secretKey
               key: '{{inputs.parameters.output-path}}'
+            archive:
+              none: {}
       metadata: {}
       container:
         name: ''
-        image: scootna/hsextract:0.4.3
+        image: scootna/hsextract:0.4.7
         command:
           - /bin/sh
           - '-c'
         args:
           - >-
-            python3 hsextract/main.py extract /tmp/resource
+            python3 hsextract/main.py extract /tmp/resource {{inputs.parameters.base-url}}
         resources: {}
   entrypoint: metadata-extractor
   arguments:
@@ -56,6 +60,7 @@ spec:
       - name: bucket
       - name: input-path
       - name: output-path
+      - name: base-url
   templateDefaults:
     inputs: {}
     outputs: {}

@@ -35,7 +35,7 @@ spec:
                 - name: input-path
                   value: '{{workflow.parameters.output-path}}'
                 - name: output-path
-                  value: '{{workflow.parameters.output-path}}'
+                  value: '{{workflow.parameters.output-path}}_metadata.tgz'
     - name: nwm2-subset-template
       inputs:
         parameters:
@@ -45,19 +45,6 @@ spec:
           - name: x_east
           - name: output-path
           - name: output-bucket
-        artifacts:
-          - name: nwm2-input-data
-            path: /srv/domain
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-static-input
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: nwm.v2.0.0.gz
       outputs:
         artifacts:
           - name: subset-results
@@ -85,13 +72,16 @@ spec:
           - '{{inputs.parameters.x_west}}'
           - '{{inputs.parameters.y_north}}'
           - '{{inputs.parameters.x_east}}'
-          - /srv/domain
+          - /srv/domain/nwm.v2.0.0/input
           - /srv/output
         resources:
           requests:
             cpu: '1'
             ephemeral-storage: 2Gi
             memory: 1Gi
+        volumeMounts:
+          - name: subsetter-data-volume
+            mountPath: /srv/domain
   entrypoint: nwm2-subset-with-extraction-template
   arguments:
     parameters:
@@ -107,6 +97,10 @@ spec:
         value: 'asdf'
       - name: output-bucket
         value: 'subsetter-outputs'
+  volumes:
+    - name: subsetter-data-volume
+      persistentVolumeClaim:
+        claimName: subset-accelerator
   templateDefaults:
     inputs: {}
     outputs: {}
