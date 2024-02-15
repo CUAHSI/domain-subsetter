@@ -11,6 +11,7 @@ import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useAlertStore } from '@/stores/alerts'
+import { GIS_SERVICES_URL } from '@/constants'
 
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
@@ -91,7 +92,7 @@ onMounted(() => {
     }).addTo(map);
 
     // WMS LAYER
-    let url = 'http://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WmsServer?'
+    let url = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WmsServer?`
 
     // HUC WMS Naming
     // --------------
@@ -139,7 +140,7 @@ onMounted(() => {
     }).addTo(map);
 
     // add USGS gage layer to map
-    url = 'http://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WmsServer?';
+    url = `${GIS_SERVICES_URL}/NHD/usgs_gages/MapServer/WmsServer?`;
     let gages = L.tileLayer.wms(url, {
         layers: 0,
         transparent: 'true',
@@ -423,7 +424,7 @@ async function getGageInfo(e) {
         SrsName: 'EPSG:4326',
         outputFormat: 'ESRIGEOJSON'
     };
-    let root = 'https://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WFSServer';
+    let root = `${GIS_SERVICES_URL}/NHD/usgs_gages/MapServer/WFSServer`;
     let parameters = L.Util.extend(defaultParameters);
     let gageURL = root + L.Util.getParamString(parameters);
 
@@ -502,7 +503,7 @@ async function mapClick(e) {
         typeName: 'HUC_WBD:HUC12_US',
         SrsName: 'EPSG:4326'
     };
-    let root = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
     let parameters = L.Util.extend(defaultParameters);
     let URL = root + L.Util.getParamString(parameters);
 
@@ -570,7 +571,7 @@ function traceUpstream(usgs_gage) {
                     typeName: 'HUC_WBD:HUC12_US',
                     SrsName: 'EPSG:4326'
                 };
-                let root = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+                let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
                 let parameters = L.Util.extend(defaultParameters);
                 let URL = root + L.Util.getParamString(parameters);
 
@@ -810,7 +811,7 @@ function addFeatureByHUC(hucid) {
         SrsName: 'EPSG:4326',
         Filter: filter
     };
-    let root = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
+    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
     let parameters = L.Util.extend(defaultParameters);
     let URL = root + L.Util.getParamString(parameters);
 
