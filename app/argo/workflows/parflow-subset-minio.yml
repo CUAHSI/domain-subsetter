@@ -41,7 +41,7 @@ spec:
                 - name: input-path
                   value: '{{workflow.parameters.output-path}}'
                 - name: output-path
-                  value: '{{workflow.parameters.output-path}}'
+                  value: '{{workflow.parameters.output-path}}/hs_metadata.tgz'
     - name: parflow-subset-v1
       inputs:
         parameters:
@@ -49,18 +49,6 @@ spec:
           - name: output-path
           - name: output-bucket
         artifacts:
-          - name: pfinput-data
-            path: /srv/input
-            s3:
-              endpoint: api.minio.cuahsi.io
-              bucket: subsetter-static-input
-              accessKeySecret:
-                name: minio-credentials
-                key: accessKey
-              secretKeySecret:
-                name: minio-credentials
-                key: secretKey
-              key: pfconus.v1.0.gz
           - name: shape-input-data
             path: /srv/shape
             s3:
@@ -98,7 +86,7 @@ spec:
         args:
           - '{{inputs.parameters.label}}'
           - /srv/shape/watershed.shp
-          - /srv/input
+          - /srv/input/pfconus.v1.0/input
           - /srv/shape
         resources:
           limits:
@@ -109,6 +97,9 @@ spec:
             cpu: '1'
             ephemeral-storage: 1Gi
             memory: 1Gi
+        volumeMounts:
+          - name: subsetter-data-volume
+            mountPath: /srv/input
   entrypoint: parflow-subset-huc
   arguments:
     parameters:
@@ -120,6 +111,10 @@ spec:
         value: subsetter-outputs
       - name: hucs
         value: 102600070103,102600070104,102600090205,102600050206,102600070102
+  volumes:
+    - name: subsetter-data-volume
+      persistentVolumeClaim:
+        claimName: subset-accelerator
   templateDefaults:
     inputs: {}
     outputs: {}

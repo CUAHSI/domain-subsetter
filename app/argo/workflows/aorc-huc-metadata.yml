@@ -1,0 +1,90 @@
+metadata:
+  name: collect-aorc-forcing-full-v1.2
+  namespace: workflows
+spec:
+  templates:
+    - name: aorc-subset-huc
+      inputs:
+        parameters:
+        - name: start-date
+          value: '{{workflow.parameters.start-date}}'
+        - name: end-date
+          value: '{{workflow.parameters.end-date}}'
+        - name: output-path
+          value: '{{workflow.parameters.output-path}}'
+        - name: output-bucket
+          value: '{{workflow.parameters.output-bucket}}'
+        - name: hucs
+          value: '{{workflow.parameters.hucs}}'
+        - name: aorc-secret
+          value: '{{workflow.parameters.aorc-secret}}'
+        - name: shape-file-path
+          value: '{{workflow.parameters.shape-file-path}}'
+      outputs: {}
+      metadata: {}
+      steps:
+        - - name: huc-to-shp
+            templateRef: 
+              name: huc-to-shp
+              template: huc-to-shp
+            arguments:
+              parameters:
+                - name: output-path
+                  value: '{{inputs.parameters.output-path}}'
+                - name: output-bucket
+                  value: '{{inputs.parameters.output-bucket}}'
+                - name: hucs
+                  value: '{{inputs.parameters.hucs}}'
+        - - name: collect-aorc-forcing
+            templateRef: 
+              name: collect-aorc-forcing-v1.1
+              template: collect-aorc
+            arguments:
+              parameters:
+                - name: start-date
+                  value: '{{workfinputslow.parameters.start-date}}'
+                - name: end-date
+                  value: '{{inputs.parameters.end-date}}'
+                - name: output-path
+                  value: '{{inputs.parameters.output-path}}'
+                - name: shape-file-path
+                  value: '{{inputs.parameters.output-path}}/{{inputs.parameters.shape-file-path}}'
+                - name: aorc-secret
+                  value: '{{inputs.parameters.aorc-secret}}'
+        - - name: metadata-extraction
+            templateRef: 
+              name: metadata-extractor
+              template: metadata-extractor
+            arguments:
+              parameters:
+                - name: bucket
+                  value: '{{inputs.parameters.output-bucket}}'
+                - name: path
+                  value: '{{inputs.parameters.output-path}}/aorc_output.gz'
+                - name: output-path
+                  value: '{{inputs.parameters.output-path}}/metadata.gz'
+  entrypoint: aorc-subset-huc
+  arguments:
+    parameters:
+      - name: start-date
+        value: '2020-01-01'
+      - name: end-date
+        value: '2020-01-2'
+      - name: output-path
+        value: templatetest
+      - name: output-bucket
+        value: sblack
+      - name: hucs
+        value: 102600070103,102600070104,102600090205,102600050206,102600070102
+      - name: aorc-secret
+        value: changethis
+      - name: shape-file-path
+        value: shape.gz
+  templateDefaults:
+    inputs: {}
+    outputs: {}
+    metadata: {}
+    retryStrategy:
+      limit: '0'
+    timeout: 600s
+

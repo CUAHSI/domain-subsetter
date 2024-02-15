@@ -16,8 +16,6 @@ spec:
         artifacts:
           - name: shape-results
             path: /output
-            archive:
-              none: {}
             s3:
               endpoint: api.minio.cuahsi.io
               bucket: '{{inputs.parameters.output-bucket}}'
@@ -27,7 +25,7 @@ spec:
               secretKeySecret:
                 name: minio-credentials
                 key: secretKey
-              key: '{{inputs.parameters.output-path}}/shape'
+              key: '{{inputs.parameters.output-path}}'
       metadata: {}
       container:
         name: ''

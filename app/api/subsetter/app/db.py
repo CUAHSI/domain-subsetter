@@ -40,6 +40,9 @@ class Submission(BaseModel):
     finishedAt: Optional[str] = None
     estimatedDuration: Optional[int] = None
 
+    def output_path(self, base_path):
+        return f"{base_path}/{self.workflow_name}/{self.workflow_id}"
+
 
 class User(BeanieBaseUser, Document):
     oauth_accounts: List[OAuthAccount] = Field(default_factory=list)

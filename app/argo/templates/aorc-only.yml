@@ -1,5 +1,5 @@
 metadata:
-  name: collect-aorc-forcing-v1.1
+  name: collect-aorc-forcing-v1.2
   namespace: workflows
 spec:
   templates:
@@ -16,12 +16,14 @@ spec:
           value: '{{workflow.parameters.end-date}}'
         - name: aorc-secret
           value: '{{workflow.parameters.aorc-secret}}'
+        - name: output-bucket
+          value: '{{workflow.parameters.output-bucket}}'
         artifacts:
           - name: shapefile-input
             path: /srv/shp-data
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
@@ -33,9 +35,11 @@ spec:
         artifacts:
           - name: aorc-output-artifact
             path: /output
+            archive:
+              none: {}
             s3:
               endpoint: api.minio.cuahsi.io
-              bucket: subsetter-outputs
+              bucket: '{{inputs.parameters.output-bucket}}'
               accessKeySecret:
                 name: minio-credentials
                 key: accessKey
@@ -85,10 +89,12 @@ spec:
         value: '2020-01-01'
       - name: end-date
         value: '2020-01-2'
+      - name: output-bucket
+        value: subsetter_outputs
       - name: output_path
         value: sblack/qwerty
       - name: shape-file-path
-        value: sblack/qwerty/shape.gz
+        value: qwerty/shape.gz
       - name: aorc-secret
         value: changethis/zuFe6XApPIZrbnKWfliP
   templateDefaults:
