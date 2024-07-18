@@ -1,60 +1,66 @@
-from datetime import datetime
+from subsetter.app.users import current_active_user
+from subsetter.app.db import User, get_hydroshare_client
 
-from fastapi import APIRouter, Depends, Request
-from pydantic import BaseModel, validator
+from datetime import datetime
+from typing import Optional
+
+from fastapi import APIRouter, Request, Depends
+from pydantic import BaseModel, field_validator, model_validator, ValidationInfo
 
 router = APIRouter()
 
 
 class SearchQuery(BaseModel):
-    term: str = None
-    sortBy: str = None
+    term: Optional[str] = None
+    sortBy: Optional[str] = None
     reverseSort: bool = True
-    contentType: str = None
-    providerName: str = None
-    creatorName: str = None
-    dataCoverageStart: int = None
-    dataCoverageEnd: int = None
-    publishedStart: int = None
-    publishedEnd: int = None
-    hasPartName: str = None
-    isPartOfName: str = None
-    associatedMediaName: str = None
-    fundingGrantName: str = None
-    fundingFunderName: str = None
-    creativeWorkStatus: str = None
+    contentType: Optional[str] = None
+    providerName: Optional[str] = None
+    creatorName: Optional[str] = None
+    dataCoverageStart: Optional[int] = None
+    dataCoverageEnd: Optional[int] = None
+    publishedStart: Optional[int] = None
+    publishedEnd: Optional[int] = None
+    hasPartName: Optional[str] = None
+    isPartOfName: Optional[str] = None
+    associatedMediaName: Optional[str] = None
+    fundingGrantName: Optional[str] = None
+    fundingFunderName: Optional[str] = None
+    creativeWorkStatus: Optional[str] = None
     pageNumber: int = 1
     pageSize: int = 30
 
-    @validator('*')
-    def empty_str_to_none(cls, v, field, **kwargs):
-        if field.name == 'term' and v:
+    @field_validator('*')
+    def empty_str_to_none(cls, v, info: ValidationInfo):
+        if info.field_name == 'term' and v:
             return v.strip()
 
         if isinstance(v, str) and v.strip() == '':
             return None
         return v
 
-    @validator('dataCoverageStart', 'dataCoverageEnd', 'publishedStart', 'publishedEnd')
-    def validate_year(cls, v, values, field, **kwargs):
+    @field_validator('dataCoverageStart', 'dataCoverageEnd', 'publishedStart', 'publishedEnd')
+    def validate_year(cls, v, info: ValidationInfo):
         if v is None:
             return v
         try:
             datetime(v, 1, 1)
         except ValueError:
-            raise ValueError(f'{field.name} is not a valid year')
-        if field.name == 'dataCoverageEnd':
-            if 'dataCoverageStart' in values and v < values['dataCoverageStart']:
-                raise ValueError(f'{field.name} must be greater or equal to dataCoverageStart')
-        if field.name == 'publishedEnd':
-            if 'publishedStart' in values and v < values['publishedStart']:
-                raise ValueError(f'{field.name} must be greater or equal to publishedStart')
+            raise ValueError(f'{info.field_name} is not a valid year')
+
         return v
 
-    @validator('pageNumber', 'pageSize')
-    def validate_page(cls, v, field, **kwargs):
+    @model_validator(mode='after')
+    def validate_date_range(self):
+        if self.dataCoverageStart and self.dataCoverageEnd and self.dataCoverageEnd < self.dataCoverageStart:
+            raise ValueError('dataCoverageEnd must be greater or equal to dataCoverageStart')
+        if self.publishedStart and self.publishedEnd and self.publishedEnd < self.publishedStart:
+            raise ValueError('publishedEnd must be greater or equal to publishedStart')
+
+    @field_validator('pageNumber', 'pageSize')
+    def validate_page(cls, v, info: ValidationInfo):
         if v <= 0:
-            raise ValueError(f'{field.name} must be greater than 0')
+            raise ValueError(f'{info.field_name} must be greater than 0')
         return v
 
     @property
@@ -92,7 +98,9 @@ class SearchQuery(BaseModel):
     @property
     def _should(self):
         search_paths = ['name', 'description', 'keywords', 'keywords.name']
-        should = [{'autocomplete': {'query': self.term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths]
+        should = [
+            {'autocomplete': {'query': self.term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths
+        ]
         return should
 
     @property
@@ -116,9 +124,8 @@ class SearchQuery(BaseModel):
         if self.fundingFunderName:
             must.append({'text': {'path': 'funding.funder.name', 'query': self.fundingFunderName}})
         if self.creativeWorkStatus:
-            must.append(
-                {'text': {'path': ['creativeWorkStatus', 'creativeWorkStatus.name'], 'query': self.creativeWorkStatus}}
-            )
+            must.append({'text': {'path': ['creativeWorkStatus', 'creativeWorkStatus.name'],
+                                  'query': self.creativeWorkStatus}})
 
         return must
 
@@ -129,12 +136,13 @@ class SearchQuery(BaseModel):
         compound = {'filter': self._filters, 'must': self._must}
         if self.term:
             compound['should'] = self._should
-        search_stage = {
-            '$search': {
-                'index': 'fuzzy_search',
-                'compound': compound,
+        search_stage = \
+            {
+                '$search': {
+                    'index': 'fuzzy_search',
+                    'compound': compound,
+                }
             }
-        }
         if self.term:
             search_stage["$search"]['highlight'] = {'path': highlightPaths}
 
@@ -148,7 +156,7 @@ class SearchQuery(BaseModel):
             stages.append({'$sort': {self.sortBy: -1 if self.reverseSort else 1}})
         stages.append({'$skip': (self.pageNumber - 1) * self.pageSize})
         stages.append({'$limit': self.pageSize})
-        # stages.append({'$unset': ['_id', '_class_id']})
+        #stages.append({'$unset': ['_id', '_class_id']})
         stages.append(
             {'$set': {'score': {'$meta': 'searchScore'}, 'highlights': {'$meta': 'searchHighlights'}}},
         )
@@ -160,7 +168,6 @@ async def search(request: Request, search_query: SearchQuery = Depends()):
     stages = search_query.stages
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(search_query.pageSize)
     import json
-
     json_str = json.dumps(result, default=str)
     return json.loads(json_str)
 
@@ -190,3 +197,19 @@ async def typeahead(request: Request, term: str, pageSize: int = 30):
     ]
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(pageSize)
     return result
+
+
+@router.get("/discovery/refresh")
+async def refresh(request: Request, user: User = Depends(current_active_user)):
+    db = get_hydroshare_client()
+    resume_token = None
+    async with db.discovery_ids.watch(resume_after=user.resume_token) as stream:
+        change = await stream.try_next()
+        while change is not None:
+            print(change)
+            resume_token = stream.resume_token
+            change = await stream.try_next()
+            
+    user.resume_token = resume_token
+    await user.save()
+    return {"resume_token": user.resume_token}

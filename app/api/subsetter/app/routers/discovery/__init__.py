@@ -1,1 +1,1 @@
-from .router import router
+from .discovery import router

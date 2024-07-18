@@ -1,4 +1,5 @@
 import subprocess
+import motor
 
 from beanie import init_beanie
 from fastapi import FastAPI
@@ -9,6 +10,7 @@ from subsetter.app.routers.access_control import router as access_control_router
 from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.hydroshare import router as hydroshare_router
 from subsetter.app.routers.storage import router as storage_router
+from subsetter.app.routers.discovery import router as discovery_router
 from subsetter.app.schemas import UserRead, UserUpdate
 from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from subsetter.config import get_settings
@@ -16,7 +18,7 @@ from subsetter.config import get_settings
 # TODO: get oauth working with swagger/redoc
 # Setting the base url for swagger docs
 # https://github.com/tiangolo/fastapi/pull/1547
-# https://swagger.io/docs/specification/api-host-and-base-path/
+# https://swagger.io/docs/specification/api-host-and-base-path/ma
 # https://fastapi.tiangolo.com/how-to/configure-swagger-ui/
 # https://github.com/tiangolo/fastapi/pull/499
 swagger_params = {
@@ -59,6 +61,12 @@ app.include_router(
     hydroshare_router,
     # prefix="/auth/cuahsi",
     tags=["hydroshare"],
+)
+
+app.include_router(
+    discovery_router,
+    # prefix="/auth/cuahsi",
+    tags=["discovery"],
 )
 
 app.include_router(
@@ -109,6 +117,7 @@ async def on_startup():
         get_settings().minio_access_key,
         get_settings().minio_secret_key,
     ]
+    app.db = motor.motor_asyncio.AsyncIOMotorClient(get_settings().mongo_url)
     try:
         _output = subprocess.check_output(arguments)
     except subprocess.CalledProcessError as e:

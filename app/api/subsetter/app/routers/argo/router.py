@@ -14,14 +14,12 @@ from subsetter.app.db import Submission, User
 from subsetter.app.models import (
     LogsResponseModel,
     SubmissionResponseModel,
-    UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
 )
 from subsetter.app.users import current_active_user
-from subsetter.config import get_minio_client, get_settings
-
-from .transformer import transform_latlon
+from subsetter.config import get_settings
+from subsetter.config.minio import get_minio_client
 
 if get_settings().cloud_run:
     logging_client = logging.Client()

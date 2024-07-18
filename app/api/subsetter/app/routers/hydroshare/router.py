@@ -1,14 +1,16 @@
 import json
 import tempfile
-from typing import Any, Union
+from typing import Union, Any
+from pydantic import BaseModel
 
 import google.cloud.logging as logging
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 
 from subsetter.app.db import User
 from subsetter.app.users import current_active_user
-from subsetter.config import get_minio_client, get_settings
+from subsetter.config import get_settings
+from subsetter.config.minio import get_minio_client
+
 
 if get_settings().cloud_run:
     logging_client = logging.Client()
@@ -17,16 +19,28 @@ if get_settings().cloud_run:
 router = APIRouter()
 
 
+import subprocess
+from datetime import datetime
+
+tomorow_timestamp = lambda: int(datetime.now().timestamp()) + 86400
+
+def generate_access_key(user: User):
+    process = subprocess.Popen(f"mc admin user svcacct ls cuahsi {user.username} --expiry {tomorow_timestamp()}", stdout=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+
+    if error:
+        print(f"Error: {error}")
+    else:
+        print(output)
+
 class HydroShareMetadata(BaseModel):
     title: str
     description: str
 
-
 class DatasetMetadataRequestModel(BaseModel):
     file_path: str
-    # bucket_name: str
+    bucket_name: str
     metadata: Union[HydroShareMetadata, Any]
-
 
 @router.post('/dataset/metadata')
 async def create_metadata(metadata_request: DatasetMetadataRequestModel, user: User = Depends(current_active_user)):
@@ -35,7 +49,9 @@ async def create_metadata(metadata_request: DatasetMetadataRequestModel, user: U
         print(metadata_json_str)
         fp.write(str.encode(metadata_json_str))
         fp.close()
-        get_minio_client().fput_object(user.bucket_name, metadata_request.file_path, fp.name)
+        get_minio_client(user).fput_object(
+            user.bucket_name, metadata_request.file_path, fp.name
+        )
 
 
 @router.put('/dataset/metadata')
@@ -44,7 +60,10 @@ async def update_metadata(metadata_request: DatasetMetadataRequestModel, user: U
     return await create_metadata(metadata_request, user)
 
 
+@router.post
+
+
 class DatasetExtractRequestModel(BaseModel):
     file_path: str = None
-    # bucket_name: str
+    #bucket_name: str
     metadata: Union[HydroShareMetadata, Any] = None

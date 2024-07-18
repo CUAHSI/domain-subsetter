@@ -7,11 +7,12 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
-from httpx_oauth.errors import GetIdEmailError
+from httpx_oauth.exceptions import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
 from subsetter.app.db import User, get_user_db
-from subsetter.config import get_minio_client, get_settings
+from subsetter.config import get_settings
+from subsetter.config.minio import get_minio_client
 
 SECRET = "SECRET"
 
@@ -39,6 +40,7 @@ client_params = dict(
     access_token_endpoint=get_settings().access_token_endpoint,
     refresh_token_endpoint=get_settings().refresh_token_endpoint,
     revoke_token_endpoint=get_settings().revoke_token_endpoint,
+    revocation_endpoint_auth_method= get_settings().revocation_endpoint_auth_method,
     base_scopes=["openid", "profile"],
 )
 

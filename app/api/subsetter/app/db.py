@@ -51,6 +51,7 @@ class User(BeanieBaseUser, Document):
     username: Optional[str] = None
     given_name: Optional[str] = None
     family_name: Optional[str] = None
+    resume_token:Optional[str] = None
 
     @property
     def bucket_name(self):
@@ -93,6 +94,11 @@ class User(BeanieBaseUser, Document):
 
 async def get_user_db():
     yield BeanieUserDatabase(User, OAuthAccount)
+
+
+@lru_cache
+def get_hydroshare_client():
+    return client_hydroshare
 
 
 @lru_cache

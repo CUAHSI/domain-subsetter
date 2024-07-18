@@ -1,11 +1,10 @@
 from functools import lru_cache
 
-from dotenv import load_dotenv
-from minio import Minio
+#from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 
 # had to use load_dotenv() to get the env variables to work during testing
-load_dotenv()
+#load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -55,16 +54,14 @@ class Settings(BaseSettings):
     def revoke_token_endpoint(self):
         return self.OIDC_BASE_URL + "revoke"
 
+    @property
+    def revocation_endpoint_auth_method(self):
+        return "client_secret_basic"
+
 
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
 
 
-@lru_cache()
-def get_minio_client() -> Minio:
-    return Minio(
-        get_settings().minio_api_url,
-        access_key=get_settings().minio_access_key,
-        secret_key=get_settings().minio_secret_key,
-    )
+

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from subsetter.app.models import WorkflowDep
-from subsetter.config import get_minio_client
+from subsetter.config.minio import get_minio_client
 
 router = APIRouter()
 

@@ -1,0 +1,9 @@
+requests
+typer
+motor
+pydantic[dotenv]
+pydantic[email]
+pydantic-settings
+rocketry==2.5.1
+boto3
+beanie[httpx]
