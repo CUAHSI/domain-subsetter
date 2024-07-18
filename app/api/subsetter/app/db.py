@@ -51,7 +51,7 @@ class User(BeanieBaseUser, Document):
     username: Optional[str] = None
     given_name: Optional[str] = None
     family_name: Optional[str] = None
-    resume_token:Optional[str] = None
+    resume_token: Optional[str] = None
 
     @property
     def bucket_name(self):

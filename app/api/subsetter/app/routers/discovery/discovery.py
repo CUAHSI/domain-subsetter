@@ -1,11 +1,11 @@
-from subsetter.app.users import current_active_user
-from subsetter.app.db import User, get_hydroshare_client
-
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Request, Depends
-from pydantic import BaseModel, field_validator, model_validator, ValidationInfo
+from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
+
+from subsetter.app.db import User, get_hydroshare_client
+from subsetter.app.users import current_active_user
 
 router = APIRouter()
 
@@ -98,9 +98,7 @@ class SearchQuery(BaseModel):
     @property
     def _should(self):
         search_paths = ['name', 'description', 'keywords', 'keywords.name']
-        should = [
-            {'autocomplete': {'query': self.term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths
-        ]
+        should = [{'autocomplete': {'query': self.term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths]
         return should
 
     @property
@@ -124,8 +122,9 @@ class SearchQuery(BaseModel):
         if self.fundingFunderName:
             must.append({'text': {'path': 'funding.funder.name', 'query': self.fundingFunderName}})
         if self.creativeWorkStatus:
-            must.append({'text': {'path': ['creativeWorkStatus', 'creativeWorkStatus.name'],
-                                  'query': self.creativeWorkStatus}})
+            must.append(
+                {'text': {'path': ['creativeWorkStatus', 'creativeWorkStatus.name'], 'query': self.creativeWorkStatus}}
+            )
 
         return must
 
@@ -136,13 +135,12 @@ class SearchQuery(BaseModel):
         compound = {'filter': self._filters, 'must': self._must}
         if self.term:
             compound['should'] = self._should
-        search_stage = \
-            {
-                '$search': {
-                    'index': 'fuzzy_search',
-                    'compound': compound,
-                }
+        search_stage = {
+            '$search': {
+                'index': 'fuzzy_search',
+                'compound': compound,
             }
+        }
         if self.term:
             search_stage["$search"]['highlight'] = {'path': highlightPaths}
 
@@ -156,7 +154,7 @@ class SearchQuery(BaseModel):
             stages.append({'$sort': {self.sortBy: -1 if self.reverseSort else 1}})
         stages.append({'$skip': (self.pageNumber - 1) * self.pageSize})
         stages.append({'$limit': self.pageSize})
-        #stages.append({'$unset': ['_id', '_class_id']})
+        # stages.append({'$unset': ['_id', '_class_id']})
         stages.append(
             {'$set': {'score': {'$meta': 'searchScore'}, 'highlights': {'$meta': 'searchHighlights'}}},
         )
@@ -168,6 +166,7 @@ async def search(request: Request, search_query: SearchQuery = Depends()):
     stages = search_query.stages
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(search_query.pageSize)
     import json
+
     json_str = json.dumps(result, default=str)
     return json.loads(json_str)
 
@@ -209,7 +208,7 @@ async def refresh(request: Request, user: User = Depends(current_active_user)):
             print(change)
             resume_token = stream.resume_token
             change = await stream.try_next()
-            
+
     user.resume_token = resume_token
     await user.save()
     return {"resume_token": user.resume_token}

@@ -1,6 +1,9 @@
-from minio import Minio
 from functools import lru_cache
+
+from minio import Minio
+
 from . import get_settings
+
 
 @lru_cache()
 def get_minio_client() -> Minio:

@@ -11,12 +11,7 @@ from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 
 from subsetter.app.db import Submission, User
-from subsetter.app.models import (
-    LogsResponseModel,
-    SubmissionResponseModel,
-    UserSubmissionsResponseModel,
-    WorkflowDep,
-)
+from subsetter.app.models import LogsResponseModel, SubmissionResponseModel, UserSubmissionsResponseModel, WorkflowDep
 from subsetter.app.users import current_active_user
 from subsetter.config import get_settings
 from subsetter.config.minio import get_minio_client
