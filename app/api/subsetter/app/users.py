@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Optional, Tuple, cast, AsyncContextManager
+from typing import Any, AsyncContextManager, Dict, Optional, Tuple, cast
 
 import httpx
 from beanie import PydanticObjectId
@@ -19,8 +19,8 @@ SECRET = "SECRET"
 
 class CUAHSIOAuth2(OAuth2):
     def get_httpx_client(self) -> AsyncContextManager[httpx.AsyncClient]:
-        return httpx.AsyncClient(verify=False, timeout=10.0) 
-    
+        return httpx.AsyncClient(verify=False, timeout=10.0)
+
     async def get_id_email(self, token: str) -> Tuple[str, str]:
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(

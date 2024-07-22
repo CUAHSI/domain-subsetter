@@ -1,11 +1,13 @@
+import json
+import mimetypes
+import os
 from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
 
-from subsetter.app.db import User, get_hydroshare_client
-from subsetter.app.users import current_active_user
+from subsetter.app.adapters.hydroshare import HydroshareMetadataAdapter
 
 router = APIRouter()
 
@@ -197,11 +199,47 @@ async def typeahead(request: Request, term: str, pageSize: int = 30):
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(pageSize)
     return result
 
+
 from hsclient import HydroShare
+
 hs = HydroShare(username='sblack', password='changed')
+
+
+def to_associated_media(file):
+    mime_type = mimetypes.guess_type(file.name)[0]
+    extension = file.extension
+    mime_type = mime_type if mime_type else extension
+    size = 0
+    return {
+        "@type": "DataDownload",
+        "name": file.name,
+        "contentUrl": file.url,
+        "contentSize": size,
+        "sha256": file.checksum,
+        "encodingFormat": mime_type,
+    }
+
 
 @router.get("/discovery/hydroshare/refresh")
 async def refresh(request: Request, resource_id: str):
     res = hs.resource(resource_id)
+    adapter = HydroshareMetadataAdapter()
+    files = []
+    records = []
+    for aggregation in res.aggregations():
+        agg_files = []
+        for f in aggregation.files():
+            agg_files.append(to_associated_media(f))
+        agg_record = json.loads(adapter.to_catalog_record(aggregation.metadata.dict()).json())
+        agg_record["associatedMedia"] = agg_files
+        files.extend(agg_files)
+        records.append(agg_record)
+        # print(json.dumps(agg_record, indent=2))
+
     for f in res.files():
-        print(f)
+        files.append(to_associated_media(f))
+    catalog_record = json.loads(adapter.to_catalog_record(res.metadata.dict()).json())
+    catalog_record["associatedMedia"] = files
+    # print(json.dumps(catalog_record, indent=2))
+    records.append(catalog_record)
+    return records
