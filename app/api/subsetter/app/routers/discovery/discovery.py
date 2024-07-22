@@ -197,18 +197,11 @@ async def typeahead(request: Request, term: str, pageSize: int = 30):
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(pageSize)
     return result
 
+from hsclient import HydroShare
+hs = HydroShare(username='sblack', password='changed')
 
-@router.get("/discovery/refresh")
-async def refresh(request: Request, user: User = Depends(current_active_user)):
-    db = get_hydroshare_client()
-    resume_token = None
-    async with db.discovery_ids.watch(resume_after=user.resume_token) as stream:
-        change = await stream.try_next()
-        while change is not None:
-            print(change)
-            resume_token = stream.resume_token
-            change = await stream.try_next()
-
-    user.resume_token = resume_token
-    await user.save()
-    return {"resume_token": user.resume_token}
+@router.get("/discovery/hydroshare/refresh")
+async def refresh(request: Request, resource_id: str):
+    res = hs.resource(resource_id)
+    for f in res.files():
+        print(f)

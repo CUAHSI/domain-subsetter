@@ -60,18 +60,20 @@ class HydroShareMetadata(BaseModel):
 
 class DatasetMetadataRequestModel(BaseModel):
     file_path: str
-    bucket_name: str
+    bucket_name: str = None
     metadata: Union[HydroShareMetadata, Any]
 
 
 @router.post('/dataset/metadata')
 async def create_metadata(metadata_request: DatasetMetadataRequestModel, user: User = Depends(current_active_user)):
+    if metadata_request.bucket_name is None:
+        metadata_request.bucket_name = user.bucket_name
     with tempfile.NamedTemporaryFile(delete=False) as fp:
         metadata_json_str = json.dumps(metadata_request.metadata)
         print(metadata_json_str)
         fp.write(str.encode(metadata_json_str))
         fp.close()
-        minio_client(user).fput_object(user.bucket_name, metadata_request.file_path, fp.name)
+        minio_client(user).fput_object(metadata_request.bucket_name, metadata_request.file_path, fp.name)
 
 
 @router.put('/dataset/metadata')

@@ -3,7 +3,7 @@ argo-workflows==6.4.8
 pyyaml
 requests
 fastapi
-fastapi-users[beanie]
+fastapi-users[beanie,oauth]
 uvicorn[standard]
 httpx-oauth
 minio
@@ -11,3 +11,4 @@ pydantic-settings
 google-cloud-logging
 pyproj
 wget
+hsclient
