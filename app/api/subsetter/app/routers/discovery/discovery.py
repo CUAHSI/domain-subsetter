@@ -226,6 +226,7 @@ async def refresh(request: Request, resource_id: str):
     adapter = HydroshareMetadataAdapter()
     files = []
     records = []
+    hasParts = []
     for aggregation in res.aggregations():
         agg_files = []
         for f in aggregation.files():
@@ -233,13 +234,16 @@ async def refresh(request: Request, resource_id: str):
         agg_record = json.loads(adapter.to_catalog_record(aggregation.metadata.dict()).json())
         agg_record["associatedMedia"] = agg_files
         files.extend(agg_files)
+        hasParts.append(agg_record["url"])
+        agg_record["isPartOf"] = [str(res.metadata.url)]
         records.append(agg_record)
-        # print(json.dumps(agg_record, indent=2))
 
     for f in res.files():
         files.append(to_associated_media(f))
     catalog_record = json.loads(adapter.to_catalog_record(res.metadata.dict()).json())
     catalog_record["associatedMedia"] = files
-    # print(json.dumps(catalog_record, indent=2))
+    catalog_record["hasPart"] = hasParts
     records.append(catalog_record)
-    return records
+
+    await request.app.mongodb["discovery"].insert_many(records)
+    # return records

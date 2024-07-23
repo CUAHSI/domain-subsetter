@@ -118,6 +118,7 @@ async def on_startup():
         get_settings().minio_secret_key,
     ]
     app.db = motor.motor_asyncio.AsyncIOMotorClient(get_settings().mongo_url)
+    app.mongodb = app.db[get_settings().mongo_database]
     try:
         _output = subprocess.check_output(arguments)
     except subprocess.CalledProcessError as e:
