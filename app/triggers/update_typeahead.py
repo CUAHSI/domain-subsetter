@@ -43,6 +43,8 @@ async def watch_discovery(db: AsyncIOMotorClient):
 
 
 def sanitize(text):
+    if text is None:
+        return None
     # remove urls form text
     text = re.sub(r'https?://\S+', '', text)
     # remove all single characters except "a"

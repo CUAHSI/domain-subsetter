@@ -6,6 +6,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
+from pymongo import UpdateOne
 
 from subsetter.app.adapters.hydroshare import HydroshareMetadataAdapter
 
@@ -245,5 +246,13 @@ async def refresh(request: Request, resource_id: str):
     catalog_record["hasPart"] = hasParts
     records.append(catalog_record)
 
-    await request.app.mongodb["discovery"].insert_many(records)
-    # return records
+    bulk_operations = [
+        UpdateOne(
+            {'url': record['url']},
+            {'$set': record},
+            upsert=True,
+        )
+        for record in records
+    ]
+
+    await request.app.mongodb["discovery"].bulk_write(bulk_operations)
