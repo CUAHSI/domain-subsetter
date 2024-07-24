@@ -34,7 +34,7 @@ async def watch_discovery(db: AsyncIOMotorClient):
                     '_id': document['_id'],
                     'name': sanitize(document['name']),
                     'description': sanitize(document['description']),
-                    'keywords': document['keywords']
+                    'keywords': document['keywords'] if "keywords" in document else [],
                     # 'keywords': [sanitize(keyword) for keyword in document['keywords']],
                 }
                 await db["typeahead"].find_one_and_replace({"_id": sanitized["_id"]}, sanitized, upsert=True)
