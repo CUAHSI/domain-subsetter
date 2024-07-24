@@ -2,55 +2,22 @@ import json
 import tempfile
 from typing import Any, Union
 
+import argo_workflows
 import google.cloud.logging as logging
+from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends
-from minio import Minio
 from pydantic import BaseModel
 
 from subsetter.app.db import User
+from subsetter.app.routers.utils import metadata_file_path, minio_client
 from subsetter.app.users import current_active_user
 from subsetter.config import get_settings
-from subsetter.config.minio import get_minio_client
 
 if get_settings().cloud_run:
     logging_client = logging.Client()
     logging_client.setup_logging()
 
 router = APIRouter()
-
-
-import subprocess
-from datetime import datetime, timedelta
-
-
-def get_tomorrow_date():
-    tomorrow = datetime.now() + timedelta(days=1)
-    return tomorrow.strftime("%Y-%m-%d")
-
-
-def minio_client(user: User):
-    process = subprocess.Popen(
-        f"mc admin user svcacct add --expiry {get_tomorrow_date()} cuahsi {user.username}",
-        stdout=subprocess.PIPE,
-        shell=True,
-    )
-    output, error = process.communicate()
-
-    if error:
-        print(f"Error: {error}")
-        raise Exception('Error generating access key')
-    else:
-        output = output.decode("utf-8")
-        lines = output.split("\n")
-        access_key_line = next(line for line in lines if line.startswith("Access Key:"))
-        secret_key_line = next(line for line in lines if line.startswith("Secret Key:"))
-        expiration_line = next(line for line in lines if line.startswith("Expiration:"))
-
-        access_key = access_key_line.split(":")[1].strip()
-        secret_key = secret_key_line.split(":")[1].strip()
-        expiration = expiration_line.split(":")[1].strip()
-        minio_client = Minio(get_settings().minio_api_url, access_key=access_key, secret_key=secret_key)
-        return minio_client
 
 
 class HydroShareMetadata(BaseModel):
@@ -62,6 +29,11 @@ class DatasetMetadataRequestModel(BaseModel):
     file_path: str
     bucket_name: str = None
     metadata: Union[HydroShareMetadata, Any]
+
+
+class DatasetMetadataDeleteModel(BaseModel):
+    file_path: str
+    bucket_name: str = None
 
 
 @router.post('/dataset/metadata')
@@ -82,7 +54,50 @@ async def update_metadata(metadata_request: DatasetMetadataRequestModel, user: U
     return await create_metadata(metadata_request, user)
 
 
+@router.delete('/dataset/metadata')
+async def delete_metadata(metadata_request: DatasetMetadataDeleteModel, user: User = Depends(current_active_user)):
+    minio_client(user).remove_object(user.bucket_name, metadata_request.file_path)
+
+
 class DatasetExtractRequestModel(BaseModel):
     file_path: str = None
     bucket_name: str
-    metadata: Union[HydroShareMetadata, Any] = None
+
+
+NAMESPACE = 'workflows'
+
+configuration = argo_workflows.Configuration(host=get_settings().argo_host)
+configuration.api_key['BearerToken'] = get_settings().argo_bearer_token
+
+api_client = argo_workflows.ApiClient(configuration)
+api_instance = workflow_service_api.WorkflowServiceApi(api_client)
+
+
+def submission_body(bucket: str, input_path: str, output_path: str, base_url: str) -> dict:
+    return {
+        "resourceKind": "WorkflowTemplate",
+        "resourceName": "metadata-extractor-path",
+        "submitOptions": {
+            "parameters": [
+                f"bucket={bucket}",
+                f"input-path={input_path}",
+                f"output-path={output_path}",
+                f"base-url={base_url}",
+            ],
+        },
+    }
+
+
+@router.post('/dataset/extract')
+async def dataset_extract(extract_request: DatasetExtractRequestModel, user: User = Depends(current_active_user)):
+    api_response = api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace,
+        body=submission_body(
+            extract_request.bucket_name,
+            extract_request.file_path,
+            metadata_file_path(extract_request.file_path),
+            "https://www.hydroshare.org",
+        ),
+        _preload_content=False,
+    )
+    return api_response.json()

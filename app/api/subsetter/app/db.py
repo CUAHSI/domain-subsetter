@@ -58,7 +58,7 @@ class User(BeanieBaseUser, Document):
 
     async def update_profile(self):
         async def get_profile(token: str) -> Tuple[str, str]:
-            async with httpx.AsyncClient() as client:
+            async with httpx.AsyncClient(verify=False) as client:
                 response = await client.get(
                     get_settings().user_info_endpoint,
                     headers={"Authorization": f"Bearer {token}"},
