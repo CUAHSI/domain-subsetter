@@ -96,7 +96,7 @@ async def dataset_extract(extract_request: DatasetExtractRequestModel, user: Use
             extract_request.bucket_name,
             extract_request.file_path,
             metadata_file_path(extract_request.file_path),
-            "https://www.hydroshare.org",
+            f"https://www.hydroshare.org/s3/{extract_request.bucket_name}/{extract_request.file_path}/",
         ),
         _preload_content=False,
     )
