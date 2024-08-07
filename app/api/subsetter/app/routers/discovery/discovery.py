@@ -5,7 +5,7 @@ import os
 import tarfile
 import tempfile
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
@@ -106,14 +106,14 @@ class SearchQuery(BaseModel):
 
     @property
     def _should(self):
-        search_paths = ['name', 'description', 'keywords', 'keywords.name']
+        search_paths = ['name', 'description', 'keywords']
         should = [{'autocomplete': {'query': self.term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths]
         return should
 
     @property
     def _must(self):
         must = []
-        must.append({'term': {'path': '@type', 'query': "Dataset"}})
+        must.append({'term': {'path': 'type', 'query': "Dataset"}})
         if self.contentType:
             must.append({'term': {'path': '@type', 'query': self.contentType}})
         if self.creatorName:
@@ -139,7 +139,7 @@ class SearchQuery(BaseModel):
 
     @property
     def stages(self):
-        highlightPaths = ['name', 'description', 'keywords', 'keywords.name', 'creator.name']
+        highlightPaths = ['name', 'description', 'keywords', 'creator.name']
         stages = []
         compound = {'filter': self._filters, 'must': self._must}
         if self.term:
@@ -173,16 +173,15 @@ class SearchQuery(BaseModel):
 @router.get("/search")
 async def search(request: Request, search_query: SearchQuery = Depends()):
     stages = search_query.stages
+    print(json.dumps(stages, indent=2))
     result = await request.app.mongodb["discovery"].aggregate(stages).to_list(search_query.pageSize)
-    import json
-
     json_str = json.dumps(result, default=str)
     return json.loads(json_str)
 
 
 @router.get("/typeahead")
 async def typeahead(request: Request, term: str, pageSize: int = 30):
-    search_paths = ['name', 'description', 'keywords', 'keywords.name']
+    search_paths = ['name', 'description', 'keywords']
     should = [{'autocomplete': {'query': term, 'path': key, 'fuzzy': {'maxEdits': 1}}} for key in search_paths]
 
     stages = [
@@ -190,7 +189,7 @@ async def typeahead(request: Request, term: str, pageSize: int = 30):
             '$search': {
                 'index': 'fuzzy_search',
                 'compound': {'should': should},
-                'highlight': {'path': ['description', 'name', 'keywords', 'keywords.name']},
+                'highlight': {'path': ['description', 'name', 'keywords']},
             }
         },
         {
@@ -227,8 +226,20 @@ def to_associated_media(file):
     }
 
 
-@router.get("/discovery/hydroshare/refresh")
-async def refresh(request: Request, resource_id: str):
+class Message(BaseModel):
+    message: Any
+
+
+@router.post("/discovery/hydroshare/refresh")
+async def refresh(message: Message):
+    """Receive and parse Pub/Sub messages."""
+
+    print(f"Hello {message}!")
+
+    return (f"{message}", 204)
+
+
+'''
     res = hs.resource(resource_id)
     adapter = HydroshareMetadataAdapter()
     files = []
@@ -262,6 +273,7 @@ async def refresh(request: Request, resource_id: str):
     ]
 
     await request.app.mongodb["discovery"].bulk_write(bulk_operations)
+'''
 
 
 @router.get("/discovery/s3/refresh")
