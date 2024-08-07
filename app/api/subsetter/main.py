@@ -1,9 +1,11 @@
+import os
 import subprocess
 
 import motor
 from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from subsetter.app.db import User, db
 from subsetter.app.routers.access_control import router as access_control_router
@@ -39,6 +41,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+parent_dir = os.path.dirname(__file__)
+static_dir = os.path.join(parent_dir, "app/schemas")
+app.mount("/api/schemas", StaticFiles(directory=static_dir), name="schemas")
+
+
 app.include_router(
     argo_router,
     # prefix="/auth/cuahsi",
@@ -65,7 +72,7 @@ app.include_router(
 
 app.include_router(
     discovery_router,
-    # prefix="/auth/cuahsi",
+    prefix="/api/discovery",
     tags=["discovery"],
 )
 

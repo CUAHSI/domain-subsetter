@@ -1,0 +1,2830 @@
+{
+    "title": "DatasetMetadata",
+    "type": "object",
+    "properties": {
+      "@context": {
+        "title": "@Context",
+        "description": "Specifies the vocabulary employed for understanding the structured data markup.",
+        "default": "https://schema.org",
+        "minLength": 1,
+        "maxLength": 2083,
+        "type": "string",
+        "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+        "errorMessage": {
+          "pattern": "must match format \"url\""
+        }
+      },
+      "@type": {
+        "title": "Submission type",
+        "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+        "default": "Dataset",
+        "enum": [
+          "Dataset",
+          "Notebook",
+          "Software Source Code"
+        ],
+        "type": "string"
+      },
+      "name": {
+        "title": "Name or title",
+        "description": "A text string with a descriptive name or title for the resource.",
+        "type": "string"
+      },
+      "description": {
+        "title": "Description or abstract",
+        "description": "A text string containing a description/abstract for the resource.",
+        "type": "string"
+      },
+      "url": {
+        "title": "URL",
+        "description": "A URL for the landing page that describes the resource and where the content of the resource can be accessed. If there is no landing page, provide the URL of the content.",
+        "minLength": 1,
+        "maxLength": 2083,
+        "type": "string",
+        "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+        "errorMessage": {
+          "pattern": "must match format \"url\""
+        }
+      },
+      "identifier": {
+        "title": "Identifiers",
+        "description": "Any kind of identifier for the resource. Identifiers may be DOIs or unique strings assigned by a repository. Multiple identifiers can be entered. Where identifiers can be encoded as URLs, enter URLs here.",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "title": "Identifier"
+        }
+      },
+      "creator": {
+        "title": "Creator",
+        "description": "Person or Organization that created the resource.",
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "title": "Creator",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "description": "A person.",
+                  "default": "Person",
+                  "const": "Person",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "A string containing the full name of the person. Personal name format: Family Name, Given Name.",
+                  "type": "string"
+                },
+                "email": {
+                  "title": "Email",
+                  "description": "A string containing an email address for the creator.",
+                  "type": "string",
+                  "format": "email"
+                },
+                "identifier": {
+                  "title": "Identifier",
+                  "description": "ORCID identifier for creator.",
+                  "pattern": "\\b\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]\\b",
+                  "options": {
+                    "placeholder": "e.g. '0000-0001-2345-6789'"
+                  },
+                  "errorMessage": {
+                    "pattern": "must match the ORCID pattern. e.g. '0000-0001-2345-6789'"
+                  },
+                  "type": "string"
+                },
+                "affiliation": {
+                  "title": "Affiliation",
+                  "description": "The affiliation of the creator with the organization.",
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "title": "@Type",
+                      "default": "Organization",
+                      "const": "Organization",
+                      "type": "string"
+                    },
+                    "name": {
+                      "title": "Name",
+                      "description": "Name of the organization the creator is affiliated with.",
+                      "type": "string"
+                    },
+                    "url": {
+                      "title": "URL",
+                      "description": "A URL to the homepage for the organization.",
+                      "minLength": 1,
+                      "maxLength": 2083,
+                      "type": "string",
+                      "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                      "errorMessage": {
+                        "pattern": "must match format \"url\""
+                      }
+                    },
+                    "address": {
+                      "title": "Address",
+                      "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              },
+              "required": [
+                "name"
+              ]
+            },
+            {
+              "title": "Organization",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "default": "Organization",
+                  "const": "Organization",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "Name of the provider organization or repository.",
+                  "type": "string"
+                },
+                "url": {
+                  "title": "URL",
+                  "description": "A URL to the homepage for the organization.",
+                  "minLength": 1,
+                  "maxLength": 2083,
+                  "type": "string",
+                  "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                  "errorMessage": {
+                    "pattern": "must match format \"url\""
+                  }
+                },
+                "address": {
+                  "title": "Address",
+                  "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          ]
+        }
+      },
+      "dateCreated": {
+        "title": "Date created",
+        "description": "The date on which the resource was created.",
+        "type": "string",
+        "format": "date-time"
+      },
+      "keywords": {
+        "title": "Keywords",
+        "description": "Keywords or tags used to describe the dataset, delimited by commas.",
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "license": {
+        "title": "License",
+        "description": "A license document that applies to the resource.",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "A text string indicating the name of the license under which the resource is shared.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL for a web page that describes the license.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "A text string describing the license or containing the text of the license itself.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "provider": {
+        "title": "Provider",
+        "description": "The repository, service provider, organization, person, or service performer that provides access to the resource.",
+        "anyOf": [
+          {
+            "title": "Organization",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "Organization",
+                "const": "Organization",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Name of the provider organization or repository.",
+                "type": "string"
+              },
+              "url": {
+                "title": "URL",
+                "description": "A URL to the homepage for the organization.",
+                "minLength": 1,
+                "maxLength": 2083,
+                "type": "string",
+                "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                "errorMessage": {
+                  "pattern": "must match format \"url\""
+                }
+              },
+              "address": {
+                "title": "Address",
+                "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "title": "Provider",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "description": "A person.",
+                "default": "Person",
+                "const": "Person",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "A string containing the full name of the person. Personal name format: Family Name, Given Name.",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "description": "A string containing an email address for the provider.",
+                "type": "string",
+                "format": "email"
+              },
+              "identifier": {
+                "title": "Identifier",
+                "description": "ORCID identifier for the person.",
+                "pattern": "\\b\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]\\b",
+                "options": {
+                  "placeholder": "e.g. '0000-0001-2345-6789'"
+                },
+                "errorMessage": {
+                  "pattern": "must match the ORCID pattern. e.g. '0000-0001-2345-6789'"
+                },
+                "type": "string"
+              },
+              "affiliation": {
+                "title": "Affiliation",
+                "description": "The affiliation of the creator with the organization.",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "default": "Organization",
+                    "const": "Organization",
+                    "type": "string"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "description": "Name of the organization the creator is affiliated with.",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "URL",
+                    "description": "A URL to the homepage for the organization.",
+                    "minLength": 1,
+                    "maxLength": 2083,
+                    "type": "string",
+                    "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                    "errorMessage": {
+                      "pattern": "must match format \"url\""
+                    }
+                  },
+                  "address": {
+                    "title": "Address",
+                    "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        ]
+      },
+      "publisher": {
+        "title": "PublisherOrganization",
+        "description": "Where the resource is permanently published, indicated the repository, service provider, or organization that published the resource - e.g., CUAHSI HydroShare. This may be the same as Provider.",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the publishing organization.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the publisher organization or repository.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "datePublished": {
+        "title": "Date published",
+        "description": "Date of first publication for the resource.",
+        "type": "string",
+        "format": "date-time"
+      },
+      "subjectOf": {
+        "title": "Subject of",
+        "description": "Link to or citation for a related resource that is about or describes this resource - e.g., a journal paper that describes this resource or a related metadata document describing the resource.",
+        "type": "array",
+        "items": {
+          "title": "SubjectOf",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+              "default": "CreativeWork",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name or title",
+              "description": "Submission's name or title",
+              "type": "string"
+            },
+            "url": {
+              "title": "URL",
+              "description": "The URL address that serves as a reference to access additional details related to the record. It is important to note that this type of metadata solely pertains to the record itself and may not necessarily be an integral component of the record, unlike the HasPart metadata.",
+              "minLength": 1,
+              "maxLength": 2083,
+              "type": "string",
+              "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+              "errorMessage": {
+                "pattern": "must match format \"url\""
+              }
+            },
+            "description": {
+              "title": "Description",
+              "description": "Information about a related resource that is about or describes this resource - e.g., a related metadata document describing the resource.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "version": {
+        "title": "Version",
+        "description": "A text string indicating the version of the resource.",
+        "type": "string"
+      },
+      "inLanguage": {
+        "title": "Language",
+        "description": "The language of the content of the resource.",
+        "anyOf": [
+          {
+            "title": "Language",
+            "description": "",
+            "enum": [
+              "eng",
+              "esp"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "string",
+            "title": "Other",
+            "description": "Please specify another language."
+          }
+        ]
+      },
+      "creativeWorkStatus": {
+        "title": "Resource status",
+        "description": "The status of this resource in terms of its stage in a lifecycle. Example terms include Incomplete, Draft, Published, and Obsolete.",
+        "anyOf": [
+          {
+            "title": "Draft",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "DefinedTerm",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "default": "Draft",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "The description of the item being defined.",
+                "default": "The resource is in draft state and should not be considered final. Content and metadata may change",
+                "readOnly": true,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "Incomplete",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "DefinedTerm",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "default": "Incomplete",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "The description of the item being defined.",
+                "default": "Data collection is ongoing or the resource is not completed",
+                "readOnly": true,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "Obsolete",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "DefinedTerm",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "default": "Obsolete",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "The description of the item being defined.",
+                "default": "The resource has been replaced by a newer version, or the resource is no longer considered applicable",
+                "readOnly": true,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "Published",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "DefinedTerm",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "default": "Published",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "The description of the item being defined.",
+                "default": "The resource has been permanently published and should be considered final and complete",
+                "readOnly": true,
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "dateModified": {
+        "title": "Date modified",
+        "description": "The date on which the resource was most recently modified or updated.",
+        "type": "string",
+        "format": "date-time"
+      },
+      "funding": {
+        "title": "Funding",
+        "description": "A Grant or monetary assistance that directly or indirectly provided funding or sponsorship for creation of the resource.",
+        "type": "array",
+        "items": {
+          "title": "Grant",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "This metadata represents details about a grant or financial assistance provided to an individual(s) or organization(s) for supporting the work related to the record.",
+              "default": "MonetaryGrant",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name or title",
+              "description": "A text string indicating the name or title of the grant or financial assistance.",
+              "type": "string"
+            },
+            "description": {
+              "title": "Description",
+              "description": "A text string describing the grant or financial assistance.",
+              "type": "string"
+            },
+            "identifier": {
+              "title": "Funding identifier",
+              "description": "Grant award number or other identifier.",
+              "type": "string"
+            },
+            "funder": {
+              "title": "Funding Organization",
+              "description": "The organization that provided the funding or sponsorship.",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "default": "Organization",
+                  "const": "Organization",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "Name of the organization.",
+                  "type": "string"
+                },
+                "url": {
+                  "title": "URL",
+                  "description": "A URL to the homepage for the organization.",
+                  "minLength": 1,
+                  "maxLength": 2083,
+                  "type": "string",
+                  "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                  "errorMessage": {
+                    "pattern": "must match format \"url\""
+                  }
+                },
+                "address": {
+                  "title": "Address",
+                  "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "temporalCoverage": {
+        "title": "TemporalCoverage",
+        "description": "The time period that applies to all of the content within the resource.",
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "title": "Start date",
+            "description": "A date/time object containing the instant corresponding to the commencement of the time interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM).",
+            "formatMaximum": {
+              "$data": "1/endDate"
+            },
+            "errorMessage": {
+              "formatMaximum": "must be lesser than or equal to End date"
+            },
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "title": "End date",
+            "description": "A date/time object containing the instant corresponding to the termination of the time interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM). If the ending date is left off, that means the temporal coverage is ongoing.",
+            "formatMinimum": {
+              "$data": "1/startDate"
+            },
+            "errorMessage": {
+              "formatMinimum": "must be greater than or equal to Start date"
+            },
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "startDate"
+        ]
+      },
+      "spatialCoverage": {
+        "title": "Place",
+        "description": "The spatialCoverage of a CreativeWork indicates the place(s) which are the focus of the content. It is a sub property of contentLocation intended primarily for more technical and detailed materials. For example with a Dataset, it indicates areas that the dataset describes: a dataset of New York weather would have spatialCoverage which was the place: the state of New York.",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Represents the focus area of the record's content.",
+            "default": "Place",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the place.",
+            "type": "string"
+          },
+          "geo": {
+            "title": "Geo",
+            "description": "Specifies the geographic coordinates of the place in the form of a point location, line, or area coverage extent.",
+            "anyOf": [
+              {
+                "title": "GeoCoordinates",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "Geographic coordinates that represent a specific location on the Earth's surface. GeoCoordinates typically consists of two components: latitude and longitude.",
+                    "default": "GeoCoordinates",
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "title": "Latitude",
+                    "description": "Represents the angular distance of a location north or south of the equator, measured in degrees and ranges from -90 to +90 degrees.",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "title": "Longitude",
+                    "description": "Represents the angular distance of a location east or west of the Prime Meridian, measured in degrees and ranges from -180 to +180 degrees.",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              },
+              {
+                "title": "GeoShape",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "A structured representation that describes the coordinates of a geographic feature.",
+                    "default": "GeoShape",
+                    "type": "string"
+                  },
+                  "box": {
+                    "title": "Box",
+                    "description": "A box is a rectangular region defined by a pair of coordinates representing the southwest and northeast corners of the box.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "box"
+                ]
+              }
+            ]
+          },
+          "additionalProperty": {
+            "title": "Additional properties",
+            "description": "Additional properties of the place.",
+            "default": [],
+            "type": "array",
+            "items": {
+              "title": "PropertyValue",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "description": "A property-value pair.",
+                  "default": "PropertyValue",
+                  "const": "PropertyValue",
+                  "type": "string"
+                },
+                "propertyID": {
+                  "title": "Property ID",
+                  "description": "The ID of the property.",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "The name of the property.",
+                  "type": "string"
+                },
+                "value": {
+                  "title": "Value",
+                  "description": "The value of the property.",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "title": "PropertyValue",
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "title": "@Type",
+                          "description": "A property-value pair.",
+                          "default": "PropertyValue",
+                          "const": "PropertyValue",
+                          "type": "string"
+                        },
+                        "propertyID": {
+                          "title": "Property ID",
+                          "description": "The ID of the property.",
+                          "type": "string"
+                        },
+                        "name": {
+                          "title": "Name",
+                          "description": "The name of the property.",
+                          "type": "string"
+                        },
+                        "value": {
+                          "title": "Value",
+                          "description": "The value of the property.",
+                          "type": "string"
+                        },
+                        "unitCode": {
+                          "title": "Measurement unit",
+                          "description": "The unit of measurement for the value.",
+                          "type": "string"
+                        },
+                        "description": {
+                          "title": "Description",
+                          "description": "A description of the property.",
+                          "type": "string"
+                        },
+                        "minValue": {
+                          "title": "Minimum value",
+                          "description": "The minimum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "maxValue": {
+                          "title": "Maximum value",
+                          "description": "The maximum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "measurementTechnique": {
+                          "title": "Measurement technique",
+                          "description": "A technique or technology used in a measurement.",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "title": "PropertyValue",
+                        "type": "object",
+                        "properties": {
+                          "@type": {
+                            "title": "@Type",
+                            "description": "A property-value pair.",
+                            "default": "PropertyValue",
+                            "const": "PropertyValue",
+                            "type": "string"
+                          },
+                          "propertyID": {
+                            "title": "Property ID",
+                            "description": "The ID of the property.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "title": "Name",
+                            "description": "The name of the property.",
+                            "type": "string"
+                          },
+                          "value": {
+                            "title": "Value",
+                            "description": "The value of the property.",
+                            "type": "string"
+                          },
+                          "unitCode": {
+                            "title": "Measurement unit",
+                            "description": "The unit of measurement for the value.",
+                            "type": "string"
+                          },
+                          "description": {
+                            "title": "Description",
+                            "description": "A description of the property.",
+                            "type": "string"
+                          },
+                          "minValue": {
+                            "title": "Minimum value",
+                            "description": "The minimum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "maxValue": {
+                            "title": "Maximum value",
+                            "description": "The maximum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "measurementTechnique": {
+                            "title": "Measurement technique",
+                            "description": "A technique or technology used in a measurement.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "value"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "unitCode": {
+                  "title": "Measurement unit",
+                  "description": "The unit of measurement for the value.",
+                  "type": "string"
+                },
+                "description": {
+                  "title": "Description",
+                  "description": "A description of the property.",
+                  "type": "string"
+                },
+                "minValue": {
+                  "title": "Minimum value",
+                  "description": "The minimum allowed value for the property.",
+                  "type": "number"
+                },
+                "maxValue": {
+                  "title": "Maximum value",
+                  "description": "The maximum allowed value for the property.",
+                  "type": "number"
+                },
+                "measurementTechnique": {
+                  "title": "Measurement technique",
+                  "description": "A technique or technology used in a measurement.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ]
+            }
+          }
+        }
+      },
+      "hasPart": {
+        "title": "Has part",
+        "description": "Link to or citation for a related resource that is part of this resource.",
+        "type": "array",
+        "items": {
+          "title": "HasPart",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+              "default": "CreativeWork",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name or title",
+              "description": "Submission's name or title",
+              "type": "string"
+            },
+            "url": {
+              "title": "URL",
+              "description": "The URL address to the data resource.",
+              "minLength": 1,
+              "maxLength": 2083,
+              "type": "string",
+              "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+              "errorMessage": {
+                "pattern": "must match format \"url\""
+              }
+            },
+            "description": {
+              "title": "Description",
+              "description": "Information about a related resource that is part of this resource.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "isPartOf": {
+        "title": "Is part of",
+        "description": "Link to or citation for a related resource that this resource is a part of - e.g., a related collection.",
+        "type": "array",
+        "items": {
+          "title": "IsPartOf",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+              "default": "CreativeWork",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name or title",
+              "description": "Submission's name or title",
+              "type": "string"
+            },
+            "url": {
+              "title": "URL",
+              "description": "The URL address to the data resource.",
+              "minLength": 1,
+              "maxLength": 2083,
+              "type": "string",
+              "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+              "errorMessage": {
+                "pattern": "must match format \"url\""
+              }
+            },
+            "description": {
+              "title": "Description",
+              "description": "Information about a related resource that this resource is a part of - e.g., a related collection.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "associatedMedia": {
+        "title": "Resource content",
+        "description": "A media object that encodes this CreativeWork. This property is a synonym for encoding.",
+        "type": "array",
+        "items": {
+          "title": "MediaObject",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "An item that encodes the record.",
+              "default": "MediaObject",
+              "type": "string"
+            },
+            "contentUrl": {
+              "title": "Content URL",
+              "description": "The direct URL link to access or download the actual content of the media object.",
+              "minLength": 1,
+              "maxLength": 2083,
+              "type": "string",
+              "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+              "errorMessage": {
+                "pattern": "must match format \"url\""
+              }
+            },
+            "encodingFormat": {
+              "title": "Encoding format",
+              "description": "Represents the specific file format in which the media is encoded.",
+              "type": "string"
+            },
+            "contentSize": {
+              "title": "Content size",
+              "description": "Represents the file size, expressed in bytes, kilobytes, megabytes, or another unit of measurement.",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name",
+              "description": "The name of the media object (file).",
+              "type": "string"
+            },
+            "sha256": {
+              "title": "SHA-256",
+              "description": "The SHA-256 hash of the media object.",
+              "type": "string"
+            },
+            "isPartOf": {
+              "title": "Is part of",
+              "description": "Link to or citation for a related metadata document that this media object is a part of",
+              "type": "array",
+              "items": {
+                "title": "MediaObjectPartOf",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+                    "default": "CreativeWork",
+                    "type": "string"
+                  },
+                  "name": {
+                    "title": "Name or title",
+                    "description": "Submission's name or title",
+                    "type": "string"
+                  },
+                  "url": {
+                    "title": "URL",
+                    "description": "The URL address to the related metadata document.",
+                    "minLength": 1,
+                    "maxLength": 2083,
+                    "type": "string",
+                    "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                    "errorMessage": {
+                      "pattern": "must match format \"url\""
+                    }
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "Information about a related metadata document.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          },
+          "required": [
+            "contentUrl",
+            "contentSize",
+            "name"
+          ]
+        }
+      },
+      "citation": {
+        "title": "Citation",
+        "description": "A bibliographic citation for the resource.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "variableMeasured": {
+        "title": "Variables measured",
+        "description": "Measured variables.",
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "title": "PropertyValue",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "description": "A property-value pair.",
+                  "default": "PropertyValue",
+                  "const": "PropertyValue",
+                  "type": "string"
+                },
+                "propertyID": {
+                  "title": "Property ID",
+                  "description": "The ID of the property.",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "The name of the property.",
+                  "type": "string"
+                },
+                "value": {
+                  "title": "Value",
+                  "description": "The value of the property.",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "title": "PropertyValue",
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "title": "@Type",
+                          "description": "A property-value pair.",
+                          "default": "PropertyValue",
+                          "const": "PropertyValue",
+                          "type": "string"
+                        },
+                        "propertyID": {
+                          "title": "Property ID",
+                          "description": "The ID of the property.",
+                          "type": "string"
+                        },
+                        "name": {
+                          "title": "Name",
+                          "description": "The name of the property.",
+                          "type": "string"
+                        },
+                        "value": {
+                          "title": "Value",
+                          "description": "The value of the property.",
+                          "type": "string"
+                        },
+                        "unitCode": {
+                          "title": "Measurement unit",
+                          "description": "The unit of measurement for the value.",
+                          "type": "string"
+                        },
+                        "description": {
+                          "title": "Description",
+                          "description": "A description of the property.",
+                          "type": "string"
+                        },
+                        "minValue": {
+                          "title": "Minimum value",
+                          "description": "The minimum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "maxValue": {
+                          "title": "Maximum value",
+                          "description": "The maximum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "measurementTechnique": {
+                          "title": "Measurement technique",
+                          "description": "A technique or technology used in a measurement.",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "title": "PropertyValue",
+                        "type": "object",
+                        "properties": {
+                          "@type": {
+                            "title": "@Type",
+                            "description": "A property-value pair.",
+                            "default": "PropertyValue",
+                            "const": "PropertyValue",
+                            "type": "string"
+                          },
+                          "propertyID": {
+                            "title": "Property ID",
+                            "description": "The ID of the property.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "title": "Name",
+                            "description": "The name of the property.",
+                            "type": "string"
+                          },
+                          "value": {
+                            "title": "Value",
+                            "description": "The value of the property.",
+                            "type": "string"
+                          },
+                          "unitCode": {
+                            "title": "Measurement unit",
+                            "description": "The unit of measurement for the value.",
+                            "type": "string"
+                          },
+                          "description": {
+                            "title": "Description",
+                            "description": "A description of the property.",
+                            "type": "string"
+                          },
+                          "minValue": {
+                            "title": "Minimum value",
+                            "description": "The minimum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "maxValue": {
+                            "title": "Maximum value",
+                            "description": "The maximum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "measurementTechnique": {
+                            "title": "Measurement technique",
+                            "description": "A technique or technology used in a measurement.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "value"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "unitCode": {
+                  "title": "Measurement unit",
+                  "description": "The unit of measurement for the value.",
+                  "type": "string"
+                },
+                "description": {
+                  "title": "Description",
+                  "description": "A description of the property.",
+                  "type": "string"
+                },
+                "minValue": {
+                  "title": "Minimum value",
+                  "description": "The minimum allowed value for the property.",
+                  "type": "number"
+                },
+                "maxValue": {
+                  "title": "Maximum value",
+                  "description": "The maximum allowed value for the property.",
+                  "type": "number"
+                },
+                "measurementTechnique": {
+                  "title": "Measurement technique",
+                  "description": "A technique or technology used in a measurement.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ]
+            }
+          ]
+        }
+      },
+      "additionalProperty": {
+        "title": "Additional properties",
+        "description": "Additional properties of the dataset.",
+        "default": [],
+        "type": "array",
+        "items": {
+          "title": "PropertyValue",
+          "type": "object",
+          "properties": {
+            "@type": {
+              "title": "@Type",
+              "description": "A property-value pair.",
+              "default": "PropertyValue",
+              "const": "PropertyValue",
+              "type": "string"
+            },
+            "propertyID": {
+              "title": "Property ID",
+              "description": "The ID of the property.",
+              "type": "string"
+            },
+            "name": {
+              "title": "Name",
+              "description": "The name of the property.",
+              "type": "string"
+            },
+            "value": {
+              "title": "Value",
+              "description": "The value of the property.",
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "title": "PropertyValue",
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "title": "@Type",
+                      "description": "A property-value pair.",
+                      "default": "PropertyValue",
+                      "const": "PropertyValue",
+                      "type": "string"
+                    },
+                    "propertyID": {
+                      "title": "Property ID",
+                      "description": "The ID of the property.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "title": "Name",
+                      "description": "The name of the property.",
+                      "type": "string"
+                    },
+                    "value": {
+                      "title": "Value",
+                      "description": "The value of the property.",
+                      "type": "string"
+                    },
+                    "unitCode": {
+                      "title": "Measurement unit",
+                      "description": "The unit of measurement for the value.",
+                      "type": "string"
+                    },
+                    "description": {
+                      "title": "Description",
+                      "description": "A description of the property.",
+                      "type": "string"
+                    },
+                    "minValue": {
+                      "title": "Minimum value",
+                      "description": "The minimum allowed value for the property.",
+                      "type": "number"
+                    },
+                    "maxValue": {
+                      "title": "Maximum value",
+                      "description": "The maximum allowed value for the property.",
+                      "type": "number"
+                    },
+                    "measurementTechnique": {
+                      "title": "Measurement technique",
+                      "description": "A technique or technology used in a measurement.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "title": "PropertyValue",
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "title": "@Type",
+                        "description": "A property-value pair.",
+                        "default": "PropertyValue",
+                        "const": "PropertyValue",
+                        "type": "string"
+                      },
+                      "propertyID": {
+                        "title": "Property ID",
+                        "description": "The ID of the property.",
+                        "type": "string"
+                      },
+                      "name": {
+                        "title": "Name",
+                        "description": "The name of the property.",
+                        "type": "string"
+                      },
+                      "value": {
+                        "title": "Value",
+                        "description": "The value of the property.",
+                        "type": "string"
+                      },
+                      "unitCode": {
+                        "title": "Measurement unit",
+                        "description": "The unit of measurement for the value.",
+                        "type": "string"
+                      },
+                      "description": {
+                        "title": "Description",
+                        "description": "A description of the property.",
+                        "type": "string"
+                      },
+                      "minValue": {
+                        "title": "Minimum value",
+                        "description": "The minimum allowed value for the property.",
+                        "type": "number"
+                      },
+                      "maxValue": {
+                        "title": "Maximum value",
+                        "description": "The maximum allowed value for the property.",
+                        "type": "number"
+                      },
+                      "measurementTechnique": {
+                        "title": "Measurement technique",
+                        "description": "A technique or technology used in a measurement.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "value"
+                    ]
+                  }
+                }
+              ]
+            },
+            "unitCode": {
+              "title": "Measurement unit",
+              "description": "The unit of measurement for the value.",
+              "type": "string"
+            },
+            "description": {
+              "title": "Description",
+              "description": "A description of the property.",
+              "type": "string"
+            },
+            "minValue": {
+              "title": "Minimum value",
+              "description": "The minimum allowed value for the property.",
+              "type": "number"
+            },
+            "maxValue": {
+              "title": "Maximum value",
+              "description": "The maximum allowed value for the property.",
+              "type": "number"
+            },
+            "measurementTechnique": {
+              "title": "Measurement technique",
+              "description": "A technique or technology used in a measurement.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "value"
+          ]
+        }
+      },
+      "sourceOrganization": {
+        "title": "SourceOrganization",
+        "description": "The organization that provided the data for this dataset.",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the organization that created the data.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the organization.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "url",
+      "creator",
+      "dateCreated",
+      "keywords",
+      "license",
+      "provider"
+    ],
+    "definitions": {
+      "Affiliation": {
+        "title": "Affiliation",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the organization the creator is affiliated with.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the organization.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Creator": {
+        "title": "Creator",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "A person.",
+            "default": "Person",
+            "const": "Person",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "A string containing the full name of the person. Personal name format: Family Name, Given Name.",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "description": "A string containing an email address for the creator.",
+            "type": "string",
+            "format": "email"
+          },
+          "identifier": {
+            "title": "Identifier",
+            "description": "ORCID identifier for creator.",
+            "pattern": "\\b\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]\\b",
+            "options": {
+              "placeholder": "e.g. '0000-0001-2345-6789'"
+            },
+            "errorMessage": {
+              "pattern": "must match the ORCID pattern. e.g. '0000-0001-2345-6789'"
+            },
+            "type": "string"
+          },
+          "affiliation": {
+            "title": "Affiliation",
+            "description": "The affiliation of the creator with the organization.",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "Organization",
+                "const": "Organization",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Name of the organization the creator is affiliated with.",
+                "type": "string"
+              },
+              "url": {
+                "title": "URL",
+                "description": "A URL to the homepage for the organization.",
+                "minLength": 1,
+                "maxLength": 2083,
+                "type": "string",
+                "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                "errorMessage": {
+                  "pattern": "must match format \"url\""
+                }
+              },
+              "address": {
+                "title": "Address",
+                "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Organization": {
+        "title": "Organization",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the provider organization or repository.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the organization.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "License": {
+        "title": "License",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "A text string indicating the name of the license under which the resource is shared.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL for a web page that describes the license.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "A text string describing the license or containing the text of the license itself.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Provider": {
+        "title": "Provider",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "A person.",
+            "default": "Person",
+            "const": "Person",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "A string containing the full name of the person. Personal name format: Family Name, Given Name.",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "description": "A string containing an email address for the provider.",
+            "type": "string",
+            "format": "email"
+          },
+          "identifier": {
+            "title": "Identifier",
+            "description": "ORCID identifier for the person.",
+            "pattern": "\\b\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]\\b",
+            "options": {
+              "placeholder": "e.g. '0000-0001-2345-6789'"
+            },
+            "errorMessage": {
+              "pattern": "must match the ORCID pattern. e.g. '0000-0001-2345-6789'"
+            },
+            "type": "string"
+          },
+          "affiliation": {
+            "title": "Affiliation",
+            "description": "The affiliation of the creator with the organization.",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "Organization",
+                "const": "Organization",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Name of the organization the creator is affiliated with.",
+                "type": "string"
+              },
+              "url": {
+                "title": "URL",
+                "description": "A URL to the homepage for the organization.",
+                "minLength": 1,
+                "maxLength": 2083,
+                "type": "string",
+                "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                "errorMessage": {
+                  "pattern": "must match format \"url\""
+                }
+              },
+              "address": {
+                "title": "Address",
+                "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PublisherOrganization": {
+        "title": "PublisherOrganization",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the publishing organization.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the publisher organization or repository.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "SubjectOf": {
+        "title": "SubjectOf",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name or title",
+            "description": "Submission's name or title",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "The URL address that serves as a reference to access additional details related to the record. It is important to note that this type of metadata solely pertains to the record itself and may not necessarily be an integral component of the record, unlike the HasPart metadata.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "Information about a related resource that is about or describes this resource - e.g., a related metadata document describing the resource.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "LanguageEnum": {
+        "title": "Language",
+        "description": "",
+        "enum": [
+          "eng",
+          "esp"
+        ],
+        "type": "string"
+      },
+      "Draft": {
+        "title": "Draft",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "DefinedTerm",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "default": "Draft",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "The description of the item being defined.",
+            "default": "The resource is in draft state and should not be considered final. Content and metadata may change",
+            "readOnly": true,
+            "type": "string"
+          }
+        }
+      },
+      "Incomplete": {
+        "title": "Incomplete",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "DefinedTerm",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "default": "Incomplete",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "The description of the item being defined.",
+            "default": "Data collection is ongoing or the resource is not completed",
+            "readOnly": true,
+            "type": "string"
+          }
+        }
+      },
+      "Obsolete": {
+        "title": "Obsolete",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "DefinedTerm",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "default": "Obsolete",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "The description of the item being defined.",
+            "default": "The resource has been replaced by a newer version, or the resource is no longer considered applicable",
+            "readOnly": true,
+            "type": "string"
+          }
+        }
+      },
+      "Published": {
+        "title": "Published",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "DefinedTerm",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "default": "Published",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "The description of the item being defined.",
+            "default": "The resource has been permanently published and should be considered final and complete",
+            "readOnly": true,
+            "type": "string"
+          }
+        }
+      },
+      "Grant": {
+        "title": "Grant",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "This metadata represents details about a grant or financial assistance provided to an individual(s) or organization(s) for supporting the work related to the record.",
+            "default": "MonetaryGrant",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name or title",
+            "description": "A text string indicating the name or title of the grant or financial assistance.",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "A text string describing the grant or financial assistance.",
+            "type": "string"
+          },
+          "identifier": {
+            "title": "Funding identifier",
+            "description": "Grant award number or other identifier.",
+            "type": "string"
+          },
+          "funder": {
+            "title": "Funding Organization",
+            "description": "The organization that provided the funding or sponsorship.",
+            "type": "object",
+            "properties": {
+              "@type": {
+                "title": "@Type",
+                "default": "Organization",
+                "const": "Organization",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "description": "Name of the organization.",
+                "type": "string"
+              },
+              "url": {
+                "title": "URL",
+                "description": "A URL to the homepage for the organization.",
+                "minLength": 1,
+                "maxLength": 2083,
+                "type": "string",
+                "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                "errorMessage": {
+                  "pattern": "must match format \"url\""
+                }
+              },
+              "address": {
+                "title": "Address",
+                "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "TemporalCoverage": {
+        "title": "TemporalCoverage",
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "title": "Start date",
+            "description": "A date/time object containing the instant corresponding to the commencement of the time interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM).",
+            "formatMaximum": {
+              "$data": "1/endDate"
+            },
+            "errorMessage": {
+              "formatMaximum": "must be lesser than or equal to End date"
+            },
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "title": "End date",
+            "description": "A date/time object containing the instant corresponding to the termination of the time interval (ISO8601 formatted date - YYYY-MM-DDTHH:MM). If the ending date is left off, that means the temporal coverage is ongoing.",
+            "formatMinimum": {
+              "$data": "1/startDate"
+            },
+            "errorMessage": {
+              "formatMinimum": "must be greater than or equal to Start date"
+            },
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "startDate"
+        ]
+      },
+      "GeoCoordinates": {
+        "title": "GeoCoordinates",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Geographic coordinates that represent a specific location on the Earth's surface. GeoCoordinates typically consists of two components: latitude and longitude.",
+            "default": "GeoCoordinates",
+            "type": "string"
+          },
+          "latitude": {
+            "title": "Latitude",
+            "description": "Represents the angular distance of a location north or south of the equator, measured in degrees and ranges from -90 to +90 degrees.",
+            "type": "number"
+          },
+          "longitude": {
+            "title": "Longitude",
+            "description": "Represents the angular distance of a location east or west of the Prime Meridian, measured in degrees and ranges from -180 to +180 degrees.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      },
+      "GeoShape": {
+        "title": "GeoShape",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "A structured representation that describes the coordinates of a geographic feature.",
+            "default": "GeoShape",
+            "type": "string"
+          },
+          "box": {
+            "title": "Box",
+            "description": "A box is a rectangular region defined by a pair of coordinates representing the southwest and northeast corners of the box.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "box"
+        ]
+      },
+      "PropertyValueBase": {
+        "title": "PropertyValue",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "A property-value pair.",
+            "default": "PropertyValue",
+            "const": "PropertyValue",
+            "type": "string"
+          },
+          "propertyID": {
+            "title": "Property ID",
+            "description": "The ID of the property.",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "The name of the property.",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The value of the property.",
+            "type": "string"
+          },
+          "unitCode": {
+            "title": "Measurement unit",
+            "description": "The unit of measurement for the value.",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "A description of the property.",
+            "type": "string"
+          },
+          "minValue": {
+            "title": "Minimum value",
+            "description": "The minimum allowed value for the property.",
+            "type": "number"
+          },
+          "maxValue": {
+            "title": "Maximum value",
+            "description": "The maximum allowed value for the property.",
+            "type": "number"
+          },
+          "measurementTechnique": {
+            "title": "Measurement technique",
+            "description": "A technique or technology used in a measurement.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "PropertyValue": {
+        "title": "PropertyValue",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "A property-value pair.",
+            "default": "PropertyValue",
+            "const": "PropertyValue",
+            "type": "string"
+          },
+          "propertyID": {
+            "title": "Property ID",
+            "description": "The ID of the property.",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "The name of the property.",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The value of the property.",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "title": "PropertyValue",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "A property-value pair.",
+                    "default": "PropertyValue",
+                    "const": "PropertyValue",
+                    "type": "string"
+                  },
+                  "propertyID": {
+                    "title": "Property ID",
+                    "description": "The ID of the property.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "description": "The name of the property.",
+                    "type": "string"
+                  },
+                  "value": {
+                    "title": "Value",
+                    "description": "The value of the property.",
+                    "type": "string"
+                  },
+                  "unitCode": {
+                    "title": "Measurement unit",
+                    "description": "The unit of measurement for the value.",
+                    "type": "string"
+                  },
+                  "description": {
+                    "title": "Description",
+                    "description": "A description of the property.",
+                    "type": "string"
+                  },
+                  "minValue": {
+                    "title": "Minimum value",
+                    "description": "The minimum allowed value for the property.",
+                    "type": "number"
+                  },
+                  "maxValue": {
+                    "title": "Maximum value",
+                    "description": "The maximum allowed value for the property.",
+                    "type": "number"
+                  },
+                  "measurementTechnique": {
+                    "title": "Measurement technique",
+                    "description": "A technique or technology used in a measurement.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "title": "PropertyValue",
+                  "type": "object",
+                  "properties": {
+                    "@type": {
+                      "title": "@Type",
+                      "description": "A property-value pair.",
+                      "default": "PropertyValue",
+                      "const": "PropertyValue",
+                      "type": "string"
+                    },
+                    "propertyID": {
+                      "title": "Property ID",
+                      "description": "The ID of the property.",
+                      "type": "string"
+                    },
+                    "name": {
+                      "title": "Name",
+                      "description": "The name of the property.",
+                      "type": "string"
+                    },
+                    "value": {
+                      "title": "Value",
+                      "description": "The value of the property.",
+                      "type": "string"
+                    },
+                    "unitCode": {
+                      "title": "Measurement unit",
+                      "description": "The unit of measurement for the value.",
+                      "type": "string"
+                    },
+                    "description": {
+                      "title": "Description",
+                      "description": "A description of the property.",
+                      "type": "string"
+                    },
+                    "minValue": {
+                      "title": "Minimum value",
+                      "description": "The minimum allowed value for the property.",
+                      "type": "number"
+                    },
+                    "maxValue": {
+                      "title": "Maximum value",
+                      "description": "The maximum allowed value for the property.",
+                      "type": "number"
+                    },
+                    "measurementTechnique": {
+                      "title": "Measurement technique",
+                      "description": "A technique or technology used in a measurement.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value"
+                  ]
+                }
+              }
+            ]
+          },
+          "unitCode": {
+            "title": "Measurement unit",
+            "description": "The unit of measurement for the value.",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "A description of the property.",
+            "type": "string"
+          },
+          "minValue": {
+            "title": "Minimum value",
+            "description": "The minimum allowed value for the property.",
+            "type": "number"
+          },
+          "maxValue": {
+            "title": "Maximum value",
+            "description": "The maximum allowed value for the property.",
+            "type": "number"
+          },
+          "measurementTechnique": {
+            "title": "Measurement technique",
+            "description": "A technique or technology used in a measurement.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "Place": {
+        "title": "Place",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Represents the focus area of the record's content.",
+            "default": "Place",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the place.",
+            "type": "string"
+          },
+          "geo": {
+            "title": "Geo",
+            "description": "Specifies the geographic coordinates of the place in the form of a point location, line, or area coverage extent.",
+            "anyOf": [
+              {
+                "title": "GeoCoordinates",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "Geographic coordinates that represent a specific location on the Earth's surface. GeoCoordinates typically consists of two components: latitude and longitude.",
+                    "default": "GeoCoordinates",
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "title": "Latitude",
+                    "description": "Represents the angular distance of a location north or south of the equator, measured in degrees and ranges from -90 to +90 degrees.",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "title": "Longitude",
+                    "description": "Represents the angular distance of a location east or west of the Prime Meridian, measured in degrees and ranges from -180 to +180 degrees.",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              },
+              {
+                "title": "GeoShape",
+                "type": "object",
+                "properties": {
+                  "@type": {
+                    "title": "@Type",
+                    "description": "A structured representation that describes the coordinates of a geographic feature.",
+                    "default": "GeoShape",
+                    "type": "string"
+                  },
+                  "box": {
+                    "title": "Box",
+                    "description": "A box is a rectangular region defined by a pair of coordinates representing the southwest and northeast corners of the box.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "box"
+                ]
+              }
+            ]
+          },
+          "additionalProperty": {
+            "title": "Additional properties",
+            "description": "Additional properties of the place.",
+            "default": [],
+            "type": "array",
+            "items": {
+              "title": "PropertyValue",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "description": "A property-value pair.",
+                  "default": "PropertyValue",
+                  "const": "PropertyValue",
+                  "type": "string"
+                },
+                "propertyID": {
+                  "title": "Property ID",
+                  "description": "The ID of the property.",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name",
+                  "description": "The name of the property.",
+                  "type": "string"
+                },
+                "value": {
+                  "title": "Value",
+                  "description": "The value of the property.",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "title": "PropertyValue",
+                      "type": "object",
+                      "properties": {
+                        "@type": {
+                          "title": "@Type",
+                          "description": "A property-value pair.",
+                          "default": "PropertyValue",
+                          "const": "PropertyValue",
+                          "type": "string"
+                        },
+                        "propertyID": {
+                          "title": "Property ID",
+                          "description": "The ID of the property.",
+                          "type": "string"
+                        },
+                        "name": {
+                          "title": "Name",
+                          "description": "The name of the property.",
+                          "type": "string"
+                        },
+                        "value": {
+                          "title": "Value",
+                          "description": "The value of the property.",
+                          "type": "string"
+                        },
+                        "unitCode": {
+                          "title": "Measurement unit",
+                          "description": "The unit of measurement for the value.",
+                          "type": "string"
+                        },
+                        "description": {
+                          "title": "Description",
+                          "description": "A description of the property.",
+                          "type": "string"
+                        },
+                        "minValue": {
+                          "title": "Minimum value",
+                          "description": "The minimum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "maxValue": {
+                          "title": "Maximum value",
+                          "description": "The maximum allowed value for the property.",
+                          "type": "number"
+                        },
+                        "measurementTechnique": {
+                          "title": "Measurement technique",
+                          "description": "A technique or technology used in a measurement.",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "title": "PropertyValue",
+                        "type": "object",
+                        "properties": {
+                          "@type": {
+                            "title": "@Type",
+                            "description": "A property-value pair.",
+                            "default": "PropertyValue",
+                            "const": "PropertyValue",
+                            "type": "string"
+                          },
+                          "propertyID": {
+                            "title": "Property ID",
+                            "description": "The ID of the property.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "title": "Name",
+                            "description": "The name of the property.",
+                            "type": "string"
+                          },
+                          "value": {
+                            "title": "Value",
+                            "description": "The value of the property.",
+                            "type": "string"
+                          },
+                          "unitCode": {
+                            "title": "Measurement unit",
+                            "description": "The unit of measurement for the value.",
+                            "type": "string"
+                          },
+                          "description": {
+                            "title": "Description",
+                            "description": "A description of the property.",
+                            "type": "string"
+                          },
+                          "minValue": {
+                            "title": "Minimum value",
+                            "description": "The minimum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "maxValue": {
+                            "title": "Maximum value",
+                            "description": "The maximum allowed value for the property.",
+                            "type": "number"
+                          },
+                          "measurementTechnique": {
+                            "title": "Measurement technique",
+                            "description": "A technique or technology used in a measurement.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "value"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "unitCode": {
+                  "title": "Measurement unit",
+                  "description": "The unit of measurement for the value.",
+                  "type": "string"
+                },
+                "description": {
+                  "title": "Description",
+                  "description": "A description of the property.",
+                  "type": "string"
+                },
+                "minValue": {
+                  "title": "Minimum value",
+                  "description": "The minimum allowed value for the property.",
+                  "type": "number"
+                },
+                "maxValue": {
+                  "title": "Maximum value",
+                  "description": "The maximum allowed value for the property.",
+                  "type": "number"
+                },
+                "measurementTechnique": {
+                  "title": "Measurement technique",
+                  "description": "A technique or technology used in a measurement.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "value"
+              ]
+            }
+          }
+        }
+      },
+      "HasPart": {
+        "title": "HasPart",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name or title",
+            "description": "Submission's name or title",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "The URL address to the data resource.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "Information about a related resource that is part of this resource.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "IsPartOf": {
+        "title": "IsPartOf",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name or title",
+            "description": "Submission's name or title",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "The URL address to the data resource.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "Information about a related resource that this resource is a part of - e.g., a related collection.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MediaObjectPartOf": {
+        "title": "MediaObjectPartOf",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+            "default": "CreativeWork",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name or title",
+            "description": "Submission's name or title",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "The URL address to the related metadata document.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "Information about a related metadata document.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MediaObject": {
+        "title": "MediaObject",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "description": "An item that encodes the record.",
+            "default": "MediaObject",
+            "type": "string"
+          },
+          "contentUrl": {
+            "title": "Content URL",
+            "description": "The direct URL link to access or download the actual content of the media object.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "encodingFormat": {
+            "title": "Encoding format",
+            "description": "Represents the specific file format in which the media is encoded.",
+            "type": "string"
+          },
+          "contentSize": {
+            "title": "Content size",
+            "description": "Represents the file size, expressed in bytes, kilobytes, megabytes, or another unit of measurement.",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "The name of the media object (file).",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "SHA-256",
+            "description": "The SHA-256 hash of the media object.",
+            "type": "string"
+          },
+          "isPartOf": {
+            "title": "Is part of",
+            "description": "Link to or citation for a related metadata document that this media object is a part of",
+            "type": "array",
+            "items": {
+              "title": "MediaObjectPartOf",
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "title": "@Type",
+                  "description": "Submission type can include various forms of content, such as datasets, software source code, digital documents, etc.",
+                  "default": "CreativeWork",
+                  "type": "string"
+                },
+                "name": {
+                  "title": "Name or title",
+                  "description": "Submission's name or title",
+                  "type": "string"
+                },
+                "url": {
+                  "title": "URL",
+                  "description": "The URL address to the related metadata document.",
+                  "minLength": 1,
+                  "maxLength": 2083,
+                  "type": "string",
+                  "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+                  "errorMessage": {
+                    "pattern": "must match format \"url\""
+                  }
+                },
+                "description": {
+                  "title": "Description",
+                  "description": "Information about a related metadata document.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "contentUrl",
+          "contentSize",
+          "name"
+        ]
+      },
+      "SourceOrganization": {
+        "title": "SourceOrganization",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "@Type",
+            "default": "Organization",
+            "const": "Organization",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "description": "Name of the organization that created the data.",
+            "type": "string"
+          },
+          "url": {
+            "title": "URL",
+            "description": "A URL to the homepage for the organization.",
+            "minLength": 1,
+            "maxLength": 2083,
+            "type": "string",
+            "pattern": "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$",
+            "errorMessage": {
+              "pattern": "must match format \"url\""
+            }
+          },
+          "address": {
+            "title": "Address",
+            "description": "Full address for the organization - e.g., \u201c8200 Old Main Hill, Logan, UT 84322-8200\u201d.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  }

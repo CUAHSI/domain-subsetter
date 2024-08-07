@@ -230,7 +230,7 @@ class Message(BaseModel):
     message: Any
 
 
-@router.post("/discovery/hydroshare/refresh")
+@router.post("/hydroshare/refresh")
 async def refresh(message: Message):
     """Receive and parse Pub/Sub messages."""
 
@@ -276,7 +276,7 @@ async def refresh(message: Message):
 '''
 
 
-@router.get("/discovery/s3/refresh")
+@router.get("/s3/refresh")
 async def refresh(
     request: Request, metadata_file: str, bucket_name: str = None, user: User = Depends(current_active_user)
 ):
