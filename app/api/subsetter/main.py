@@ -8,11 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from subsetter.app.db import User, db
-from subsetter.app.routers.access_control import router as access_control_router
-from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.discovery import router as discovery_router
 from subsetter.app.routers.hydroshare import router as hydroshare_router
-from subsetter.app.routers.storage import router as storage_router
 from subsetter.app.schemas import UserRead, UserUpdate
 from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from subsetter.config import get_settings
@@ -45,24 +42,6 @@ parent_dir = os.path.dirname(__file__)
 static_dir = os.path.join(parent_dir, "app/schemas")
 app.mount("/api/schemas", StaticFiles(directory=static_dir), name="schemas")
 
-
-app.include_router(
-    argo_router,
-    # prefix="/auth/cuahsi",
-    tags=["argo"],
-)
-
-app.include_router(
-    access_control_router,
-    # prefix="/auth/cuahsi",
-    tags=["minio"],
-)
-
-app.include_router(
-    storage_router,
-    # prefix="/auth/cuahsi",
-    tags=["minio"],
-)
 
 app.include_router(
     hydroshare_router,
