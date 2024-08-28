@@ -5,7 +5,7 @@ requests
 fastapi
 fastapi-users[beanie]
 uvicorn[standard]
-httpx-oauth==0.15.1
+httpx_oauth==0.15.1
 minio
 pydantic-settings
 google-cloud-logging
