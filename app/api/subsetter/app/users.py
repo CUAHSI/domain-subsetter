@@ -38,7 +38,7 @@ client_params = dict(
     authorize_endpoint=get_settings().authorize_endpoint,
     access_token_endpoint=get_settings().access_token_endpoint,
     refresh_token_endpoint=get_settings().refresh_token_endpoint,
-    revoke_token_endpoint=get_settings().revoke_token_endpoint,
+    # revoke_token_endpoint=get_settings().revoke_token_endpoint,
     base_scopes=["openid", "profile"],
 )
 
