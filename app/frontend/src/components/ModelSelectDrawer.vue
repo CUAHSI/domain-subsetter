@@ -69,7 +69,7 @@ const { mdAndDown } = useDisplay()
 <style scoped>
 .drawer-handle {
   position: absolute;
-  bottom: 30%;
+  top: 15%;
   left: 110%;
 }
 </style>
