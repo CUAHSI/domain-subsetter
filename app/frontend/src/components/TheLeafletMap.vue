@@ -406,7 +406,7 @@ function resize_map() {
 // }
 
 async function getGageInfo(e) {
-
+    // TODO: this function needs to be repaired
     // TESTING GAGE INFO BOX
     // quick and dirty buffer around cursor
     // bbox = lon_min, lat_min, lon_max, lat_max
@@ -500,10 +500,13 @@ async function mapClick(e) {
         service: 'WFS',
         request: 'GetFeature',
         bbox: e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng,
-        typeName: 'HUC_WBD:HUC12_US',
-        SrsName: 'EPSG:4326'
+        SrsName: 'EPSG:4269',
+        version: '2.0.0',
+        EPSG:4269,
+        typeName: 'WBDHU12',
+        outputFormat:'GEOJSON'
     };
-    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
+    let root = `${GIS_SERVICES_URL}/hucs/hucs/MapServer/WFSServer`
     let parameters = L.Util.extend(defaultParameters);
     let URL = root + L.Util.getParamString(parameters);
 
@@ -825,14 +828,14 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
     const response = await fetch(url)
     if (response.ok) {
-        const text = await response.text()
-        const data = await new window.DOMParser().parseFromString(text, "text/xml")
-        // extract the HUC ID and Boundary from the WFS XML response.
-        // only process the first element of the response since the user can only
-        // select a single map element at a time.
-
-        let clicked_hucs = parseWfsXML(data);
-
+        const data = await response.json();
+        const clicked_hucs = data.features.map((feature) => {
+            return {
+                hucid: feature.properties.HUC12,
+                geom: feature.geometry,
+                bbox: L.geoJSON(feature.geometry).getBounds(),
+            }
+        })
         for (let huc of clicked_hucs) {
             try {
                 // toggle bounding box using the following rules:
@@ -842,6 +845,7 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                 //    add it to the table.
 
                 if (huc.hucid in Map.hucbounds) {
+                    console.info("Removing huc", huc)
                     // remove only if explicitly specified to.
                     // this is because the "ADD" dialog should never
                     // remove features, unlike the map click event.
@@ -855,6 +859,7 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                     }
                 }
                 else {
+                    console.info("Adding huc", huc)
                     Map.selected_hucs.push(huc)
                     Map.hucbounds[huc.hucid] = huc.bbox;
                     // addHucRow(huc.hucid);
@@ -934,7 +939,7 @@ function updateMapBBox() {
     let xmax = -9999999;
     let ymax = -9999999;
     for (let key in Map.hucbounds) {
-        let bounds = Map.hucbounds[key].getBounds();
+        let bounds = Map.hucbounds[key];
         if (bounds.getWest() < xmin) {
             xmin = bounds.getWest();
         }
@@ -998,9 +1003,9 @@ function removeBbox() {
 /**
 * Toggles HUC boundaries on the map, on/off.
 * @param {string} hucID - ID of the huc to toggle
-* @param {array} ptlist - vertices of the HUC polygon
+* @param {object} geom - geometry of the huc to toggle
 */
-function togglePolygon(hucID, ptlist) {
+function togglePolygon(hucID, geom) {
 
     if (hucID in Map.huclayers) {
         // remove the polygon overlay 
@@ -1008,20 +1013,7 @@ function togglePolygon(hucID, ptlist) {
         delete Map.huclayers[hucID];
     }
     else {
-        // create polygon overlay
-        let coords = [];
-        let c = 0
-        for (c = 0; c <= ptlist.length - 1; c += 2) {
-            coords.push([parseFloat(ptlist[c]),
-            parseFloat(ptlist[c + 1])
-            ]);
-        }
-        let coordinates = [coords];
-        let polygon = [{
-            "type": "Polygon",
-            "coordinates": coordinates
-        }];
-        let json_polygon = L.geoJSON(polygon, { style: { fillColor: 'blue' } });
+        let json_polygon = L.geoJSON(geom, { style: { fillColor: 'blue' } });
 
         // save the layer
         Map.huclayers[hucID] = json_polygon;
@@ -1029,57 +1021,6 @@ function togglePolygon(hucID, ptlist) {
         json_polygon.addTo(Map.map);
     }
 
-}
-
-
-/**
-* Parses XML returned from a web feature service
-* @param {object} xml - xml response from WFS service.
-* @returns {object} - ID and bounding box rectangle of the HUC polygon
-*/
-function parseWfsXML(xml) {
-    let response = [];
-    let hucs = xml.getElementsByTagName('wfs:member');
-    let llat = 100000;
-    let ulat = -100000;
-    let llon = 100000;
-    let ulon = -100000;
-    for (let hid = 0; hid < hucs.length; hid++) {
-
-        let data = hucs[hid];
-
-        // get geometry
-        let points = data.getElementsByTagName('gml:posList')[0];
-        let hucID = data.getElementsByTagName('US_WBD_HUC_WBD:HUC12')[0].innerHTML;
-        let ptlist = points.innerHTML.split(' ');
-
-        // calculate bounding box
-        for (let i = 1; i < ptlist.length; i += 2) {
-            let lat = ptlist[i];
-            if (lat > ulat) {
-                ulat = lat;
-            }
-            else if (lat < llat) {
-                llat = lat;
-            }
-        }
-        for (let i = 0; i < ptlist.length; i += 2) {
-            let lon = ptlist[i];
-            if (lon > ulon) {
-                ulon = lon;
-            }
-            else if (lon < llon) {
-                llon = lon;
-            }
-        }
-        let bounds = L.rectangle([[ulat, ulon], [llat, llon]]);
-        let r = {};
-        r['hucid'] = hucID;
-        r['bbox'] = bounds;
-        r['geom'] = ptlist;
-        response.push(r);
-    }
-    return response;
 }
 
 function update_huc_ids(huclist) {
