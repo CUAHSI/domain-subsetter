@@ -102,7 +102,7 @@ async function submitBbox(bbox, model) {
 <style scoped>
 .drawer-handle {
   position: absolute;
-  top: 15%;
+  top: 167px;
   right: 0%;
   z-index: 9999;
 }
