@@ -10,5 +10,5 @@ import ModelSelectDrawer from '../components/ModelSelectDrawer.vue';
 import SubmitButton from '../components/SubmitButton.vue';
 import { useModelsStore } from '@/stores/models'
 const modelsStore = useModelsStore();
-const showModelSelect = ref(modelsStore.selectedModel.value == null)
+const showModelSelect = ref(modelsStore.selectedModel == null)
 </script>

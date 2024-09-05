@@ -5,9 +5,9 @@
     <v-card-title>Submit once you:</v-card-title>
     <v-card-text>
       <div v-if="!authStore.isLoggedIn">Log in</div>
-      <div v-if="modelsStore.selectedModel.value == null">Choose a model</div>
+      <div v-if="modelsStore.selectedModel == null">Choose a model</div>
       <div v-if="!mapStore.hucsAreSelected">
-        <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
+        <span v-if="modelsStore.selectedModel?.input">Select {{ modelsStore.selectedModel.input }}</span>
         <span v-else>Select subset bounds</span>
       </div>
       <div v-if="bboxValid">Revise bounding box</div>
@@ -25,26 +25,38 @@ import { fetchWrapper } from '@/_helpers/fetchWrapper';
 import proj4 from 'proj4'
 import { mdiSend } from '@mdi/js'
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia'
 
 const mapStore = useMapStore()
 const authStore = useAuthStore()
 const modelsStore = useModelsStore();
 const alertStore = useAlertStore()
 
+const { hucsAreSelected } = storeToRefs(mapStore);
+const { selectedModel } = storeToRefs(modelsStore);
+
 const Map = mapStore.mapObject
 
-let canSubmit = computed(() => {
-  if (
-    modelsStore.selectedModel.input == 'bbox' &&
-    !mapStore.boxIsValid &&
-    mapStore.hucsAreSelected) {
+const canSubmit = computed(() => {
+  if (!authStore.isLoggedIn) {
     return false
   }
-  return mapStore.hucsAreSelected && modelsStore.selectedModel.value != null && authStore.isLoggedIn
+  if (selectedModel.value == null) {
+    return false
+  }
+  if (!hucsAreSelected.value) {
+    return false
+  }
+  if (
+    modelsStore.selectedModel.input == 'bbox' &&
+    !mapStore.boxIsValid) {
+    return false
+  }
+  return true
 })
 
 let bboxValid = computed(() => {
-  return modelsStore.selectedModel.input == 'bbox' && !mapStore.boxIsValid && mapStore.hucsAreSelected
+  return modelsStore.selectedModel?.input == 'bbox' && !mapStore.boxIsValid && mapStore.hucsAreSelected
 })
 
 async function submit() {
