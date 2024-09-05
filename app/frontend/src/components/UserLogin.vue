@@ -10,7 +10,7 @@
             </template>
             <template v-else>
                 <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
-                    <v-btn v-bind="props" id="navbar-login" :prepend-icon="mdiAccount">
+                    <v-btn v-bind="props" id="navbar-login" :prepend-icon="mdiAccount" size="large">
                         Log In
                     </v-btn>
                 </v-card>
@@ -84,13 +84,10 @@ function onLogOut() {
   
 <style lang="scss" scoped>
 .nav-items {
-    border-radius: 2rem !important;
     overflow: hidden;
-
     .v-btn {
         margin: 0;
-        border-radius: 0;
-        height: 39px !important;
+        
     }
 }
 </style>

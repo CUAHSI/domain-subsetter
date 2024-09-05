@@ -1,20 +1,20 @@
 <template>
-  <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
+  <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app height="100">
     <div class="d-flex align-end full-height pa-2 align-center w-100">
       <router-link :to="{ path: `/` }" class="logo">
-        <img src="@/assets/logo.png" alt="home" />
+        <v-img :width="100" cover :src="imgUrl" alt="home"></v-img>
       </router-link>
 
       <v-spacer></v-spacer>
 
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
-        <nav>
+        <v-btn-toggle rounded="0">
           <v-btn v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
             :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`" :elevation="0" active-class="primary"
-            :class="path.isActive?.() ? 'primary' : ''">
+            :class="path.isActive?.() ? 'primary' : ''" size="large">
             {{ path.label }}
           </v-btn>
-        </nav>
+        </v-btn-toggle>
       </v-card>
       <v-spacer></v-spacer>
       <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" />
@@ -28,13 +28,14 @@ import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import UserLogin from "@/components/UserLogin.vue";
 import { useAuthStore } from '../stores/auth';
+import imgUrl from '@/assets/subset-logo-crop-20240904-transparent.png'
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
 
 const auth = useAuthStore();
 const { mdAndDown } = useDisplay()
 
-function login(){
+function login() {
   auth.isLoggedIn = true
 }
 
@@ -56,26 +57,8 @@ function login(){
   padding-top: 0;
   padding-bottom: 0;
 }
-
 .nav-items {
-  border-radius: 2rem !important;
-  overflow: hidden;
-
-  &>a.v-btn:first-child {
-    border-top-left-radius: 2rem !important;
-    border-bottom-left-radius: 2rem !important;
-  }
-
-  &>a.v-btn:last-child {
-    border-top-right-radius: 2rem !important;
-    border-bottom-right-radius: 2rem !important;
-  }
-
-  .v-btn {
-    margin: 0;
-    border-radius: 0;
-    height: 39px !important;
-  }
+    overflow: hidden;
 }
 
 // .nav-items .v-btn.is-active,
