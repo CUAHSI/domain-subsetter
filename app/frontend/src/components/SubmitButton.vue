@@ -5,7 +5,7 @@
     <v-card-title>Submit once you:</v-card-title>
     <v-card-text>
       <div v-if="!authStore.isLoggedIn">Log in</div>
-      <div v-if="modelsStore.selectedModel == null">Choose a model</div>
+      <div v-if="modelsStore.selectedModel.value == null">Choose a model</div>
       <div v-if="!mapStore.hucsAreSelected">
         <span v-if="modelsStore.selectedModel.input">Select {{ modelsStore.selectedModel.input }}</span>
         <span v-else>Select subset bounds</span>
