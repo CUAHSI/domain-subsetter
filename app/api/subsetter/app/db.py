@@ -41,7 +41,7 @@ class Submission(BaseModel):
     estimatedDuration: Optional[int] = None
 
     def output_path(self, base_path):
-        return f"{self.workflow_name}/{base_path}/{self.workflow_id}"
+        return f"{base_path}/{self.workflow_name}/{self.workflow_id}"
 
 
 class User(BeanieBaseUser, Document):
