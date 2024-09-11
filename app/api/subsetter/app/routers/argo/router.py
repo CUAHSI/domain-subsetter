@@ -112,7 +112,7 @@ async def submit_parflow(
     submission = Submission(workflow_id=workflow_id, workflow_name="parflow")
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=parflow_submission_body(hucs, user.bucket_name, workflow_id, submission.output_path(OUTPUT_BASE_PATH)),
+        body=parflow_submission_body(hucs, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)),
         _preload_content=False,
     )
     log.info(api_response.json())
@@ -129,7 +129,7 @@ async def submit_nwm1(
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=nwm1_submission_body(
-            y_south, x_west, y_north, x_east, user.bucket_name, workflow_id, submission.output_path(OUTPUT_BASE_PATH)
+            y_south, x_west, y_north, x_east, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)
         ),
         _preload_content=False,
     )
@@ -147,7 +147,7 @@ async def submit_nwm2(
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=nwm2_submission_body(
-            y_south, x_west, y_north, x_east, user.bucket_name, workflow_id, submission.output_path(OUTPUT_BASE_PATH)
+            y_south, x_west, y_north, x_east, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)
         ),
         _preload_content=False,
     )
