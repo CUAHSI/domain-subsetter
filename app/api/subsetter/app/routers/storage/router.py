@@ -15,6 +15,15 @@ async def presigned_get_minio(workflow_params: WorkflowDep):
     return {'url': url}
 
 
+@router.get('/url/{workflow_id}', description="Create a download url")
+async def presigned_get_url(workflow_params: WorkflowDep):
+    submission = workflow_params.user.get_submission(workflow_params.workflow_id)
+    url = get_minio_client().presigned_get_object(
+        "subsetter-outputs", submission.output_path("user.bucket_name")
+    )
+    return {'url': url}
+
+
 @router.get('/presigned/put/{bucket}', description="Create a PUT file presigned url")
 async def presigned_put_minio(bucket: str, path: str):
     url = get_minio_client().presigned_put_object(bucket, path)
