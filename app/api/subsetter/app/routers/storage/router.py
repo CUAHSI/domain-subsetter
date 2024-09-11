@@ -10,7 +10,7 @@ router = APIRouter()
 async def presigned_get_minio(workflow_params: WorkflowDep):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     url = get_minio_client().presigned_get_object(
-        workflow_params.user.username, f"argo_workflows/{submission.workflow_name}/{submission.workflow_id}"
+        "subsetter-outputs", submission.output_path("user.bucket_name")
     )
     return {'url': url}
 
