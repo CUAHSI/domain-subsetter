@@ -26,6 +26,9 @@ import proj4 from 'proj4'
 import { mdiSend } from '@mdi/js'
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const mapStore = useMapStore()
 const authStore = useAuthStore()
@@ -70,6 +73,8 @@ async function submit() {
   }
   const message = "Your selection was submitted for subsetting"
   alertStore.displayAlert({ title: "Submitted!", text: message, type: "success", closable: true, duration: 3 })
+  
+  router.push({ name: 'submissions' })
 }
 async function submitHucs(selected_hucs, model) {
   selected_hucs = selected_hucs.map(a => a.hucid);
