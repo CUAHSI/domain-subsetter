@@ -1,24 +1,25 @@
 <template>
   <h2 class="ma-2 text-center">Submissions</h2>
-  <v-container v-if="submissionStore.submissions.length > 0">
-    <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy">
+  <v-container v-if="submissions.length > 0">
+    <v-data-table :headers="headers" :items="submissions" :sort-by="sortBy">
       <template v-slot:item.phase="{ value }">
         <v-chip :color="getColor(value)">
-          {{ value }}
+          {{ getChipValue(value) }}
         </v-chip>
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
+        <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshingItem == item" />
         <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
         <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
           @click="downloadArtifact(item)"></v-btn>
         <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
       </template>
     </v-data-table>
+    <v-progress-linear v-show="refreshing" indeterminate color="primary"></v-progress-linear>
   </v-container>
 
-  <v-container v-if="submissionStore.submissions.length == 0">
+  <v-container v-if="submissions.length == 0">
     <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
       <span v-if="!authStore.isLoggedIn">Please login to view your submissions.</span>
       <span v-else>
@@ -52,23 +53,43 @@ import { ENDPOINTS } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
 import { useAuthStore } from '@/stores/auth'
 import { RouterLink } from 'vue-router';
-import { ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { mdiRefresh, mdiDownload, mdiNoteSearch } from '@mdi/js'
 
 const authStore = useAuthStore();
 const submissionStore = useSubmissionsStore();
-submissionStore.refreshWorkflows()
-submissionStore.getSubmissions()
+
+const REFRESH_INTERVAL = 5000 // 5 second
+let interval = null
 
 let sheetText = ref(null)
 
-let tab = ref(1)
-let refreshing = ref({})
+let refreshingItem = ref({})
+let refreshing = ref(false)
+
+const { submissions } = storeToRefs(submissionStore)
+
+onMounted(async () => {
+  refreshAllSubmissions()
+  // set a timer to refresh the submissions every REFRESH_INTERVAL milliseconds
+  interval = setInterval(refreshPendingSubmissions, REFRESH_INTERVAL)
+})
+
+onUnmounted(() => {
+  // clear the interval when the component is unmounted
+  clearInterval(interval)
+})
 
 function getColor(phase) {
   if (phase === 'Succeeded') return 'green'
   else if (phase === 'Failed') return 'red'
   else return 'orange'
+}
+
+function getChipValue(phase) {
+  // if phase null, return 'Pending'
+  return phase || 'Pending'
 }
 
 const headers = [
@@ -80,7 +101,14 @@ const headers = [
   { title: 'Estimated time', key: 'estimatedDuration' },
   { title: 'Actions', key: 'actions', sortable: false },
 ]
-const sortBy = [{ key: 'startedAt', order: 'desc' }]
+const sortBy = computed(() => {
+  // if there are pending submissions, show those first
+  // otherwise, show the most recent submissions first
+  if (submissions.value.some(sub => sub.phase === null)) {
+    return [{ key: 'phase', order: 'asc' }, { key: 'startedAt', order: 'desc' }]
+  }
+  return [{ key: 'startedAt', order: 'desc' }]
+})
 
 async function downloadArtifact(submission) {
   const downloadEndpoint = ENDPOINTS.download
@@ -110,9 +138,27 @@ async function showArgo(submission) {
 }
 
 async function refreshSubmission(submission) {
-  refreshing.value = submission
+  refreshingItem.value = submission
   await submissionStore.refreshSubmission(submission)
-  refreshing.value = {}
+  refreshingItem.value = {}
+}
+
+async function refreshAllSubmissions() {
+  refreshing.value = true
+  await submissionStore.refreshWorkflows()
+  await submissionStore.getSubmissions()
+  refreshing.value = false
+}
+
+async function refreshPendingSubmissions() {
+  refreshing.value = true
+  const pending = submissions.value.filter(sub => {
+    return sub.phase === null || sub.phase === 'Running'
+  })
+  for (const sub of pending) {
+    await refreshSubmission(sub)
+  }
+  refreshing.value = false
 }
 
 </script>

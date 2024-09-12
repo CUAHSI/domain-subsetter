@@ -74,6 +74,7 @@ async function logOutUser() {
 function onLoggedIn() {
     emit("loggedIn");
     // submissionStore.refreshWorkflows()
+    // 
     submissionStore.getSubmissions()
 }
 function onLogOut() {
