@@ -82,7 +82,12 @@ async function submitBbox(bbox, model) {
   const lowerLeft = [xmin, ymin]
   const upperRight = [xmax, ymax]
 
-  let firstProjection = proj4('EPSG:3857')
+  // Leaflet displays data in 3857 web mercator...
+  // https://rstudio.github.io/leaflet/articles/projections.html
+  // https://epsg.io/3857
+  // however it returns data in 4326
+  // https://epsg.io/4326
+  let firstProjection = proj4('EPSG:4326')
   let secondProjection = '+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40.0000076293945 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs'
 
   const lccLowerLeft = proj4(firstProjection, secondProjection, lowerLeft)
