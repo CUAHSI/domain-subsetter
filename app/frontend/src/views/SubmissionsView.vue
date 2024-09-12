@@ -1,6 +1,6 @@
 <template>
   <h2 class="ma-2 text-center">Submissions</h2>
-  <v-container v-if="submissions.length > 0">
+  <v-container v-if="refreshing || submissions.length > 0">
     <v-data-table :headers="headers" :items="submissions" :sort-by="sortBy">
       <template v-slot:item.phase="{ value }">
         <v-chip :color="getColor(value)">
@@ -19,7 +19,7 @@
     <v-progress-linear v-show="refreshing" indeterminate color="primary"></v-progress-linear>
   </v-container>
 
-  <v-container v-if="submissions.length == 0">
+  <v-container v-if="!refreshing && submissions.length == 0">
     <v-sheet border="md" class="pa-6 mx-auto ma-4" max-width="1200" rounded>
       <span v-if="!authStore.isLoggedIn">Please login to view your submissions.</span>
       <span v-else>
@@ -66,14 +66,18 @@ let interval = null
 let sheetText = ref(null)
 
 let refreshingItem = ref({})
-let refreshing = ref(false)
+let refreshing = ref(true)
 
 const { submissions } = storeToRefs(submissionStore)
 
 onMounted(async () => {
-  refreshAllSubmissions()
+  if (authStore.isLoggedIn) {
+    refreshAllSubmissions()
   // set a timer to refresh the submissions every REFRESH_INTERVAL milliseconds
   interval = setInterval(refreshPendingSubmissions, REFRESH_INTERVAL)
+  }else{
+    refreshing.value = false
+  }
 })
 
 onUnmounted(() => {
