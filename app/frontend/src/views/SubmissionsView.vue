@@ -1,64 +1,21 @@
 <template>
   <h2 class="ma-2 text-center">Submissions</h2>
   <v-container v-if="submissionStore.submissions.length > 0">
-    <v-tabs v-model="tab" align-tabs="center">
-      <v-tab :value="1">Table View</v-tab>
-      <v-tab :value="2">Cluster View</v-tab>
-    </v-tabs>
-    <v-window v-model="tab">
-      <v-window-item :value="1" :key="1">
-        <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy">
-          <template v-slot:item.phase="{ value }">
-            <v-chip :color="getColor(value)">
-              {{ value }}
-            </v-chip>
-          </template>
+    <v-data-table :headers="headers" :items="submissionStore.submissions" :sort-by="sortBy">
+      <template v-slot:item.phase="{ value }">
+        <v-chip :color="getColor(value)">
+          {{ value }}
+        </v-chip>
+      </template>
 
-          <template v-slot:item.actions="{ item }">
-            <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
-            <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
-            <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
-              @click="downloadArtifact(item)"></v-btn>
-            <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
-          </template>
-
-        </v-data-table>
-      </v-window-item>
-      <v-window-item :value="2" :key="2">
-        <v-row align="center" justify="center">
-          <v-col v-for="(submission, i) in submissionStore.submissions" :key="i" cols="auto">
-            <v-card class="mx-auto" variant="elevated" outlined>
-              <v-card-item>
-                <div>
-                  <div class="text-overline mb-1">
-                    {{ variant }}
-                  </div>
-                  <v-card-title> {{ submission.workflow_name }}</v-card-title>
-                  <v-card-subtitle>{{ submission.workflow_id }}</v-card-subtitle>
-                </div>
-              </v-card-item>
-
-              <v-card-text>
-                <div>Submitted: {{ submission.startedAt }}</div>
-                <div>Estimated Duration: {{ submission.estimatedDuration }}</div>
-                <div>Status:
-                  <v-chip :color="getColor(submission.phase)">
-                    {{ submission.phase }}
-                  </v-chip>
-                </div>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-btn v-if="submission.phase == 'Succeeded'"><a
-                    @click="downloadArtifact(submission)">Download</a></v-btn>
-                <v-btn><a @click="refreshSubmission(submission)">Refresh</a></v-btn>
-                <v-btn><a @click="showArgo(submission)">Argo Metadata</a></v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-window-item>
-    </v-window>
+      <template v-slot:item.actions="{ item }">
+        <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshing == item" />
+        <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
+        <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
+          @click="downloadArtifact(item)"></v-btn>
+        <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
+      </template>
+    </v-data-table>
   </v-container>
 
   <v-container v-if="submissionStore.submissions.length == 0">
