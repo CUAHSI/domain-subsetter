@@ -830,6 +830,7 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
     if (response.ok) {
         const data = await response.json();
         const clicked_hucs = data.features.map((feature) => {
+            // bbox is a L.LatLngBounds instance, which refers to unprojected WGS84 coordinates
             return {
                 hucid: feature.properties.HUC12,
                 geom: feature.geometry,
