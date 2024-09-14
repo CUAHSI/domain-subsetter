@@ -58,11 +58,20 @@ function handleResponse(response) {
     const data = text && JSON.parse(text)
 
     if (!response.ok) {
-      // const { user, logout } = useAuthStore();
-      // if ([401, 403].includes(response.status) && user) {
-      //     // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-      //     logout();
-      // }
+      const { user, logout } = useAuthStore();
+      if ([401, 403].includes(response.status) && user) {
+          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+          const alertStore = useAlertStore()
+          alertStore.displayAlert({
+            title: 'Unauthorized',
+            text: `You have been logged out due to inactivity. Please log in again.`,
+            type: 'error',
+            closable: true,
+            duration: 6
+          })
+          console.error('Unauthorized request:', response)
+          logout();
+      }
 
       const error = (data && data.message) || response.statusText
       return Promise.reject(error)
