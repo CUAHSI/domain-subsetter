@@ -40,7 +40,8 @@ services:
     build:
       context: ./api/
       dockerfile: Dockerfile
-    command: python -m debugpy --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers subsetter.main:app --reload
+    working_dir: /subsetter
+    command: python -m debugpy --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
     env_file:
       - .env
     depends_on:

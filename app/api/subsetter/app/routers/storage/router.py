@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from subsetter.app.models import WorkflowDep
-from subsetter.config import get_minio_client
-from subsetter.app.db import User
+from app.models import WorkflowDep
+from config import get_minio_client
+from app.db import User
 from fastapi import APIRouter, Depends
-from subsetter.app.users import current_active_user
+from app.users import current_active_user
 
 router = APIRouter()
 
