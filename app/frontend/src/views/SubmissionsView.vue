@@ -118,8 +118,9 @@ async function downloadArtifact(submission) {
   const downloadEndpoint = ENDPOINTS.download
   const downloadUrl = `${downloadEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(downloadUrl)
+  const json = await response.unpacked
   const link = document.createElement('a')
-  link.href = response.url
+  link.href = json.url
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link);
@@ -129,16 +130,19 @@ async function showLogs(submission) {
   const logsEndpoint = ENDPOINTS.logs
   const logsUrl = `${logsEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(logsUrl)
-  console.log(response)
-  sheetText.value = JSON.stringify(response)
+  const json = await response.unpacked
+  console.log(json)
+  sheetText.value = JSON.stringify(json)
 }
 
 async function showArgo(submission) {
   const argoEndpoint = ENDPOINTS.argo
   const argoUrl = `${argoEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(argoUrl)
-  console.log(JSON.stringify(response))
-  sheetText.value = JSON.stringify(response)
+  const json = await response.unpacked
+  const jsons = JSON.stringify(json)
+  console.log(jsons)
+  sheetText.value = jsons
 }
 
 async function refreshSubmission(submission) {

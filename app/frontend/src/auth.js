@@ -1,13 +1,17 @@
 import { ENDPOINTS, APP_URL } from '@/constants'
 import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from './stores/alerts'
+import { fetchWrapper } from '@/_helpers/fetchWrapper';
 
 export async function logIn(callback) {
   const alertStore = useAlertStore()
   const authStore = useAuthStore()
-  const response = await fetch(ENDPOINTS.authCuahsiAuthorize)
-  const json = await response.json()
-
+  const response = await fetchWrapper.get(ENDPOINTS.authCuahsiAuthorize)
+  if (!response?.ok) {
+    displayError(`error getting ${ENDPOINTS.authCuahsiAuthorize}`)
+    return
+  }
+  const json = await response.unpacked
   // alter redirect uri
   const authUrl = new URL(json.authorization_url)
   // TODO: use an env var for auth redirect instead of hard-coding
@@ -26,26 +30,20 @@ export async function logIn(callback) {
     const params = event.data
 
     const url = `${ENDPOINTS.authCuahsiCallback}${params}`
-    const resp = await fetch(url)
+    const resp = await fetchWrapper.get(url)
 
     if (!resp.ok) {
       console.log(resp.status, resp.statusText)
-      alertStore.displayAlert({
-        title: 'Error Logging In',
-        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
-        type: 'success',
-        closable: true,
-        duration: 3
-      })
+      displayError(`error getting ${url}`)
+      return
     }
-
-    const json = await resp.json()
+    const json = resp.unpacked
     authStore.login(json)
 
     const userinfo = await fetch(ENDPOINTS.userInfo, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${json.access_token}`
+        Authorization: `Bearer ${resp.access_token}`
       }
     })
     if (userinfo.ok) {
@@ -60,14 +58,9 @@ export async function logIn(callback) {
       })
       callback?.()
     } else {
-      console.log(userinfo.status, userinfo.statusText)
-      alertStore.displayAlert({
-        title: 'Error Logging In',
-        text: `We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.`,
-        type: 'success',
-        closable: true,
-        duration: 3
-      })
+      console.error(userinfo.status, userinfo.statusText)
+      displayError(`error getting ${ENDPOINTS.userInfo}`)
+      return
     }
     event.source.close()
   })
@@ -87,4 +80,16 @@ export async function logOut(callback) {
     duration: 3
   })
   callback?.()
+}
+
+async function displayError(text) {
+  text = text || 'We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.'
+  const alertStore = useAlertStore()
+  alertStore.displayAlert({
+    title: 'Error Logging In',
+    text: text,
+    type: 'error',
+    closable: true,
+    duration: 3
+  })
 }

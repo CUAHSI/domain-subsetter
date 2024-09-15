@@ -19,20 +19,15 @@ function request(method) {
       requestOptions.headers['Content-Type'] = 'application/json'
       requestOptions.body = JSON.stringify(body)
     }
-    console.log('url', url, 'options', requestOptions)
+    console.log(`Sending ${method} request to ${url}`)
     try {
       let resp = await fetch(url, requestOptions)
       return handleResponse(resp)
     } catch (e) {
-      const alertStore = useAlertStore()
-      alertStore.displayAlert({
-        title: 'Error with request',
-        text: `Encountered an issue connection to ${url}: ${e}`,
-        type: 'error',
-        closable: true,
-        duration: 6
-      })
       console.error(e)
+      // return a response object
+      const resp = new Response(null, { status: 500, statusText: e })
+      return handleResponse(resp)
     }
   }
 }
@@ -53,21 +48,41 @@ function authHeader(url) {
   }
 }
 
+/**
+ * Handles the response from an API request.
+ *
+ * @param {Response} response - The response object from the API request.
+ * @returns {Promise<any>} - A promise that resolves to the parsed data from the response.
+ * @throws {string} - Throws an error message if the response is not successful.
+ */
 function handleResponse(response) {
+  if (!response.ok) {
+    const { user, logout } = useAuthStore()
+    if ([401, 403].includes(response.status) && user) {
+      // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+      const alertStore = useAlertStore()
+      alertStore.displayAlert({
+        title: 'Unauthorized',
+        text: `You have been logged out due to inactivity. Please log in again.`,
+        type: 'error',
+        closable: true,
+        duration: 6
+      })
+      console.error('Unauthorized request:', response)
+      logout()
+    }
+  }
+  response.unpacked = unpackResponse(response)
+  return response
+}
+
+function unpackResponse(response) {
   return response.text().then((text) => {
-    const data = text && JSON.parse(text)
-
+    const unpacked = text && JSON.parse(text)
     if (!response.ok) {
-      // const { user, logout } = useAuthStore();
-      // if ([401, 403].includes(response.status) && user) {
-      //     // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-      //     logout();
-      // }
-
-      const error = (data && data.message) || response.statusText
+      const error = (unpacked && unpacked.message) || response.statusText
       return Promise.reject(error)
     }
-
-    return data
+    return unpacked
   })
 }

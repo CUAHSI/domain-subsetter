@@ -8,13 +8,15 @@ export const useSubmissionsStore = defineStore('submissions', () => {
   const submissions = ref([])
 
   async function getSubmissions() {
-    const submissionsObj = await fetchWrapper.get(`${ENDPOINTS.submissions}`)
+    const response = await fetchWrapper.get(`${ENDPOINTS.submissions}`)
+    const submissionsObj = await response.unpacked
     let submissions = submissionsObj.submissions
     this.submissions = submissions
   }
 
   async function refreshWorkflows() {
-    let running_submissions = await fetchWrapper.get(`${ENDPOINTS.refresh}`)
+    let response = await fetchWrapper.get(`${ENDPOINTS.refresh}`)
+    const running_submissions = await response.unpacked
     console.log("running submissions:", running_submissions)
     // now update the submissions in the store
     for (let i = 0; i < running_submissions.length; i++) {
@@ -30,9 +32,10 @@ export const useSubmissionsStore = defineStore('submissions', () => {
     const refreshEndpoint = ENDPOINTS.refresh
     const refreshUrl = `${refreshEndpoint}/${submission.workflow_id}`
     const response = await fetchWrapper.get(refreshUrl)
+    const json = await response.unpacked
     const objIndex = this.submissions.findIndex(s => s.workflow_id === submission.workflow_id);
     if (objIndex > -1) {
-      this.submissions[objIndex]=response;
+      this.submissions[objIndex]=json;
     }
   }
 
