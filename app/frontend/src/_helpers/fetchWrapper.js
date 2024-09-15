@@ -19,20 +19,14 @@ function request(method) {
       requestOptions.headers['Content-Type'] = 'application/json'
       requestOptions.body = JSON.stringify(body)
     }
-    console.log('url', url, 'options', requestOptions)
+    console.log(`Sending ${method} request to ${url}`)
     try {
       let resp = await fetch(url, requestOptions)
       return handleResponse(resp)
     } catch (e) {
-      const alertStore = useAlertStore()
-      alertStore.displayAlert({
-        title: 'Error with request',
-        text: `Encountered an issue connection to ${url}: ${e}`,
-        type: 'error',
-        closable: true,
-        duration: 6
-      })
       console.error(e)
+      // return a response object
+      return {ok: false, message: e}
     }
   }
 }
@@ -53,6 +47,13 @@ function authHeader(url) {
   }
 }
 
+/**
+ * Handles the response from an API request.
+ *
+ * @param {Response} response - The response object from the API request.
+ * @returns {Promise<any>} - A promise that resolves to the parsed data from the response.
+ * @throws {string} - Throws an error message if the response is not successful.
+ */
 function handleResponse(response) {
   return response.text().then((text) => {
     const data = text && JSON.parse(text)
@@ -76,7 +77,9 @@ function handleResponse(response) {
       const error = (data && data.message) || response.statusText
       return Promise.reject(error)
     }
-
+    data.ok = true
     return data
+  }).catch((error) => {
+    return {ok: false, message: error}
   })
 }
