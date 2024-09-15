@@ -11,9 +11,9 @@ export async function logIn(callback) {
     displayError(`error getting ${ENDPOINTS.authCuahsiAuthorize}`)
     return
   }
-
+  const json = await response.unpacked
   // alter redirect uri
-  const authUrl = new URL(response.authorization_url)
+  const authUrl = new URL(json.authorization_url)
   // TODO: use an env var for auth redirect instead of hard-coding
   // "#" hash routing was not passed from github env secret so had to hard code here.
   authUrl.searchParams.set('redirect_uri', `${APP_URL}#/auth-redirect`)
@@ -37,8 +37,8 @@ export async function logIn(callback) {
       displayError(`error getting ${url}`)
       return
     }
-
-    authStore.login(resp)
+    const json = resp.unpacked
+    authStore.login(json)
 
     const userinfo = await fetch(ENDPOINTS.userInfo, {
       headers: {

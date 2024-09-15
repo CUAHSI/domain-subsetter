@@ -26,7 +26,8 @@ function request(method) {
     } catch (e) {
       console.error(e)
       // return a response object
-      return {ok: false, message: e}
+      const resp = new Response(null, { status: 500, statusText: e })
+      return handleResponse(resp)
     }
   }
 }
@@ -55,31 +56,33 @@ function authHeader(url) {
  * @throws {string} - Throws an error message if the response is not successful.
  */
 function handleResponse(response) {
+  if (!response.ok) {
+    const { user, logout } = useAuthStore()
+    if ([401, 403].includes(response.status) && user) {
+      // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+      const alertStore = useAlertStore()
+      alertStore.displayAlert({
+        title: 'Unauthorized',
+        text: `You have been logged out due to inactivity. Please log in again.`,
+        type: 'error',
+        closable: true,
+        duration: 6
+      })
+      console.error('Unauthorized request:', response)
+      logout()
+    }
+  }
+  response.unpacked = unpackResponse(response)
+  return response
+}
+
+function unpackResponse(response) {
   return response.text().then((text) => {
-    const data = text && JSON.parse(text)
-
+    const unpacked = text && JSON.parse(text)
     if (!response.ok) {
-      const { user, logout } = useAuthStore();
-      if ([401, 403].includes(response.status) && user) {
-          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-          const alertStore = useAlertStore()
-          alertStore.displayAlert({
-            title: 'Unauthorized',
-            text: `You have been logged out due to inactivity. Please log in again.`,
-            type: 'error',
-            closable: true,
-            duration: 6
-          })
-          console.error('Unauthorized request:', response)
-          logout();
-      }
-
-      const error = (data && data.message) || response.statusText
+      const error = (unpacked && unpacked.message) || response.statusText
       return Promise.reject(error)
     }
-    data.ok = true
-    return data
-  }).catch((error) => {
-    return {ok: false, message: error}
+    return unpacked
   })
 }
