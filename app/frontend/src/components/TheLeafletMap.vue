@@ -407,6 +407,8 @@ function resize_map() {
 
 async function getGageInfo(e) {
     // TODO: this function needs to be repaired
+    console.log('skipping getGageInfo')
+    return {}
     // TESTING GAGE INFO BOX
     // quick and dirty buffer around cursor
     // bbox = lon_min, lat_min, lon_max, lat_max
@@ -919,12 +921,14 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
         }
 
     } else {
-        // if there was an error calling the ArcGIS WFS,
-        // add an error message in the table
-        let row = getRowByName(hucid);
-        let elem = row.getElementsByTagName('td')[2]
-        elem.innerText = 'Server Error';
-        elem.style.color = 'red';
+        console.error("Error fetching huc data", response)
+        alertStore.displayAlert({
+            title: 'Error',
+            text: `Error fetching huc data: ${response.message}`,
+            type: 'error',
+            closable: true,
+            duration: 1
+        })
     }
 }
 
@@ -984,7 +988,7 @@ function updateMapBBox() {
     // save the layer
     Map.huclayers['BBOX'] = json_polygon;
 
-    if (modelsStore.selectedModel.input == "bbox") {
+    if (modelsStore?.selectedModel?.input == "bbox") {
         json_polygon.addTo(Map.map);
     }
 
