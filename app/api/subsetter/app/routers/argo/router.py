@@ -239,7 +239,6 @@ def parse_logs(api_response):
 @router.get('/logs/{workflow_id}', description="logs for a workflow")
 async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    # test
     api_response = api_instance.workflow_logs(
         namespace=get_settings().argo_namespace,
         name=submission.workflow_id,

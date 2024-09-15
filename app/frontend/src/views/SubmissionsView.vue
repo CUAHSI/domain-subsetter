@@ -131,7 +131,6 @@ async function showLogs(submission) {
   const logsUrl = `${logsEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(logsUrl)
   const json = await response.unpacked
-  console.log(json)
   sheetText.value = JSON.stringify(json)
 }
 
