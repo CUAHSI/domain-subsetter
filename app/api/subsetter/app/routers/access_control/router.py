@@ -7,9 +7,9 @@ from typing import Dict
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from subsetter.app.db import User, get_hydroshare_access_db
-from subsetter.app.routers.access_control.policy_generation import minio_policy
-from subsetter.app.users import current_active_user
+from app.db import User, get_hydroshare_access_db
+from app.routers.access_control.policy_generation import minio_policy
+from app.users import current_active_user
 
 from .policy_generation import refresh_minio_policy
 

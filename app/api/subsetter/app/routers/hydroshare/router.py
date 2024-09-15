@@ -6,9 +6,9 @@ import google.cloud.logging as logging
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from subsetter.app.db import User
-from subsetter.app.users import current_active_user
-from subsetter.config import get_minio_client, get_settings
+from app.db import User
+from app.users import current_active_user
+from config import get_minio_client, get_settings
 
 if get_settings().cloud_run:
     logging_client = logging.Client()

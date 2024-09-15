@@ -9,7 +9,7 @@ from beanie import Document
 from fastapi_users.db import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
 from pydantic import BaseModel, Field
 
-from subsetter.config import get_settings
+from config import get_settings
 
 client = motor.motor_asyncio.AsyncIOMotorClient(get_settings().mongo_url, uuidRepresentation="standard")
 db = client[get_settings().mongo_database]

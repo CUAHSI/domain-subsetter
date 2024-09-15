@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, Path, status
 from pydantic import BaseModel, Field
 
-from subsetter.app.db import Submission, User
-from subsetter.app.users import current_active_user
+from app.db import Submission, User
+from app.users import current_active_user
 
 
 class WorkflowParams(BaseModel):

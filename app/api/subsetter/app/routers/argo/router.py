@@ -10,16 +10,16 @@ from argo_workflows.api import workflow_service_api
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
 
-from subsetter.app.db import Submission, User
-from subsetter.app.models import (
+from app.db import Submission, User
+from app.models import (
     LogsResponseModel,
     SubmissionResponseModel,
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
 )
-from subsetter.app.users import current_active_user
-from subsetter.config import get_minio_client, get_settings
+from app.users import current_active_user
+from config import get_minio_client, get_settings
 
 from .transformer import transform_latlon
 
@@ -239,6 +239,7 @@ def parse_logs(api_response):
 @router.get('/logs/{workflow_id}', description="logs for a workflow")
 async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
+    # test
     api_response = api_instance.workflow_logs(
         namespace=get_settings().argo_namespace,
         name=submission.workflow_id,
