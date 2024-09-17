@@ -959,6 +959,12 @@ function updateMapBBox() {
         }
     }
 
+    console.log("updating leaflet bbox with values:")
+    console.log("xmin", xmin)
+    console.log("ymin", ymin)
+    console.log("xmax", xmax)
+    console.log("ymax", ymax)
+
     // save the map bbox
     Map.bbox = [xmin, ymin, xmax, ymax];
 
