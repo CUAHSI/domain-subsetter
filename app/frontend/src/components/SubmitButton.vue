@@ -86,6 +86,9 @@ async function submitBbox(bbox, model) {
   let [xmin, ymin, xmax, ymax] = bbox
   const lowerLeft = [xmin, ymin]
   const upperRight = [xmax, ymax]
+  console.log("starting subsetting using initial bbox", bbox)
+  console.log("lowerLeft", lowerLeft)
+  console.log("upperRight", upperRight)
 
   // Leaflet displays data in 3857 web mercator...
   // https://rstudio.github.io/leaflet/articles/projections.html
@@ -95,8 +98,14 @@ async function submitBbox(bbox, model) {
   let firstProjection = proj4('EPSG:4326')
   let secondProjection = '+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40.0000076293945 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs'
 
+  console.log("converting from intial projection:", firstProjection)
+  console.log("converting to projection:", secondProjection)
+
   const lccLowerLeft = proj4(firstProjection, secondProjection, lowerLeft)
   const lccUpperRight = proj4(firstProjection, secondProjection, upperRight)
+
+  console.log("proj4 package gives lccLowerLeft:", lccLowerLeft)
+  console.log("proj4 package gives lccUpperRight:", lccUpperRight)
 
   ymin = lccLowerLeft[1]
   xmin = lccLowerLeft[0]
@@ -104,6 +113,8 @@ async function submitBbox(bbox, model) {
   ymax = lccUpperRight[1]
 
   const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmax}&x_east=${xmin}`
+
+  console.log("starting subsetting with bbox params:", params)
 
   fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
 }
