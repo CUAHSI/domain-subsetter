@@ -11,3 +11,5 @@ pydantic-settings
 google-cloud-logging
 pyproj
 wget
+shapely
+pyproj

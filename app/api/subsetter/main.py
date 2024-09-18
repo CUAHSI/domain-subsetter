@@ -9,6 +9,7 @@ from app.routers.access_control import router as access_control_router
 from app.routers.argo import router as argo_router
 from app.routers.hydroshare import router as hydroshare_router
 from app.routers.storage import router as storage_router
+from app.routers.utilities import router as utilities_router
 from app.schemas import UserRead, UserUpdate
 from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from config import get_settings
@@ -25,7 +26,11 @@ swagger_params = {
     "swagger_ui_client_id": cuahsi_oauth_client.client_id,
 }
 
-app = FastAPI(servers=[{"url": get_settings().vite_app_api_url}], swagger_ui_parameters=swagger_params)
+
+app = FastAPI(
+    servers=[{"url": get_settings().vite_app_api_url}],
+    swagger_ui_parameters=swagger_params,
+)
 
 origins = [get_settings().allow_origins]
 
@@ -41,6 +46,11 @@ app.include_router(
     argo_router,
     # prefix="/auth/cuahsi",
     tags=["argo"],
+)
+
+app.include_router(
+    utilities_router,
+    tags=["utilities"],
 )
 
 app.include_router(
@@ -101,10 +111,10 @@ async def on_startup():
         ],
     )
     arguments = [
-        'mc',
-        'alias',
-        'set',
-        'cuahsi',
+        "mc",
+        "alias",
+        "set",
+        "cuahsi",
         f"https://{get_settings().minio_api_url}",
         get_settings().minio_access_key,
         get_settings().minio_secret_key,
