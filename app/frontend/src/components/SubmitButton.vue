@@ -41,6 +41,7 @@ const { selectedModel } = storeToRefs(modelsStore);
 const Map = mapStore.mapObject
 
 const canSubmit = computed(() => {
+  return true;
   if (!authStore.isLoggedIn) {
     return false
   }
@@ -62,13 +63,44 @@ let bboxValid = computed(() => {
   return modelsStore.selectedModel?.input == 'bbox' && !mapStore.boxIsValid && mapStore.hucsAreSelected
 })
 
+function computeSubsetBbox() {
+  /**
+    * Compute the bounding box of the selected hucs
+    * in the LCC projection used by the NWM
+    * @returns {Array} [xmin, ymin, xmax, ymax]
+    */
+    
+  let xmin = 999999999
+  let ymin = 999999999
+  let xmax = -999999999
+  let ymax = -999999999
+  for (let huc_id in Map.hucbounds) {
+    let bounds = Map.hucbounds[huc_id].nwm_bbox
+    if (bounds.minx < xmin) {
+      xmin = bounds.minx
+    }
+    if (bounds.miny < ymin) {
+      ymin = bounds.miny
+    }
+    if (bounds.maxx > xmax) {
+      xmax = bounds.maxx
+    }
+    if (bounds.maxy > ymax) {
+      ymax = bounds.maxy
+    }
+  }
+  return [xmin, ymin, xmax, ymax]
+}
+
 async function submit() {
   const model = modelsStore.selectedModel
   if (model.input === "hucs") {
     const hucsArray = Map.selected_hucs
     await submitHucs(hucsArray, model.shortName)
   } else {
-    const bbox = Map.bbox
+    // compute the bounding box of the selected hucs
+    // in the LCC projection used by the NWM
+    const bbox = computeSubsetBbox()
     await submitBbox(bbox, model.shortName)
   }
   const message = "Your selection was submitted for subsetting"
@@ -89,28 +121,6 @@ async function submitBbox(bbox, model) {
   console.log("starting subsetting using initial bbox", bbox)
   console.log("lowerLeft", lowerLeft)
   console.log("upperRight", upperRight)
-
-  // Leaflet displays data in 3857 web mercator...
-  // https://rstudio.github.io/leaflet/articles/projections.html
-  // https://epsg.io/3857
-  // however it returns data in 4326
-  // https://epsg.io/4326
-  let firstProjection = proj4('EPSG:4326')
-  let secondProjection = '+proj=lcc +lat_1=30 +lat_2=60 +lat_0=40.0000076293945 +lon_0=-97 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +units=m +no_defs'
-
-  console.log("converting from intial projection:", firstProjection)
-  console.log("converting to projection:", secondProjection)
-
-  const lccLowerLeft = proj4(firstProjection, secondProjection, lowerLeft)
-  const lccUpperRight = proj4(firstProjection, secondProjection, upperRight)
-
-  console.log("proj4 package gives lccLowerLeft:", lccLowerLeft)
-  console.log("proj4 package gives lccUpperRight:", lccUpperRight)
-
-  ymin = lccLowerLeft[1]
-  xmin = lccLowerLeft[0]
-  xmax = lccUpperRight[0]
-  ymax = lccUpperRight[1]
 
   const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmax}&x_east=${xmin}`
 

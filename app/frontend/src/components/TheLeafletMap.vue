@@ -12,6 +12,8 @@ import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useAlertStore } from '@/stores/alerts'
 import { GIS_SERVICES_URL } from '@/constants'
+import { API_BASE } from '@/constants'
+import { fetchWrapper } from '@/_helpers/fetchWrapper';
 
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
@@ -358,7 +360,7 @@ onMounted(() => {
 
     // validate the map
     let box = validate_bbox_size()
-    toggle_submit_button(box.is_valid);
+    //toggle_submit_button(box.is_valid);
 
     // fix safari map sizing issue
     // $(window).on("resize", function () {
@@ -730,100 +732,95 @@ function clearSelection() {
 * @param {array} hucids - HUC ids to query the bounding box for
 * @returns {array} - bounding box for all hucID in the Spherical Lambert Confromal Conic SRS
 */
-function getLccBounds(hucs) {
+function getLccBounds(hucs) {}
 
-    // $.ajax({
-    //     url: '/wbd/gethucbbox/lcc',
-    //     type: 'GET',
-    //     contentType: "text/plain; charset=UTF-8",
-    //     data: { 'hucID': hucs.join(",") },
-    //     success: function (response) {
+async function getNWMBbox(geometry){
+  /**
+  * Queries the NWM bounding box for a given geometry provided in WGS 1984
+  */
 
-    //         // save the calculated bbox in LCC coordinates
-    //         let lcc_bbox = JSON.parse(response).bbox;
-
-    //         // update the global lcc bbox that will be used to submit the subsetting job
-    //         // update_lcc_bounds(lcc_bbox);
-
-    //     },
-    //     error: function (error) {
-    //         console.log('error querying bounding box: ' + error);
-    //     }
-    // });
+  
+  // TODO:add nwm bbox here
+  const resp = await fetchWrapper.post(`${API_BASE}/nwm/compute_bbox`, geometry);
+  if(resp.ok){
+    // print the data returned by resp
+    const data = await resp.unpacked;
+    return data
+  }
 
 }
 
-function addFeatureToMap(feature) {
-
-    // toggle bounding box
-    if (feature.hucid in Map.hucbounds) {
-        // remove huc from list if it's already selected
-        delete Map.hucbounds[feature.hucid];
-
-        // add huc ID to the table
-        let row_id = getRowIdByName(feature.hucid)
-        rmHucRow(row_id);
-
-    }
-    else {
-        // add huc to list of it's not selected
-        Map.hucbounds[feature.hucid] = feature.bbox;
-
-        // remove huc ID from the table
-        addHucRow(feature.hucid);
-    }
-    // update the boundaries of the global bbox
-    updateMapBBox();
-
-    // retrieve the LCC coordinate for this bounding box
-    hucs = [];
-    for (key in Map.hucbounds) {
-        hucs.push(key);
-    }
-    getLccBounds(hucs);
-}
-
-/**
-* adds features to the map by HUC id using WFS:GetFeature
-* @param {string} hucid - a single HUC ids to query
-* @returns - null
-*/
-function addFeatureByHUC(hucid) {
-
-    let remove = null;
-    if (hucid.length < 12) {
-        hucid += '*';
-        filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
-
-        // add the huc row b/c this could take a while
-        // and we want the user to know that the HUCs are
-        // being queried. 
-        // this huc will need to be removed since it's not 12 digits.
-        addHucRow(hucid);
-        remove = hucid;
-    }
-    else if (hucid.length == 12) {
-        filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
-    }
-    else {
-        return;
-    }
-
-    let defaultParameters = {
-        service: 'WFS',
-        request: 'GetFeature',
-        typeName: 'HUC_WBD:HUC12_US',
-        SrsName: 'EPSG:4326',
-        Filter: filter
-    };
-    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
-    let parameters = L.Util.extend(defaultParameters);
-    let URL = root + L.Util.getParamString(parameters);
-
-    // load the map and table elements async
-    toggleHucsAsync(URL, false, remove);
-
-}
+//function addFeatureToMap(feature) {
+//
+//    // toggle bounding box
+//    if (feature.hucid in Map.hucbounds) {
+//        // remove huc from list if it's already selected
+//        delete Map.hucbounds[feature.hucid];
+//
+//        // add huc ID to the table
+//        let row_id = getRowIdByName(feature.hucid)
+//        rmHucRow(row_id);
+//
+//    }
+//    else {
+//        // add huc to list of it's not selected
+//        Map.hucbounds[feature.hucid] = feature.bbox;
+//
+//        // remove huc ID from the table
+//        addHucRow(feature.hucid);
+//    }
+//    // update the boundaries of the global bbox
+//    updateMapBBox();
+//
+//    // retrieve the LCC coordinate for this bounding box
+//    hucs = [];
+//    for (key in Map.hucbounds) {
+//        hucs.push(key);
+//    }
+//    getLccBounds(hucs);
+//}
+//
+///**
+//* adds features to the map by HUC id using WFS:GetFeature
+//* @param {string} hucid - a single HUC ids to query
+//* @returns - null
+//*/
+//function addFeatureByHUC(hucid) {
+//
+//    let remove = null;
+//    if (hucid.length < 12) {
+//        hucid += '*';
+//        filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
+//
+//        // add the huc row b/c this could take a while
+//        // and we want the user to know that the HUCs are
+//        // being queried. 
+//        // this huc will need to be removed since it's not 12 digits.
+//        addHucRow(hucid);
+//        remove = hucid;
+//    }
+//    else if (hucid.length == 12) {
+//        filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
+//    }
+//    else {
+//        return;
+//    }
+//
+//    let defaultParameters = {
+//        service: 'WFS',
+//        request: 'GetFeature',
+//        typeName: 'HUC_WBD:HUC12_US',
+//        SrsName: 'EPSG:4326',
+//        Filter: filter
+//    };
+//    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
+//    let parameters = L.Util.extend(defaultParameters);
+//    let URL = root + L.Util.getParamString(parameters);
+//
+//    // load the map and table elements async
+//    toggleHucsAsync(URL, false, remove);
+//
+//}
 
 async function toggleHucsAsync(url, remove_if_selected, remove) {
 
@@ -839,6 +836,11 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                 bbox: L.geoJSON(feature.geometry).getBounds(),
             }
         })
+        // compute the bounding box for this HUC in the CRS used by nwm
+        const nwm_bbox = await getNWMBbox(data);
+        console.log(nwm_bbox);
+               
+    
         for (let huc of clicked_hucs) {
             try {
                 // toggle bounding box using the following rules:
@@ -864,7 +866,11 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
                 else {
                     console.info("Adding huc", huc)
                     Map.selected_hucs.push(huc)
-                    Map.hucbounds[huc.hucid] = huc.bbox;
+                    
+                    // save the bounding box for this huc in both nwm and wgs84 CRSs
+                    Map.hucbounds[huc.hucid] = {'wgs84_bbox': huc.bbox,
+                                                'nwm_bbox': nwm_bbox};
+
                     // addHucRow(huc.hucid);
                     togglePolygon(huc.hucid, huc.geom);
 
@@ -896,15 +902,13 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
         }
 
         // update the boundaries of the global bbox.
-        // this is all that we really care about when the
-        // subset job is submitted.
-        // retrieve the LCC coordinate for this bounding box
+        // this is used for rendering the bbox on the leaflet map.
         let hucs = [];
         updateMapBBox();
         for (let key in Map.hucbounds) {
             hucs.push(key);
         }
-        getLccBounds(hucs);
+        //getLccBounds(hucs);
 
         // update the hucs list 
         // this is used to create a shapefile
@@ -933,18 +937,21 @@ async function toggleHucsAsync(url, remove_if_selected, remove) {
 }
 
 
-/**
-* Calculates and draws the bounding box on the map.
-*/
 function updateMapBBox() {
-
+    /**
+    * Calculates and draws the bounding box on the map.
+    * This is computed using the wgs84_bbox variable stored
+    * within Map.hucbounds. This also calculates the bbox in the 
+    * nwm coordinates which are used for subsetting NWM data.
+    */
+  
     // calculate global boundary
     let xmin = 9999999;
     let ymin = 9999999;
     let xmax = -9999999;
     let ymax = -9999999;
     for (let key in Map.hucbounds) {
-        let bounds = Map.hucbounds[key];
+        let bounds = Map.hucbounds[key].wgs84_bbox
         if (bounds.getWest() < xmin) {
             xmin = bounds.getWest();
         }
@@ -966,6 +973,8 @@ function updateMapBBox() {
     console.log("ymax", ymax)
 
     // save the map bbox
+    // call backend function to calculate the bbox
+    
     Map.bbox = [xmin, ymin, xmax, ymax];
 
 
@@ -982,12 +991,10 @@ function updateMapBBox() {
         "coordinates": coords
     }];
 
-    // todo: add function to validate bbox and return back styling
-    // check bbox area bounds
+    // validate bbox and return back styling
     let bbox = validate_bbox_size();
 
-    // todo: create bbox validation function
-    toggle_submit_button(bbox.is_valid)
+    //toggle_submit_button(bbox.is_valid)
 
     let json_polygon = L.geoJSON(polygon, { style: bbox.style });
 
@@ -1064,26 +1071,26 @@ function update_huc_ids(huclist) {
 //      document.getElementById('td-ulat-val').html(parseFloat(lcc_bbox[3]).toFixed(5));
 // }
 
-function get_lcc_bounds() {
-    let bnds = [document.getElementById('llon').val(),
-    document.getElementById('llat').val(),
-    document.getElementById('ulon').val(),
-    document.getElementById('ulat').val()];
-    return bnds;
-}
+//function get_lcc_bounds() {
+//    let bnds = [document.getElementById('llon').val(),
+//    document.getElementById('llat').val(),
+//    document.getElementById('ulon').val(),
+//    document.getElementById('ulat').val()];
+//    return bnds;
+//}
 
-function toggle_submit_button(is_valid) {
-
-    if (is_valid) {
-        //        // disable submit button bc nothing is selected
-        //        document.getElementById('btn-subset-submit').prop( "disabled", false);
-        // Map.submit.enable();
-    } else {
-        //        // enable submit button 
-        //        document.getElementById('btn-subset-submit').prop( "disabled", true );
-        // Map.submit.disable();
-    }
-}
+//function toggle_submit_button(is_valid) {
+//
+//    if (is_valid) {
+//        //        // disable submit button bc nothing is selected
+//        //        document.getElementById('btn-subset-submit').prop( "disabled", false);
+//        // Map.submit.enable();
+//    } else {
+//        //        // enable submit button 
+//        //        document.getElementById('btn-subset-submit').prop( "disabled", true );
+//        // Map.submit.disable();
+//    }
+//}
 
 
 /**
