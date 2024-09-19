@@ -16,6 +16,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@vueuse/core": "^10.5.0",
+    "esri-leaflet": "^3.0.12",
     "leaflet": "^1.9.4",
     "leaflet-easybutton": "^2.4.0",
     "pinia": "^2.1.6",

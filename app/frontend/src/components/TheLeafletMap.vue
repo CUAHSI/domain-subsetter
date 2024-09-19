@@ -6,11 +6,13 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
+import * as esriLeaflet from 'esri-leaflet'
 import "leaflet-easybutton/src/easy-button";
 import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useAlertStore } from '@/stores/alerts'
+import { useDomainsStore } from '@/stores/domains'
 import { GIS_SERVICES_URL } from '@/constants'
 import { API_BASE } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
@@ -18,6 +20,7 @@ import { fetchWrapper } from '@/_helpers/fetchWrapper';
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
 const alertStore = useAlertStore();
+const domainStore = useDomainsStore();
 
 const modelAction = modelsStore.$onAction(
     ({
@@ -60,7 +63,7 @@ onMounted(() => {
     Map.hucbounds = [];
     Map.popups = [];
     Map.buffer = 20;
-    mapStore.hucsAreSelected = false;
+    domainStore.hucsAreSelected = false;
     Map.huclayers = [];
     Map.selected_hucs = [];
     Map.reaches = {};
@@ -87,14 +90,41 @@ onMounted(() => {
     //     "-99999999"]);
 
     // Initial OSM tile layer
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    let CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
+        maxZoom: 20
+    });
+
+    let url =
+        'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer'
+    // url = 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Labels/MapServer'
+
+    let Esri_Hydro_Reference_Overlay = esriLeaflet.tiledMapLayer({
+        url: url,
+        layers: 0,
+        transparent: 'true',
+        format: 'image/png'
+    })
+
+    url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    let Esri_WorldImagery = L.tileLayer(url, {
+        variant: 'World_Imagery',
+        attribution: 'Esri'
+    })
+
+    const baselayers = {
+        CartoDB_PositronNoLabels,
+        Esri_WorldImagery
+    };
+
+    Esri_WorldImagery.addTo(map);
+    Esri_Hydro_Reference_Overlay.addTo(map);
+
+
 
     // WMS LAYER
-    let url = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WmsServer?`
+    url = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WmsServer?`
 
     // HUC WMS Naming
     // --------------
@@ -157,7 +187,8 @@ onMounted(() => {
         "HUC 4": huc4,
         "HUC 10": huc10,
         "HUC 12": huc12,
-        "USGS Gages": gages
+        "USGS Gages": gages,
+        "Esri Hydro Reference Overlay": Esri_Hydro_Reference_Overlay
     };
 
     // hide the Getting Started dialog
@@ -175,6 +206,9 @@ onMounted(() => {
         function () { clearSelection(); },
         'clear selected features').addTo(map);
 
+    // Layer Control
+    L.control.layers(baselayers, mixed).addTo(map);
+
     // // Help 
     // //    let btn = '<span id=help-btn class="material-icons">info-outline</i>'
     // L.easyButton('fas fa-question', function () { toggleHelpDialog(); },
@@ -185,13 +219,13 @@ onMounted(() => {
     //     separator: ", "
     // }).addTo(map);
 
-    // // Menu 
+    // // Menu
     // let btn = '<div id=menu-btn><strong>MENU</strong></div>';
     // let menu = L.easyButton(btn, function () { toggleMenu(); resize_map(); },
     //     { position: 'topright' }).addTo(Map.map);
     // menu.button.style.width = '80px';
 
-    // // Submit 
+    // // Submit
     // btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
     // let btn_submit = L.easyButton(btn,
     //     function (btn) { submit(btn); },
@@ -199,7 +233,7 @@ onMounted(() => {
     //         id: 'submit',
     //         position: 'bottomright'
     //     });
-    // 
+    //
     // btn_submit.button.style.width = '150px';
     // let submit_group = L.easyBar([btn_submit],
     //     {
@@ -209,8 +243,6 @@ onMounted(() => {
     // // save this button so it can be accessed from other functions
     // Map.submit = submit_group; //btn_submit;
 
-    // Layer Control
-    L.control.layers(null, mixed).addTo(map);
 
     /*
      * LEAFLET EVENT HANDLERS
@@ -366,6 +398,8 @@ onMounted(() => {
     // $(window).on("resize", function () {
     //     resize_map();
     // }).trigger("resize");
+
+    mapStore.mapLoaded = true;
 })
 
 function resize_map() {
@@ -496,7 +530,7 @@ async function mapClick(e) {
 
     // mark the huc as selected.
     // this will allow the bbox to be drawn.
-    mapStore.hucsAreSelected = true;
+    domainStore.hucsAreSelected = true;
 
     // get the latitude and longitude of the click event.
     // use this data to query ArcGIS WFS for the selected HUC object.
@@ -705,7 +739,7 @@ function clearSelection() {
 
     }
     Map.selected_hucs = []
-    mapStore.hucsAreSelected = false
+    domainStore.hucsAreSelected = false
 
     // clear the HUC table
     // clearHucTable();
@@ -1047,7 +1081,7 @@ function update_huc_ids(huclist) {
     let hucs = huclist.join(",");
 
     if (hucs == "") {
-        mapStore.hucsAreSelected = false
+        domainStore.hucsAreSelected = false
     }
 
     // set the #hucs hidden field in the html template
@@ -1136,7 +1170,7 @@ function validate_bbox_size() {
         };
         valid = false;
     }
-    mapStore.boxIsValid = valid;
+    domainStore.boxIsValid = valid;
     return { style: style, is_valid: valid }
 }
 

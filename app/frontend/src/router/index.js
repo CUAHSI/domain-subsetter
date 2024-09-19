@@ -3,6 +3,8 @@ import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '../stores/auth'
+import { useAlertStore } from '../stores/alerts'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -10,7 +12,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: HomeView
     },
     {
       path: '/map',
@@ -41,7 +43,10 @@ const router = createRouter({
     {
       path: '/submissions',
       name: 'submissions',
-      component: () => import('../views/SubmissionsView.vue')
+      component: () => import('../views/SubmissionsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/auth-redirect',
@@ -52,6 +57,24 @@ const router = createRouter({
       }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const alertStore = useAlertStore()
+
+  if (!authStore.isLoggedIn && to.meta.requiresAuth) {
+    next('/')
+    alertStore.displayAlert({
+      title: 'Not logged in',
+      text: `You must be logged in to access the ${to.name} page`,
+      type: 'error',
+      closable: true,
+      duration: 3
+    })
+  } else {
+    next()
+  }
 })
 
 // router.beforeEach(async (to) => {
