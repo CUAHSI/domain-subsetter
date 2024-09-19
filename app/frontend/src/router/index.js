@@ -2,12 +2,18 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HelpView from '../views/HelpView.vue'
 import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
+import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
       path: '/',
+      name: 'home',
+      component: HomeView,
+    },
+    {
+      path: '/map',
       name: 'map',
       component: MapView,
       meta: {
