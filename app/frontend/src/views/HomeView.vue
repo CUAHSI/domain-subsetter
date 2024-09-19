@@ -4,10 +4,10 @@
       <v-col class="text-center">
         <div>
           <div class="text-center d-flex flex-column align-center">
-            <div class="mb-4 text-h4">
+            <div class="mb-4 text-h3">
               Welcome to the CUAHSI Data Subsetter tool!
             </div>
-            <p class="font-weight-light text-center text-subtitle-1">
+            <p class="font-weight-light text-center text-subtitle">
               The purpose of this web application is to leverage interactive
               technologies and cloud services to offer a collaborative platform where
               users can explore, prepare, publish, and share subsets of distributed,
