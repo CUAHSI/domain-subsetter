@@ -1,6 +1,8 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
-    <h2 class="ma-2 text-center">Model Selector</h2>
+    <h2 class="ma-2 text-center">Datasets</h2>
+    <p class="ma-2">Click on each dataset to learn more. Select the checkbox fo rthe dataset you're
+      interested in.</p>
     <v-slide-group v-model="selectedParent" class="pa-4" selected-class="bg-primary" show-arrows>
       <v-slide-group-item v-for="hydroModel in models" :key="hydroModel.id" :value="hydroModel"
         v-slot="{ toggle, selectedClass }">
@@ -30,17 +32,6 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-sheet v-if="modelsStore.selectedModel" height="200">
-        <div class="d-flex fill-height align-center justify-center pa-4">
-          <h3 class="text-h6">{{ modelsStore.selectedModel.description }}</h3>
-        </div>
-        <section class="text-right">
-          <v-btn v-if="modelsStore.selectedModel" class="ma-2" color="primary" @click="$emit('toggle')">
-            <span>Continue with {{ modelsStore.selectedModel.name }}</span>
-            <v-icon class="ma-2" :icon="mdiArrowRightBoldBoxOutline"></v-icon>
-          </v-btn>
-        </section>
-      </v-sheet>
     </v-expand-transition>
   </v-sheet>
 </template>

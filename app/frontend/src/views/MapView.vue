@@ -4,19 +4,31 @@
   </v-overlay>
   <v-container v-if="!mdAndDown" fluid>
     <v-row fill-height style="height: 87vh">
-      <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect" location="left" style="z-index: 9999"
-        :style="{ transform: translateFilter(), position: 'absolute' }" color="primary">
-        <v-icon :icon="mdiGlobeModel"></v-icon>
-        <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
-        <span v-else>Select Model</span>
-      </v-btn>
-      <v-col v-if="showModelSelect" :cols="3">
-        <ModelSelectDrawer @toggle="toggleModelSelectDrawer" />
+      <v-card v-show="!showModelSelect && !showDomainSelect" location="left" style="z-index: 9999"
+        :style="{ transform: translateFilter(), position: 'absolute' }">
+        <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect"
+          :color="!modelsStore.selectedModel ? 'primary' : 'secondary'">
+          <v-icon class="ma-1"
+            :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"></v-icon>
+          <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
+          <span v-else>Select Data</span>
+        </v-btn>
+        <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'">
+          <v-icon class="ma-1" :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"></v-icon>
+          <span v-if="!domainStore.selectedDomain">Define Domain</span>
+          <span v-else>{{ selectedDomain.name }}</span>
+        </v-btn>
+        <SubmitButton />
+      </v-card>
+      <v-col v-if="showModelSelect || showDomainSelect" :cols="3">
+        <ModelSelectDrawer v-if="showModelSelect" @toggle="toggleModelSelectDrawer" />
+        <DomainSelectDrawer v-if="showDomainSelect" @toggle="toggleDomainSelectDrawer" />
       </v-col>
-      <v-divider vertical></v-divider>
+      <v-divider v-if="showModelSelect || showDomainSelect" vertical></v-divider>
       <v-col :cols="getCols">
         <TheLeafletMap />
       </v-col>
+      <v-divider v-if="showDomainSelect" vertical></v-divider>
     </v-row>
   </v-container>
   <v-container v-else>
@@ -26,40 +38,58 @@
     <v-row style="height: 50vh">
       <v-col>
         <ModelSelectDrawer />
+        <DomainSelectDrawer />
       </v-col>
     </v-row>
   </v-container>
-  <SubmitButton />
 </template>
 
 <script setup>
 import { ref, computed, nextTick } from 'vue';
 import ModelSelectDrawer from '../components/ModelSelectDrawer.vue';
+import DomainSelectDrawer from '../components/DomainSelectDrawer.vue';
 import SubmitButton from '../components/SubmitButton.vue';
 import TheLeafletMap from '@/components/TheLeafletMap.vue';
 import { useMapStore } from '@/stores/map';
 import { useModelsStore } from '@/stores/models'
+import { useDomainsStore } from '@/stores/domains'
 import { useDisplay } from 'vuetify'
-import { mdiGlobeModel } from '@mdi/js'
+import { storeToRefs } from 'pinia'
+import { mdiNumeric1CircleOutline, mdiNumeric2CircleOutline, mdiCheckCircleOutline } from '@mdi/js'
 
 const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
+const domainStore = useDomainsStore();
 
 const showModelSelect = ref(false)
+const showDomainSelect = ref(false)
+
+const { selectedDomain, hucsAreSelected } = storeToRefs(domainStore);
 
 const toggleModelSelectDrawer = async () => {
   const center = mapStore.mapObject.map.getCenter()
   showModelSelect.value = !showModelSelect.value
   await nextTick()
-  mapStore.leaflet.invalidateSize(true)
-  mapStore.leaflet.setView(center)
+  mapStore.mapObject.map.invalidateSize(true)
+  mapStore.mapObject.map.setView(center)
+}
+
+const toggleDomainSelectDrawer = async () => {
+  const center = mapStore.mapObject.map.getCenter()
+  showDomainSelect.value = !showDomainSelect.value
+  await nextTick()
+  mapStore.mapObject.map.invalidateSize(true)
+  mapStore.mapObject.map.setView(center)
 }
 
 const getCols = computed(() => {
   // if all drawers are open, the map should take up 7 columns
   let cols = 12
   if (showModelSelect.value) {
+    cols -= 3
+  }
+  if (showDomainSelect.value) {
     cols -= 3
   }
   return cols

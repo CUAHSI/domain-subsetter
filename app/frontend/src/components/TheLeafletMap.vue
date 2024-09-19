@@ -12,6 +12,7 @@ import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useAlertStore } from '@/stores/alerts'
+import { useDomainsStore } from '@/stores/domains'
 import { GIS_SERVICES_URL } from '@/constants'
 import { API_BASE } from '@/constants'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
@@ -19,6 +20,7 @@ import { fetchWrapper } from '@/_helpers/fetchWrapper';
 const mapStore = useMapStore()
 const modelsStore = useModelsStore();
 const alertStore = useAlertStore();
+const domainStore = useDomainsStore();
 
 const modelAction = modelsStore.$onAction(
     ({
@@ -61,7 +63,7 @@ onMounted(() => {
     Map.hucbounds = [];
     Map.popups = [];
     Map.buffer = 20;
-    mapStore.hucsAreSelected = false;
+    domainStore.hucsAreSelected = false;
     Map.huclayers = [];
     Map.selected_hucs = [];
     Map.reaches = {};
@@ -217,13 +219,13 @@ onMounted(() => {
     //     separator: ", "
     // }).addTo(map);
 
-    // // Menu 
+    // // Menu
     // let btn = '<div id=menu-btn><strong>MENU</strong></div>';
     // let menu = L.easyButton(btn, function () { toggleMenu(); resize_map(); },
     //     { position: 'topright' }).addTo(Map.map);
     // menu.button.style.width = '80px';
 
-    // // Submit 
+    // // Submit
     // btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
     // let btn_submit = L.easyButton(btn,
     //     function (btn) { submit(btn); },
@@ -231,7 +233,7 @@ onMounted(() => {
     //         id: 'submit',
     //         position: 'bottomright'
     //     });
-    // 
+    //
     // btn_submit.button.style.width = '150px';
     // let submit_group = L.easyBar([btn_submit],
     //     {
@@ -241,8 +243,6 @@ onMounted(() => {
     // // save this button so it can be accessed from other functions
     // Map.submit = submit_group; //btn_submit;
 
-    // Layer Control
-    L.control.layers(null, mixed).addTo(map);
 
     /*
      * LEAFLET EVENT HANDLERS
@@ -530,7 +530,7 @@ async function mapClick(e) {
 
     // mark the huc as selected.
     // this will allow the bbox to be drawn.
-    mapStore.hucsAreSelected = true;
+    domainStore.hucsAreSelected = true;
 
     // get the latitude and longitude of the click event.
     // use this data to query ArcGIS WFS for the selected HUC object.
@@ -739,7 +739,7 @@ function clearSelection() {
 
     }
     Map.selected_hucs = []
-    mapStore.hucsAreSelected = false
+    domainStore.hucsAreSelected = false
 
     // clear the HUC table
     // clearHucTable();
@@ -1081,7 +1081,7 @@ function update_huc_ids(huclist) {
     let hucs = huclist.join(",");
 
     if (hucs == "") {
-        mapStore.hucsAreSelected = false
+        domainStore.hucsAreSelected = false
     }
 
     // set the #hucs hidden field in the html template
@@ -1170,7 +1170,7 @@ function validate_bbox_size() {
         };
         valid = false;
     }
-    mapStore.boxIsValid = valid;
+    domainStore.boxIsValid = valid;
     return { style: style, is_valid: valid }
 }
 

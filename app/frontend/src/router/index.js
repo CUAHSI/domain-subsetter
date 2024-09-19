@@ -19,8 +19,7 @@ const router = createRouter({
       name: 'map',
       component: MapView,
       meta: {
-        showMap: true,
-        requiresAuth: true
+        showMap: true
       }
     },
     {
