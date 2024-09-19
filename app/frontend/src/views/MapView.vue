@@ -12,7 +12,6 @@
       </v-btn>
       <v-col v-if="showModelSelect" :cols="3">
         <ModelSelectDrawer @toggle="toggleModelSelectDrawer" />
-        <SubmitButton />
       </v-col>
       <v-divider vertical></v-divider>
       <v-col :cols="getCols">
@@ -30,6 +29,7 @@
       </v-col>
     </v-row>
   </v-container>
+  <SubmitButton />
 </template>
 
 <script setup>
@@ -75,11 +75,3 @@ const translateFilter = () => {
 
 
 </script>
-
-<style scoped>
-.drawer-handle {
-  position: absolute;
-  bottom: 30%;
-  left: 110%;
-}
-</style>
