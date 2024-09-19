@@ -57,11 +57,14 @@ import { mdiAccount, mdiAccountKey } from '@mdi/js'
 import { useAuthStore } from '../stores/auth';
 import { useSubmissionsStore } from '../stores/submissions';
 import { logIn, logOut } from '@/auth.js'
+import { useRouter } from 'vue-router'
+
 defineProps(['mobile'])
 const emit = defineEmits(['loggedIn', 'loggedOut'])
 
 const submissionStore = useSubmissionsStore();
 const auth = useAuthStore();
+const router = useRouter()
 
 async function openLogInDialog() {
     logIn(onLoggedIn);
@@ -73,13 +76,12 @@ async function logOutUser() {
 
 function onLoggedIn() {
     emit("loggedIn");
-    // submissionStore.refreshWorkflows()
-    // 
-    submissionStore.getSubmissions()
+    router.push({ name: 'map' })
 }
 function onLogOut() {
     emit("loggedOut");
     submissionStore.submissions = []
+    router.push({ name: 'home' })
 }
 </script>
   

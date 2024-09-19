@@ -2,10 +2,12 @@ import { ENDPOINTS, APP_URL } from '@/constants'
 import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from './stores/alerts'
 import { fetchWrapper } from '@/_helpers/fetchWrapper';
+import { useRouter } from 'vue-router'
 
 export async function logIn(callback) {
   const alertStore = useAlertStore()
   const authStore = useAuthStore()
+  const router = useRouter()
   const response = await fetchWrapper.get(ENDPOINTS.authCuahsiAuthorize)
   if (!response?.ok) {
     displayError(`error getting ${ENDPOINTS.authCuahsiAuthorize}`)
@@ -44,6 +46,7 @@ export async function logIn(callback) {
     if (response.ok) {
       const userinfo = await response.unpacked
       authStore.user = userinfo
+      // router.push({ name: 'map' })
       alertStore.displayAlert({
         title: 'Logged in',
         text: 'You have successfully logged in',
