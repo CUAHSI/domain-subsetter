@@ -4,13 +4,11 @@
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
       <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
-      <RouterView />
-
-      <!-- The leaflet map kept alive outside of the RouterView -->
-      <KeepAlive>
-        <TheLeafletMap />
-      </KeepAlive>
-
+      <RouterView v-slot="{ Component }">
+        <KeepAlive>
+          <component :is="Component" />
+        </KeepAlive>
+      </RouterView>
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
       <SnackBar />
       <TheFooter />
@@ -23,7 +21,6 @@ import { RouterView } from 'vue-router'
 import TheAppBar from './components/TheAppBar.vue'
 import TheMobileNavDrawer from '@/components/TheMobileNavDrawer.vue'
 import AlertPopup from './components/AlertPopup.vue'
-import TheLeafletMap from './components/TheLeafletMap.vue';
 import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'

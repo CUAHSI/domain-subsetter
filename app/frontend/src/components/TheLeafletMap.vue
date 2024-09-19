@@ -398,6 +398,8 @@ onMounted(() => {
     // $(window).on("resize", function () {
     //     resize_map();
     // }).trigger("resize");
+
+    mapStore.mapLoaded = true;
 })
 
 function resize_map() {
