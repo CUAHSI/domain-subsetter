@@ -37,18 +37,13 @@ export async function logIn(callback) {
       displayError(`error getting ${url}`)
       return
     }
-    const json = resp.unpacked
+    const json = await resp.unpacked
     authStore.login(json)
 
-    const userinfo = await fetch(ENDPOINTS.userInfo, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${resp.access_token}`
-      }
-    })
-    if (userinfo.ok) {
-      const result = await userinfo.json()
-      authStore.user = result
+    const response = await fetchWrapper.get(ENDPOINTS.userInfo)
+    if (response.ok) {
+      const userinfo = await response.unpacked
+      authStore.user = userinfo
       alertStore.displayAlert({
         title: 'Logged in',
         text: 'You have successfully logged in',
@@ -58,7 +53,7 @@ export async function logIn(callback) {
       })
       callback?.()
     } else {
-      console.error(userinfo.status, userinfo.statusText)
+      console.error(response.status, response.statusText)
       displayError(`error getting ${ENDPOINTS.userInfo}`)
       return
     }
