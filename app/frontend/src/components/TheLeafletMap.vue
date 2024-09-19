@@ -6,6 +6,7 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
+import * as esriLeaflet from 'esri-leaflet'
 import "leaflet-easybutton/src/easy-button";
 import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
@@ -87,14 +88,41 @@ onMounted(() => {
     //     "-99999999"]);
 
     // Initial OSM tile layer
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    let CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
+        maxZoom: 20
+    });
+
+    let url =
+        'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer'
+    // url = 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Labels/MapServer'
+
+    let Esri_Hydro_Reference_Overlay = esriLeaflet.tiledMapLayer({
+        url: url,
+        layers: 0,
+        transparent: 'true',
+        format: 'image/png'
+    })
+
+    url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    let Esri_WorldImagery = L.tileLayer(url, {
+        variant: 'World_Imagery',
+        attribution: 'Esri'
+    })
+
+    const baselayers = {
+        CartoDB_PositronNoLabels,
+        Esri_WorldImagery
+    };
+
+    Esri_WorldImagery.addTo(map);
+    Esri_Hydro_Reference_Overlay.addTo(map);
+
+
 
     // WMS LAYER
-    let url = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WmsServer?`
+    url = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WmsServer?`
 
     // HUC WMS Naming
     // --------------
@@ -157,7 +185,8 @@ onMounted(() => {
         "HUC 4": huc4,
         "HUC 10": huc10,
         "HUC 12": huc12,
-        "USGS Gages": gages
+        "USGS Gages": gages,
+        "Esri Hydro Reference Overlay": Esri_Hydro_Reference_Overlay
     };
 
     // hide the Getting Started dialog
@@ -174,6 +203,9 @@ onMounted(() => {
     L.easyButton('fa-eraser',
         function () { clearSelection(); },
         'clear selected features').addTo(map);
+
+    // Layer Control
+    L.control.layers(baselayers, mixed).addTo(map);
 
     // // Help 
     // //    let btn = '<span id=help-btn class="material-icons">info-outline</i>'
