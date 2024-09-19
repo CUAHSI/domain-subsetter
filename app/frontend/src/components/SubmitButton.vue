@@ -41,7 +41,6 @@ const { selectedModel } = storeToRefs(modelsStore);
 const Map = mapStore.mapObject
 
 const canSubmit = computed(() => {
-  return true;
   if (!authStore.isLoggedIn) {
     return false
   }
