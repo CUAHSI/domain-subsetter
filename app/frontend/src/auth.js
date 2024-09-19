@@ -1,13 +1,11 @@
 import { ENDPOINTS, APP_URL } from '@/constants'
 import { useAuthStore } from '@/stores/auth'
 import { useAlertStore } from './stores/alerts'
-import { fetchWrapper } from '@/_helpers/fetchWrapper';
-import { useRouter } from 'vue-router'
+import { fetchWrapper } from '@/_helpers/fetchWrapper'
 
 export async function logIn(callback) {
   const alertStore = useAlertStore()
   const authStore = useAuthStore()
-  const router = useRouter()
   const response = await fetchWrapper.get(ENDPOINTS.authCuahsiAuthorize)
   if (!response?.ok) {
     displayError(`error getting ${ENDPOINTS.authCuahsiAuthorize}`)
