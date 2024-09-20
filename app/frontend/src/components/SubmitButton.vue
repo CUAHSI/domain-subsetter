@@ -1,7 +1,7 @@
 <template>
-  <v-btn v-if="canSubmit" :prepend-icon="mdiSend" @click="submit" color="primary">submit</v-btn>
+  <v-btn v-if="canSubmit" :prepend-icon="mdiSend" @click="submit" color="primary" width="100%">submit</v-btn>
   <template v-else>
-    <v-btn :prepend-icon="mdiNumeric3CircleOutline" :disabled="true">
+    <v-btn :prepend-icon="mdiNumeric3CircleOutline" :disabled="true" width="100%">
       submit
     </v-btn>
     <v-btn icon density="compact" size="small" class="ma-2">
@@ -13,12 +13,12 @@
             <v-card-title>Submit once you:</v-card-title>
             <v-card-text>
               <div v-if="!authStore.isLoggedIn">Log in</div>
-              <div v-if="modelsStore.selectedModel == null">Choose a model</div>
-              <div v-if="!mapStore.hucsAreSelected">
+              <div v-if="modelsStore.selectedModel == null">Select a dataset</div>
+              <div v-if="!domainStore.hucsAreSelected">
                 <span v-if="modelsStore.selectedModel?.input">Select {{ modelsStore.selectedModel.input }}</span>
-                <span v-else>Select subset bounds</span>
+                <span v-else>Select domain</span>
               </div>
-              <div v-if="bboxValid">Revise bounding box</div>
+              <div v-if="!bboxValid">Revise bounding box</div>
               <template v-slot:actions>
                 <v-btn class="ml-auto" text="Close" @click="isActive.value = false" variant="outlined" block></v-btn>
               </template>
@@ -73,6 +73,13 @@
       return false
     }
     return true
+  })
+
+  let bboxValid = computed(() => {
+    if (modelsStore.selectedModel?.input !== 'bbox' || !domainStore.hucsAreSelected) {
+      return true
+    }
+    return domainStore.boxIsValid
   })
 
   function computeSubsetBbox() {
