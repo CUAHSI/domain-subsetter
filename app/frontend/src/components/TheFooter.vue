@@ -19,11 +19,11 @@ import imgUrl from '@/assets/logo.png'
 
 <style lang="scss" scoped>
 .logo {
-  height: 10vh;
+  height: 100px;
   cursor: pointer;
 
   img {
-    height: 10vh;
+    height: 100px;
   }
 }
 </style>
