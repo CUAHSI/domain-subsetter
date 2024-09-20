@@ -64,7 +64,8 @@ router.beforeEach((to, from, next) => {
   const alertStore = useAlertStore()
 
   if (!authStore.isLoggedIn && to.meta.requiresAuth) {
-    next('/')
+    // prevent redirect
+    next(from.path)
     alertStore.displayAlert({
       title: 'Not logged in',
       text: `You must be logged in to access the ${to.name} page`,
