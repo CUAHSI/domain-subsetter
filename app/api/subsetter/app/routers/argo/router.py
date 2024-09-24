@@ -29,17 +29,19 @@ if get_settings().cloud_run:
 
 router = APIRouter()
 
-NAMESPACE = 'workflows'
+NAMESPACE = "workflows"
 OUTPUT_BASE_PATH = "argo_workflows"
 
 configuration = argo_workflows.Configuration(host=get_settings().argo_host)
-configuration.api_key['BearerToken'] = get_settings().argo_bearer_token
+configuration.api_key["BearerToken"] = get_settings().argo_bearer_token
 
 api_client = argo_workflows.ApiClient(configuration)
 api_instance = workflow_service_api.WorkflowServiceApi(api_client)
 
 
-def parflow_submission_body(hucs: list, bucket_name: str, workflow_name: str, output_path):
+def parflow_submission_body(
+    hucs: list, bucket_name: str, workflow_name: str, output_path
+):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "parflow-subset-v1-by-huc-minio",
@@ -54,8 +56,43 @@ def parflow_submission_body(hucs: list, bucket_name: str, workflow_name: str, ou
     }
 
 
+def nwm_submission_body(
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    bucket_name: str,
+    workflow_name: str,
+    output_path: str,
+    model_version: str,
+):
+    return {
+        "resourceKind": "WorkflowTemplate",
+        "resourceName": "nwm-subset",
+        "submitOptions": {
+            "name": workflow_name,
+            "parameters": [
+                f"output-bucket={bucket_name}",
+                f"output-path={output_path}",
+                f"y-south={y_south}",
+                f"x-west={x_west}",
+                f"y-north={y_north}",
+                f"x-east={x_east}",
+                f"model-version={model_version}",
+                f"cell-buffer=4",
+            ],
+        },
+    }
+
+
 def nwm1_submission_body(
-    y_south: float, x_west: float, y_north: float, x_east: float, bucket_name: str, workflow_name: str, output_path: str
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    bucket_name: str,
+    workflow_name: str,
+    output_path: str,
 ):
     return {
         "resourceKind": "WorkflowTemplate",
@@ -75,7 +112,13 @@ def nwm1_submission_body(
 
 
 def nwm2_submission_body(
-    y_south: float, x_west: float, y_north: float, x_east: float, bucket_name: str, workflow_name: str, output_path: str
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    bucket_name: str,
+    workflow_name: str,
+    output_path: str,
 ):
     return {
         "resourceKind": "WorkflowTemplate",
@@ -99,37 +142,29 @@ def metadata_extraction_submission_body(bucket: str, input_path: str, output_pat
         "resourceKind": "WorkflowTemplate",
         "resourceName": "metadata-extractor",
         "submitOptions": {
-            "parameters": [f"bucket={bucket}", f"input-path={input_path}", f"output-path={output_path}"],
+            "parameters": [
+                f"bucket={bucket}",
+                f"input-path={input_path}",
+                f"output-path={output_path}",
+            ],
         },
     }
 
 
-@router.post('/submit/parflow')
+@router.post("/submit/parflow")
 async def submit_parflow(
-    hucs: Annotated[list[str] | None, Query()], user: User = Depends(current_active_user)
+    hucs: Annotated[list[str] | None, Query()],
+    user: User = Depends(current_active_user),
 ) -> SubmissionResponseModel:
     workflow_id = str(uuid.uuid4())
     submission = Submission(workflow_id=workflow_id, workflow_name="parflow")
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
-        body=parflow_submission_body(hucs, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)),
-        _preload_content=False,
-    )
-    log.info(api_response.json())
-    return await upsert_submission(user, submission)
-
-
-@router.post('/submit/nwm1')
-async def submit_nwm1(
-    y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
-) -> SubmissionResponseModel:
-    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
-    workflow_id = str(uuid.uuid4())
-    submission = Submission(workflow_id=workflow_id, workflow_name="nwm1")
-    api_response = api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace,
-        body=nwm1_submission_body(
-            y_south, x_west, y_north, x_east, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)
+        body=parflow_submission_body(
+            hucs,
+            "subsetter-outputs",
+            workflow_id,
+            submission.output_path(user.bucket_name),
         ),
         _preload_content=False,
     )
@@ -137,9 +172,75 @@ async def submit_nwm1(
     return await upsert_submission(user, submission)
 
 
-@router.post('/submit/nwm2')
+@router.post("/submit/nwm")
+async def submit_nwm(
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    model_version: str,
+    user: User = Depends(current_active_user),
+) -> SubmissionResponseModel:
+    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
+    workflow_id = str(uuid.uuid4())
+
+    # dictionary that maps model versions to the appropriate Argo workflow arg
+    model_versions = {"nwm1": "1.2.4", "nwm2": "2.0.0", "nwm3": "3.0.11"}
+
+    submission = Submission(workflow_id=workflow_id, workflow_name=model_version)
+    api_response = api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace,
+        body=nwm_submission_body(
+            y_south,
+            x_west,
+            y_north,
+            x_east,
+            "subsetter-outputs",
+            workflow_id,
+            submission.output_path(user.bucket_name),
+            model_versions[model_version],
+        ),
+        _preload_content=False,
+    )
+    log.info(api_response.json())
+    return await upsert_submission(user, submission)
+
+
+@router.post("/submit/nwm1")
+async def submit_nwm1(
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    user: User = Depends(current_active_user),
+) -> SubmissionResponseModel:
+    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
+    workflow_id = str(uuid.uuid4())
+    submission = Submission(workflow_id=workflow_id, workflow_name="nwm1")
+    api_response = api_instance.submit_workflow(
+        namespace=get_settings().argo_namespace,
+        body=nwm1_submission_body(
+            y_south,
+            x_west,
+            y_north,
+            x_east,
+            "subsetter-outputs",
+            workflow_id,
+            submission.output_path(user.bucket_name),
+        ),
+        _preload_content=False,
+    )
+    log.info(api_response.json())
+    return await upsert_submission(user, submission)
+
+
+@router.post("/submit/nwm2")
 async def submit_nwm2(
-    y_south: float, x_west: float, y_north: float, x_east: float, user: User = Depends(current_active_user)
+    y_south: float,
+    x_west: float,
+    y_north: float,
+    x_east: float,
+    user: User = Depends(current_active_user),
 ) -> SubmissionResponseModel:
     # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
     workflow_id = str(uuid.uuid4())
@@ -147,7 +248,13 @@ async def submit_nwm2(
     api_response = api_instance.submit_workflow(
         namespace=get_settings().argo_namespace,
         body=nwm2_submission_body(
-            y_south, x_west, y_north, x_east, "subsetter-outputs", workflow_id, submission.output_path(user.bucket_name)
+            y_south,
+            x_west,
+            y_north,
+            x_east,
+            "subsetter-outputs",
+            workflow_id,
+            submission.output_path(user.bucket_name),
         ),
         _preload_content=False,
     )
@@ -160,10 +267,15 @@ class ExtractMetadataRequestBody(BaseModel):
     metadata: Any = None
 
 
-@router.post('/extract/metadata')
-async def extract_metadata(metadata_request: ExtractMetadataRequestBody, user: User = Depends(current_active_user)):
+@router.post("/extract/metadata")
+async def extract_metadata(
+    metadata_request: ExtractMetadataRequestBody,
+    user: User = Depends(current_active_user),
+):
     submission = next(
-        submission for submission in user.submissions if submission.workflow_id == metadata_request.workflow_id
+        submission
+        for submission in user.submissions
+        if submission.workflow_id == metadata_request.workflow_id
     )
     if not submission:
         raise Exception(f"No Submission found for id {metadata_request.workflow_id}")
@@ -173,7 +285,9 @@ async def extract_metadata(metadata_request: ExtractMetadataRequestBody, user: U
             fp.write(str.encode(metadata_json_str))
             fp.close()
             get_minio_client().fput_object(
-                user.bucket_name, f"{submission.output_path(OUTPUT_BASE_PATH)}/hs_user_meta.json", fp.name
+                user.bucket_name,
+                f"{submission.output_path(OUTPUT_BASE_PATH)}/hs_user_meta.json",
+                fp.name,
             )
 
     api_response = api_instance.submit_workflow(
@@ -189,7 +303,9 @@ async def extract_metadata(metadata_request: ExtractMetadataRequestBody, user: U
 
 async def upsert_submission(user: User, submission: Submission) -> Submission:
     api_response = api_instance.get_workflow(
-        namespace=get_settings().argo_namespace, name=submission.workflow_id, _preload_content=False
+        namespace=get_settings().argo_namespace,
+        name=submission.workflow_id,
+        _preload_content=False,
     )
     log.info(api_response.json())
     status_json = api_response.json()["status"]
@@ -203,14 +319,14 @@ async def upsert_submission(user: User, submission: Submission) -> Submission:
     return submission
 
 
-@router.get('/refresh/{workflow_id}')
+@router.get("/refresh/{workflow_id}")
 async def refresh_workflow(workflow_params: WorkflowDep):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     await upsert_submission(workflow_params.user, submission)
     return submission
 
 
-@router.get('/refresh')
+@router.get("/refresh")
 async def refresh_workflow(user: User = Depends(current_active_user)):
     submissions = user.running_submissions()
     for submission in submissions:
@@ -218,25 +334,25 @@ async def refresh_workflow(user: User = Depends(current_active_user)):
     return submissions
 
 
-'''
+"""
     "phase": "Succeeded",
     "startedAt": "2023-10-17T16:26:01Z",
     "finishedAt": "2023-10-17T16:27:35Z",
     "estimatedDuration": 97,
     "progress": "2/2",
-'''
+"""
 
 
 def parse_logs(api_response):
     logs = ""
     for l in api_response.read().decode("utf-8").splitlines():
-        x = l.replace('\\"', '\\\"')
+        x = l.replace('\\"', '\\"')
         l_json = json.loads(x)
         logs = logs + (l_json["result"]["content"])
     return logs
 
 
-@router.get('/logs/{workflow_id}', description="logs for a workflow")
+@router.get("/logs/{workflow_id}", description="logs for a workflow")
 async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
     api_response = api_instance.workflow_logs(
@@ -251,15 +367,22 @@ async def logs(workflow_params: WorkflowDep) -> LogsResponseModel:
     return {"logs": parse_logs(api_response)}
 
 
-@router.get('/argo/{workflow_id}')
+@router.get("/argo/{workflow_id}")
 async def argo_metadata(workflow_params: WorkflowDep):
     api_response = api_instance.get_workflow(
-        namespace=get_settings().argo_namespace, name=workflow_params.workflow_id, _preload_content=False
+        namespace=get_settings().argo_namespace,
+        name=workflow_params.workflow_id,
+        _preload_content=False,
     )
     log.info(api_response.json())
-    return {"metadata": api_response.json()["metadata"], "status": api_response.json()["status"]}
+    return {
+        "metadata": api_response.json()["metadata"],
+        "status": api_response.json()["status"],
+    }
 
 
-@router.get('/submissions')
-async def submissions(user: User = Depends(current_active_user)) -> UserSubmissionsResponseModel:
+@router.get("/submissions")
+async def submissions(
+    user: User = Depends(current_active_user),
+) -> UserSubmissionsResponseModel:
     return {"submissions": user.submissions}

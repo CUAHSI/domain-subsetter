@@ -120,7 +120,7 @@
       // compute the bounding box of the selected hucs
       // in the LCC projection used by the NWM
       const bbox = computeSubsetBbox()
-      await submitBbox(bbox, model.shortName)
+      await submitBbox(bbox, model.parent, model.shortName)
     }
     const message = "Your selection was submitted for subsetting"
     alertStore.displayAlert({ title: "Submitted!", text: message, type: "success", closable: true, duration: 3 })
@@ -133,7 +133,7 @@
     fetchWrapper.post(`${ENDPOINTS.submit}/${model}?hucs=${hucs}`)
   }
 
-  async function submitBbox(bbox, model) {
+  async function submitBbox(bbox, model, model_version) {
     let [xmin, ymin, xmax, ymax] = bbox
     const lowerLeft = [xmin, ymin]
     const upperRight = [xmax, ymax]
@@ -141,10 +141,10 @@
     console.log("lowerLeft", lowerLeft)
     console.log("upperRight", upperRight)
 
-    const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmax}&x_east=${xmin}`
+    const params = `y_south=${ymin}&y_north=${ymax}&x_west=${xmax}&x_east=${xmin}&model_version=${model_version}`
   
     console.log("starting subsetting with bbox params:", params)
-  
+
     fetchWrapper.post(`${ENDPOINTS.submit}/${model}?${params}`)
   }
   </script>

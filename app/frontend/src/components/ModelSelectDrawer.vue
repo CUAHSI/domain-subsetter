@@ -63,7 +63,7 @@ function selectParent(parent, toggle) {
 }
 
 function isDisabled(model) {
-  return model.shortName === 'nextgen1' || model.shortName === 'nwm3'
+  return model.shortName === 'nextgen1'
 }
 
 </script>
