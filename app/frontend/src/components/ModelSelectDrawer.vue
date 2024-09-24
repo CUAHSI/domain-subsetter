@@ -39,7 +39,6 @@
 <script setup>
 import { useModelsStore } from '@/stores/models'
 import { ref } from 'vue';
-import { mdiArrowRightBoldBoxOutline } from '@mdi/js'
 
 const emit = defineEmits(['selectModel', 'toggle'])
 
