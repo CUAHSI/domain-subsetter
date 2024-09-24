@@ -9,11 +9,13 @@
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshingItem == item" />
-        <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
-        <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
-          @click="downloadArtifact(item)"></v-btn>
-        <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
+        <div class="d-flex justify-space-between">
+          <v-btn :icon="mdiRefresh" size="small" @click="refreshSubmission(item)" :loading="refreshingItem == item" />
+          <v-btn><a @click="showArgo(item)">Metadata</a></v-btn>
+          <v-btn :icon="mdiDownload" size="small" v-if="item?.phase == 'Succeeded'"
+            @click="downloadArtifact(item)"></v-btn>
+          <v-btn :icon="mdiNoteSearch" size="small" @click="showLogs(item)"></v-btn>
+        </div>
       </template>
     </v-data-table>
     <v-progress-linear v-show="refreshing" indeterminate color="primary"></v-progress-linear>
@@ -29,22 +31,51 @@
     </v-sheet>
   </v-container>
 
-    <v-bottom-sheet v-model="sheetText" inset>
-      <v-card class="text-center" height="100%">
-        <v-card-text>
-          <v-btn @click="sheetText = null">
-            close
-          </v-btn>
+  <v-bottom-sheet v-model="showingLogs" inset>
+    <v-card height="100%">
+      <v-btn class="ml-auto" @click="showingLogs = false">
+        close
+      </v-btn>
+      <v-card-title>
+        <v-card class="pa-4">
+          Submission <strong>{{ selectedSubmission.workflow_id }}</strong>
+          <v-spacer></v-spacer>
+          Model: {{ selectedSubmission.workflow_name }}
+          <v-spacer></v-spacer>
+          Phase: <v-chip :color="getColor(selectedSubmission.phase)">
+            {{ getChipValue(selectedSubmission.phase) }}
+          </v-chip>
+          <v-spacer></v-spacer>
+          Started: {{ selectedSubmission.startedAt }}
+        </v-card>
+      </v-card-title>
 
-          <br>
-          <br>
+      <v-card-text>
+        <v-data-table :headers="logsHeaders" :items="logsArray">
+          <template v-slot:item.time="{ value }">
+            <v-chip>{{ value }}</v-chip>
+          </template>
+        </v-data-table>
 
-          <div>
-            {{ sheetText }}
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-bottom-sheet>
+      </v-card-text>
+    </v-card>
+  </v-bottom-sheet>
+
+  <v-bottom-sheet v-model="sheetText" inset>
+    <v-card class="text-center" height="100%">
+      <v-card-text>
+        <v-btn @click="sheetText = null">
+          close
+        </v-btn>
+
+        <br>
+        <br>
+        <div>
+          {{ sheetText }}
+        </div>
+      </v-card-text>
+    </v-card>
+  </v-bottom-sheet>
 </template>
 
 <script setup>
@@ -63,7 +94,10 @@ const submissionStore = useSubmissionsStore();
 const REFRESH_INTERVAL = 5000 // 5 second
 let interval = null
 
-let sheetText = ref(null)
+let logsArray = ref(null)
+let showingLogs = ref(false)
+let selectedSubmission = ref({})
+let sheetText = ref('')
 
 let refreshingItem = ref({})
 let refreshing = ref(true)
@@ -130,18 +164,52 @@ async function showLogs(submission) {
   const logsEndpoint = ENDPOINTS.logs
   const logsUrl = `${logsEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(logsUrl)
-  const json = await response.unpacked
-  sheetText.value = JSON.stringify(json)
+  const rawArgoLogs = await response.unpacked
+  logsArray.value = parseArgoLogs(rawArgoLogs)
+  selectedSubmission.value = submission
+  showingLogs.value = true
 }
+
+function parseArgoLogs(rawArgoLogs) {
+  const logsString = rawArgoLogs.logs;
+  let logsArray = logsString.split('time=');
+
+  // get rid of everything before the first 'time='
+  logsArray.shift()
+
+  const logs = logsArray.map(logString => {
+    // because we split on 'time=', the first key of every array element will be empty so it will have to be set to 'time'
+    logString = 'time=' + logString
+    console.log(logString)
+    const logObject = {}
+
+    // split the log string by assuming that every key is the non-white space characters before the '=' and the value is all characters untill the next key
+    // also '==='' (triple equals) is not considered as a key-value pair separator
+    // also an equals with a space before or after is not considered as a key-value pair separator
+    const logParts = logString.split(/(\S+)=(?!\s|=|:)/)
+    for (let i = 1; i < logParts.length; i += 2) {
+      const key = logParts[i]
+      // trim whitespace from the value and remove double quotes
+      const value = logParts[i + 1].trim().replace(/^"/, '').replace(/"$/, '')
+      logObject[key] = value
+    }
+    return logObject
+  })
+  console.log(logs)
+  return logs
+}
+
+const logsHeaders = [
+  { title: 'Time', key: 'time' },
+  { title: 'Message', key: 'msg' },
+]
 
 async function showArgo(submission) {
   const argoEndpoint = ENDPOINTS.argo
   const argoUrl = `${argoEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(argoUrl)
-  const json = await response.unpacked
-  const jsons = JSON.stringify(json)
-  console.log(jsons)
-  sheetText.value = jsons
+  const metadata = await response.unpacked
+  sheetText.value = metadata
 }
 
 async function refreshSubmission(submission) {
