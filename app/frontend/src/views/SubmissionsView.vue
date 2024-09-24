@@ -33,23 +33,24 @@
 
   <v-bottom-sheet v-model="showingLogs" inset>
     <v-card height="100%">
-      <v-btn @click="showingLogs = false">
+      <v-btn class="ml-auto" @click="showingLogs = false">
         close
       </v-btn>
-      <v-divider></v-divider>
       <v-card-title>
-        Logs
-      </v-card-title>
-      <v-card-text>
         <v-card class="pa-4">
-          <span>Submission <strong>{{ selectedSubmission.workflow_id }}</strong></span>
+          Submission <strong>{{ selectedSubmission.workflow_id }}</strong>
+          <v-spacer></v-spacer>
+          Model: {{ selectedSubmission.workflow_name }}
           <v-spacer></v-spacer>
           Phase: <v-chip :color="getColor(selectedSubmission.phase)">
             {{ getChipValue(selectedSubmission.phase) }}
           </v-chip>
           <v-spacer></v-spacer>
-          <span>Started: {{ selectedSubmission.startedAt }}</span>
+          Started: {{ selectedSubmission.startedAt }}
         </v-card>
+      </v-card-title>
+
+      <v-card-text>
         <v-data-table :headers="logsHeaders" :items="logsArray">
           <template v-slot:item.time="{ value }">
             <v-chip>{{ value }}</v-chip>
