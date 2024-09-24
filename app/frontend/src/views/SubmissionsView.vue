@@ -61,18 +61,28 @@
     </v-card>
   </v-bottom-sheet>
 
-  <v-bottom-sheet v-model="sheetText" inset>
-    <v-card class="text-center" height="100%">
+  <v-bottom-sheet v-model="metadataObject" inset>
+    <v-card height="100%">
+      <v-btn class="ml-auto" @click="metadataObject = null">
+        close
+      </v-btn>
+      <!-- show all of the key/value pairs of the metadataObject -->
       <v-card-text>
-        <v-btn @click="sheetText = null">
-          close
-        </v-btn>
-
-        <br>
-        <br>
-        <div>
-          {{ sheetText }}
-        </div>
+        <strong>Metadata</strong>
+        <v-data-table :headers="Object.keys(metadataObject.metadata)" :items="[metadataObject.metadata]">
+          <template v-slot:item="{ item }">
+            <tr v-for="(value, key) in item" v-bind:key="key">
+              <td>{{ key }}</td>
+              <td>{{ value }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-text>
+        <strong>Status</strong>
+        <!-- pretty format the metadataObject.status json and show it  -->
+        <pre>{{ JSON.stringify(metadataObject.status, null, 2) }}</pre>
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
@@ -97,7 +107,7 @@ let interval = null
 let logsArray = ref(null)
 let showingLogs = ref(false)
 let selectedSubmission = ref({})
-let sheetText = ref('')
+let metadataObject = ref(null)
 
 let refreshingItem = ref({})
 let refreshing = ref(true)
@@ -209,7 +219,7 @@ async function showArgo(submission) {
   const argoUrl = `${argoEndpoint}/${submission.workflow_id}`
   const response = await fetchWrapper.get(argoUrl)
   const metadata = await response.unpacked
-  sheetText.value = metadata
+  metadataObject.value = metadata
 }
 
 async function refreshSubmission(submission) {
