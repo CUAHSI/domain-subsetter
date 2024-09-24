@@ -31,25 +31,31 @@
     </v-sheet>
   </v-container>
 
-  <!-- TODO: make this a v-data-table? -->
-  <v-bottom-sheet v-model="logsArray" inset>
+  <v-bottom-sheet v-model="showingLogs" inset>
     <v-card height="100%">
+      <v-btn @click="showingLogs = false">
+        close
+      </v-btn>
+      <v-divider></v-divider>
+      <v-card-title>
+        Logs
+      </v-card-title>
       <v-card-text>
-        <v-btn @click="logsArray = null">
-          close
-        </v-btn>
+        <v-card class="pa-4">
+          <span>Submission <strong>{{ selectedSubmission.workflow_id }}</strong></span>
+          <v-spacer></v-spacer>
+          Phase: <v-chip :color="getColor(selectedSubmission.phase)">
+            {{ getChipValue(selectedSubmission.phase) }}
+          </v-chip>
+          <v-spacer></v-spacer>
+          <span>Started: {{ selectedSubmission.startedAt }}</span>
+        </v-card>
+        <v-data-table :headers="logsHeaders" :items="logsArray">
+          <template v-slot:item.time="{ value }">
+            <v-chip>{{ value }}</v-chip>
+          </template>
+        </v-data-table>
 
-        <br>
-        <br>
-
-        <v-row v-for="(logsObject, key) in logsArray" :key="key">
-          <v-col cols="3">
-            <strong>{{ logsObject.time }}</strong>
-          </v-col>
-          <v-col cols="9">
-            {{ logsObject.msg }}
-          </v-col>
-        </v-row>
       </v-card-text>
     </v-card>
   </v-bottom-sheet>
@@ -88,6 +94,8 @@ const REFRESH_INTERVAL = 5000 // 5 second
 let interval = null
 
 let logsArray = ref(null)
+let showingLogs = ref(false)
+let selectedSubmission = ref({})
 let sheetText = ref('')
 
 let refreshingItem = ref({})
@@ -157,6 +165,8 @@ async function showLogs(submission) {
   const response = await fetchWrapper.get(logsUrl)
   const rawArgoLogs = await response.unpacked
   logsArray.value = parseArgoLogs(rawArgoLogs)
+  selectedSubmission.value = submission
+  showingLogs.value = true
 }
 
 function parseArgoLogs(rawArgoLogs) {
@@ -187,6 +197,11 @@ function parseArgoLogs(rawArgoLogs) {
   console.log(logs)
   return logs
 }
+
+const logsHeaders = [
+  { title: 'Time', key: 'time' },
+  { title: 'Message', key: 'msg' },
+]
 
 async function showArgo(submission) {
   const argoEndpoint = ENDPOINTS.argo
