@@ -118,7 +118,7 @@ onMounted(async () => {
   if (authStore.isLoggedIn) {
     refreshAllSubmissions()
   // set a timer to refresh the submissions every REFRESH_INTERVAL milliseconds
-    interval = setInterval(refreshAllSubmissions, REFRESH_INTERVAL)
+  interval = setInterval(refreshPendingSubmissions, REFRESH_INTERVAL)
   }else{
     refreshing.value = false
   }
