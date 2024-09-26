@@ -4,15 +4,16 @@
   </v-overlay>
   <v-card v-show="!showModelSelect && !showDomainSelect" location="left" style="z-index: 9999"
     :style="{ transform: translateFilter(), position: 'absolute' }" class="v-flex pa-2" max-width="300"
-    color="surface-variant">
+    color="surface-variant" max-height="145">
     <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect"
-      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'" width="100%">
+      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'" width="100%" class="mb-2">
       <v-icon class="ma-1"
         :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"></v-icon>
       <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
       <span v-else>Select Data</span>
     </v-btn>
-    <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'" width="100%">
+    <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'" width="100%"
+      class="mb-2">
       <v-icon class="ma-1" :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"></v-icon>
       <span v-if="!domainStore.selectedDomain">Define Domain</span>
       <span v-else>{{ selectedDomain.name }}</span>
