@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mx-auto" elevation="8">
+  <v-sheet class="mx-auto" elevation="8" style="height: calc(100vh - 165px); overflow-y: scroll">
     <h2 class="ma-2 text-center">Datasets</h2>
     <p class="ma-2">Click on each dataset to learn more. Select the checkbox fo rthe dataset you're
       interested in.</p>
