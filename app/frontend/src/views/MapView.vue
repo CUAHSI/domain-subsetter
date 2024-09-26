@@ -2,24 +2,6 @@
   <v-overlay :model-value="!mapStore.mapLoaded" class="align-center justify-center">
     <v-progress-circular indeterminate :size="128"></v-progress-circular>
   </v-overlay>
-  <v-card v-show="!showModelSelect && !showDomainSelect" location="left" style="z-index: 9999"
-    :style="{ transform: translateFilter(), position: 'absolute' }" class="v-flex pa-2" max-width="300"
-    color="surface-variant" max-height="145">
-    <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect"
-      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'" width="100%" class="mb-2">
-      <v-icon class="ma-1"
-        :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"></v-icon>
-      <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
-      <span v-else>Select Data</span>
-    </v-btn>
-    <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'" width="100%"
-      class="mb-2">
-      <v-icon class="ma-1" :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"></v-icon>
-      <span v-if="!domainStore.selectedDomain">Define Domain</span>
-      <span v-else>{{ selectedDomain.name }}</span>
-    </v-btn>
-    <SubmitButton />
-  </v-card>
   <v-container v-if="!mdAndDown" fluid>
     <v-row fill-height style="height: calc(100vh - 165px)">
       <v-col v-if="showModelSelect || showDomainSelect" :cols="3" class="pa-0">
@@ -44,6 +26,23 @@
       </v-col>
     </v-row>
   </v-container>
+  <v-card v-show="!showModelSelect && !showDomainSelect" location="left" :style="getCardStyle()" class="v-flex pa-2"
+    max-width="300" color="surface-variant" max-height="145">
+    <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect"
+      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'" width="100%" class="mb-2">
+      <v-icon class="ma-1"
+        :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"></v-icon>
+      <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
+      <span v-else>Select Data</span>
+    </v-btn>
+    <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'" width="100%"
+      class="mb-2">
+      <v-icon class="ma-1" :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"></v-icon>
+      <span v-if="!domainStore.selectedDomain">Define Domain</span>
+      <span v-else>{{ selectedDomain.name }}</span>
+    </v-btn>
+    <SubmitButton />
+  </v-card>
 </template>
 
 <script setup>
@@ -102,6 +101,21 @@ const translateFilter = () => {
     return 'translate(24vw, 20vh)'
   } else {
     return 'translate(0, 20vh)'
+  }
+}
+
+const getCardStyle = () => {
+  if (!mdAndDown.value) {
+    return { transform: translateFilter(), position: 'absolute', 'z-index': '9999' }
+  }
+  return {
+    position: 'absolute',
+    'z-index': '9999',
+    'top': '35vh',
+    'left': '5vw',
+    'width': '100%',
+    'padding': '0',
+    'margin': '0'
   }
 }
 
