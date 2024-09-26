@@ -34,6 +34,7 @@
   import { useModelsStore } from '@/stores/models'
   import { useAuthStore } from '../stores/auth';
   import { useAlertStore } from '../stores/alerts'
+  import { useSubmissionsStore } from '../stores/submissions';
   import { ENDPOINTS } from '@/constants'
   import { useMapStore } from '@/stores/map'
   import { fetchWrapper } from '@/_helpers/fetchWrapper';
@@ -51,6 +52,7 @@
   const authStore = useAuthStore()
   const modelsStore = useModelsStore();
   const alertStore = useAlertStore()
+  const submissionStore = useSubmissionsStore()
 
   const { hucsAreSelected } = storeToRefs(domainStore);
   const { selectedModel } = storeToRefs(modelsStore);
@@ -122,6 +124,9 @@
       const bbox = computeSubsetBbox()
       await submitBbox(bbox, model.parent, model.shortName)
     }
+    await submissionStore.refreshWorkflows()
+    await submissionStore.getSubmissions()
+
     const message = "Your selection was submitted for subsetting"
     alertStore.displayAlert({ title: "Submitted!", text: message, type: "success", closable: true, duration: 3 })
 
