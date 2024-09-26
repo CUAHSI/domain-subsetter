@@ -61,9 +61,9 @@
     </v-card>
   </v-bottom-sheet>
 
-  <v-bottom-sheet v-model="metadataObject" inset>
+  <v-bottom-sheet v-model="showingMetadata" inset>
     <v-card height="100%">
-      <v-btn class="ml-auto" @click="metadataObject = null">
+      <v-btn class="ml-auto" @click="showingMetadata = false">
         close
       </v-btn>
       <!-- show all of the key/value pairs of the metadataObject -->
@@ -106,6 +106,7 @@ let interval = null
 
 let logsArray = ref(null)
 let showingLogs = ref(false)
+let showingMetadata = ref(false)
 let selectedSubmission = ref({})
 let metadataObject = ref(null)
 
@@ -118,7 +119,7 @@ onMounted(async () => {
   if (authStore.isLoggedIn) {
     refreshAllSubmissions()
   // set a timer to refresh the submissions every REFRESH_INTERVAL milliseconds
-    interval = setInterval(refreshAllSubmissions, REFRESH_INTERVAL)
+  interval = setInterval(refreshPendingSubmissions, REFRESH_INTERVAL)
   }else{
     refreshing.value = false
   }
@@ -220,6 +221,7 @@ async function showArgo(submission) {
   const response = await fetchWrapper.get(argoUrl)
   const metadata = await response.unpacked
   metadataObject.value = metadata
+  showingMetadata.value = true
 }
 
 async function refreshSubmission(submission) {
