@@ -348,7 +348,10 @@ def parse_logs(api_response):
     for l in api_response.read().decode("utf-8").splitlines():
         x = l.replace('\\"', '\\"')
         l_json = json.loads(x)
-        logs = logs + (l_json["result"]["content"])
+        try:
+            logs = logs + (l_json["result"]["content"])
+        except KeyError as e:
+            log.error(f"KeyError: {e}")
     return logs
 
 
