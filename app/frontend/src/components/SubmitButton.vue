@@ -4,13 +4,13 @@
     <v-btn :prepend-icon="mdiNumeric3CircleOutline" :disabled="true" width="100%">
       submit
     </v-btn>
-    <v-btn icon density="compact" size="small" class="ma-2">
+    <v-btn icon density="compact" size="small" class="ma-2" style="position: relative; left: 250px; top: -35px;">
       <v-icon :icon="mdiInformation" color="info">
       </v-icon>
       <v-dialog activator="parent" max-width="340">
         <template v-slot:default="{ isActive }">
           <v-card v-if="!canSubmit" color="primary" class="drawer-handle" max-width="300">
-            <v-card-title>Submit once you:</v-card-title>
+            <v-card-title>You can submit once you:</v-card-title>
             <v-card-text>
               <div v-if="!authStore.isLoggedIn">Log in</div>
               <div v-if="modelsStore.selectedModel == null">Select a dataset</div>

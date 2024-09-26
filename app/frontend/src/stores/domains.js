@@ -1,19 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import hucImg from '@/assets/huc-image.png'
+import boxDrag from '@/assets/box-drag.png'
 
 export const useDomainsStore = defineStore('domains', () => {
   const domains = ref([
     {
       id: 1,
       name: 'Select using HUC12',
-      img: 'https://picsum.photos/400',
+      img: hucImg,
       enabled: true,
       info: 'Select a HUC12 boundary from the map that you want to use for subsetting.'
     },
     {
       id: 2,
       name: 'Draw a box',
-      img: 'https://picsum.photos/300',
+      img: boxDrag,
       enabled: false,
       info: 'Draw a box on the map to define the domain.'
     }
