@@ -1,12 +1,12 @@
 <template>
-  <v-sheet class="mx-auto" elevation="8">
+  <v-sheet class="mx-auto" elevation="8" style="height: calc(100vh - 165px); overflow-y: scroll">
     <h2 class="ma-2 text-center">Datasets</h2>
     <p class="ma-2">Click on each dataset to learn more. Select the checkbox fo rthe dataset you're
       interested in.</p>
-    <v-slide-group v-model="selectedParent" class="pa-4" selected-class="bg-primary" show-arrows>
+    <v-slide-group v-model="selectedParent" selected-class="bg-primary" show-arrows>
       <v-slide-group-item v-for="hydroModel in models" :key="hydroModel.id" :value="hydroModel"
         v-slot="{ toggle, selectedClass }">
-        <v-card color="grey-lighten-1" :class="['ma-4', selectedClass]" height="150" width="130"
+        <v-card color="grey-lighten-1" :class="['ma-4', selectedClass]" height="100" width="100"
           @click="selectParent(hydroModel, toggle)">
           <div class="d-flex fill-height align-center justify-center">
             <v-scale-transition>
@@ -28,7 +28,7 @@
           <v-expansion-panel-text>
             <p>{{ childModel.description }}</p>
             <v-btn color="primary" @click="selectModel(childModel)" :disabled="isDisabled(childModel)">Continue with
-              {{ childModel.name }}</v-btn>
+              {{ childModel.shortName }}</v-btn>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
