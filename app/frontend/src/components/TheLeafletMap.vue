@@ -545,7 +545,7 @@ async function mapClick(e) {
     let defaultParameters = {
         service: 'WFS',
         request: 'GetFeature',
-        bbox: e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat,
+        bbox: e.latlng.lat + ',' + e.latlng.lng + ',' + e.latlng.lat + ',' + e.latlng.lng,
         SrsName: 'EPSG:4269',
         version: '2.0.0',
         EPSG:4269,
