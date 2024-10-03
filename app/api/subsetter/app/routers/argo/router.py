@@ -128,7 +128,7 @@ async def submit_nwm(
     x_west: float,
     y_north: float,
     x_east: float,
-    model_version: NWMVersionEnum,,
+    model_version: NWMVersionEnum,
     user: User = Depends(current_active_user),
 ) -> SubmissionResponseModel:
     # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
