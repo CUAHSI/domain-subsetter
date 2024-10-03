@@ -17,6 +17,8 @@ from app.models import (
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
+    NWMVersionEnum,
+    ExtractMetadataRequestBody,
 )
 from app.users import current_active_user
 from config import get_minio_client, get_settings
@@ -85,58 +87,6 @@ def nwm_submission_body(
     }
 
 
-def nwm1_submission_body(
-    y_south: float,
-    x_west: float,
-    y_north: float,
-    x_east: float,
-    bucket_name: str,
-    workflow_name: str,
-    output_path: str,
-):
-    return {
-        "resourceKind": "WorkflowTemplate",
-        "resourceName": "nwm1-subset-minio",
-        "submitOptions": {
-            "name": workflow_name,
-            "parameters": [
-                f"output-bucket={bucket_name}",
-                f"output-path={output_path}",
-                f"y_south={y_south}",
-                f"x_west={x_west}",
-                f"y_north={y_north}",
-                f"x_east={x_east}",
-            ],
-        },
-    }
-
-
-def nwm2_submission_body(
-    y_south: float,
-    x_west: float,
-    y_north: float,
-    x_east: float,
-    bucket_name: str,
-    workflow_name: str,
-    output_path: str,
-):
-    return {
-        "resourceKind": "WorkflowTemplate",
-        "resourceName": "nwm2-subset-minio",
-        "submitOptions": {
-            "name": workflow_name,
-            "parameters": [
-                f"output-bucket={bucket_name}",
-                f"output-path={output_path}",
-                f"y_south={y_south}",
-                f"x_west={x_west}",
-                f"y_north={y_north}",
-                f"x_east={x_east}",
-            ],
-        },
-    }
-
-
 def metadata_extraction_submission_body(bucket: str, input_path: str, output_path: str):
     return {
         "resourceKind": "WorkflowTemplate",
@@ -178,7 +128,7 @@ async def submit_nwm(
     x_west: float,
     y_north: float,
     x_east: float,
-    model_version: str,
+    model_version: NWMVersionEnum,,
     user: User = Depends(current_active_user),
 ) -> SubmissionResponseModel:
     # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
@@ -204,67 +154,6 @@ async def submit_nwm(
     )
     log.info(api_response.json())
     return await upsert_submission(user, submission)
-
-
-@router.post("/submit/nwm1")
-async def submit_nwm1(
-    y_south: float,
-    x_west: float,
-    y_north: float,
-    x_east: float,
-    user: User = Depends(current_active_user),
-) -> SubmissionResponseModel:
-    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
-    workflow_id = str(uuid.uuid4())
-    submission = Submission(workflow_id=workflow_id, workflow_name="nwm1")
-    api_response = api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace,
-        body=nwm1_submission_body(
-            y_south,
-            x_west,
-            y_north,
-            x_east,
-            "subsetter-outputs",
-            workflow_id,
-            submission.output_path(user.bucket_name),
-        ),
-        _preload_content=False,
-    )
-    log.info(api_response.json())
-    return await upsert_submission(user, submission)
-
-
-@router.post("/submit/nwm2")
-async def submit_nwm2(
-    y_south: float,
-    x_west: float,
-    y_north: float,
-    x_east: float,
-    user: User = Depends(current_active_user),
-) -> SubmissionResponseModel:
-    # y_south, x_west, y_north, x_east = transform_latlon(y_south, x_west, y_north, x_east)
-    workflow_id = str(uuid.uuid4())
-    submission = Submission(workflow_id=workflow_id, workflow_name="nwm2")
-    api_response = api_instance.submit_workflow(
-        namespace=get_settings().argo_namespace,
-        body=nwm2_submission_body(
-            y_south,
-            x_west,
-            y_north,
-            x_east,
-            "subsetter-outputs",
-            workflow_id,
-            submission.output_path(user.bucket_name),
-        ),
-        _preload_content=False,
-    )
-    log.info(api_response.json())
-    return await upsert_submission(user, submission)
-
-
-class ExtractMetadataRequestBody(BaseModel):
-    workflow_id: str
-    metadata: Any = None
 
 
 @router.post("/extract/metadata")
@@ -332,15 +221,6 @@ async def refresh_workflow(user: User = Depends(current_active_user)):
     for submission in submissions:
         await upsert_submission(user, submission)
     return submissions
-
-
-"""
-    "phase": "Succeeded",
-    "startedAt": "2023-10-17T16:26:01Z",
-    "finishedAt": "2023-10-17T16:27:35Z",
-    "estimatedDuration": 97,
-    "progress": "2/2",
-"""
 
 
 def parse_logs(api_response):

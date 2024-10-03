@@ -1,4 +1,5 @@
 from typing import Annotated
+from enum import Enum
 
 from fastapi import Depends, HTTPException, Path, status
 from pydantic import BaseModel, Field
@@ -40,3 +41,12 @@ class UserSubmissionsResponseModel(BaseModel):
 
 class SubmissionResponseModel(Submission):
     workflow_id: str
+
+class NWMVersionEnum(str, Enum):
+    nwm1 = "nwm1"
+    nwm2 = "nwm2"
+    nwm3 = "nwm3"
+
+class ExtractMetadataRequestBody(BaseModel):
+    workflow_id: str
+    metadata: Any = None
