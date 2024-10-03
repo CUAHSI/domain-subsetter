@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 from enum import Enum
 
 from fastapi import Depends, HTTPException, Path, status
