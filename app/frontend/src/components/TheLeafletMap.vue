@@ -399,7 +399,7 @@ onMounted(() => {
     // }
 
     // validate the map
-    let box = validate_bbox_size()
+    //validate_bbox_size()
     //toggle_submit_button(box.is_valid);
 
     // fix safari map sizing issue
@@ -1019,39 +1019,14 @@ function updateMapBBox() {
     console.log("ymax", ymax)
 
     // save the map bbox
-    // call backend function to calculate the bbox
-    
     Map.bbox = [xmin, ymin, xmax, ymax];
 
-
+    // remove the old bounding box layer
     removeBbox()
+    
+    // draw the new bounding box layer
+    drawBbox()
 
-    // redraw the bbox layer with new coordinates
-    let coords = [[[xmin, ymin],
-    [xmin, ymax],
-    [xmax, ymax],
-    [xmax, ymin],
-    [xmin, ymin]]];
-    let polygon = [{
-        "type": "Polygon",
-        "coordinates": coords
-    }];
-
-    // validate bbox and return back styling
-    let bbox = validate_bbox_size();
-
-    //toggle_submit_button(bbox.is_valid)
-
-    let json_polygon = L.geoJSON(polygon, { style: bbox.style });
-
-    // save the layer
-    Map.huclayers['BBOX'] = json_polygon;
-
-    if (modelsStore?.selectedModel?.input == "bbox") {
-        json_polygon.addTo(Map.map);
-    }
-
-    return bbox.is_valid
 }
 
 function removeBbox() {
@@ -1062,7 +1037,35 @@ function removeBbox() {
         delete Map.huclayers['BBOX'];
     }
 }
+function drawBbox() {
 
+    let style = {fillColor: 'black',
+                 weight: 2,
+                 opacity: 1,
+                 color: 'green',
+                 fillOpacity: 0.01,
+                 lineJoin: 'round'}
+
+    // redraw the bbox layer with new coordinates
+    let polygon = [{
+        "type": "Polygon",
+        "coordinates": [[[Map.bbox[0], Map.bbox[1]],
+                         [Map.bbox[0], Map.bbox[3]],
+                         [Map.bbox[2], Map.bbox[3]],
+                         [Map.bbox[2], Map.bbox[1]],
+                         [Map.bbox[0], Map.bbox[1]]
+                       ]]
+    }];
+    let json_polygon = L.geoJSON(polygon, { style: style });
+    
+    Map.huclayers['BBOX'] = json_polygon;
+    if (modelsStore?.selectedModel?.input == "bbox") {
+        json_polygon.addTo(Map.map);
+    }
+    
+    // TODO: Not sure if this is still needed
+    domainStore.boxIsValid = true;
+}
 
 /**
 * Toggles HUC boundaries on the map, on/off.
@@ -1137,54 +1140,6 @@ function update_huc_ids(huclist) {
 //        // Map.submit.disable();
 //    }
 //}
-
-
-/**
-* Validates that size constraints for the subset bounding box
-* @returns {object} - bounding box style and is_valid flag
-*/
-function validate_bbox_size() {
-
-    // todo: turn the bounding box red and deactivate the submit button.
-    let bbox = Map.bbox;
-
-    let londiff = Math.abs(bbox[2] - bbox[0]);
-    let latdiff = Math.abs(bbox[3] - bbox[1]);
-
-    let sqr_deg = londiff * latdiff;
-
-
-    let valid = true;
-    if ((bbox.includes(99999999) || bbox.includes(-99999999))) {
-        valid = false;
-    }
-
-    let style = {}
-    if (sqr_deg < 4 && valid) {
-        style = {
-            fillColor: 'black',
-            weight: 2,
-            opacity: 1,
-            color: 'green',
-            fillOpacity: 0.01,
-            lineJoin: 'round'
-        };
-
-    } else {
-
-        style = {
-            fillColor: 'black',
-            weight: 2,
-            opacity: 1,
-            color: 'red',
-            fillOpacity: 0.01,
-            lineJoin: 'round'
-        };
-        valid = false;
-    }
-    domainStore.boxIsValid = valid;
-    return { style: style, is_valid: valid }
-}
 
 
 /**
