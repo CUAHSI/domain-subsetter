@@ -56,9 +56,6 @@ const modelAction = modelsStore.$onAction(
     }
 )
 
-// manually remove the listener
-// modelAction()
-
 const Map = mapStore.mapObject
 
 onUpdated(() => {
@@ -90,12 +87,6 @@ onMounted(() => {
         99999999,
         -99999999,
         -99999999];
-
-
-    // update_lcc_bounds(["99999999",
-    //     "99999999",
-    //     "-99999999",
-    //     "-99999999"]);
 
     // Initial OSM tile layer
     let CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -199,12 +190,6 @@ onMounted(() => {
         "Esri Hydro Reference Overlay": Esri_Hydro_Reference_Overlay
     };
 
-    // hide the Getting Started dialog
-    // $('dialog')[0].open = false;
-    //    $('dialog')[0].style['visibility'] = 'hidden';
-
-
-
     // /*
     //  * LEAFLET BUTTONS
     //  */
@@ -217,195 +202,12 @@ onMounted(() => {
     // Layer Control
     L.control.layers(baselayers, mixed).addTo(map);
 
-    // // Help 
-    // //    let btn = '<span id=help-btn class="material-icons">info-outline</i>'
-    // L.easyButton('fas fa-question', function () { toggleHelpDialog(); },
-    //     { position: 'topleft' }).addTo(Map.map);
-
-    // L.control.mousePosition({
-    //     prefix: "Lat Long: ",
-    //     separator: ", "
-    // }).addTo(map);
-
-    // // Menu
-    // let btn = '<div id=menu-btn><strong>MENU</strong></div>';
-    // let menu = L.easyButton(btn, function () { toggleMenu(); resize_map(); },
-    //     { position: 'topright' }).addTo(Map.map);
-    // menu.button.style.width = '80px';
-
-    // // Submit
-    // btn = '<div id=submit-btn><strong>SUBMIT</strong></div>';
-    // let btn_submit = L.easyButton(btn,
-    //     function (btn) { submit(btn); },
-    //     {
-    //         id: 'submit',
-    //         position: 'bottomright'
-    //     });
-    //
-    // btn_submit.button.style.width = '150px';
-    // let submit_group = L.easyBar([btn_submit],
-    //     {
-    //         position: 'bottomright',
-    //         id: 'submit-button-group'
-    //     }).addTo(Map.map);
-    // // save this button so it can be accessed from other functions
-    // Map.submit = submit_group; //btn_submit;
-
-
     /*
      * LEAFLET EVENT HANDLERS
      */
     map.on("click", function (e) {
         mapClick(e);
     });
-
-    /**
-    * ADD - HUC TABLE - OPEN
-    * Open dialog for adding HUC to table
-    */
-    // document.getElementById("add-huc").onclick = function () {
-
-    //     // show the dialog
-    //     document.getElementById('addContentDialogTemplate').style.display = "";
-    // };
-
-    /**
-    * ADD - HUC TABLE -SUBMIT
-    * Cancels the add HUC dialog
-    */
-    // document.getElementById("add-huc-submit").onclick = function () {
-
-    //     // get the content value
-    //     let huc = document.getElementById('content').value;
-
-    //     // check for 12-digit string match (i.e. HUC 12)
-    //     let re = /\d{4,12}/;
-    //     let match = huc.match(re);
-    //     if (match) {
-
-    //         // add this feature to the map
-    //         addFeatureByHUC(huc)
-
-    //     } else {
-
-    //         // display error notification
-    //         let message = 'Error: HUCs must contain only 8-12 numeric characters';
-    //         notify(message);
-    //     }
-
-    //     // hide the dialog
-    //     document.getElementById('content').value = '';
-    //     document.getElementById('addContentDialogTemplate').style.display = "none";
-    // }
-
-    /**
-     * ADD - HUC TABLE - CANCEL
-     * Submits the add HUC dialog and applies the result to the table
-     */
-    // document.getElementById("add-huc-cancel").onclick = function () {
-
-    //     // clear and hide the dialog
-    //     document.getElementById('content').value = '';
-    //     document.getElementById('addContentDialogTemplate').style.display = "none";
-    // }
-
-    /**
-     * BBOX - OPEN
-     * showBboxDialogTemplate
-     **/
-
-    // document.getElementById("show-bbox").onclick = function () {
-
-    //     document.getElementById('showBboxDialogTemplate').style.display = "";
-    // };
-
-    /**
-    * BBOX - CLOSE 
-    * Cancels the rm HUC dialog
-    */
-    // document.getElementById("show-bbox-close").onclick = function () {
-
-    //     // clear and hide the dialog
-    //     document.getElementById('showBboxDialogTemplate').style.display = "none";
-    // }
-
-
-
-    /**
-    * REMOVE - HUC TABLE - OPEN
-    * Opens dialog for removing HUC from to table
-    */
-    // document.getElementById("rm-huc").onclick = function () {
-    //     // do nothing if the button isn't activated.
-    //     if (document.getElementById('rm-huc').hasClass('mdl-button--disabled')) {
-    //         return;
-    //     }
-
-    //     // check if items are selected
-    //     if (document.getElementById('huc-table').find('label').hasClass('is-checked')) {
-    //         // show the dialog
-    //         document.getElementById('rmContentDialogTemplate').style.display = "";
-    //     } else {
-    //         let message = 'No rows have been selected for removal';
-    //         notify(message);
-    //     }
-    // };
-
-
-    /**
-    * REMOVE - HUC TABLE - CANCEL
-    * Cancels the rm HUC dialog
-    */
-    // document.getElementById("rm-huc-cancel").onclick = function () {
-
-    //     // clear and hide the dialog
-    //     document.getElementById('rmContentDialogTemplate').style.display = "none";
-    // }
-
-    /**
-    * REMOVE - HUC TABLE - SUBMIT
-    * submits selected HUCs within the table for removal
-    */
-    // document.getElementById("rm-huc-submit").onclick = function () {
-
-    //     // remove items from table
-    //     let table = document.getElementById("huc-table");
-    //     let labels = document.getElementById('huc-table tbody tr label');
-    //     for (let i = labels.length - 1; i >= 0; i--) {
-    //         if (labels[i].classList.contains('is-checked')) {
-    //             let hucid = document.getElementById('huc-table tbody tr td')[i * 3 + 1].innerHTML;
-
-    //             // remove the huc from the table
-    //             table.deleteRow(i);
-
-    //             // toggle the polygon off                
-    //             togglePolygon(hucid, []);
-
-    //             // remove huc from internal list of features
-    //             delete Map.hucbounds[hucid];
-    //         }
-    //     }
-
-    //     // update the boundaries of the global bbox
-    //     updateMapBBox();
-    //     let hucs = [];
-    //     for (let key in Map.hucbounds) {
-    //         hucs.push(key);
-    //     }
-    //     getLccBounds(hucs);
-
-    //     // clear and hide the dialog
-    //     document.getElementById('rmContentDialogTemplate').style.display = "none";
-    // }
-
-    // validate the map
-    //validate_bbox_size()
-    //toggle_submit_button(box.is_valid);
-
-    // fix safari map sizing issue
-    // $(window).on("resize", function () {
-    //     resize_map();
-    // }).trigger("resize");
 
     mapStore.mapLoaded = true;
 })
@@ -421,33 +223,6 @@ function resize_map() {
  * LEAFLET HANDLERS 
  */
 
-// function toggleHelpDialog() {
-//     $('dialog')[0].style.display = '';
-//     $('dialog')[0].open = true;
-// }
-
-// function toggleMenu() {
-//     let accordion = document.querySelector('#accordion');
-//     let panel = document.querySelector('#menu-panel');
-//     accordion.MaterialExtAccordion.command({ action: 'toggle', target: panel });
-// }
-
-// function submit() {
-//     document.getElementById('form-submit').submit();
-// }
-
-// function clearHucTable() {
-//     // Removes all rows from the HUC table
-
-//     let table = document.getElementById("huc-table");
-//     let rows = document.getElementById('huc-table tbody tr');
-//     for (let i = rows.length - 1; i >= 0; i--) {
-//         table.deleteRow(i);
-//     }
-
-//     // toggle the delete button
-//     toggle_delete_button();
-// }
 
 async function getGageInfo(e) {
     // TODO: this function needs to be repaired
@@ -792,78 +567,6 @@ async function getNWMBbox(geometry){
 
 }
 
-//function addFeatureToMap(feature) {
-//
-//    // toggle bounding box
-//    if (feature.hucid in Map.hucbounds) {
-//        // remove huc from list if it's already selected
-//        delete Map.hucbounds[feature.hucid];
-//
-//        // add huc ID to the table
-//        let row_id = getRowIdByName(feature.hucid)
-//        rmHucRow(row_id);
-//
-//    }
-//    else {
-//        // add huc to list of it's not selected
-//        Map.hucbounds[feature.hucid] = feature.bbox;
-//
-//        // remove huc ID from the table
-//        addHucRow(feature.hucid);
-//    }
-//    // update the boundaries of the global bbox
-//    updateMapBBox();
-//
-//    // retrieve the LCC coordinate for this bounding box
-//    hucs = [];
-//    for (key in Map.hucbounds) {
-//        hucs.push(key);
-//    }
-//    getLccBounds(hucs);
-//}
-//
-///**
-//* adds features to the map by HUC id using WFS:GetFeature
-//* @param {string} hucid - a single HUC ids to query
-//* @returns - null
-//*/
-//function addFeatureByHUC(hucid) {
-//
-//    let remove = null;
-//    if (hucid.length < 12) {
-//        hucid += '*';
-//        filter = "<ogc:Filter><ogc:PropertyIsLike wildCard=\"*\"><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>"
-//
-//        // add the huc row b/c this could take a while
-//        // and we want the user to know that the HUCs are
-//        // being queried. 
-//        // this huc will need to be removed since it's not 12 digits.
-//        addHucRow(hucid);
-//        remove = hucid;
-//    }
-//    else if (hucid.length == 12) {
-//        filter = "<ogc:Filter><ogc:PropertyIsEqualTo><ogc:PropertyName>HUC12</ogc:PropertyName><ogc:Literal>" + hucid + "</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>"
-//    }
-//    else {
-//        return;
-//    }
-//
-//    let defaultParameters = {
-//        service: 'WFS',
-//        request: 'GetFeature',
-//        typeName: 'HUC_WBD:HUC12_US',
-//        SrsName: 'EPSG:4326',
-//        Filter: filter
-//    };
-//    let root = `${GIS_SERVICES_URL}/US_WBD/HUC_WBD/MapServer/WFSServer`;
-//    let parameters = L.Util.extend(defaultParameters);
-//    let URL = root + L.Util.getParamString(parameters);
-//
-//    // load the map and table elements async
-//    toggleHucsAsync(URL, false, remove);
-//
-//}
-
 async function toggleHucsAsync(url, remove_if_selected, remove) {
 
     // call the ArcGIS WFS asyncronously so that the webpage doesn't freeze.
@@ -1098,49 +801,7 @@ function update_huc_ids(huclist) {
     if (hucs == "") {
         domainStore.hucsAreSelected = false
     }
-
-    // set the #hucs hidden field in the html template
-    // using jquery
-    // document.getElementById('hucs').val(hucs);
-
 }
-
-// function update_lcc_bounds(lcc_bbox) {
-
-//      // add bounding box to input boxes
-//      document.getElementById('llon').val(lcc_bbox[0]);
-//      document.getElementById('llat').val(lcc_bbox[1]);
-//      document.getElementById('ulon').val(lcc_bbox[2]);
-//      document.getElementById('ulat').val(lcc_bbox[3]);
-
-//      // update bounding box in menu
-//      document.getElementById('td-llon-val').html(parseFloat(lcc_bbox[0]).toFixed(5));
-//      document.getElementById('td-llat-val').html(parseFloat(lcc_bbox[1]).toFixed(5));
-//      document.getElementById('td-ulon-val').html(parseFloat(lcc_bbox[2]).toFixed(5));
-//      document.getElementById('td-ulat-val').html(parseFloat(lcc_bbox[3]).toFixed(5));
-// }
-
-//function get_lcc_bounds() {
-//    let bnds = [document.getElementById('llon').val(),
-//    document.getElementById('llat').val(),
-//    document.getElementById('ulon').val(),
-//    document.getElementById('ulat').val()];
-//    return bnds;
-//}
-
-//function toggle_submit_button(is_valid) {
-//
-//    if (is_valid) {
-//        //        // disable submit button bc nothing is selected
-//        //        document.getElementById('btn-subset-submit').prop( "disabled", false);
-//        // Map.submit.enable();
-//    } else {
-//        //        // enable submit button 
-//        //        document.getElementById('btn-subset-submit').prop( "disabled", true );
-//        // Map.submit.disable();
-//    }
-//}
-
 
 /**
  * Displays a notification message at the bottom of the screen 
