@@ -17,7 +17,7 @@ export const useModelsStore = defineStore('models', () => {
           input: 'hucs',
           description:
             'ParFlow is a parallel, integrated hydrology model that simulates spatially distributed surface and subsurface flow, as well as land surface processes including evapotranspiration and snow. PF-CONUS (version 1) is an implementation of this model for a large portion of the US. '
-        },
+        }
       ]
     },
     {
@@ -50,7 +50,7 @@ export const useModelsStore = defineStore('models', () => {
           input: 'bbox',
           description:
             "The National Water Model is a hydrologic modeling framework that simulates observed and forecast streamflow over the entire continental United States. It's a special configuration of the WRF-Hydro open-source community model maintained by the National Center for Atmospheric Research. "
-        },
+        }
       ]
     },
     {
@@ -67,7 +67,7 @@ export const useModelsStore = defineStore('models', () => {
           input: 'bbox',
           description:
             'NextGen is a new generation of hydrologic models that are being developed by the National Center for Atmospheric Research. These models are designed to be more efficient and accurate than previous models.'
-        },
+        }
       ]
     }
   ])
@@ -76,7 +76,7 @@ export const useModelsStore = defineStore('models', () => {
 
   function updateModel(model) {
     selectedModel.value = model
-}
+  }
 
   return { models, selectedModel, updateModel }
 })

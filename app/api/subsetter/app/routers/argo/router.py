@@ -12,13 +12,13 @@ from pydantic import BaseModel
 
 from app.db import Submission, User
 from app.models import (
+    ExtractMetadataRequestBody,
     LogsResponseModel,
+    NWMVersionEnum,
     SubmissionResponseModel,
     UrlResponseModel,
     UserSubmissionsResponseModel,
     WorkflowDep,
-    NWMVersionEnum,
-    ExtractMetadataRequestBody,
 )
 from app.users import current_active_user
 from config import get_minio_client, get_settings
@@ -41,9 +41,7 @@ api_client = argo_workflows.ApiClient(configuration)
 api_instance = workflow_service_api.WorkflowServiceApi(api_client)
 
 
-def parflow_submission_body(
-    hucs: list, bucket_name: str, workflow_name: str, output_path
-):
+def parflow_submission_body(hucs: list, bucket_name: str, workflow_name: str, output_path):
     return {
         "resourceKind": "WorkflowTemplate",
         "resourceName": "parflow-subset-v1-by-huc-minio",
@@ -162,9 +160,7 @@ async def extract_metadata(
     user: User = Depends(current_active_user),
 ):
     submission = next(
-        submission
-        for submission in user.submissions
-        if submission.workflow_id == metadata_request.workflow_id
+        submission for submission in user.submissions if submission.workflow_id == metadata_request.workflow_id
     )
     if not submission:
         raise Exception(f"No Submission found for id {metadata_request.workflow_id}")
