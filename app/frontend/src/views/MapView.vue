@@ -26,18 +26,39 @@
       </v-col>
     </v-row>
   </v-container>
-  <v-card v-show="!showModelSelect && !showDomainSelect" location="left" :style="getCardStyle()" class="v-flex pa-2"
-    max-width="300" color="surface-variant" max-height="145">
-    <v-btn @click="toggleModelSelectDrawer" v-if="!showModelSelect"
-      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'" width="100%" class="mb-2">
-      <v-icon class="ma-1"
-        :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"></v-icon>
+  <v-card
+    v-show="!showModelSelect && !showDomainSelect"
+    location="left"
+    :style="getCardStyle()"
+    class="v-flex pa-2"
+    max-width="300"
+    color="surface-variant"
+    max-height="145"
+  >
+    <v-btn
+      @click="toggleModelSelectDrawer"
+      v-if="!showModelSelect"
+      :color="!modelsStore.selectedModel ? 'primary' : 'secondary'"
+      width="100%"
+      class="mb-2"
+    >
+      <v-icon
+        class="ma-1"
+        :icon="modelsStore.selectedModel ? mdiCheckCircleOutline : mdiNumeric1CircleOutline"
+      ></v-icon>
       <span v-if="modelsStore.selectedModel">{{ modelsStore.selectedModel.shortName }}</span>
       <span v-else>Select Data</span>
     </v-btn>
-    <v-btn @click="toggleDomainSelectDrawer" :color="!hucsAreSelected ? 'primary' : 'secondary'" width="100%"
-      class="mb-2">
-      <v-icon class="ma-1" :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"></v-icon>
+    <v-btn
+      @click="toggleDomainSelectDrawer"
+      :color="!hucsAreSelected ? 'primary' : 'secondary'"
+      width="100%"
+      class="mb-2"
+    >
+      <v-icon
+        class="ma-1"
+        :icon="hucsAreSelected ? mdiCheckCircleOutline : mdiNumeric2CircleOutline"
+      ></v-icon>
       <span v-if="!domainStore.selectedDomain">Define Domain</span>
       <span v-else>{{ selectedDomain.name }}</span>
     </v-btn>
@@ -46,12 +67,12 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue';
-import ModelSelectDrawer from '../components/ModelSelectDrawer.vue';
-import DomainSelectDrawer from '../components/DomainSelectDrawer.vue';
-import SubmitButton from '../components/SubmitButton.vue';
-import TheLeafletMap from '@/components/TheLeafletMap.vue';
-import { useMapStore } from '@/stores/map';
+import { ref, computed, nextTick } from 'vue'
+import ModelSelectDrawer from '../components/ModelSelectDrawer.vue'
+import DomainSelectDrawer from '../components/DomainSelectDrawer.vue'
+import SubmitButton from '../components/SubmitButton.vue'
+import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import { useMapStore } from '@/stores/map'
 import { useModelsStore } from '@/stores/models'
 import { useDomainsStore } from '@/stores/domains'
 import { useDisplay } from 'vuetify'
@@ -60,13 +81,13 @@ import { mdiNumeric1CircleOutline, mdiNumeric2CircleOutline, mdiCheckCircleOutli
 
 const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
-const modelsStore = useModelsStore();
-const domainStore = useDomainsStore();
+const modelsStore = useModelsStore()
+const domainStore = useDomainsStore()
 
 const showModelSelect = ref(false)
 const showDomainSelect = ref(false)
 
-const { selectedDomain, hucsAreSelected } = storeToRefs(domainStore);
+const { selectedDomain, hucsAreSelected } = storeToRefs(domainStore)
 
 const toggleModelSelectDrawer = async () => {
   const center = mapStore.mapObject.map.getCenter()
@@ -111,13 +132,11 @@ const getCardStyle = () => {
   return {
     position: 'absolute',
     'z-index': '9999',
-    'top': '35vh',
-    'left': '5vw',
-    'width': '100%',
-    'padding': '0',
-    'margin': '0'
+    top: '35vh',
+    left: '5vw',
+    width: '100%',
+    padding: '0',
+    margin: '0'
   }
 }
-
-
 </script>

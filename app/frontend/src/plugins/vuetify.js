@@ -7,13 +7,13 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 export default createVuetify({
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'light'
   },
   icons: {
     defaultSet: 'mdi',
     aliases,
     sets: {
-      mdi,
-    },
-  },
+      mdi
+    }
+  }
 })

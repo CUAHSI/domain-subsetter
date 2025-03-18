@@ -3,13 +3,20 @@
     <v-main>
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
       <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
-      <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
+      <TheMobileNavDrawer
+        @toggle-mobile-nav="toggleMobileNav"
+        :show="showMobileNavigation"
+        :paths="paths"
+      />
       <RouterView v-slot="{ Component }">
         <KeepAlive>
           <component :is="Component" />
         </KeepAlive>
       </RouterView>
-      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+        rel="stylesheet"
+      />
       <SnackBar />
       <TheFooter />
     </v-main>
@@ -31,30 +38,30 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
-    attrs: { to: "/" },
-    label: "Home",
+    attrs: { to: '/' },
+    label: 'Home'
   },
   {
-    attrs: { to: "/map" },
-    label: "Map",
+    attrs: { to: '/map' },
+    label: 'Map'
   },
   {
-    attrs: { to: "/submissions" },
-    label: "Submissions",
+    attrs: { to: '/submissions' },
+    label: 'Submissions'
   },
   {
-    attrs: { to: "/api" },
-    label: "API",
+    attrs: { to: '/api' },
+    label: 'API'
   },
   {
-    attrs: { to: "/about" },
-    label: "About",
+    attrs: { to: '/about' },
+    label: 'About'
   },
   {
-    attrs: { to: "/help" },
-    label: "Help",
-  },
-];
+    attrs: { to: '/help' },
+    label: 'Help'
+  }
+]
 
 function toggleMobileNav() {
   showMobileNavigation.value = !showMobileNavigation.value

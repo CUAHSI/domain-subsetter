@@ -1,0 +1,4 @@
+cd app
+make format
+cd frontend
+npm run validate

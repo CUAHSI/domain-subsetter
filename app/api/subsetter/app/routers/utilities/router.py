@@ -1,8 +1,9 @@
+from typing import Any, List
+
 from fastapi import APIRouter
-from shapely.geometry import GeometryCollection, shape, Polygon
-from pyproj import Transformer, CRS
-from typing import List, Any
 from pydantic import BaseModel
+from pyproj import CRS, Transformer
+from shapely.geometry import GeometryCollection, Polygon, shape
 
 router = APIRouter()
 
@@ -41,9 +42,7 @@ def geojson_to_geometry_collection(
     geometries = []
 
     for feature in feature_collection.features:
-        shapely_geom = shape(
-            {"type": feature.geometry.type, "coordinates": feature.geometry.coordinates}
-        )
+        shapely_geom = shape({"type": feature.geometry.type, "coordinates": feature.geometry.coordinates})
         # NOTE: buffer(0) is a trick for fixing scenarios where polygons have overlapping coordinates
         geometries.append(shapely_geom.buffer(0))
 
