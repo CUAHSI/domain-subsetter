@@ -109,6 +109,7 @@ async def on_startup():
         document_models=[
             User,
         ],
+        allow_index_dropping=True,
     )
     arguments = [
         "mc",
