@@ -79,7 +79,9 @@ export async function logOut(callback) {
 }
 
 async function displayError(text) {
-  text = text || 'We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.'
+  text =
+    text ||
+    'We had difficulty logging you in. If you continue to encounter this issue, please contact help@cuahsi.org.'
   const alertStore = useAlertStore()
   alertStore.displayAlert({
     title: 'Error Logging In',

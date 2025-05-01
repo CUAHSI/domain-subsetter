@@ -6,16 +6,15 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import SwaggerUI from 'swagger-ui';
+import SwaggerUI from 'swagger-ui'
 import { ENDPOINTS } from '@/constants'
-import 'swagger-ui/dist/swagger-ui.css';
+import 'swagger-ui/dist/swagger-ui.css'
 
 onMounted(() => {
   SwaggerUI({
     url: ENDPOINTS.openapi,
     dom_id: '#swagger',
-    withCredentials: true,
+    withCredentials: true
   })
-});
+})
 </script>
-

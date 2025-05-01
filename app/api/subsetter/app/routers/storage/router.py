@@ -1,10 +1,9 @@
-from fastapi import APIRouter
-
-from app.models import WorkflowDep
-from config import get_minio_client
-from app.db import User
 from fastapi import APIRouter, Depends
+
+from app.db import User
+from app.models import WorkflowDep
 from app.users import current_active_user
+from config import get_minio_client
 
 router = APIRouter()
 
@@ -12,18 +11,14 @@ router = APIRouter()
 @router.get('/presigned/get/{workflow_id}', description="Create a download url")
 async def presigned_get_minio(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    url = get_minio_client().presigned_get_object(
-        "subsetter-outputs", submission.output_path(user.bucket_name)
-    )
+    url = get_minio_client().presigned_get_object("subsetter-outputs", submission.output_path(user.bucket_name))
     return {'url': url}
 
 
 @router.get('/url/{workflow_id}', description="Create a download url")
 async def presigned_get_url(workflow_params: WorkflowDep, user: User = Depends(current_active_user)):
     submission = workflow_params.user.get_submission(workflow_params.workflow_id)
-    url = get_minio_client().presigned_get_object(
-        "subsetter-outputs", submission.output_path(user.bucket_name)
-    )
+    url = get_minio_client().presigned_get_object("subsetter-outputs", submission.output_path(user.bucket_name))
     return {'url': url}
 
 

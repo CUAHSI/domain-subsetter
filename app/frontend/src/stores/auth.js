@@ -1,25 +1,25 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = useStorage('user', {})
-    const isLoggedIn = useStorage('isLoggedIn', false)
+  const user = useStorage('user', {})
+  const isLoggedIn = useStorage('isLoggedIn', false)
 
-    const storeToken = useStorage('storeToken', {})
+  const storeToken = useStorage('storeToken', {})
 
-    async function login(token) {
-        storeToken.value = token;
-    }
+  async function login(token) {
+    storeToken.value = token
+  }
 
-    async function logout() {
-        user.value = {}
-        isLoggedIn.value = false;
-        storeToken.value = {};
-    }
+  async function logout() {
+    user.value = {}
+    isLoggedIn.value = false
+    storeToken.value = {}
+  }
 
-    function getToken(){
-        return storeToken.value.access_token
-    }
-  
-    return { isLoggedIn, user, login, logout, getToken, storeToken}
-  })
+  function getToken() {
+    return storeToken.value.access_token
+  }
+
+  return { isLoggedIn, user, login, logout, getToken, storeToken }
+})
